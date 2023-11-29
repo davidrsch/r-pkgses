@@ -1,5 +1,6 @@
 project:
   type: book
+  output-dir: docs
   resources:
     - atlas.json
     - images/cran-package-ggplot2-clean.png
@@ -10,18 +11,35 @@ project:
 bibliography: book.bib
 
 book:
-  title: "R Packages (2e)"
-  author: "Hadley Wickham and Jennifer Bryan"
-  description: |
-    Learn how to create a package, the fundamental unit of shareable, reusable, 
-    and reproducible R code.
+  title: "Paquetes de R"
+  reader-mode: true
+  
+  page-footer: 
+    left: |
+      Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan
+    right: |
+      Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.
   cover-image: images/cover-2e-small.png
   favicon: images/cover-2e-small.png
-
-  reader-mode: true
-  site-url: https://r-pkgs.org/
-  repo-url: https://github.com/hadley/r-pkgs/
-  repo-actions: [edit, issue]
+  
+  author:
+    - name: HADLEY WICKHAM
+    - name: "&"
+    - name: JENNY BRYAN
+  description: |
+    Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable,
+    y código R reproducible.
+  search: true
+  sidebar: 
+    pinned: true
+    tools: 
+      - icon: github
+        menu: 
+          - text: Original
+            url: https://github.com/hadley/r-pkgs/
+          - text: Traducción
+            url: https://github.com/davidrsch/r-pkgses
+  page-navigation: true
   
   chapters:
   - index.Rmd
@@ -77,7 +95,9 @@ format:
   html:
     theme: [cosmo, custom.scss]
     code-link: true
+    author-meta: "Hadley Wickham y Jenny Bryan"
     include-in-header: "plausible.html"
+    include-after-body: [ddrsch_script.html]
   asciidoc: default
   
 editor: visual
