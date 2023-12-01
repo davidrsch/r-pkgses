@@ -42,9 +42,9 @@ book:
   page-navigation: true
   
   chapters:
-  - index.Rmd
-  - preface.Rmd
-  - introduction.Rmd
+  - index.qmd
+  - preface.qmd
+  - introduction.qmd
   
   - part: Getting started
     chapters: 

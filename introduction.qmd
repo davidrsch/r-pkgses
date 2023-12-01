@@ -1,4 +1,4 @@
-# Introduction {#intro .unnumbered}
+# Introduction {#sec-intro .unnumbered}
 
 ```{r, echo = FALSE}
 source("common.R")
@@ -79,7 +79,7 @@ Writing R extensions is a useful resource once you've mastered the basics and wa
 
 [^introduction-2]: You might also enjoy the "quarto-ized" version at [https://rstudio.github.io/r-manuals/r-exts/](https://rstudio.github.io/r-manuals/r-exts/Function-and-variable-index.html).
 
-## In this book {#intro-outline}
+## In this book {#sec-intro-outline}
 
 The first part of the book is all about giving you all the tools you need to start your package development journey and we highly recommend that you read it in order.
 We begin in @sec-whole-game with a run through the complete development of a small package.
