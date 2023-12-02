@@ -48,11 +48,11 @@ book:
   
   - part: Getting started
     chapters: 
-    - whole-game.Rmd
-    - setup.Rmd
-    - structure.Rmd
-    - workflow101.Rmd
-    - package-within.Rmd
+    - whole-game.qmd
+    - setup.qmd
+    - structure.qmd
+    - workflow101.qmd
+    - package-within.qmd
   
   - part: Package components
     chapters:

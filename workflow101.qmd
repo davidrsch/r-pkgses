@@ -497,7 +497,7 @@ We don't run `check()` manually quite that often, but when we're actively workin
 Don't tinker with your package for days, weeks, or months, waiting for some special milestone to finally run `R CMD check`.
 If you use GitHub (@sec-sw-dev-practices-git-github), we'll show you how to set things up so that `R CMD check` runs automatically every time you push (@sec-sw-dev-practices-gha).
 
-### Workflow {#check-workflow}
+### Workflow {#sec-check-workflow}
 
 Here's what happens inside `devtools::check()`:
 

@@ -4,7 +4,7 @@
 source("common.R")
 ```
 
-## Prepare your system {#setup-prep}
+## Prepare your system {#sec-setup-prep}
 
 To get started, make sure you have the latest version of R (at least `r paste0(version$major, ".", version$minor)`, which is the version being used to render this book), then run the following code to get the packages you'll need:
 
@@ -101,7 +101,7 @@ pak::pak("r-lib/devtools")
 pak::pak("r-lib/usethis")
 ```
 
-## R build toolchain {#setup-tools}
+## R build toolchain {#sec-setup-tools}
 
 To be fully capable of building R packages from source, you'll also need a compiler and a few other command line tools.
 This may not be strictly necessary until you want to build packages containing C or C++ code.
@@ -124,7 +124,9 @@ During the Rtools installation you may see a window asking you to "Select Additi
 
 ### macOS
 
-You need to install the Xcode command line tools, which requires that you [register as an Apple developer](https://developer.apple.com/programs/enroll/). Don't worry, this is free for an individual who only wishes to install apps, such as Xcode command line tools. Enrolling in the paid developer program is only necessary for those who want distribute apps, access beta software, and integrate with capabilities such as Siri, Apple Pay, and iCloud.
+You need to install the Xcode command line tools, which requires that you [register as an Apple developer](https://developer.apple.com/programs/enroll/).
+Don't worry, this is free for an individual who only wishes to install apps, such as Xcode command line tools.
+Enrolling in the paid developer program is only necessary for those who want distribute apps, access beta software, and integrate with capabilities such as Siri, Apple Pay, and iCloud.
 
 Then, in the shell, do:
 
