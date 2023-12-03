@@ -43,7 +43,8 @@ Here are some top-level directories you might encounter in an R source package, 
 
 ## Installed files {#sec-misc-inst}
 
-When a package is installed, everything in `inst/` is copied into the top-level directory of the installed package (see @fig-package-files). In some sense `inst/` is the opposite of `.Rbuildignore` - where `.Rbuildignore` lets you remove arbitrary files and directories from the built package, `inst/` lets you add them.
+When a package is installed, everything in `inst/` is copied into the top-level directory of the installed package (see @fig-package-files).
+In some sense `inst/` is the opposite of `.Rbuildignore` - where `.Rbuildignore` lets you remove arbitrary files and directories from the built package, `inst/` lets you add them.
 
 ::: callout-warning
 You are free to put anything you like in `inst/` with one caution: because `inst/` is copied into the top-level directory, don't create a subdirectory that collides with any of the directories that make up the official structure of an R package.

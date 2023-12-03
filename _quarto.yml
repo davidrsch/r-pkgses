@@ -56,9 +56,9 @@ book:
   
   - part: Package components
     chapters:
-    - code.Rmd
-    - data.Rmd
-    - misc.Rmd
+    - code.qmd
+    - data.qmd
+    - misc.qmd
   
   - part: Package metadata
     chapters:
