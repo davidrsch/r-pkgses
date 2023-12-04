@@ -62,10 +62,10 @@ book:
   
   - part: Package metadata
     chapters:
-    - description.Rmd
-    - dependencies-mindset-background.Rmd
-    - dependencies-in-practice.Rmd
-    - license.Rmd
+    - description.qmd
+    - dependencies-mindset-background.qmd
+    - dependencies-in-practice.qmd
+    - license.qmd
   
   - part: Testing
     chapters:
