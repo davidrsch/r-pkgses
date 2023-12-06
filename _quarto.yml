@@ -75,10 +75,10 @@ book:
     
   - part: Documentation
     chapters:
-    - man.Rmd
-    - vignettes.Rmd
-    - other-markdown.Rmd
-    - website.Rmd
+    - man.qmd
+    - vignettes.qmd
+    - other-markdown.qmd
+    - website.qmd
   
   - part: Maintenance and distribution
     chapters:
