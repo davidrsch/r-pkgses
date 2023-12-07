@@ -82,14 +82,14 @@ book:
   
   - part: Maintenance and distribution
     chapters:
-    - software-development-practices.Rmd
-    - lifecycle.Rmd
-    - release.Rmd    
+    - software-development-practices.qmd
+    - lifecycle.qmd
+    - release.qmd    
 
   - references.qmd
   
   appendices:
-    - R-CMD-check.Rmd
+    - R-CMD-check.qmd
 
 format:
   html:
