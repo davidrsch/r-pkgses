@@ -91,6 +91,8 @@ book:
   appendices:
     - R-CMD-check.qmd
 
+lang: es
+
 format:
   html:
     theme: [cosmo, custom.scss]

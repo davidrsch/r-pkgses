@@ -1,12 +1,21 @@
-# Welcome! {.unnumbered}
+# ¡Bienvenidos! {.unnumbered}
 
-Welcome to the online version of the 2nd edition of **"R Packages"** by [Hadley Wickham](http://hadley.nz) and [Jennifer Bryan](http://jennybryan.org/).
-Packages are the fundamental units of reproducible R code.
-They include reusable R functions, the documentation that describes how to use them, and sample data.
-In this book you'll learn how to turn your code into packages that others can easily download and use.
-Writing a package can seem overwhelming at first.
-So start with the basics and improve it over time.
-It doesn't matter if your first version isn't perfect as long as the next version is better.
+Bienvenidos a la versión online de la 2ª edición de **"Paquetes de R"** de [Hadley Wickham](http://hadley.nz) y [Jennifer Bryan](http://jennybryan.org/).
+Los paquetes son las unidades fundamentales del código R reproducible.
+Incluyen funciones R reutilizables, la documentación que describe cómo usarlas y datos de muestra.
+En este libro aprenderá cómo convertir su código en paquetes que otros puedan descargar y usar fácilmente.
+Escribir un paquete puede parecer abrumador al principio.
+Así que comience con lo básico y mejórelo con el tiempo.
+No importa si tu primera versión no es perfecta siempre y cuando la próxima versión sea mejor.
 
-This website is and will always be free, licensed under the [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) License.
-If you'd like a physical copy of the book, you can order it on [Amazon](https://www.amazon.com//dp/109813494X?tag=hadlwick-20).
+Este sitio web es y será siempre gratuito, con licencia bajo la Licencia [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).
+Si desea una copia física del libro, puede solicitarla en [Amazon](https://www.amazon.com//dp/109813494X?tag=hadlwick-20).
+
+## Sobre La Traducción
+
+<a href="https://a.co/d/0kQeXbl"><img src="logo.png" alt="Cover image" width="285" height="285" align="right" style="margin: 0 1em 0 1em"/></a> Esta traducción de "Paquetes de R" es un proyecto personal de [David Díaz Rodríguez](https://github.com/davidrsch) con el objetivo de facilitar el estudio de construcción de paquetes de R, tanto al propio traductor como a todas aquellas personas de habla hispana que deseen aprender sobre este tema.
+
+Señalar que esta es una traducción textual del libro por lo que cuando los autores se refieren así mismo en primera persona, serán Hadley Wickham & Jenny Bryan no el traductor.
+
+La traducción fue realizada usando Google Translate y fueron corregidos algunos errores gramaticales y de coherencia.
+Si detecta algún error relacionado con el contenido de la traducción, siéntase libre de abrir un issue o un pull request en este [repositorio](https://github.com/davidrsch/r-pkgses).
