@@ -46,7 +46,7 @@ book:
   - preface.qmd
   - introduction.qmd
   
-  - part: Getting started
+  - part: Empezando
     chapters: 
     - whole-game.qmd
     - setup.qmd
