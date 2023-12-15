@@ -54,7 +54,7 @@ book:
     - workflow101.qmd
     - package-within.qmd
   
-  - part: Package components
+  - part: Componentes de un paquete
     chapters:
     - code.qmd
     - data.qmd
