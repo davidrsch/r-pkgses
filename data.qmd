@@ -1,83 +1,84 @@
-# Data {#sec-data}
+# Datos {#sec-data}
 
 ```{r, echo = FALSE}
 source("common.R")
 ```
 
-It's often useful to include data in a package.
-If the primary purpose of a package is to distribute useful functions, example datasets make it easier to write excellent documentation.
-These datasets can be hand-crafted to provide compelling use cases for the functions in the package.
-Here are some examples of this type of package data:
+A menudo resulta útil incluir datos en un paquete.
+Si el objetivo principal de un paquete es distribuir funciones útiles, los conjuntos de datos de ejemplo facilitan la redacción de documentación excelente.
+Estos conjuntos de datos se pueden crear a mano para proporcionar casos de uso atractivos para las funciones del paquete.
+A continuación se muestran algunos ejemplos de este tipo de datos de paquete:
 
--   [tidyr](https://tidyr.tidyverse.org/reference/index.html#data): `billboard` (song rankings), `who` (tuberculosis data from the World Health Organization)
--   [dplyr](https://dplyr.tidyverse.org/reference/index.html#data): `starwars` (Star Wars characters), `storms` (storm tracks)
+-   [tidyr](https://tidyr.tidyverse.org/reference/index.html#data): `billboard` (ranking de canciones), `who` (datos de tuberculosis de la Organización Mundial de la Salud)
+-   [dplyr](https://dplyr.tidyverse.org/reference/index.html#data): `starwars` (personajes de la guerra de las galaxias), `storms` (huellas de tormenta)
 
-At the other extreme, some packages exist solely for the purpose of distributing data, along with its documentation.
-These are sometimes called "data packages".
-A data package can be a nice way to share example data across multiple packages.
-It is also a useful technique for getting relatively large, static files out of a more function-oriented package, which might require more frequent updates.
-Here are some examples of data packages:
+En el otro extremo, algunos paquetes existen únicamente con el fin de distribuir datos, junto con su documentación.
+A veces se les llama "paquetes de datos".
+Un paquete de datos puede ser una buena forma de compartir datos de ejemplo entre varios paquetes.
+También es una técnica útil para obtener archivos estáticos relativamente grandes de un paquete más orientado a funciones, que podría requerir actualizaciones más frecuentes.
+A continuación se muestran algunos ejemplos de paquetes de datos:
 
 -   [nycflights13](https://nycflights13.tidyverse.org)
 -   [babyname](http://hadley.github.io/babynames/)[s](https://github.com/hadley/babynames)
 
-Finally, many packages benefit from having internal data that is used for internal purposes, but that is not directly exposed to the users of the package.
+Por último, muchos paquetes se benefician de tener datos internos que se utilizan para fines internos, pero que no están expuestos directamente a los usuarios del paquete.
 
-In this chapter we describe useful mechanisms for including data in your package.
-The practical details differ depending on who needs access to the data, how often it changes, and what they will do with it:
+En este capítulo describimos mecanismos útiles para incluir datos en su paquete.
+Los detalles prácticos difieren según quién necesita acceso a los datos, con qué frecuencia cambian y qué harán con ellos:
 
--   If you want to store R objects and make them available to the user, put them in `data/`.
-    This is the best place to put example datasets.
-    All the concrete examples above for data in a package and data as a package use this mechanism.
-    See section @sec-data-data.
+-   Si desea almacenar objetos R y ponerlos a disposición del usuario, colóquelos en `datos/`.
+    Este es el mejor lugar para colocar conjuntos de datos de ejemplo.
+    Todos los ejemplos concretos anteriores para datos en un paquete y datos como paquete utilizan este mecanismo.
+    Mira la sección @sec-data-data.
 
--   If you want to store R objects for your own use as a developer, put them in `R/sysdata.rda`.
-    This is the best place to put internal data that your functions need.
-    See section @sec-data-sysdata.
+-   Si desea almacenar objetos R para su propio uso como desarrollador, colóquelos en `R/sysdata.rda`.
+    Este es el mejor lugar para colocar los datos internos que sus funciones necesitan.
+    Mira la sección @sec-data-sysdata.
 
--   If you want to store data in some raw, non-R-specific form and make it available to the user, put it in `inst/extdata/`.
-    For example, readr and readxl each use this mechanism to provide a collection of delimited files and Excel workbooks, respectively.
-    See section @sec-data-extdata.
+-   Si desea almacenar datos en algún formato sin procesar, no específico de R y ponerlos a disposición del usuario, colóquelos en `inst/extdata/`.
+    Por ejemplo, readr y readxl utilizan este mecanismo para proporcionar una colección de archivos delimitados y libros de Excel, respectivamente.
+    Mira la sección @sec-data-extdata.
 
--   If you want to store dynamic data that reflects the internal state of your package within a single R session, use an environment.
-    This technique is not as common or well-known as those above, but can be very useful in specific situations.
-    See section @sec-data-state.
+-   Si desea almacenar datos dinámicos que reflejen el estado interno de su paquete dentro de una única sesión de R, utilice un entorno.
+    Esta técnica no es tan común ni tan conocida como las anteriores, pero puede resultar muy útil en situaciones concretas.
+    Mira la sección @sec-data-state.
 
--   If you want to store data persistently across R sessions, such as configuration or user-specific data, use one of the officially sanctioned locations.
-    See section @sec-data-persistent.
+-   Si desea almacenar datos de forma persistente en sesiones de R, como configuración o datos específicos del usuario, utilice una de las ubicaciones autorizadas oficialmente.
+    Mira la sección @sec-data-persistent.
 
-## Exported data {#sec-data-data}
+## Datos exportados {#sec-data-data}
 
-The most common location for package data is (surprise!) `data/`.
-We recommend that each file in this directory be an `.rda` file created by `save()` containing a single R object, with the same name as the file.
-The easiest way to achieve this is to use `usethis::use_data()`.
+La ubicación más común para los datos del paquete es (¡sorpresa!) `data/`.
+Recomendamos que cada archivo en este directorio sea un archivo `.rda` creado por `save()` que contenga un único objeto R, con el mismo nombre que el archivo.
+La forma más sencilla de lograrlo es utilizar `usethis::use_data()`.
 
 ```{r, eval = FALSE}
 my_pkg_data <- sample(1000)
 usethis::use_data(my_pkg_data)
 ```
 
-Let's imagine we are working on a package named "pkg".
-The snippet above creates `data/my_pkg_data.rda` inside the source of the pkg package and adds `LazyData: true` in your `DESCRIPTION`.
-This makes the `my_pkg_data` R object available to users of pkg via `pkg::my_pkg_data` or, after attaching pkg with `library(pkg)`, as `my_pkg_data`.
+Imaginemos que estamos trabajando en un paquete llamado "pkg".
+El fragmento anterior crea `data/my_pkg_data.rda` dentro del código fuente del paquete pkg y agrega `LazyData: true` en su `DESCRIPCIÓN`.
+Esto hace que el objeto R `my_pkg_data` esté disponible para los usuarios de pkg a través de `pkg::my_pkg_data` o, después de adjuntar pkg con `library(pkg)`, como `my_pkg_data`.
 
-The snippet above is something the maintainer executes once (or every time they need to update `my_pkg_data`).
-This is workflow code and should **not** appear in the `R/` directory of the source package.
-(We'll talk about a suitable place to keep this code below.) For larger datasets, you may want to experiment with the compression setting, which is under the control of the `compress` argument.
-The default is "bzip2", but sometimes "gzip" or "xz" can create smaller files.
+El fragmento anterior es algo que el mantenedor ejecuta una vez (o cada vez que necesita actualizar `my_pkg_data`).
+Este es el código de flujo de trabajo y **no** debería aparecer en el directorio `R/` del paquete fuente.
+(Hablaremos sobre un lugar adecuado para guardar este código a continuación).
+Para conjuntos de datos más grandes, es posible que desees experimentar con la configuración de compresión, que está bajo el control del argumento "comprimir".
+El valor predeterminado es "bzip2", pero a veces "gzip" o "xz" pueden crear archivos más pequeños.
 
-It's possible to use other types of files below `data/`, but we don't recommend it because `.rda` files are already fast, small, and explicit.
-The other possibilities are described in the documentation for `utils::data()` and in the [Data in packages](https://rstudio.github.io/r-manuals/r-exts/Creating-R-packages.html#data-in-packages) section of Writing R Extensions.
-In terms of advice to package authors, the help topic for `data()` seems to implicitly make the same recommendations as we do above:
+Es posible utilizar otros tipos de archivos debajo de `data/`, pero no lo recomendamos porque los archivos `.rda` ya son rápidos, pequeños y explícitos.
+Las otras posibilidades se describen en la documentación de `utils::data()` y en [Datos en paquetes](https://rstudio.github.io/r-manuals/r-exts/Creating-R-packages.%20html#data-in-packages) de Escritura de extensiones R.
+En términos de consejos para los autores de paquetes, el tema de ayuda para `data()` parece hacer implícitamente las mismas recomendaciones que hacemos anteriormente:
 
--   Store one R object in each `data/*.rda` file
--   Use the same name for that object and its `.rda` file
--   Use lazy-loading, by default
+-   Almacene un objeto R en cada archivo `data/*.rda`
+-   Utilice el mismo nombre para ese objeto y su archivo `.rda`
+-   Utilice carga diferida, de forma predeterminada
 
-If the `DESCRIPTION` contains `LazyData: true`, then datasets will be lazily loaded.
-This means that they won't occupy any memory until you use them.
-The following example shows memory usage before and after loading the nycflights13 package.
-You can see that memory usage doesn't change significantly until you inspect the `flights` dataset stored inside the package.
+Si la `DESCRIPTION` contiene `LazyData: true`, los conjuntos de datos se cargarán de forma diferida.
+Esto significa que no ocuparán memoria hasta que los uses.
+El siguiente ejemplo muestra el uso de la memoria antes y después de cargar el paquete nycflights13.
+Puede ver que el uso de la memoria no cambia significativamente hasta que inspecciona el conjunto de datos de `flights` almacenados dentro del paquete.
 
 ```{r}
 lobstr::mem_used()
@@ -88,38 +89,39 @@ invisible(flights)
 lobstr::mem_used()
 ```
 
-We recommend that you include `LazyData: true` in your `DESCRIPTION` if you are shipping `.rda` files below `data/`.
-If you use `use_data()` to create such datasets, it will automatically make this modification to `DESCRIPTION` for you.
+Le recomendamos que incluya `LazyData: true` en su `DESCRIPTION` si envía archivos `.rda` debajo de `data/`.
+Si utiliza `use_data()` para crear dichos conjuntos de datos, automáticamente realizará esta modificación en `DESCRIPTION` por usted.
 
 ::: callout-warning
-It is important to note that lazily-loaded datasets do **not** need to be pre-loaded with `utils::data()` and, in fact, it's usually best to avoid doing so.
-Above, once we did `library(nycflights13)`, we could immediately access `flights`.
-There is no call to `data(flights)`, because it is not necessary.
+Es importante tener en cuenta que los conjuntos de datos cargados de forma diferida **no** necesitan estar precargados con `utils::data()` y, de hecho, normalmente es mejor evitar hacerlo.
+Arriba, una vez que hicimos `library(nycflights13)`, pudimos acceder inmediatamente a `flights`.
+No hay llamada a `datos(flights)`, porque no es necesario.
 
-There are specific downsides to `data(some_pkg_data)` calls that support a policy of only using `data()` when it is actually necessary, i.e. for datasets that would not be available otherwise:
+Hay desventajas específicas de las llamadas `data(some_pkg_data)` que admiten una política de usar `data()` solo cuando es realmente necesario, es decir, para conjuntos de datos que de otro modo no estarían disponibles:
 
--   By default, `data(some_pkg_data)`, creates one or more objects in the user's global workspace. There is the potential to silently overwrite pre-existing objects with new values.
--   There is also no guarantee that `data(foo)` will create exactly one object named "foo". It could create more than one object and/or objects with totally different names.
+-   De forma predeterminada, `data(some_pkg_data)` crea uno o más objetos en el espacio de trabajo global del usuario. Existe la posibilidad de sobrescribir silenciosamente objetos preexistentes con nuevos valores.
+-   Tampoco hay garantía de que `data(foo)` cree exactamente un objeto llamado "foo". Podría crear más de un objeto y/u objetos con nombres totalmente diferentes.
 
-One argument in favor of calls like `data(some_pkg_data, package = "pkg")` that are not strictly necessary is that it clarifies which package provides `some_pkg_data`.
-We prefer alternatives that don't modify the global workspace, such as a code comment or access via `pkg::some_pkg_data`.
+Un argumento a favor de llamadas como `data(some_pkg_data, package = "pkg")` que no son estrictamente necesarias es que aclara qué paquete proporciona `some_pkg_data`.
+Preferimos alternativas que no modifiquen el espacio de trabajo global, como un comentario de código o el acceso a través de `pkg::some_pkg_data`.
 
-This excerpt from the documentation of `data()` conveys that it is largely of historical importance:
+Este extracto de la documentación de `data()` transmite que es en gran medida de importancia histórica:
 
-> `data()` was originally intended to allow users to load datasets from packages for use in their examples, and as such it loaded the datasets into the workspace `.GlobalEnv`.
-> This avoided having large datasets in memory when not in use: that need has been almost entirely superseded by lazy-loading of datasets.
+> `data()` Originalmente estaba destinado a permitir a los usuarios cargar conjuntos de datos desde paquetes para usarlos en sus ejemplos y, como tal, cargaba los conjuntos de datos en el espacio de trabajo.
+> `.GlobalEnv`.
+> Esto evitó tener grandes conjuntos de datos en la memoria cuando no estaban en uso: esa necesidad ha sido reemplazada casi por completo por la carga diferida de conjuntos de datos.
 :::
 
-### Preserve the origin story of package data {#sec-data-data-raw}
+### Preservar la historia del origen de los datos del paquete {#sec-data-data-raw}
 
-Often, the data you include in `data/` is a cleaned up version of raw data you've gathered from elsewhere.
-We highly recommend taking the time to include the code used to do this in the source version of your package.
-This makes it easy for you to update or reproduce your version of the data.
-This data-creating script is also a natural place to leave comments about important properties of the data, i.e. which features are important for downstream usage in package documentation.
+A menudo, los datos que incluye en `data/` son una versión limpia de datos sin procesar que ha recopilado de otro lugar.
+Recomendamos encarecidamente tomarse el tiempo para incluir el código utilizado para hacer esto en la versión fuente de su paquete.
+Esto le facilita actualizar o reproducir su versión de los datos.
+Este script de creación de datos también es un lugar natural para dejar comentarios sobre propiedades importantes de los datos, es decir, qué características son importantes para el uso posterior en la documentación del paquete.
 
-We suggest that you keep this code in one or more `.R` files below `data-raw/`.
-You don't want it in the bundled version of your package, so this folder should be listed in `.Rbuildignore`.
-usethis has a convenience function that can be called when you first adopt the `data-raw/` practice or when you add an additional `.R` file to the folder:
+Le sugerimos que mantenga este código en uno o más archivos `.R` debajo de `data-raw/`.
+No lo desea en la versión incluida de su paquete, por lo que esta carpeta debe aparecer en `.Rbuildignore`.
+usethis tiene una función conveniente que se puede llamar cuando adopta por primera vez la práctica `data-raw/` o cuando agrega un archivo `.R` adicional a la carpeta:
 
 ```{r, eval = FALSE}
 usethis::use_data_raw()
@@ -127,54 +129,54 @@ usethis::use_data_raw()
 usethis::use_data_raw("my_pkg_data")
 ```
 
-`use_data_raw()` creates the `data-raw/` folder and lists it in `.Rbuildignore`.
-A typical script in `data-raw/` includes code to prepare a dataset and ends with a call to `use_data()`.
+`use_data_raw()` crea la carpeta `data-raw/` y la enumera en `.Rbuildignore`.
+Un script típico en `data-raw/` incluye código para preparar un conjunto de datos y termina con una llamada a `use_data()`.
 
-These data packages all use the approach recommended here for `data-raw/`:
+Todos estos paquetes de datos utilizan el enfoque recomendado aquí para `data-raw/`:
 
 -   [babynames](https://github.com/hadley/babynames)
 -   [nycflights13](https://github.com/hadley/nycflights13)
 -   [gapminder](https://github.com/jennybc/gapminder)
 
 ::: callout-tip
-## ggplot2: A cautionary tale
+## ggplot2: Un cuento con moraleja
 
-We have a confession to make: the origins of many of ggplot2's example datasets have been lost in the sands of time.
-In the grand scheme of things, this is not a huge problem, but maintenance is certainly more pleasant when a package's assets can be reconstructed *de novo* and easily updated as necessary.
+Tenemos una confesión que hacer: los orígenes de muchos de los conjuntos de datos de ejemplo de ggplot2 se han perdido en las arenas del tiempo.
+En el gran esquema de las cosas, esto no es un gran problema, pero el mantenimiento es ciertamente más placentero cuando los activos de un paquete pueden reconstruirse *de novo* y actualizarse fácilmente según sea necesario.
 :::
 
 ::: callout-warning
-## Submitting to CRAN
+## Envío a CRAN
 
-Generally, package data should be smaller than a megabyte - if it's larger you'll need to argue for an exemption.
-This is usually easier to do if the data is in its own package and won't be updated frequently, i.e. if you approach this as a dedicated "data package".
-For reference, the babynames and nycflights packages have had a release once every one to two years, since they first appeared on CRAN.
+Generalmente, los datos del paquete deben ser más pequeños que un megabyte; si son más grandes, deberá solicitar una exención.
+Esto suele ser más fácil de hacer si los datos están en su propio paquete y no se actualizarán con frecuencia, es decir, si lo aborda como un "paquete de datos" dedicado.
+Como referencia, los paquetes babynames y nycflights se han lanzado una vez cada uno o dos años, desde que aparecieron por primera vez en CRAN.
 
-If you are bumping up against size issues, you should be intentional with regards to the method of data compression.
-The default for `usethis::use_data(compress =)` is "bzip2", whereas the default for `save(compress =)` is (effectively) "gzip", and "xz" is yet another valid option.
+Si tiene problemas de tamaño, debe ser intencional con respecto al método de compresión de datos.
+El valor predeterminado para `usethis::use_data(compress =)` es "bzip2", mientras que el valor predeterminado para `save(compress =)` es (efectivamente) "gzip", y "xz" es otra opción válida.
 
-You'll have to experiment with different compression methods and make this decision empirically.
-`tools::resaveRdaFiles("data/")` automates this process, but doesn't inform you of which compression method was chosen.
-You can learn this after the fact with `tools::checkRdaFiles()`.
-Assuming you are keeping track of the code to generate your data, it would be wise to update the corresponding `use_data(compress =)` call below `data-raw/` and re-generate the `.rda` cleanly.
+Tendrás que experimentar con diferentes métodos de compresión y tomar esta decisión de forma empírica.
+`tools::resaveRdaFiles("data/")` automatiza este proceso, pero no le informa qué método de compresión se eligió.
+Puede aprender esto después del hecho con `tools::checkRdaFiles()`.
+Suponiendo que está realizando un seguimiento del código para generar sus datos, sería prudente actualizar la llamada `use_data(compress =)` correspondiente debajo de `data-raw/` y volver a generar el `.rda` limpiamente.
 :::
 
-### Documenting datasets {#sec-documenting-data}
+### Documentar conjuntos de datos {#sec-documenting-data}
 
-Objects in `data/` are always effectively exported (they use a slightly different mechanism than `NAMESPACE` but the details are not important).
-This means that they must be documented.
-Documenting data is like documenting a function with a few minor differences.
-Instead of documenting the data directly, you document the name of the dataset and save it in `R/`.
-For example, the roxygen2 block used to document the `who` data in tidyr is saved in `R/data.R` and looks something like this:
+Los objetos en `data/` siempre se exportan efectivamente (utilizan un mecanismo ligeramente diferente al de `NAMESPACE` pero los detalles no son importantes).
+Esto significa que deben estar documentados.
+Documentar datos es como documentar una función con algunas diferencias menores.
+En lugar de documentar los datos directamente, documenta el nombre del conjunto de datos y lo guarda en `R/`.
+Por ejemplo, el bloque roxygen2 utilizado para documentar los datos `quién`(`who`) en tidyr se guarda en `R/data.R` y se parece a esto:
 
 ```{r, eval = FALSE}
-#' World Health Organization TB data
+#' Datos sobre tuberculosis de la Organización Mundial de la Salud
 #'
-#' A subset of data from the World Health Organization Global Tuberculosis
-#' Report ...
+#' Un subconjunto de datos de un Informe de la Tuberculosis Global de la 
+#' Organización Mundial de la Salud ...
 #'
 #' @format ## `who`
-#' A data frame with 7,240 rows and 60 columns:
+#' Un marco de datos con 7240 filas y 60 columnas:
 #' \describe{
 #'   \item{country}{Country name}
 #'   \item{iso2, iso3}{2 & 3 letter ISO country codes}
@@ -185,66 +187,66 @@ For example, the roxygen2 block used to document the `who` data in tidyr is save
 "who"
 ```
 
-There are two roxygen tags that are especially important for documenting datasets:
+Hay dos etiquetas roxygen que son especialmente importantes para documentar conjuntos de datos:
 
--   `@format` gives an overview of the dataset.
-    For data frames, you should include a definition list that describes each variable.
-    It's usually a good idea to describe variables' units here.
+-   `@format` ofrece una visión general del conjunto de datos.
+    Para los marcos de datos, debe incluir una lista de definiciones que describa cada variable.
+    Generalmente es una buena idea describir aquí las unidades de las variables.
 
--   `@source` provides details of where you got the data, often a URL.
+-   `@source` proporciona detalles de dónde obtuvo los datos, a menudo una URL.
 
-Never `@export` a data set.
+Nunca `@export` un conjunto de datos.
 
-### Non-ASCII characters in data {#sec-data-non-ascii}
+### Caracteres no ASCII en datos {#sec-data-non-ascii}
 
-The R objects you store in `data/*.rda` often contain strings, with the most common example being character columns in a data frame.
-If you can constrain these strings to only use ASCII characters, it certainly makes things simpler.
-But of course, there are plenty of legitimate reasons why package data might include non-ASCII characters.
+Los objetos R que almacena en `data/*.rda` a menudo contienen cadenas, siendo el ejemplo más común las columnas de caracteres en un marco de datos.
+Si puede restringir estas cadenas para que utilicen únicamente caracteres ASCII, ciertamente simplificará las cosas.
+Pero, por supuesto, existen muchas razones legítimas por las que los datos del paquete pueden incluir caracteres que no son ASCII.
 
-In that case, we recommend that you embrace the [UTF-8 Everywhere manifesto](http://utf8everywhere.org) and use the UTF-8 encoding.
-The `DESCRIPTION` file placed by `usethis::create_package()` always includes `Encoding: UTF-8`, so by default a devtools-produced package already advertises that it will use UTF-8.
+En ese caso, le recomendamos que adopte el [manifiesto UTF-8 Everywhere](http://utf8everywhere.org) y utilice la codificación UTF-8.
+El archivo `DESCRIPCIÓN` colocado por `usethis::create_package()` siempre incluye `Encoding: UTF-8`, por lo que, de forma predeterminada, un paquete producido por devtools ya anuncia que usará UTF-8.
 
-Making sure that the strings embedded in your package data have the intended encoding is something you accomplish in your data preparation code, i.e. in the R scripts below `data-raw/`.
-You can use `Encoding()` to learn the current encoding of the elements in a character vector and functions such as `enc2utf8()` or `iconv()` to convert between encodings.
+Asegurarse de que las cadenas incrustadas en los datos de su paquete tengan la codificación deseada es algo que debe lograr en su código de preparación de datos, es decir, en los scripts de R debajo de `data-raw/`.
+Puede usar `Encoding()` para conocer la codificación actual de los elementos en un vector de caracteres y funciones como `enc2utf8()` o `iconv()` para convertir entre codificaciones.
 
 ::: callout-warning
-## Submitting to CRAN
+## Envío a CRAN
 
-If you have UTF-8-encoded strings in your package data, you may see this from `R CMD check`:
+Si tiene cadenas codificadas en UTF-8 en los datos de su paquete, puede ver esto desde `R CMD check`:
 
 ```         
 -   checking data for non-ASCII characters ... NOTE
     Note: found 352 marked UTF-8 strings
 ```
 
-This `NOTE` is truly informational.
-It requires no action from you.
-As long as you actually intend to have UTF-8 strings in your package data, all is well.
+Esta `NOTA` es verdaderamente informativa.
+No requiere ninguna acción por su parte.
+Siempre que realmente desee tener cadenas UTF-8 en los datos de su paquete, todo está bien.
 
-Ironically, this `NOTE` is actually suppressed by `R CMD check --as-cran`, despite the fact that this note does appear in the check results once a package is on CRAN (which implies that CRAN does not necessarily check with `--as-cran`).
-By default, `devtools::check()` sets the `--as-cran` flag and therefore does not transmit this `NOTE`.
-But you can surface it with `check(cran = FALSE, env_vars = c("_R_CHECK_PACKAGE_DATASETS_SUPPRESS_NOTES_" = "false"))`.
+Irónicamente, esta `NOTA` en realidad es suprimida por `R CMD check --as-cran`, a pesar de que esta nota aparece en los resultados de la verificación una vez que un paquete está en CRAN (lo que implica que CRAN no necesariamente verifica con `--as-cran`).
+De forma predeterminada, `devtools::check()` establece el indicador `--as-cran` y por lo tanto no transmite esta `NOTA`.
+Pero puedes sacarlo a la superficie con `check(cran = FALSE, env_vars = c("_R_CHECK_PACKAGE_DATASETS_SUPPRESS_NOTES_" = "false"))`.
 :::
 
 <!-- TODO: Offer some advice for those who have non-ASCII strings in their package and it is a surprise (so, it's not intentional). The best resource I have found so far for this is `tools:::.check_package_datasets()`. Perhaps devtools should get a function that does a ground-up implementation of such a search for non-ASCII strings. -->
 
 <!-- https://github.com/wch/r-source/blob/f6737799b169710006b040f72f9abc5e09180229/src/library/tools/R/QC.R#L4672 -->
 
-## Internal data {#sec-data-sysdata}
+## Datos internos {#sec-data-sysdata}
 
-Sometimes your package functions need access to pre-computed data.
-If you put these objects in `data/`, they'll also be available to package users, which is not appropriate.
-Sometimes the objects you need are small and simple enough that you can define them with `c()` or `data.frame()` in the code below `R/`, perhaps in `R/data.R`.
-Larger or more complicated objects should be stored in your package's internal data in `R/sysdata.rda`, so they are lazy-loaded on demand.
+A veces, las funciones de su paquete necesitan acceso a datos precalculados.
+Si coloca estos objetos en `data/`, también estarán disponibles para los usuarios del paquete, lo cual no es apropiado.
+A veces, los objetos que necesitas son lo suficientemente pequeños y simples como para poder definirlos con `c()` o `data.frame()` en el código debajo de `R/`, tal vez en `R/data.R`.
+Los objetos más grandes o más complicados deben almacenarse en los datos internos de su paquete en `R/sysdata.rda`, para que se carguen de forma diferida según demanda.
 
-Here are some examples of internal package data:
+A continuación se muestran algunos ejemplos de datos de paquetes internos:
 
--   Two colour-related packages, [munsell](https://github.com/cwickham/munsell) and [dichromat](https://cran.r-project.org/web/packages/dichromat/index.html), use `R/sysdata.rda` to store large tables of colour data.
--   [googledrive](https://github.com/tidyverse/googledrive) and [googlesheets4](https://github.com/tidyverse/googlesheets4) wrap the Google Drive and Google Sheets APIs, respectively. Both use `R/sysdata.rda` to store data derived from a so-called [Discovery Document](https://developers.google.com/discovery/v1/reference/apis) which "describes the surface of the API, how to access the API and how API requests and responses are structured".
+-   Dos paquetes relacionados con el color, [munsell](https://github.com/cwickham/munsell) y [dichromat](https://cran.r-project.org/web/packages/dichromat/index.html), utilice `R/sysdata.rda` para almacenar grandes tablas de datos de color.
+-   [googledrive](https://github.com/tidyverse/googledrive) y [googlesheets4](https://github.com/tidyverse/googlesheets4) envuelva las API de Google Drive y Google Sheets, respectivamente. Ambos usan `R/sysdata.rda` para almacenar datos derivados del llamado [Documento de descubrimiento](https://developers.google.com/discovery/v1/reference/apis) que "describe la superficie de la API, cómo acceder a la API y cómo se estructuran las solicitudes y respuestas de la API".
 
 <!-- Another example I noted: readr + data-raw/date-symbols.R + date_symbols -->
 
-The easiest way to create `R/sysdata.rda` is to use `usethis::use_data(internal = TRUE)`:
+La forma más sencilla de crear `R/sysdata.rda` es utilizar `usethis::use_data(internal = TRUE)`:
 
 ```{r, eval = FALSE}
 internal_this <- ...
@@ -253,57 +255,58 @@ internal_that <- ...
 usethis::use_data(internal_this, internal_that, internal = TRUE)
 ```
 
-Unlike `data/`, where you use one `.rda` file per exported data object, you store all of your internal data objects together in the single file `R/sysdata.rda`.
+A diferencia de `data/`, donde se utiliza un archivo `.rda` por objeto de datos exportado, se almacenan todos los objetos de datos internos juntos en un único archivo.
+`R/sysdata.rda`.
 
-Let's imagine we are working on a package named "pkg".
-The snippet above creates `R/sysdata.rda` inside the source of the pkg package.
-This makes the objects `internal_this` and `internal_that` available for use inside of the functions defined below `R/` and in the tests.
-During interactive development, `internal_this` and `internal_that` are available after a call to `devtools::load_all()`, just like an internal function.
+Imaginemos que estamos trabajando en un paquete llamado "pkg".
+El fragmento anterior crea `R/sysdata.rda` dentro del código fuente del paquete pkg.
+Esto hace que los objetos `internal_this` e `internal_that` estén disponibles para su uso dentro de las funciones definidas debajo de `R/` y en las pruebas.
+Durante el desarrollo interactivo, `internal_this` e `internal_that` están disponibles después de una llamada a `devtools::load_all()`, como una función interna.
 
-Much of the advice given for external data holds for internal data as well:
+Gran parte de los consejos dados para los datos externos también se aplican a los datos internos:
 
--   It's a good idea to store the code that generates your individual internal data objects, as well as the `use_data()` call that writes all of them into `R/sysdata.rda`. This is workflow code that belongs below `data-raw/`, not below `R/`.
--   `usethis::use_data_raw()` can be used to initiate the use of `data-raw/` or to initiate a new `.R` script there.
--   If your package is uncomfortably large, experiment with different values of `compress` in `use_data(internal = TRUE)`.
+-   Es una buena idea almacenar el código que genera sus objetos de datos internos individuales, así como la llamada `use_data()` que los escribe todos en `R/sysdata.rda`. Este es el código de flujo de trabajo que pertenece debajo de `data-raw/`, no debajo de `R/`.
+-   `usethis::use_data_raw()` se puede utilizar para iniciar el uso de `data-raw/` o para iniciar un nuevo script `.R` allí.
+-   Si su paquete es demasiado grande, experimente con diferentes valores de `compress` en `use_data(internal = TRUE)`.
 
-There are also key distinctions, where the handling of internal and external data differs:
+También existen distinciones clave en las que difiere el manejo de datos internos y externos:
 
--   Objects in `R/sysdata.rda` are not exported (they shouldn't be), so they don't need to be documented.
--   The `LazyData` field in the package `DESCRIPTION` has no impact on `R/sysdata.rda` but is strictly about the exported data below `data/`. Internal data is always lazy-loaded.
+-   Los objetos en `R/sysdata.rda` no se exportan (no deberían exportarse), por lo que no es necesario documentarlos.
+-   El campo `LazyData` en el paquete `DESCRIPTION` no tiene ningún impacto en `R/sysdata.rda` pero se refiere estrictamente a los datos exportados debajo de `data/`. Los datos internos siempre se cargan de forma diferida.
 
-## Raw data file {#sec-data-extdata}
+## Archivo de datos sin procesar {#sec-data-extdata}
 
-If you want to show examples of loading/parsing raw data, put the original files in `inst/extdata/`.
-When the package is installed, all files (and folders) in `inst/` are moved up one level to the top-level directory, which is why they can't have names that conflict with standard parts of an R package, like `R/` or `DESCRIPTION` .
-The files below `inst/extdata/` in the source package will be located below `extdata/` in the corresponding installed package.
-You may want to revisit @fig-package-files to review the file structure for different package states.
+Si desea mostrar ejemplos de carga/análisis de datos sin procesar, coloque los archivos originales en `inst/extdata/`.
+Cuando se instala el paquete, todos los archivos (y carpetas) en `inst/` se mueven hacia arriba un nivel hasta el directorio de nivel superior, por lo que no pueden tener nombres que entren en conflicto con las partes estándar de un paquete R, como `R/` o `DESCRIPTION` .
+Los archivos debajo de `inst/extdata/` en el paquete fuente se ubicarán debajo de `extdata/` en el paquete instalado correspondiente.
+Es posible que desee volver a visitar @fig-package-files para revisar la estructura de archivos para los diferentes estados del paquete.
 
-The main reason to include such files is when a key part of a package's functionality is to act on an external file.
-Examples of such packages include:
+La razón principal para incluir dichos archivos es cuando una parte clave de la funcionalidad de un paquete es actuar sobre un archivo externo.
+Ejemplos de dichos paquetes incluyen:
 
--   readr, which reads rectangular data out of delimited files
--   readxl, which reads rectangular data out of Excel spreadsheets
--   xml2, which can read XML and HTML from file
--   archive, which can read archive files, such as tar or ZIP
+-   readr, que lee datos rectangulares de archivos delimitados
+-   readxl, que lee datos rectangulares de hojas de cálculo de Excel
+-   xml2, que puede leer XML y HTML desde un archivo
+-   archive, que puede leer archivos comprimidos, como tar o ZIP
 
-All of these packages have one or more example files below `inst/extdata/`, which are useful for writing documentation and tests.
+Todos estos paquetes tienen uno o más archivos de ejemplo debajo de `inst/extdata/`, que son útiles para escribir documentación y pruebas.
 
-It is also common for data packages to provide, e.g., a csv version of the package data that is also provided as an R object.
-Examples of such packages include:
+También es común que los paquetes de datos proporcionen, por ejemplo, una versión csv de los datos del paquete que también se proporciona como un objeto R.
+Ejemplos de dichos paquetes incluyen:
 
--   palmerpenguins: `penguins` and `penguins_raw` are also represented as `extdata/penguins.csv` and `extdata/penguins_raw.csv`
--   gapminder: `gapminder`, `continent_colors`, and `country_colors` are also represented as `extdata/gapminder.tsv`, `extdata/continent-colors.tsv`, and `extdata/country-colors.tsv`
+-   palmerpenguins: `penguins` y `penguins_raw` también se representan como `extdata/penguins.csv` y `extdata/penguins_raw.csv`
+-   gapminder: `gapminder`, `continent_colors`, y `country_colors` también se representan como `extdata/gapminder.tsv`, `extdata/continent-colors.tsv`, y `extdata/country-colors.tsv`
 
-This has two payoffs: First, it gives teachers and other expositors more to work with once they decide to use a specific dataset.
-If you've started teaching R with `palmerpenguins::penguins` or `gapminder::gapminder` and you want to introduce data import, it can be helpful to students if their first use of a new command, like `readr::read_csv()` or `read.csv()`, is applied to a familiar dataset.
-They have pre-existing intuition about the expected result.
-Finally, if package data evolves over time, having a csv or other plain text representation in the source package can make it easier to see what's changed.
+Esto tiene dos beneficios: en primer lugar, les da a los profesores y otros expositores más con qué trabajar una vez que deciden utilizar un conjunto de datos específico.
+Si has empezado a enseñar R con `palmerpenguins::penguins` o `gapminder::gapminder` y desea introducir la importación de datos, puede ser útil para los estudiantes si utilizan por primera vez un comando nuevo, como `readr::read_csv()` o `read.csv()`, se aplica a un conjunto de datos familiar.
+Tienen una intuición preexistente sobre el resultado esperado.
+Finalmente, si los datos del paquete evolucionan con el tiempo, tener un csv u otra representación de texto sin formato en el paquete fuente puede hacer que sea más fácil ver qué ha cambiado.
 
-### Filepaths {#sec-data-system-file}
+### Rutas de archivos {#sec-data-system-file}
 
-The path to a package file found below `extdata/` clearly depends on the local environment, i.e. it depends on where installed packages live on that machine.
-The base function `system.file()` can report the full path to files distributed with an R package.
-It can also be useful to *list* the files distributed with an R package.
+La ruta a un archivo de paquete que se encuentra debajo de `extdata/` depende claramente del entorno local, es decir, depende de dónde se encuentran los paquetes instalados en esa máquina.
+La función base `system.file()` puede informar la ruta completa a los archivos distribuidos con un paquete R.
+También puede resultar útil *enumerar* los archivos distribuidos con un paquete R.
 
 ```{r}
 system.file("extdata", package = "readxl") |> list.files()
@@ -311,28 +314,28 @@ system.file("extdata", package = "readxl") |> list.files()
 system.file("extdata", "clippy.xlsx", package = "readxl")
 ```
 
-These filepaths present yet another workflow dilemma: When you're developing your package, you engage with it in its source form, but your users engage with it as an installed package.
-Happily, devtools provides a shim for `base::system.file()` that is activated by `load_all()`.
-This makes interactive calls to `system.file()` from the global environment and calls from within the package namespace "just work".
+Estas rutas de archivos presentan otro dilema en el flujo de trabajo: cuando estás desarrollando tu paquete, interactúas con él en su formato fuente, pero tus usuarios interactúan con él como un paquete instalado.
+Afortunadamente, devtools proporciona una corrección para `base::system.file()` que se activa mediante `load_all()`.
+Esto realiza llamadas interactivas a `system.file()` desde el entorno global y las llamadas desde dentro del espacio de nombres del paquete "simplemente funcionan".
 
-Be aware that, by default, `system.file()` returns the empty string, not an error, for a file that does not exist.
+Tenga en cuenta que, de forma predeterminada, `system.file()` devuelve la cadena vacía, no un error, para un archivo que no existe.
 
 ```{r}
 system.file("extdata", "I_do_not_exist.csv", package = "readr")
 ```
 
-If you want to force a failure in this case, specify `mustWork = TRUE`:
+Si desea forzar un error en este caso, especifique `mustWork = TRUE`:
 
 ```{r error = TRUE}
 system.file("extdata", "I_do_not_exist.csv", package = "readr", mustWork = TRUE)
 ```
 
-The [fs package](https://fs.r-lib.org) offers `fs::path_package()`.
-This is essentially `base::system.file()` with a few added features that we find advantageous, whenever it's reasonable to take a dependency on fs:
+El [paquete fs](https://fs.r-lib.org) ofrece `fs::path_package()`.
+Esto es esencialmente `base::system.file()` con algunas características adicionales que consideramos ventajosas, siempre que sea razonable depender de fs:
 
--   It errors if the filepath does not exist.
--   It throws distinct errors when the package does not exist vs. when the file does not exist within the package.
--   During development, it works for interactive calls, calls from within the loaded package's namespace, and even for calls originating in dependencies.
+-   Se produce un error si la ruta del archivo no existe.
+-   Genera errores distintos cuando el paquete no existe versus cuando el archivo no existe dentro del paquete.
+-   Durante el desarrollo, funciona para llamadas interactivas, llamadas desde dentro del espacio de nombres del paquete cargado e incluso para llamadas que se originan en dependencias.
 
 ```{r error = TRUE}
 fs::path_package("extdata", package = "idonotexist")
@@ -362,11 +365,11 @@ A common theme you've now encountered in multiple places is that devtools and re
 -->
 ````
 
-### `pkg_example()` path helpers {#sec-data-example-path-helper}
+### `pkg_example()` ayudantes de camino {#sec-data-example-path-helper}
 
-We like to offer convenience functions that make example files easy to access.
-These are just user-friendly wrappers around `system.file()` or `fs::path_package()`, but can have added features, such as the ability to list the example files.
-Here's the definition and some usage of `readxl::readxl_example()`:
+Nos gusta ofrecer funciones convenientes que faciliten el acceso a los archivos de ejemplo.
+Estos son simplemente envoltorios fáciles de usar alrededor de `system.file()` o `fs::path_package()`, pero pueden tener características adicionales, como la capacidad de enumerar los archivos de ejemplo.
+Aquí está la definición y algunos usos de `readxl::readxl_example()`:
 
 ```{r, eval = FALSE}
 readxl_example <- function(path = NULL) {
@@ -384,32 +387,32 @@ readxl::readxl_example()
 readxl::readxl_example("clippy.xlsx")
 ```
 
-## Internal state {#sec-data-state}
+## Estado interno {#sec-data-state}
 
-Sometimes there's information that multiple functions from your package need to access that:
+A veces hay información a la que varias funciones de su paquete necesitan acceder:
 
--   Must be determined at load time (or even later), not at build time. It might even be dynamic.
--   Doesn't make sense to pass in via a function argument. Often it's some obscure detail that a user shouldn't even know about.
+-   Debe determinarse en el momento de la carga (o incluso más tarde), no en el momento de la compilación. Incluso podría ser dinámico.
+-   No tiene sentido pasarlo mediante un argumento de función. A menudo se trata de algún detalle oscuro que el usuario ni siquiera debería conocer.
 
-A great way to manage such data is to use an *environment*.[^data-1]
-This environment must be created at build time, but you can populate it with values after the package has been loaded and update those values over the course of an R session.
-This works because environments have reference semantics (whereas more pedestrian R objects, such as atomic vectors, lists, or data frames have value semantics).
+Una excelente manera de administrar dichos datos es utilizar un *entorno*.[^data-1]
+Este entorno debe crearse en el momento de la compilación, pero puede completarlo con valores después de que se haya cargado el paquete y actualizar esos valores en el transcurso de una sesión de R.
+Esto funciona porque los entornos tienen una semántica de referencia (mientras que los objetos R más comunes, como vectores atómicos, listas o marcos de datos, tienen una semántica de valores).
 
-[^data-1]: If you don't know much about R environments and what makes them special, a great resource is the [Environments chapter](https://adv-r.hadley.nz/environments.html) of Advanced R.
+[^data-1]: Si no sabe mucho sobre los entornos R y lo que los hace especiales, un gran recurso es el [capítulo Entornos](https://adv-r.hadley.nz/environments.html) de R Avanzado.
 
-Consider a package that can store the user's favorite letters or numbers.
-You might start out with code like this in a file below `R/`:
+Considere un paquete que pueda almacenar las letras o números favoritos del usuario.
+Podrías comenzar con un código como este en el archivo siguiente `R/`:
 
 ```{r eval = FALSE}
 favorite_letters <- letters[1:3]
 
-#' Report my favorite letters
+#' Reportar mis letras favoritas
 #' @export
 mfl <- function() {
   favorite_letters
 }
 
-#' Change my favorite letters
+#' Cambiar mis letras favoritas
 #' @export
 set_mfl <- function(l = letters[24:26]) {
   old <- favorite_letters
@@ -418,13 +421,13 @@ set_mfl <- function(l = letters[24:26]) {
 }
 ```
 
-`favorite_letters` is initialized to ("a", "b", "c") when the package is built.
-The user can then inspect `favorite_letters` with `mfl()`, at which point they'll probably want to register *their* favorite letters with `set_mfl()`.
-Note that we've used the super assignment operator `<<-` in `set_mfl()` in the hope that this will reach up into the package environment and modify the internal data object `favorite_letters`.
-But a call to `set_mfl()` fails like so:[^data-2]
+`favorite_letters` se inicializa en ("a", "b", "c") cuando se crea el paquete.
+Luego, el usuario puede inspeccionar `favorite_letters` con `mfl()`, momento en el cual probablemente querrá registrar *sus* letras favoritas con `set_mfl()`.
+Tenga en cuenta que hemos utilizado el operador de superasignación `<<-` en `set_mfl()` con la esperanza de que llegue al entorno del paquete y modifique el objeto de datos interno `favorite_letters`.
+Pero una llamada a `set_mfl()` falla así:[^data-2]
 
-[^data-2]: This example will execute without error if you define `favorite_letters`, `mfl()`, and `set_mfl()` in the global workspace and call `set_mfl()` in the console.
-    But this code will fail once `favorite_letters`, `mfl()`, and `set_mfl()` are defined *inside a package*.
+[^data-2]: Este ejemplo se ejecutará sin errores si define `favorite_letters`, `mfl()` y `set_mfl()` en el espacio de trabajo global y llama a `set_mfl()` en la consola.
+    Pero este código fallará una vez que `favorite_letters`, `mfl()` y `set_mfl()` estén definidos *dentro de un paquete*.
 
 ```{r, eval = FALSE}
 mfl()
@@ -435,24 +438,24 @@ set_mfl(c("j", "f", "b"))
 #>   cannot change value of locked binding for 'favorite_letters'
 ```
 
-Because `favorite_letters` is a regular character vector, modification requires making a copy and rebinding the name `favorite_letters` to this new value.
-And that is what's disallowed: you can't change the binding for objects in the package namespace (well, at least not without trying harder than this).
-Defining `favorite_letters` this way only works if you will never need to modify it.
+Debido a que `favorite_letters` es un vector de caracteres normal, la modificación requiere hacer una copia y volver a vincular el nombre `favorite_letters` a este nuevo valor.
+Y eso es lo que no está permitido: no se puede cambiar el enlace de los objetos en el espacio de nombres del paquete (bueno, al menos no sin esforzarse más).
+Definir `favorite_letters` de esta manera solo funciona si nunca necesitarás modificarlo.
 
-However, if we maintain state within an internal package environment, we **can** modify objects contained in the environment (and even add completely new objects).
-Here's an alternative implementation that uses an internal environment named "the".
+Sin embargo, si mantenemos el estado dentro de un entorno de paquete interno, **podemos** modificar los objetos contenidos en el entorno (e incluso agregar objetos completamente nuevos).
+Aquí hay una implementación alternativa que utiliza un entorno interno llamado "el".
 
 ```{r, eval = FALSE}
 the <- new.env(parent = emptyenv())
 the$favorite_letters <- letters[1:3]
 
-#' Report my favorite letters
+#' Reportar mis letras favoritas
 #' @export
 mfl2 <- function() {
   the$favorite_letters
 }
 
-#' Change my favorite letters
+#' Cambiar mis letras favoritas
 #' @export
 set_mfl2 <- function(l = letters[24:26]) {
   old <- the$favorite_letters
@@ -461,7 +464,7 @@ set_mfl2 <- function(l = letters[24:26]) {
 }
 ```
 
-Now a user *can* register their favorite letters:
+Ahora un usuario *puede* registrar sus letras favoritas:
 
 ```{r, eval = FALSE}
 mfl2()
@@ -473,67 +476,69 @@ mfl2()
 #> [1] "j" "f" "b"
 ```
 
-Note that this new value for `the$favorite_letters` persists only for the remainder of the current R session (or until the user calls `set_mfl2()` again).
-More precisely, the altered state persists only until the next time the package is loaded (including via `load_all()`).
-At load time, the environment `the` is reset to an environment containing exactly one object, named `favorite_letters`, with value ("a", "b", "c").
-It's like the movie Groundhog Day.
-(We'll discuss more persistent package- and user-specific data in the next section.)
+Tenga en cuenta que este nuevo valor para `the$favorite_letters` persiste solo durante el resto de la sesión actual de R (o hasta que el usuario llame a `set_mfl2()` nuevamente).
+Más precisamente, el estado alterado persiste sólo hasta la próxima vez que se carga el paquete (incluso a través de `load_all()`).
+En el momento de la carga, el entorno `the` se restablece a un entorno que contiene exactamente un objeto, llamado `favorite_letters`, con valor ("a", "b", "c").
+Es como la película El día de la marmota.
+(Discutiremos datos más persistentes específicos de paquetes y usuarios en la siguiente sección).
 
-Jim Hester introduced our group to the nifty idea of using "the" as the name of an internal package environment.
-This lets you refer to the objects inside in a very natural way, such as `the$token`, meaning "*the* token".
-It is also important to specify `parent = emptyenv()` when defining an internal environment, as you generally don't want the environment to inherit from any other (nonempty) environment.
+Jim Hester presentó a nuestro grupo la ingeniosa idea de utilizar "el" como nombre de un entorno de paquete interno.
+Esto le permite referirse a los objetos internos de una manera muy natural, como `the$token`, que significa "*the* token".
+También es importante especificar `parent = vacíoenv()` al definir un entorno interno, ya que generalmente no desea que el entorno herede de ningún otro entorno (no vacío).
 
-As seen in the example above, the definition of the environment should happen as a top-level assignment in a file below `R/`.
-(In particular, this is a legitimate reason to define a non-function at the top-level of a package; see section @sec-code-when-executed for why this should be rare.) As for where to place this definition, there are two considerations:
+Como se ve en el ejemplo anterior, la definición del entorno debe realizarse como una asignación de nivel superior en un archivo debajo de `R/`.
+(En particular, esta es una razón legítima para definir una no función en el nivel superior de un paquete; consulte la sección @sec-code-when-executed para saber por qué esto debería ser poco común).
+En cuanto a dónde colocar esta definición, hay dos consideraciones:
 
--   Define it before you use it.
-    If other top-level calls refer to the environment, the definition must come first when the package code is being executed at build time.
-    This is why `R/aaa.R` is a common and safe choice.
+-   Defínelo antes de usarlo.
+    Si otras llamadas de nivel superior se refieren al entorno, la definición debe aparecer primero cuando el código del paquete se ejecuta en el momento de la compilación.
+    Es por eso que `R/aaa.R` es una opción común y segura.
 
--   Make it easy to find later when you're working on related functionality.
-    If an environment is only used by one family of functions, define it there.
-    If environment usage is sprinkled around the package, define it in a file with package-wide connotations.
+-   Facilite su búsqueda más adelante cuando esté trabajando en funciones relacionadas.
+    Si un entorno solo es utilizado por una familia de funciones, defínalo allí.
+    Si el uso del entorno se distribuye alrededor del paquete, defínalo en un archivo con connotaciones para todo el paquete.
 
 <!-- Examples where we name such an environment "the": rcmdcheck, itdepends, cpp11, gmailr, rlang, covr -->
 
-Here are some examples of how packages use an internal environment:
+A continuación se muestran algunos ejemplos de cómo los paquetes utilizan un entorno interno:
 
--   googledrive: Various functions need to know the file ID for the current user's home directory on Google Drive. This requires an API call (a relatively expensive and error-prone operation) which yields an eye-watering string of \~40 seemingly random characters that only a computer can love. It would be inhumane to expect a user to know this or to pass it into every function. It would also be inefficient to rediscover the ID repeatedly. Instead, googledrive determines the ID upon first need, then caches it for later use.
--   usethis: Most functions need to know the active project, i.e. which directory to target for file modification. This is often the current working directory, but that is not an invariant usethis can rely upon. One potential design is to make it possible to specify the target project as an argument of every function in usethis. But this would create significant clutter in the user interface, as well as internal fussiness. Instead, we determine the active project upon first need, cache it, and provide methods for (re)setting it.
+-   googledrive: Varias funciones necesitan conocer el ID del archivo del directorio de inicio del usuario actual en Google Drive. Esto requiere una llamada API (una operación relativamente costosa y propensa a errores) que produce una cadena deslumbrante de \~40 caracteres aparentemente aleatorios que solo una computadora puede amar. Sería inhumano esperar que un usuario sepa esto o lo pase a cada función. También sería ineficiente redescubrir la identificación repetidamente. En cambio, Googledrive determina el ID cuando lo necesita por primera vez y luego lo almacena en caché para su uso posterior.
+-   usethis: La mayoría de las funciones necesitan conocer el proyecto activo, es decir, a qué directorio apuntar para modificar el archivo. Este suele ser el directorio de trabajo actual, pero no es un uso invariable en el que pueda confiar. Un diseño potencial es hacer posible especificar el proyecto de destino como argumento de cada función en uso. Pero esto crearía un desorden significativo en la interfaz de usuario, así como inquietud interna. En cambio, determinamos el proyecto activo en la primera necesidad, lo almacenamos en caché y proporcionamos métodos para (re)configurarlo.
 
-The blog post [Package-Wide Variables/Cache in R Packages](https://trestletech.com/2013/04/package-wide-variablescache-in-r-package/) gives a more detailed development of this technique.
+La publicación del blog [Variables de todo el paquete/Caché en paquetes R](https://trestletech.com/2013/04/package-wide-variablescache-in-r-package/) ofrece un desarrollo más detallado de esta técnica.
 
 <!-- I've always felt like Hermione's beaded bag / Bag of Holding is a great analogy for this environment technique. As long as you've got this bag, you can keep whatever you like in it. Should I try to develop this? -->
 
-## Persistent user data {#sec-data-persistent}
+## Datos de usuario persistentes {#sec-data-persistent}
 
-Sometimes there is data that your package obtains, on behalf of itself or the user, that should persist *even across R sessions*.
-This is our last and probably least common form of storing package data.
-For the data to persist this way, it has to be stored on disk and the big question is where to write such a file.
+A veces hay datos que obtiene su paquete, en nombre de sí mismo o del usuario, que deberían persistir *incluso entre sesiones de R*.
+Esta es nuestra última forma y probablemente la menos común de almacenar datos de paquetes.
+Para que los datos persistan de esta manera, deben almacenarse en el disco y la gran pregunta es dónde escribir dicho archivo.
 
-This problem is hardly unique to R.
-Many applications need to leave notes to themselves.
-It is best to comply with external conventions, which in this case means the [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html).
-You need to use the official locations for persistent file storage, because it's the responsible and courteous thing to do and also to comply with CRAN policies.
+Este problema no es exclusivo de R.
+Muchas aplicaciones necesitan dejar notas para sí mismas.
+Es mejor cumplir con convenciones externas, que en este caso significa la [Especificación del directorio base XDG](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html).
+Debe utilizar las ubicaciones oficiales para el almacenamiento persistente de archivos, porque es algo responsable y cortés y también para cumplir con las políticas de CRAN.
 
 ::: callout-warning
-## Submitting to CRAN
+## Envío a CRAN
 
-You can't just write persistent data into the user's home directory.
-Here's a relevant excerpt from the CRAN policy at the time of writing:
+No se pueden simplemente escribir datos persistentes en el directorio de inicio del usuario.
+Aquí hay un extracto relevante de la política de CRAN al momento de escribir este artículo:
 
-> Packages should not write in the user's home filespace (including clipboards), nor anywhere else on the file system apart from the R session's temporary directory ....
+> Los paquetes no deben escribirse en el espacio de archivos de inicio del usuario (incluidos los portapapeles) ni en ningún otro lugar del sistema de archivos aparte del directorio temporal de la sesión de R.
+> ...
 >
-> For R version 4.0 or later (hence a version dependency is required or only conditional use is possible), packages may store user-specific data, configuration and cache files in their respective user directories obtained from `tools::R_user_dir()`, provided that by \[sic\] default sizes are kept as small as possible and the contents are actively managed (including removing outdated material).
+> Para R versión 4.0 o posterior (por lo tanto, se requiere una dependencia de versión o solo es posible un uso condicional), los paquetes pueden almacenar datos específicos del usuario, archivos de configuración y caché en sus respectivos directorios de usuario obtenidos de `tools::R_user_dir()`, siempre que que por \[sic\] los tamaños predeterminados se mantengan lo más pequeños posible y los contenidos se administren activamente (incluida la eliminación de material obsoleto).
 :::
 
-The primary function you should use to derive acceptable locations for user data is `tools::R_user_dir()`[^data-3].
-Here are some examples of the generated filepaths:
+La función principal que debe utilizar para derivar ubicaciones aceptables para los datos del usuario es `tools::R_user_dir()`[^data-3].
+Aquí hay algunos ejemplos de las rutas de archivos generadas.:
 
-[^data-3]: Note that `tools::R_user_dir()` first appeared in R 4.0.
-    If you need to support older versions of R, then you should use the [rappdirs package](https://rappdirs.r-lib.org), which is a port of the Python appdirs module, and which follows the [tidyverse policy regarding R version support](https://www.tidyverse.org/blog/2019/04/r-version-support/), meaning the minimum supported R version is advancing and will eventually slide past R 4.0.
-    rappdirs produces different filepaths than `tools::R_user_dir()`.
-    However, both tools implement something that is consistent with the XDG spec, just with different opinions about how to create filepaths beyond what the spec dictates.
+[^data-3]: Tenga en cuenta que `tools::R_user_dir()` apareció por primera vez en R 4.0.
+    Si necesita admitir versiones anteriores de R, debe usar el \[paquete rapppdirs\] (https://rappdirs.r-lib.org), que es una adaptación del módulo appdirs de Python y que sigue la [política tidyverse con respecto al soporte de la versión R](https://www.tidyverse.org/blog/2019/04/r-version-support/), lo que significa que la versión R mínima admitida está avanzando y eventualmente pasará de R 4.0.
+    rappdirs produce rutas de archivo diferentes a las de `tools::R_user_dir()`.
+    Sin embargo, ambas herramientas implementan algo que es consistente con la especificación XDG, solo que con diferentes opiniones sobre cómo crear rutas de archivos más allá de lo que dicta la especificación.
 
 ```{r}
 tools::R_user_dir("pkg", which = "data")
@@ -541,10 +546,10 @@ tools::R_user_dir("pkg", which = "config")
 tools::R_user_dir("pkg", which = "cache")
 ```
 
-One last thing you should consider with respect to persistent data is: does this data *really* need to persist?
-Do you *really* need to be the one responsible for storing it?
+Una última cosa que debe considerar con respecto a los datos persistentes es: ¿estos datos *realmente* necesitan persistir?
+¿*Realmente* necesitas ser el responsable de almacenarlo?
 
-If the data is potentially sensitive, such as user credentials, it is recommended to obtain the user's consent to store it, i.e. to require interactive consent when initiating the cache.
-Also consider that the user's operating system or command line tools might provide a means of secure storage that is superior to any DIY solution that you might implement.
-The packages [keyring](https://cran.r-project.org/package=keyring), [gitcreds](https://gitcreds.r-lib.org), and [credentials](https://docs.ropensci.org/credentials/) are examples of packages that tap into externally-provided tooling.
-Before embarking on any creative solution for storing secrets, consider that your effort is probably better spent integrating with an established tool.
+Si los datos son potencialmente confidenciales, como las credenciales del usuario, se recomienda obtener el consentimiento del usuario para almacenarlos, es decir, requerir consentimiento interactivo al iniciar el caché.
+Considere también que el sistema operativo del usuario o las herramientas de línea de comandos podrían proporcionar un medio de almacenamiento seguro superior a cualquier solución de bricolaje que pueda implementar.
+Los paquetes [keyring](https://cran.r-project.org/package=keyring), [gitcreds](https://gitcreds.r-lib.org), y [credentials](https://docs.ropensci.org/credentials/) son ejemplos de paquetes que aprovechan herramientas proporcionadas externamente.
+Antes de embarcarse en cualquier solución creativa para almacenar secretos, considere que probablemente sea mejor invertir su esfuerzo en integrarlo con una herramienta establecida.
