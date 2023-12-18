@@ -60,7 +60,7 @@ book:
     - data.qmd
     - misc.qmd
   
-  - part: Package metadata
+  - part: Metadatos del paquete
     chapters:
     - description.qmd
     - dependencies-mindset-background.qmd

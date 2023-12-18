@@ -4,32 +4,32 @@
 source("common.R")
 ```
 
-`DESCRIPTION` and `NAMESPACE` are two important files that provide metadata about your package.
-The `DESCRIPTION` file provides overall metadata about the package, such as the package name and which other packages it depends on.
-The `NAMESPACE` file specifies which functions your package makes available for others to use and, optionally, imports functions from other packages.
+`DESCRIPTION` y `NAMESPACE` Hay dos archivos importantes que proporcionan metadatos sobre su paquete.
+El archivo `DESCRIPTION` proporciona metadatos generales sobre el paquete, como el nombre del paquete y de qué otros paquetes depende.
+El archivo `NAMESPACE` especifica qué funciones su paquete pone a disposición de otros para que las utilicen y, opcionalmente, importa funciones de otros paquetes.
 
-In this chapter, you'll learn about the most important fields found in `DESCRIPTION`.
-The next two chapters cover the topic of package dependencies, which is where the importance of the `NAMESPACE` file will become clear.
-First, in @sec-dependencies-mindset-background, we discuss the costs and benefits of dependencies and also provide the relevant technical context around how R finds objects.
-In @sec-dependencies-in-practice, we explain the practical moves necessary to use your dependencies within your package.
-The metadata part of the book concludes with @sec-license, which covers licensing.
+En este capítulo, aprenderá sobre los campos más importantes que se encuentran en `DESCRIPTION`.
+Los dos capítulos siguientes cubren el tema de las dependencias de paquetes, que es donde quedará clara la importancia del archivo `NAMESPACE`.
+Primero, en @sec-dependencies-mindset-background, analizamos los costos y beneficios de las dependencias y también proporcionamos el contexto técnico relevante sobre cómo R encuentra objetos.
+En @sec-dependencies-in-practice, explicamos los movimientos prácticos necesarios para usar sus dependencias dentro de su paquete.
+La parte de metadatos del libro concluye con @sec-license, que cubre las licencias.
 
-## The `DESCRIPTION` file
+## El archivo `DESCRIPTION`
 
-The job of the `DESCRIPTION` file is to store important metadata about your package.
-When you first start writing packages, you'll mostly use these metadata to record what packages are needed to run your package.
-However, as time goes by, other aspects of the metadata file will become useful to you, such as revealing what your package does (via the `Title` and `Description`) and whom to contact (you!) if there are any problems.
+El trabajo del archivo `DESCRIPTION` es almacenar metadatos importantes sobre su paquete.
+Cuando comience a escribir paquetes por primera vez, utilizará principalmente estos metadatos para registrar qué paquetes se necesitan para ejecutar su paquete.
+Sin embargo, a medida que pasa el tiempo, otros aspectos del archivo de metadatos le resultarán útiles, como revelar qué hace su paquete (a través del `Título`(`Title`) y la `Descripción`,`Description`) y con quién contactar (¡usted!) si hay algún problema.
+.
 
-Every package must have a `DESCRIPTION`.
-In fact, it's the defining feature of a package (RStudio and devtools consider any directory containing `DESCRIPTION` to be a package)[^description-1].
-To get you started, `usethis::create_package("mypackage")` automatically adds a bare-bones `DESCRIPTION` file.
-This will allow you to start writing the package without having to worry about the metadata until you need to.
-This minimal `DESCRIPTION` will vary a bit depending on your settings, but should look something like this:
+Cada paquete debe tener una `DESCRIPTION`.
+De hecho, es la característica que define un paquete (RStudio y devtools consideran que cualquier directorio que contenga `DESCRIPTION` es un paquete)[^description-1].
+Para comenzar, `usethis::create_package("mypackage")` agrega automáticamente un archivo básico `DESCRIPTION`. Esto le permitirá comenzar a escribir el paquete sin tener que preocuparse por los metadatos hasta que sea necesario.
+Esta descripción mínima variará un poco dependiendo de su configuración, pero debería verse así:
 
-[^description-1]: The relationship between "has a `DESCRIPTION` file" and "is a package" is not quite this clear-cut.
-    Many non-package projects use a `DESCRIPTION` file to declare their dependencies, i.e. which packages they rely on.
-    In fact, the project for this book does exactly this!
-    This off-label use of `DESCRIPTION` makes it easy to piggy-back on package development tooling to install all the packages necessary to work with a non-package project.
+[^description-1]: La relación entre "tiene un archivo `DESCRIPTION`" y "es un paquete" no es tan clara.
+    Muchos proyectos que no son paquetes usan un archivo `DESCRIPTION` para declarar sus dependencias, es decir, en qué paquetes dependen.
+    De hecho, ¡el proyecto de este libro hace exactamente eso!
+    Este uso no autorizado de `DESCRIPTION` facilita el uso de herramientas de desarrollo de paquetes para instalar todos los paquetes necesarios para trabajar con un proyecto que no es un paquete.
 
 ```{r}
 #| include: FALSE
@@ -46,34 +46,34 @@ withr::with_options(
 ```{cat, code = readLines(fs::path(temp_pkg, "DESCRIPTION")), class.source = "yaml"}
 ```
 
-If you create a lot of packages, you can customize the default content of new `DESCRIPTION` files by setting the global option `usethis.description` to a named list.
-You can pre-configure your preferred name, email, license, etc.
-See the [article on usethis setup](https://usethis.r-lib.org/articles/articles/usethis-setup.html) for more details.
+Si crea muchos paquetes, puede personalizar el contenido predeterminado de los nuevos archivos `DESCRIPTION` configurando la opción global `usethis.description` en una lista con nombre.
+Puede preconfigurar su nombre preferido, correo electrónico, licencia, etc.
+Consulte el [artículo sobre cómo usar esta configuración](https://usethis.r-lib.org/articles/articles/usethis-setup.html) para obtener más detalles.
 
-`DESCRIPTION` uses a simple file format called DCF, the Debian control format.
-You can see most of the structure in the examples in this chapter.
-Each line consists of a **field** name and a value, separated by a colon.
-When values span multiple lines, they need to be indented:
+`DESCRIPTION` utiliza un formato de archivo simple llamado DCF, el formato de control de Debian.
+Puede ver la mayor parte de la estructura en los ejemplos de este capítulo.
+Cada línea consta de un nombre de **campo** y un valor, separados por dos puntos.
+Cuando los valores abarcan varias líneas, es necesario sangrarlos:
 
 ``` yaml
-Description: The description of a package usually spans multiple lines.
-    The second and subsequent lines should be indented, usually with four
-    spaces.
+Description: La descripción de un paquete suele abarcar varias líneas.
+    La segunda línea y las siguientes deben tener sangría, generalmente con cuatro
+    espacios.
 ```
 
-If you ever need to work with a `DESCRIPTION` file programmatically, take a look at the [desc package](https://desc.r-lib.org/), which usethis uses heavily under-the-hood.
+Si alguna vez necesita trabajar con un archivo `DESCRIPTION` mediante programación, eche un vistazo al \[paquete desc\] (https://desc.r-lib.org/), que utiliza este archivo en gran medida de forma oculta.
 
-This chapter shows you how to use the most important `DESCRIPTION` fields.
+Este capítulo le muestra cómo utilizar los campos más importantes de `DESCRIPTION`.
 
-## `Title` and `Description`: What does your package do? {#sec-description-title-and-description}
+## `Title` y `Description`: ¿Qué hace tu paquete? {#sec-description-title-and-description}
 
-The `Title` and `Description` fields describe what the package does.
-They differ only in length:
+Los campos `Title` y `Description` describen lo que hace el paquete.
+Se diferencian sólo en longitud:
 
--   `Title` is a one line description of the package, and is often shown in a package listing. It should be plain text (no markup), capitalised like a title, and NOT end in a period. Keep it short: listings will often truncate the title to 65 characters.
--   `Description` is more detailed than the title. You can use multiple sentences, but you are limited to one paragraph. If your description spans multiple lines (and it should!), each line must be no more than 80 characters wide. Indent subsequent lines with 4 spaces.
+-   `Title` es una descripción de una línea del paquete y, a menudo, se muestra en una lista de paquetes. Debe ser texto sin formato (sin marcas), en mayúscula como un título y NO terminar en un punto. Sea breve: los listados a menudo truncarán el título a 65 caracteres.
+-   `Description` Es más detallado que el título. Puede utilizar varias oraciones, pero está limitado a un párrafo. Si su descripción abarca varias líneas (¡y debería hacerlo!), cada línea no debe tener más de 80 caracteres de ancho. Sangra las líneas siguientes con 4 espacios.
 
-The `Title` and `Description` for ggplot2 are:
+Los campos `Title` y `Description` para el paquete ggplot2 son:
 
 ``` yaml
 Title: Create Elegant Data Visualisations Using the Grammar of Graphics
@@ -83,7 +83,7 @@ Description: A system for 'declaratively' creating graphics,
     and it takes care of the details.
 ```
 
-A good title and description are important, especially if you plan to release your package to CRAN, because they appear on the package's CRAN landing page as shown in @fig-cran-package-page:
+Un buen título y descripción son importantes, especialmente si planea liberar su paquete a CRAN, porque aparecen en la página de inicio de CRAN del paquete como se muestra en @fig-cran-package-page:
 
 <!-- Sara says: be sure there is a blank high res screenshot because prod will add text to the screenshot in the O'Reilly style. That blank screenshot is here as images/cran-package-ggplot2-clean.png. -->
 
@@ -92,38 +92,39 @@ A good title and description are important, especially if you plan to release yo
 #| echo: false
 #| out-width: ~
 #| fig.cap: >
-#|   How Title and Description appear on ggplot2's CRAN page.
+#|   Cómo aparecen el título y la descripción en la página CRAN de ggplot2.
 #| fig.alt: >
-#|   A screenshot of the CRAN page for ggplot2, with two labelled boxes
-#|   indicating the text that comes from the Title and Description fields
-#|   in the DESCRIPTION file.
+#|   Una captura de pantalla de la página CRAN para ggplot2, con dos 
+#|   cuadros etiquetados que indican el texto que proviene de los campos 
+#|   Título y Descripción en el archivo DESCRIPTION.
+
 knitr::include_graphics("images/cran-package-ggplot2.png")
 ```
 
 ::: callout-warning
-## Submitting to CRAN
+## Envío a CRAN
 
-Both the `Title` and `Description` are a frequent source of rejections for reasons not covered by the automated `R CMD check`.
-In addition to the basics above, here are a few more tips:
+Tanto el "Título" como la "Descripción" son una fuente frecuente de rechazos por motivos no cubiertos por la "verificación R CMD" automatizada.
+Además de los conceptos básicos anteriores, aquí hay algunos consejos más:
 
--   Put the names of R packages, software, and APIs inside single quotes. This goes for both the `Title` and the `Description`. See the ggplot2 example above.
--   If you need to use an acronym, try to do so in `Description`, not in `Title`. In either case, explain the acronym in `Description`, i.e. fully expand it.
--   Don't include the package name, especially in `Title`, which is often prefixed with the package name.
--   Do not start with "A package for ..." or "This package does ...". This rule makes sense once you look at [the list of CRAN packages by name](https://cran.r-project.org/web/packages/available_packages_by_name.html). The information density of such a listing is much higher without a universal prefix like "A package for ...".
+-   Coloque los nombres de los paquetes, el software y las API de R entre comillas simples. Esto se aplica tanto al título como a la descripción. Vea el ejemplo de ggplot2 anterior.
+-   Si necesita utilizar un acrónimo, intente hacerlo en `Description`, no en `Títle`. En cualquier caso, explique el acrónimo en `Description`, es decir, expándalo por completo.
+-   No incluya el nombre del paquete, especialmente en `Títle`, que a menudo tiene el prefijo del nombre del paquete.
+-   No empiece con "Un paquete para..." o "Este paquete hace...". Esta regla tiene sentido una vez que miras [la lista de paquetes CRAN por nombre](https://cran.r-project.org/web/packages/available_packages_by_name.html). La densidad de información de un listado de este tipo es mucho mayor sin un prefijo universal como "Un paquete para ...".
 
-If these constraints give you writer's block, it often helps to spend a few minutes reading `Title` and `Description` of packages already on CRAN.
-Once you read a couple dozen, you can usually find a way to say what you want to say about your package that is also likely to pass CRAN's human-enforced checks.
+Si estas limitaciones le provocan un bloqueo, a menudo resulta útil dedicar unos minutos a leer el título y la descripción de los paquetes que ya están en CRAN.
+Una vez que lea un par de docenas, generalmente podrá encontrar una manera de decir lo que quiere decir sobre su paquete que probablemente también pase las comprobaciones realizadas por humanos de CRAN.
 :::
 
-You'll notice that `Description` only gives you a small amount of space to describe what your package does.
-This is why it's so important to also include a `README.md` file that goes into much more depth and shows a few examples.
-You'll learn about that in @sec-readme.
+Notarás que `Description` solo te brinda una pequeña cantidad de espacio para describir lo que hace tu paquete.
+Por eso es tan importante incluir también un archivo `README.md` que profundiza mucho más y muestra algunos ejemplos.
+Aprenderás sobre eso en @sec-readme.
 
-## Author: who are you? {#sec-description-authors-at-r}
+## Autor: ¿quién eres? {#sec-description-authors-at-r}
 
-Use the `Authors@R` field to identify the package's author, and whom to contact if something goes wrong.
-This field is unusual because it contains executable R code rather than plain text.
-Here's an example:
+Utilice el campo `Authors@R` para identificar al autor del paquete y a quién contactar si algo sale mal.
+Este campo es inusual porque contiene código R ejecutable en lugar de texto sin formato.
+He aquí un ejemplo:
 
 ``` yaml
 Authors@R: person("Hadley", "Wickham", email = "hadley@posit.co",
@@ -135,36 +136,36 @@ person("Hadley", "Wickham", email = "hadley@posit.co",
   role = c("aut", "cre"))
 ```
 
-This command says that Hadley Wickham is both the maintainer (`cre`) and an author (`aut`) and that his email address is `hadley@posit.co`.
-The `person()` function has four main inputs:
+Este comando dice que Hadley Wickham es tanto el mantenedor (`cre`) como el autor (`aut`) y que su dirección de correo electrónico es `hadley@posit.co`.
+La función `person()` tiene cuatro entradas principales:
 
--   The name, specified by the first two arguments, `given` and `family` (these are normally supplied by position, not name).
-    In English cultures, `given` (first name) comes before `family` (last name).
-    In many cultures, this convention does not hold.
-    For a non-person entity, such as "R Core Team" or "Posit Software, PBC", use the `given` argument (and omit `family`).
+-   El nombre, especificado por los dos primeros argumentos, `given` y `family` (normalmente se proporcionan por posición, no por nombre).
+    En las culturas inglesas, `given` (nombre) viene antes de `family` (apellido).
+    En muchas culturas, esta convención no se cumple.
+    Para una entidad que no sea una persona, como "R Core Team" o "Posit Software, PBC", utilice el argumento `given` (y omita `family`).
 
--   The `email` address, which is only an absolute requirement for the maintainer.
-    It's important to note that this is the address CRAN uses to let you know if your package needs to be fixed in order to stay on CRAN.
-    Make sure to use an email address that's likely to be around for a while.
-    CRAN policy requires that this be for a person, as opposed to, e.g., a mailing list.
+-   La dirección de `email`, que es sólo un requisito absoluto para el mantenedor.
+    Es importante tener en cuenta que esta es la dirección que CRAN utiliza para informarle si su paquete necesita ser reparado para permanecer en CRAN.
+    Asegúrese de utilizar una dirección de correo electrónico que probablemente exista por un tiempo.
+    La política de CRAN requiere que esto sea para una persona, a diferencia de, por ejemplo, una lista de correo.
 
--   One or more three letter codes specifying the `role`.
-    These are the most important roles to know about:
+-   Uno o más códigos de tres letras que especifican el "rol".
+    Estos son los roles más importantes que debes conocer:
 
-    -   `cre`: the creator or maintainer, the person you should bother if you have problems.
-        Despite being short for "creator", this is the correct role to use for the current maintainer, even if they are not the initial creator of the package.
+    -   `cre`: el creador o mantenedor, la persona a la que debes molestar si tienes problemas.
+        A pesar de ser la abreviatura de "creador", este es el rol correcto que debe utilizar el mantenedor actual, incluso si no es el creador inicial del paquete.
 
-    -   `aut`: authors, those who have made significant contributions to the package.
+    -   `aut`: autores, aquellos que han hecho contribuciones significativas al paquete.
 
-    -   `ctb`: contributors, those who have made smaller contributions, like patches.
+    -   `ctb`: contribuyentes, aquellos que han hecho contribuciones menores, como parches.
 
-    -   `cph`: copyright holder.
-        This is used to list additional copyright holders who are not authors, typically companies, like an employer of one or more of the authors.
+    -   `cph`: titular de derechos de autor.
+        Esto se utiliza para enumerar titulares de derechos de autor adicionales que no son autores, generalmente empresas, como un empleador de uno o más de los autores.
 
-    -   `fnd`: funder, the people or organizations that have provided financial support for the development of the package.
+    -   `fnd`: financiador, las personas u organizaciones que han proporcionado apoyo financiero para el desarrollo del paquete.
 
--   The optional `comment` argument has become more relevant, since `person()` and CRAN landing pages have gained some nice features around [ORCID identifiers](https://orcid.org).
-    Here's an example of such usage (note the auto-generated URI):
+-   El argumento opcional `comment` se ha vuelto más relevante, ya que `person()` y las páginas de inicio de CRAN han adquirido algunas características interesantes en torno al [identificador ORCID](https://orcid.org).
+    A continuación se muestra un ejemplo de dicho uso (tenga en cuenta el URI generado automáticamente):
 
     ```{r}
     person(
@@ -197,7 +198,7 @@ tibble::as_tibble(db)
 #> 11 Translator       trl   A person or organization who… If the R code is merely…
 ```
 
-You can list multiple authors with `c()`:
+Puede enumerar varios autores con `c()`:
 
 ``` yaml
 Authors@R: c(
@@ -206,42 +207,42 @@ Authors@R: c(
     person("Posit Software, PBC", role = c("cph", "fnd")))
 ```
 
-Every package must have at least one author (`aut`) and one maintainer (`cre`) (they might be the same person).
-The maintainer (`cre`) must have an email address.
-These fields are used to generate the basic citation for the package (e.g. `citation("pkgname")`).
-Only people listed as authors will be included in the auto-generated citation (@sec-misc-inst-citation).
-There are a few extra details if you're including code that other people have written, which you can learn about in @sec-code-you-bundle.
+Cada paquete debe tener al menos un autor (`aut`) y un mantenedor (`cre`) (pueden ser la misma persona).
+El mantenedor (`cre`) debe tener una dirección de correo electrónico.
+Estos campos se utilizan para generar la cita básica para el paquete (por ejemplo, `citation("pkgname")`).
+Solo las personas que figuran como autores se incluirán en la cita generada automáticamente (@sec-misc-inst-citation).
+Hay algunos detalles adicionales si incluye código que otras personas han escrito, sobre los cuales puede obtener información en @sec-code-you-bundle.
 
-An older, still valid approach is to have separate `Maintainer` and `Author` fields in `DESCRIPTION`.
-However, we strongly recommend the more modern approach of `Authors@R` and the `person()` function, because it offers richer metadata for various downstream uses.
+Un enfoque más antiguo, aún válido, es tener campos separados `Maintainer` y `Author` en `DESCRIPTION`.
+Sin embargo, recomendamos encarecidamente el enfoque más moderno de `Authors@R` y la función `person()`, porque ofrece metadatos más ricos para diversos usos posteriores..
 
-## `URL` and `BugReports`
+## `URL` y `BugReports`
 
-As well as the maintainer's email address, it's a good idea to list other places people can learn more about your package.
-The `URL` field is commonly used to advertise the package's website (@sec-website) and to link to a public source repository, where development happens.
-Multiple URLs are separated with a comma.
-`BugReports` is the URL where bug reports should be submitted, e.g., as GitHub issues.
-For example, devtools has:
+Además de la dirección de correo electrónico del mantenedor, es una buena idea enumerar otros lugares donde las personas pueden obtener más información sobre su paquete.
+El campo `URL` se usa comúnmente para anunciar el sitio web del paquete (@sec-website) y para vincular a un repositorio de código fuente público, donde se lleva a cabo el desarrollo.
+Varias URL están separadas por una coma.
+`BugReports` es la URL donde se deben enviar los informes de errores, por ejemplo, como problemas de GitHub.
+Por ejemplo, devtools tiene:
 
 ``` yaml
 URL: https://devtools.r-lib.org/, https://github.com/r-lib/devtools
 BugReports: https://github.com/r-lib/devtools/issues
 ```
 
-If you use `usethis::use_github()` to connect your local package to a remote GitHub repository, it will automatically populate `URL` and `BugReports` for you.
-If a package is already connected to a remote GitHub repository, `usethis::use_github_links()` can be called to just add the relevant links to `DESCRIPTION`.
+Si usa `usethis::use_github()` para conectar su paquete local a un repositorio remoto de GitHub, automáticamente completará `URL` y `BugReports`.
+Si un paquete ya está conectado a un repositorio remoto de GitHub, se puede llamar a `usethis::use_github_links()` para simplemente agregar los enlaces relevantes a `DESCRIPTION`.
 
-## The `License` field
+## El campo `License`
 
-The `License` field is mandatory and must specify your package's license in a standard form recognized by R.
-The official tooling aims to identify standard open source licenses, so it's important to appreciate that `License` is basically a machine-readable field.
-See @sec-license for a full discussion.
+El campo `License` es obligatorio y debe especificar la licencia de su paquete en un formulario estándar reconocido por R.
+Las herramientas oficiales tienen como objetivo identificar licencias estándar de código abierto, por lo que es importante tener en cuenta que `License` es básicamente un campo legible por máquina.
+Consulte @sec-license para obtener una discusión completa.
 
-## `Imports`, `Suggests`, and friends {#sec-description-imports-suggests}
+## `Imports`, `Suggests`, y amigos {#sec-description-imports-suggests}
 
-Two of the most important and commonly used `DESCRIPTION` fields are `Imports` and `Suggests`, which list other packages that your package depends on.
-Packages listed in `Imports` are needed by your users at runtime and will be installed (or potentially updated) when users install your package via `install.packages()`.
-The following lines indicate that your package absolutely needs both dplyr and tidyr to work.
+Dos de los campos más importantes y comunmente usados de `DESCRIPTION` son `Imports` y `Suggests`, que enumera otros paquetes de los que depende su paquete.
+Los usuarios necesitan los paquetes enumerados en `Imports` en tiempo de ejecución y se instalarán (o potencialmente actualizarán) cuando los usuarios instalen su paquete a través de `install.packages()`.
+Las siguientes líneas indican que su paquete necesita absolutamente tanto dplyr como tidyr para funcionar.
 
 ``` yaml
 Imports:
@@ -249,8 +250,8 @@ Imports:
     tidyr
 ```
 
-Packages listed in `Suggests` are either needed for development tasks or might unlock optional functionality for your users.
-The lines below indicate that, while your package can take advantage of ggplot2 and testthat, they're not absolutely required:
+Los paquetes enumerados en `Suggests` son necesarios para tareas de desarrollo o pueden desbloquear funciones opcionales para sus usuarios.
+Las líneas siguientes indican que, si bien su paquete puede aprovechar ggplot2 y testthat, no son absolutamente necesarios:
 
 ``` yaml
 Suggests:
@@ -258,15 +259,15 @@ Suggests:
     testthat
 ```
 
-Both `Imports` and `Suggests` take a comma-separated list of package names.
-We recommend putting one package on each line, and keeping them in alphabetical order.
-A non-haphazard order makes it easier for humans to parse this field and appreciate changes.
+Tanto `Imports` como `Suggests` toman una lista de nombres de paquetes separados por comas.
+Recomendamos poner un paquete en cada línea y mantenerlos en orden alfabético.
+Un orden no aleatorio facilita que los humanos analicen este campo y aprecien los cambios.
 
-The easiest way to add a package to `Imports` or `Suggests` is with `usethis::use_package()`.
-If the dependencies are already in alphabetical order, `use_package()` will keep it that way.
-In general, it can be nice to run `usethis::use_tidy_description()` regularly, which orders and formats `DESCRIPTION` fields according to a fixed standard.
+La forma más sencilla de agregar un paquete a `Imports` o `Suggests` es con `usethis::use_package()`.
+Si las dependencias ya están en orden alfabético, `use_package()` las mantendrá así.
+En general, puede ser bueno ejecutar `usethis::use_tidy_description()` regularmente, que ordena y formatea los campos `DESCRIPTION` de acuerdo con un estándar fijo.
 
-If you add packages to `DESCRIPTION` with `usethis::use_package()`, it will also remind you of the recommended way to call them (explained more in @sec-dependencies-in-practice).
+Si agrega paquetes a `DESCRIPTION` con `usethis::use_package()`, también le recordará la forma recomendada de llamarlos (explicada más en @sec-dependencies-in-practice).
 
 ```{r create-temp-pkg}
 #| include: false
@@ -282,7 +283,7 @@ usethis::proj_set(temp_pkg)
 ```
 
 ```{r}
-usethis::use_package("dplyr") # Default is "Imports"
+usethis::use_package("dplyr") # El valor predeterminado es "Imports"
 
 usethis::use_package("ggplot2", "Suggests")
 ```
@@ -292,9 +293,9 @@ usethis::use_package("ggplot2", "Suggests")
 usethis::proj_set(op)
 ```
 
-### Minimum versions {#sec-description-imports-suggests-minium-version}
+### Versiones mínimas {#sec-description-imports-suggests-minium-version}
 
-If you need a specific version of a package, specify it in parentheses after the package name:
+Si necesita una versión específica de un paquete, especifíquela entre paréntesis después del nombre del paquete:
 
 ``` yaml
 Imports:
@@ -302,76 +303,76 @@ Imports:
     tidyr (>= 1.1.0)
 ```
 
-The `usethis::use_package()` convenience function also helps you to set a minimum version:
+La conveniente función `usethis::use_package()` también le ayuda a establecer una versión mínima:
 
 ```{r}
 #| eval: false
-# exact version
+# versión exacta
 usethis::use_package("dplyr", min_version = "1.0.0")
 
-# min version = currently installed version
+# versión mínima = versión actualmente instalada
 usethis::use_package("dplyr", min_version = TRUE)
 ```
 
-You always want to specify a minimum version (`dplyr (>= 1.0.0)`) rather than an exact version (`dplyr (== 1.0.0)`).
-Since R can't have multiple versions of the same package loaded at the same time, specifying an exact dependency dramatically increases the chance of conflicting versions[^description-2].
+Siempre querrás especificar una versión mínima (`dplyr (>= 1.0.0)`) en lugar de una versión exacta (`dplyr (== 1.0.0)`).
+Dado que R no puede tener varias versiones del mismo paquete cargadas al mismo tiempo, especificar una dependencia exacta aumenta drásticamente la posibilidad de que haya versiones en conflicto [^description-2].
 
-[^description-2]: The need to specify the exact versions of packages, rather than minimum versions, comes up more often in the development of non-package projects.
-    The [renv package](https://rstudio.github.io/renv/) provides a way to do this, by implementing project-specific environments (package libraries).
-    renv is a reboot of an earlier package called packrat.
-    If you want to freeze the dependencies of a project at exact versions, use renv instead of (or possibly in addition to) a `DESCRIPTION` file.
+[^description-2]: La necesidad de especificar las versiones exactas de los paquetes, en lugar de las versiones mínimas, surge con más frecuencia en el desarrollo de proyectos que no son paquetes.
+    El [paquete renv](https://rstudio.github.io/renv/) proporciona una manera de hacer esto, mediante la implementación de entornos específicos del proyecto (bibliotecas de paquetes).
+    renv es un reinicio de un paquete anterior llamado packrat.
+    Si desea congelar las dependencias de un proyecto en versiones exactas, use renv en lugar de (o posiblemente además de) un archivo `DESCRIPTION`.
 
-Versioning is most important if you will release your package for use by others.
-Usually people don't have exactly the same versions of packages installed that you do.
-If someone has an older package that doesn't have a function your package needs, they'll get an unhelpful error message if your package does not advertise the minimum version it needs.
-However, if you state a minimum version, they'll automatically get an upgrade when they install your package.
+El control de versiones es más importante si va a liberar su paquete para que otros lo utilicen.
+Por lo general, la gente no tiene exactamente las mismas versiones de paquetes instaladas que usted.
+Si alguien tiene un paquete anterior que no tiene una función que su paquete necesita, recibirá un mensaje de error inútil si su paquete no anuncia la versión mínima que necesita.
+Sin embargo, si indica una versión mínima, obtendrán automáticamente una actualización cuando instalen su paquete.
 
-Think carefully if you declare a minimum version for a dependency.
-In some sense, the safest thing to do is to require a version greater than or equal to the package's current version.
-For public work, this is most naturally defined as the current CRAN version of a package; private or personal projects may adopt some other convention.
-But it's important to appreciate the implications for people who try to install your package: if their local installation doesn't fulfill all of your requirements around versions, installation will force upgrades of these dependencies.
-This is desirable if your minimum version requirements are genuine, i.e. your package would be broken otherwise.
-But if your stated requirements have a less solid rationale, this may be unnecessarily conservative and inconvenient.
+Piense detenidamente si declara una versión mínima para una dependencia.
+En cierto sentido, lo más seguro es requerir una versión mayor o igual a la versión actual del paquete.
+Para trabajos públicos, esto se define más naturalmente como la versión CRAN actual de un paquete; Los proyectos privados o personales podrán adoptar algún otro convenio.
+Pero es importante apreciar las implicaciones para las personas que intentan instalar su paquete: si su instalación local no cumple con todos sus requisitos en torno a las versiones, la instalación forzará las actualizaciones de estas dependencias.
+Esto es deseable si sus requisitos mínimos de versión son genuinos, es decir, de lo contrario su paquete estaría roto.
+Pero si los requisitos establecidos tienen una justificación menos sólida, esto puede resultar innecesariamente conservador e inconveniente.
 
-In the absence of clear, hard requirements, you should set minimum versions (or not) based on your expected user base, the package versions they are likely to have, and a cost-benefit analysis of being too lax versus too conservative.
-The *de facto* policy of the tidyverse team is to specify a minimum version when using a known new feature or when someone encounters a version problem in authentic use.
-This isn't perfect, but we don't currently have the tooling to do better, and it seems to work fairly well in practice.
+En ausencia de requisitos claros y estrictos, debe establecer versiones mínimas (o no) en función de su base de usuarios esperada, las versiones de paquetes que probablemente tengan y un análisis de costo-beneficio para determinar si es demasiado laxo o demasiado conservador.
+La política *de facto* del equipo de tidyverse es especificar una versión mínima cuando se utiliza una característica nueva conocida o cuando alguien encuentra un problema de versión en uso auténtico.
+Esto no es perfecto, pero actualmente no contamos con las herramientas para hacerlo mejor y parece funcionar bastante bien en la práctica.
 
-### `Depends` and `LinkingTo`
+### `Depends` y `LinkingTo`
 
-There are three other fields that allow you to express more specialised dependencies:
+Hay otros tres campos que le permiten expresar dependencias más especializadas:
 
--   `Depends`: Prior to the roll-out of namespaces in R 2.14.0 in 2011, `Depends` was the only way to "depend" on another package.
-    Now, despite the name, you should almost always use `Imports`, not `Depends`.
-    You'll learn why, and when you should still use `Depends`, in @sec-dependencies-imports-vs-depends.
+-   `Depends`: Antes de la implementación de espacios de nombres en R 2.14.0 en 2011, `Depends` era la única forma de "depender" de otro paquete.
+    Ahora bien, a pesar del nombre, casi siempre deberías usar `Imports`, no `Depends`.
+    Aprenderá por qué y cuándo debería seguir usándo `Depends`, en @sec-dependencies-imports-vs-depends.
 
-    The most legitimate current use of `Depends` is to state a minimum version for R itself, e.g.
+    El uso actual más legítimo de `Depends` es indicar una versión mínima para el propio R, p.
     `Depends: R (>= 4.0.0)`.
-    Again, think carefully if you do this.
-    This raises the same issues as setting a minimum version for a package you depend on, except the stakes are much higher when it comes to R itself.
-    Users can't simply consent to the necessary upgrade, so, if other packages depend on yours, your minimum version requirement for R can cause a cascade of package installation failures.
+    Nuevamente, piense detenidamente si hace esto.
+    Esto plantea los mismos problemas que establecer una versión mínima para un paquete del que depende, excepto que lo que está en juego es mucho mayor cuando se trata del propio R.
+    Los usuarios no pueden simplemente dar su consentimiento para la actualización necesaria, por lo que, si otros paquetes dependen del suyo, su requisito de versión mínima para R puede causar una cascada de fallas en la instalación de paquetes.
 
-    -   The [backports package](https://cran.r-project.org/package=backports) is useful if you want to use a function like `tools::R_user_dir()`, which was introduced in 4.0.0 in 2020, while still supporting older R versions.
-    -   The tidyverse packages officially support the current R version, the devel version, and four previous versions.[^description-3] We proactively test this support in the standard build matrix we use for continuous integration.
-    -   Packages with a lower level of use may not need this level of rigour. The main takeaway is: if you state a minimum of R, you should have a reason and you should take reasonable measures to test your claim regularly.
+    -   El [paquete backports](https://cran.r-project.org/package=backports) es útil si desea utilizar una función como `tools::R_user_dir()`, que se introdujo en 4.0.0 en 2020, sin dejar de ser compatible con versiones anteriores de R.
+    -   Los paquetes tidyverse son oficialmente compatibles con la versión R actual, la versión devel y cuatro versiones anteriores.[^description-3] Probamos proactivamente este soporte en la matriz de compilación estándar que utilizamos para la integración continua.
+    -   Es posible que los paquetes con un nivel de uso inferior no necesiten este nivel de rigor. La conclusión principal es: si declara un mínimo de R, debe tener una razón y debe tomar medidas razonables para probar su afirmación con regularidad.
 
--   `LinkingTo`: if your package uses C or C++ code from another package, you need to list it here.
+-   `LinkingTo`: Si su paquete usa código C o C++ de otro paquete, debe incluirlo aquí.
 
--   `Enhances`: packages listed here are "enhanced" by your package.
-    Typically, this means you provide methods for classes defined in another package (a sort of reverse `Suggests`).
-    But it's hard to define what that means, so we don't recommend using `Enhances`.
+-   `Enhances`: Los paquetes enumerados aquí están "mejorados" por su paquete.
+    Normalmente, esto significa que proporcionas métodos para clases definidas en otro paquete (una especie de `Suggests` inversas).
+    Pero es difícil definir qué significa eso, por lo que no recomendamos usar `Enhances`.
 
-[^description-3]: See this blog post for more: <https://www.tidyverse.org/blog/2019/04/r-version-support/>.
+[^description-3]: Vea esta publicación de blog para más: <https://www.tidyverse.org/blog/2019/04/r-version-support/>.
 
-### An R version gotcha
+### Una versión R te pillé
 
-Before we leave this topic, we give a concrete example of how easily an R version dependency can creep in and have a broader impact than you might expect.
-The `saveRDS()` function writes a single R object as an `.rds` file, an R-specific format.
-For almost 20 years, `.rds` files used the "version 2" serialization format.
-"Version 3" became the new default in R 3.6.0 (released April 2019) and cannot be read by R versions prior to 3.5.0 (released April 2018).
+Antes de abandonar este tema, damos un ejemplo concreto de la facilidad con la que una dependencia de la versión R puede aparecer y tener un impacto más amplio de lo que cabría esperar.
+La función `saveRDS()` escribe un único objeto R como un archivo `.rds`, un formato específico de R.
+Durante casi 20 años, los archivos `.rds` utilizaron el formato de serialización "versión 2".
+La "Versión 3" se convirtió en la nueva versión predeterminada en R 3.6.0 (lanzada en abril de 2019) y no puede leerse en las versiones de R anteriores a la 3.5.0 (lanzada en abril de 2018).
 
-Many R packages have at least one `.rds` file lurking within and, if that gets re-generated with a modern R version, by default, the new `.rds` file will have the "version 3" format.
-When that R package is next built, such as for a CRAN submission, the required R version is automatically bumped to 3.5.0, signaled by this message:
+Muchos paquetes de R tienen al menos un archivo `.rds` escondido y, si se vuelve a generar con una versión moderna de R, de forma predeterminada, el nuevo archivo `.rds` tendrá el formato de "versión 3".
+La próxima vez que se compila ese paquete R, como para un envío CRAN, la versión R requerida pasa automáticamente a 3.5.0, como se indica con este mensaje:
 
 ``` console
 NB: this package now depends on R (>= 3.5.0)
@@ -381,45 +382,45 @@ NB: this package now depends on R (>= 3.5.0)
     'path/to/some_file.rds'
 ```
 
-Literally, the `DESCRIPTION` file in the bundled package says `Depends: R (>= 3.5.0)`, even if `DESCRIPTION` in the source package says differently[^description-4].
+Literalmente, el archivo `DESCRIPTION` en el paquete incluido dice `DependS: R (>= 3.5.0)`, incluso si `DESCRIPTION` en el paquete fuente dice lo contrario[^description-4].
 
-[^description-4]: The different package states, such as source vs. bundled, are explained in @sec-package-states.
+[^description-4]: Los diferentes estados del paquete, como fuente o empaquetado, se explican en @sec-package-states.
 
-When such a package is released on CRAN, the new minimum R version is viral, in the sense that all packages listing the original package in `Imports` or even `Suggests` have, to varying degrees, inherited the new dependency on R \>= 3.5.0.
+Cuando un paquete de este tipo se publica en CRAN, la nueva versión mínima de R es viral, en el sentido de que todos los paquetes que enumeran el paquete original en `Imports` o incluso en `Suggests` han heredado, en diversos grados, la nueva dependencia de R \>= 3.5.0.
 
-The immediate take-away is to be very deliberate about the `version` of `.rds` files until R versions prior to 3.5.0 have fallen off the edge of what you intend to support.
-This particular `.rds` issue won't be with us forever, but similar issues crop up elsewhere, such as in the standards implicit in compiled C or C++ source code.
-The broader message is that the more reverse dependencies your package has, the more thought you need to give to your package's stated minimum versions, especially for R itself.
+La conclusión inmediata es ser muy deliberado acerca de la versión de los archivos `.rds` hasta que las versiones R anteriores a 3.5.0 hayan caído del límite de lo que pretende admitir.
+Este problema particular de `.rds` no estará con nosotros para siempre, pero problemas similares surgen en otros lugares, como en los estándares implícitos en el código fuente compilado de C o C++.
+El mensaje más amplio es que cuantas más dependencias inversas tenga su paquete, más pensará en las versiones mínimas indicadas de su paquete, especialmente para R.
 
 <!-- TODO: I could probably get the blessing to include a concrete example of this happening, as there are many. For example, the tidymodels team has direct experience. Does that seem necessary / beneficial? -->
 
-## Other fields
+## Otros campos
 
-A few other `DESCRIPTION` fields are heavily used and worth knowing about:
+Algunos otros campos `DESCRIPTION` se utilizan mucho y vale la pena conocerlos:
 
--   `Version` is very important as a way of communicating where your package is in its lifecycle and how it is evolving over time.
-    Learn more in @sec-lifecycle.
+-   `Version` Es muy importante como forma de comunicar en qué punto de su ciclo de vida se encuentra su paquete y cómo evoluciona con el tiempo.
+    Más información en @sec-lifecycle.
 
--   `LazyData` is relevant if your package makes data available to the user.
-    If you specify `LazyData: true`, the datasets are lazy-loaded, which makes them more immediately available, i.e. users don't have to use `data()`.
-    The addition of `LazyData: true` is handled automatically by `usethis::use_data()`.
-    More detail is given in @sec-data.
+-   `LazyData` es relevante si su paquete pone datos a disposición del usuario.
+    Si especifica `LazyData: true`, los conjuntos de datos se cargan de forma diferida, lo que los hace disponibles más inmediatamente, es decir, los usuarios no tienen que usar `data()`.
+    La adición de `LazyData: true` se maneja automáticamente mediante `usethis::use_data()`.
+    Se dan más detalles en @sec-data.
 
--   `Encoding` describes the character encoding of files throughout your package.
-    Our tooling will set this to `Encoding: UTF-8` as this is the most common encoding in use today, and we are not aware of any reasons to use a different value.
+-   `Encoding` describe la codificación de caracteres de los archivos en todo el paquete.
+    Nuestras herramientas establecerán esto en `Encoding: UTF-8`, ya que esta es la codificación más común que se usa hoy en día y no conocemos ninguna razón para usar un valor diferente.
 
--   `Collate` controls the order in which R files are sourced.
-    This only matters if your code has side-effects; most commonly because you're using S4.
-    If needed, `Collate` is typically generated by roxygen2 through use of the `@include` tag.
-    See `?roxygen2::update_collate` for details.
+-   `Collate` controla el orden en el que se obtienen los archivos R.
+    Esto sólo importa si su código tiene efectos secundarios; más comúnmente porque estás usando S4.
+    Si es necesario, roxygen2 normalmente genera `Collate` mediante el uso de la etiqueta `@include`.
+    Consulte `?roxygen2::update_collate` para obtener más detalles.
 
--   `VignetteBuilder` lists any package that your package needs as a vignette engine.
-    Our recommended vignette workflow is described in @sec-vignettes-workflow-writing, which will list the knitr package in `VignetteBuilder`.
+-   `VignetteBuilder` incluye cualquier paquete que su paquete necesite como motor de viñeta.
+    Nuestro flujo de trabajo de viñeta recomendado se describe en @sec-vignettes-workflow-writing, que enumerará el paquete knitr en `VignetteBuilder`.
 
--   `SystemRequirements` is where you describe dependencies external to R.
-    This is a plain text field and does not, for example, actually install or check for anything, so you might need to include additional installation details in your README (@sec-readme).
-    The most common usage is in the context of a package with compiled code, where `SystemRequirements` is used to declare the C++ standard, the need for GNU make, or some other external dependency.
-    Examples:
+-   `SystemRequirements` es donde describe las dependencias externas a R.
+    Este es un campo de texto sin formato y, por ejemplo, en realidad no instala ni verifica nada, por lo que es posible que deba incluir detalles de instalación adicionales en su archivo README (@sec-readme).
+    El uso más común es en el contexto de un paquete con código compilado, donde se usa `SystemRequirements` para declarar el estándar C++, la necesidad de crear GNU o alguna otra dependencia externa.
+    Ejemplos:
 
     ``` yaml
     SystemRequirements: C++17
@@ -467,27 +468,27 @@ tibble(raw = sr$package_data) |>
 #> # … with 668 more rows
 ```
 
-We discourage the explicit use of the `Date` field, as it is extremely easy to forget to update it if you manage `Date` by hand.
-This field will be populated in the natural course of bundling the package, e.g. when submitting to CRAN, and we recommend that you just let that happen.
+No recomendamos el uso explícito del campo `Date`, ya que es muy fácil olvidarse de actualizarlo si administra la fecha manualmente.
+Este campo se completará en el curso natural de agrupar el paquete, p. al enviar a CRAN, y le recomendamos que deje que eso suceda.
 
-There are many other DESCRIPTION fields that are used less frequently.
-A complete list can be found in the "The DESCRIPTION file" section of [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html#The-DESCRIPTION-file).
+Hay muchos otros campos de descripción que se utilizan con menos frecuencia.
+Puede encontrar una lista completa en la sección "El archivo DESCRIPTION" de [Escribir extensiones R](https://cran.r-project.org/doc/manuals/R-exts.html#The-DESCRIPTION-file).
 
-## Custom fields {#sec-description-custom-fields}
+## Campos Personalizados {#sec-description-custom-fields}
 
-There is also some flexibility to create your own fields to add additional metadata.
-In the narrowest sense, the only restriction is that you shouldn't re-purpose the official field names used by R.
-You should also limit yourself to valid English words, so the field names aren't flagged by the spell-check.
+También existe cierta flexibilidad para crear sus propios campos para agregar metadatos adicionales.
+En el sentido más estricto, la única restricción es que no debes reutilizar los nombres de campos oficiales utilizados por R.
+También debe limitarse a palabras válidas en inglés, para que el corrector ortográfico no marque los nombres de los campos.
 
-In practice, if you plan to submit to CRAN, we recommend that any custom field name should start with `Config/`.
-We'll revisit this later when we explain how `Config/Needs/website` is used to record additional packages needed to build a package's website (@sec-dependencies-nonstandard).
+En la práctica, si planea enviar a CRAN, le recomendamos que cualquier nombre de campo personalizado comience con `Config/`.
+Revisaremos esto más adelante cuando expliquemos cómo se usa `Config/Needs/website` para registrar paquetes adicionales necesarios para crear el sitio web de un paquete (@sec-dependencies-nonstandard).
 
-You might notice that `create_package()` writes two more fields we haven't discussed yet, relating to the use of the roxygen2 package for documentation:
+Podrías notar que `create_package()` escribe dos campos más que aún no hemos discutido, relacionados con el uso del paquete roxygen2 para documentación:
 
 ``` yaml
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 ```
 
-You will learn more about these in @sec-man.
-The use of these specific field names is basically an accident of history and, if it were re-done today, they would follow the `Config/*` pattern recommended above.
+Aprenderá más sobre estos en @sec-man.
+El uso de estos nombres de campos específicos es básicamente un accidente de la historia y, si se volviera a hacer hoy, seguirían el patrón `Config/*` recomendado anteriormente.
