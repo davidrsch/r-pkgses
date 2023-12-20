@@ -1,72 +1,72 @@
-# Dependencies: In Practice {#sec-dependencies-in-practice}
+# Dependencias: en la práctica {#sec-dependencies-in-practice}
 
 ```{r, echo = FALSE}
 source("common.R")
 ```
 
-This chapter presents the practical details of working with your dependencies inside your package.
-If you need a refresher on any of the background:
+Este capítulo presenta los detalles prácticos de cómo trabajar con sus dependencias dentro de su paquete.
+Si necesita un repaso sobre cualquiera de los antecedentes:
 
--   @sec-description covers the DESCRIPTION file.
-    Listing a dependency in that file, such as in `Imports`, is a necessary first step when taking a dependency.
+-   @sec-description cubre el archivo DESCRIPCIÓN.
+    Listar una dependencia en ese archivo, como en "Importaciones", es un primer paso necesario al tomar una dependencia.
 
--   @sec-dependencies-pros-cons provides a decision-making framework for dependencies.
+-   @sec-dependencies-pros-cons proporciona un marco de toma de decisiones para las dependencias.
 
--   The technical details of package namespaces, the search path, and attaching vs. loading are laid out in @sec-dependencies-namespace, @sec-dependencies-search, and @sec-dependencies-attach-vs-load.
+-   Los detalles técnicos de los espacios de nombres de los paquetes, la ruta de búsqueda y la conexión versus carga se presentan en @sec-dependencies-namespace, @sec-dependencies-search y @sec-dependencies-attach-vs-load.
 
-We're finally ready to talk about how to use different types of dependencies within the different parts of your package:
+Finalmente estamos listos para hablar sobre cómo usar diferentes tipos de dependencias dentro de las diferentes partes de su paquete:
 
--   in your functions, below `R/`
--   in your tests, below `tests/testthat/`
--   in your examples, in the help topics, below `man/`
--   in your vignettes and articles, below `vignettes/`
+-   en tus funciones, debajo de `R/`
+-   en tus pruebas, debajo de `tests/testthat/`
+-   en sus ejemplos, en los temas de ayuda, debajo de `man/`
+-   en sus viñetas y artículos, debajo de `viñetas/`
 
-## Confusion about `Imports`
+## Confusión sobre `Imports`
 
-Let's make this crystal clear:
+Dejemos esto muy claro:
 
-> Listing a package in `Imports` in `DESCRIPTION` does not "import" that package.
+> Incluir un paquete en `Imports` en `DESCRIPTION` no "importa" ese paquete.
 
-It is natural to assume that listing a package in `Imports` actually "imports" the package, but this is just an unfortunate choice of name for the `Imports` field.
-The `Imports` field makes sure that the packages listed there are installed when your package is installed.
-It does not make those functions available to you, e.g. below `R/`, or to your user.
+Es natural suponer que enumerar un paquete en `Imports` en realidad "importa" el paquete, pero esto es sólo una elección desafortunada de nombre para el campo `Imports`.
+El campo `Imports` garantiza que los paquetes enumerados allí estén instalados cuando se instala su paquete.
+No pone esas funciones a su disposición, por ejemplo debajo de `R/`, ni a su usuario.
 
-It is neither automatic nor necessarily advisable that a package listed in `Imports` also appears in `NAMESPACE` via `imports()` or `importFrom()`.
-It is common for a package to be listed in `Imports` in `DESCRIPTION`, but not in `NAMESPACE`.
-The converse is not true.
-Every package mentioned in `NAMESPACE` must also be present in the `Imports` or `Depends` fields.
+No es automático ni necesariamente aconsejable que un paquete listado en `Imports` también aparezca en `NAMESPACE` a través de `imports()` o `importFrom()`.
+Es común que un paquete aparezca en `Imports` en `DESCRIPTION`, pero no en `NAMESPACE`.
+Lo contrario no es cierto.
+Cada paquete mencionado en `NAMESPACE` también debe estar presente en los campos `Imports` o `Depends`.
 
-## Conventions for this chapter
+## Convenciones para este capítulo
 
-Sometimes our examples can feature real functions from real packages.
-But if we need to talk about a generic package or function, here are the conventions we use below:
+A veces nuestros ejemplos pueden incluir funciones reales de paquetes reales.
+Pero si necesitamos hablar de un paquete o función genérica, estas son las convenciones que usamos a continuación:
 
--   pkg: the name of your hypothetical package
+-   pkg: el nombre de su paquete hipotético
 
--   aaapkg or bbbpkg: the name of a hypothetical package your package depends on
+-   aaapkg o bbbpkg: el nombre de un paquete hipotético del que depende su paquete
 
--   `aaa_fun()`: the name of a function exported by aaapkg
+-   `aaa_fun()`: el nombre de una función exportada por aaapkg
 
-## `NAMESPACE` Workflow {#sec-dependencies-NAMESPACE-workflow}
+## Flujo de trabajo de `NAMESPACE` {#sec-dependencies-NAMESPACE-workflow}
 
-In the sections below, we give practical instructions on how (and when) to import functions from another package into yours and how to export functions from your package.
-The file that keeps track of all this is the `NAMESPACE` file (more details in @sec-dependencies-NAMESPACE-file).
+En las secciones siguientes, brindamos instrucciones prácticas sobre cómo (y cuándo) importar funciones de otro paquete al suyo y cómo exportar funciones desde su paquete.
+El archivo que realiza un seguimiento de todo esto es el archivo `NAMESPACE` (más detalles en @sec-dependencies-NAMESPACE-file).
 
-In the devtools workflow and this book, we generate the `NAMESPACE` file from special comments in the `R/*.R` files.
-Since the package that ultimately does this work is roxygen2, these are called "roxygen comments".
-These roxygen comments are also the basis for your package's help topics, which is covered in @sec-man-workflow.
+En el flujo de trabajo de devtools y en este libro, generamos el archivo `NAMESPACE` a partir de comentarios especiales en los archivos `R/*.R`.
+Dado que el paquete que finalmente hace este trabajo es roxygen2, estos se denominan "comentarios de roxygen".
+Estos comentarios de roxygen también son la base de los temas de ayuda de su paquete, que se tratan en @sec-man-workflow.
 
-The `NAMESPACE` file starts out with a single commented-out line explaining the situation (and hopefully discouraging any manual edits):
+El archivo `NAMESPACE` comienza con una única línea comentada que explica la situación (y, con suerte, desaconseja cualquier edición manual):
 
 ```         
 # Generated by roxygen2: do not edit by hand
 ```
 
-As you incorporate roxygen tags to export and import functions, you need to re-generate the `NAMESPACE` file periodically.
-Here is the general workflow for regenerating `NAMESPACE` (and your documentation):
+A medida que incorpora etiquetas roxygen para exportar e importar funciones, necesita volver a generar el archivo `NAMESPACE` periódicamente.
+Este es el flujo de trabajo general para regenerar `NAMESPACE` (y su documentación):
 
-1.  Add namespace-related tags to the roxygen comments in your `R/*.R` files.
-    This is an artificial example, but it gives you the basic idea:
+1.  Agregue etiquetas relacionadas con el espacio de nombres a los comentarios de roxygen en sus archivos `R/*.R`.
+    Este es un ejemplo artificial, pero te da la idea básica:
 
     ```{r}
     #| eval: false
@@ -78,13 +78,13 @@ Here is the general workflow for regenerating `NAMESPACE` (and your documentatio
     }
     ```
 
-2.  Run `devtools::document()` (or press Ctrl/Cmd + Shift + D in RStudio) to "document" your package.
-    By default, two things happen:
+2.  Ejecute `devtools::document()` (o presione Ctrl/Cmd + Shift + D en RStudio) para "documentar" su paquete.
+    Por defecto, suceden dos cosas:
 
-    -   The help topics in the `man/*.Rd` files are updated (covered in @sec-man).
+    -   Los temas de ayuda en los archivos `man/*.Rd` están actualizados (cubiertos en @sec-man).
 
-    -   The `NAMESPACE` file is re-generated.
-        In our example, the `NAMESPACE` file would look like:
+    -   Se vuelve a generar el archivo `NAMESPACE`.
+        En nuestro ejemplo, el archivo `NAMESPACE` se vería así:
 
         ```         
         # Generated by roxygen2: do not edit by hand
@@ -94,29 +94,29 @@ Here is the general workflow for regenerating `NAMESPACE` (and your documentatio
         importFrom(aaapkg,aaa_fun)
         ```
 
-Roxygen2 is quite smart and will insert the appropriate directive in `NAMESPACE`, i.e. it can usually determine whether to use `export()` or `S3method()`.
+Roxygen2 es bastante inteligente e insertará la directiva apropiada en `NAMESPACE`, es decir, generalmente puede determinar si usar `export()` o `S3method()`.
 
 ::: callout-tip
 ## RStudio
 
-Press Ctrl/Cmd + Shift + D, to generate your package's `NAMESPACE` (and `man/*.Rd` files).
-This is also available via *Document* in the *Build* menu and pane.
+Presione Ctrl/Cmd + Shift + D para generar el `NAMESPACE` de su paquete (y los archivos `man/*.Rd`).
+Esto también está disponible a través de *Document* en el menú y panel *Build*.
 :::
 
-## Package is listed in `Imports` {#sec-dependencies-in-imports}
+## El paquete aparece en `Imports` {#sec-dependencies-in-imports}
 
-Consider a dependency that is listed in `DESCRIPTION` in `Imports`:
+Considere una dependencia que aparece en `DESCRIPTIO` en `Imports`:
 
 ``` yaml
 Imports:
     aaapkg
 ```
 
-The code inside your package can assume that aaapkg is installed whenever pkg is installed.
+El código dentro de su paquete puede asumir que aaapkg está instalado cada vez que se instala pkg.
 
-### In code below R/ {#sec-dependencies-in-imports-r-code}
+### En el código debajo de R/ {#sec-dependencies-in-imports-r-code}
 
-Our recommended default is to call external functions using the `package::function()` syntax:
+Nuestro valor predeterminado recomendado es llamar a funciones externas usando la sintaxis `paquete::función()`:
 
 ```{r}
 #| eval: false
@@ -127,69 +127,69 @@ somefunction <- function(...) {
 }
 ```
 
-Specifically, we recommend that you default to *not* importing anything from aaapkg into your namespace.
-This makes it very easy to identify which functions live outside of your package, which is especially useful when you read your code in the future.
-This also eliminates any concerns about name conflicts between aaapkg and your package.
+Específicamente, le recomendamos que de forma predeterminada *no* importe nada desde aaapkg a su espacio de nombres.
+Esto hace que sea muy fácil identificar qué funciones se encuentran fuera de su paquete, lo cual es especialmente útil cuando lea su código en el futuro.
+Esto también elimina cualquier preocupación sobre conflictos de nombres entre aaapkg y su paquete.
 
-Of course there are reasons to make exceptions to this rule and to import something from another package into yours:
+Por supuesto, hay razones para hacer excepciones a esta regla e importar algo de otro paquete al suyo:
 
--   An operator: You can't call an operator from another package via `::`, so you must import it.
-    Examples: the null-coalescing operator `%||%` from rlang or the original pipe `%>%` from magrittr.
+-   Un operador: No puedes llamar a un operador desde otro paquete vía `::`, por lo que debes importarlo.
+    Ejemplos: el operador de fusión nula `%||%` de rlang o la canalización original `%>%` de magrittr.
 
--   A function that you use *a lot*: If importing a function makes your code much more readable, that's a good enough reason to import it.
-    This literally reduces the number of characters required to call the external function.
-    This can be especially handy when generating user-facing messages, because it makes it more likely that lines in the source correspond to lines in the output.
+-   Una función que usas *mucho*: si importar una función hace que tu código sea mucho más legible, esa es una buena razón para importarla.
+    Esto literalmente reduce la cantidad de caracteres necesarios para llamar a la función externa.
+    Esto puede ser especialmente útil al generar mensajes dirigidos al usuario, porque hace que sea más probable que las líneas del código fuente correspondan a las líneas de la salida.
 
--   A function that you call in a tight loop: There is a minor performance penalty associated with `::`.
-    It's on the order of 100ns, so it will only matter if you call the function millions of times.
+-   Una función que se llama en un bucle cerrado: hay una pequeña penalización de rendimiento asociada con `::`.
+    Es del orden de 100 ns, por lo que solo importará si llamas a la función millones de veces.
 
-A handy function for your interactive workflow is `usethis::use_import_from()`:
+Una función útil para su flujo de trabajo interactivo es `usethis::use_import_from()`:
 
 ```{r}
 #| eval: false
 usethis::use_import_from("glue", "glue_collapse")
 ```
 
-The call above writes this roxygen tag into the source code of your package:
+La llamada anterior escribe esta etiqueta roxygen en el código fuente de su paquete:
 
 ```{r}
 #| eval: false
 #' @importFrom glue glue_collapse
 ```
 
-Where should this roxygen tag go?
-There are two reasonable locations:
+¿Dónde debería ir esta etiqueta de roxygen?
+Hay dos ubicaciones razonables:
 
--   As close as possible to the usage of the external function.
-    With this mindset, you would place `@importFrom` in the roxygen comment above the function in your package where you use the external function.
-    If this is your style, you'll have to do it by hand.
-    We have found that this feels natural at first, but starts to break down as you use more external functions in more places.
+-   Lo más parecido posible al uso de la función externa.
+    Con esta mentalidad, colocaría `@importFrom` en el comentario de roxygen encima de la función en su paquete donde usa la función externa.
+    Si este es tu estilo, tendrás que hacerlo a mano.
+    Descubrimos que esto parece natural al principio, pero comienza a fallar a medida que se utilizan más funciones externas en más lugares.
 
--   In a central location.
-    This approach keeps all `@importFrom` tags together, in a dedicated section of the package-level documentation file (which can be created with `usethis::use_package_doc()`, @sec-man-package-doc).
-    This is what `use_import_from()` implements.
-    So, in `R/pkg-package.R`, you'll end up with something like this:
+-   En una ubicación central.
+    Este enfoque mantiene todas las etiquetas `@importFrom` juntas, en una sección dedicada del archivo de documentación a nivel de paquete (que se puede crear con `usethis::use_package_doc()`, @sec-man-package-doc).
+    Esto es lo que implementa `use_import_from()`.
+    Entonces, en `R/pkg-package.R`, terminarás con algo como esto:
 
     ```{r}
     #| eval: false
-    # The following block is used by usethis to automatically manage
-    # roxygen namespace tags. Modify with care!
+    # El siguiente bloque es utilizado por usethis para administrar automáticamente
+    # etiquetas de espacio de nombres de roxygen. ¡Modifique con cuidado!
     ## usethis namespace: start
     #' @importFrom glue glue_collapse
     ## usethis namespace: end
     NULL
     ```
 
-Recall that `devtools::document()` processes your roxygen comments (@sec-dependencies-NAMESPACE-workflow), which writes help topics to `man/*.Rd` and, relevant to our current goal, generates the `NAMESPACE` file.
-If you use `use_import_from()`, it does this for you and also calls `load_all()`, making the newly imported function available in your current session.
+Recuerde que `devtools::document()` procesa sus comentarios de roxygen (@sec-dependencies-NAMESPACE-workflow), que escribe temas de ayuda en `man/*.Rd` y, relevante para nuestro objetivo actual, genera el `NAMESPACE` archivo.
+Si usa `use_import_from()`, lo hace por usted y también llama a `load_all()`, haciendo que la función recién importada esté disponible en su sesión actual.
 
-The roxygen tag above causes this directive to appear in the `NAMESPACE` file:
+La etiqueta roxygen anterior hace que esta directiva aparezca en el archivo `NAMESPACE`:
 
 ```         
 importFrom(glue, glue_collapse)
 ```
 
-Now you can use the imported function directly in your code:
+Ahora puedes usar la función importada directamente en tu código:
 
 ```{r}
 somefunction <- function(...) {
@@ -199,31 +199,31 @@ somefunction <- function(...) {
 }
 ```
 
-Sometimes you make such heavy use of so many functions from another package that you want to import its entire namespace.
-This should be relatively rare.
-In the tidyverse, the package we most commonly treat this way is rlang, which functions almost like a base package for us.
+A veces haces un uso tan intenso de tantas funciones de otro paquete que deseas importar su espacio de nombres completo.
+Esto debería ser relativamente raro.
+En tidyverse, el paquete que más comúnmente tratamos de esta manera es rlang, que funciona casi como un paquete base para nosotros.
 
-Here is the roxygen tag that imports all of rlang.
-This should appear somewhere in `R/*.R`, such as the dedicated space described above for collecting all of your namespace import tags.
+Aquí está la etiqueta roxygen que importa todo rlang.
+Esto debería aparecer en algún lugar de `R/*.R`, como el espacio dedicado descrito anteriormente para recopilar todas las etiquetas de importación de espacios de nombres.
 
 ```{r}
 #| eval: false
 #' @import rlang
 ```
 
-After calling `devtools::document()`, this roxygen tag causes this directive to appear in the `NAMESPACE` file:
+Después de llamar a `devtools::document()`, esta etiqueta roxygen hace que esta directiva aparezca en el archivo `NAMESPACE`:
 
 ```         
 import(rlang)
 ```
 
-This is the least recommended solution because it can make your code harder to read (you can't tell where a function is coming from), and if you `@import` many packages, it increases the chance of function name conflicts.
-Save this for very special situations.
+Esta es la solución menos recomendada porque puede hacer que su código sea más difícil de leer (no puede saber de dónde proviene una función) y si `@importa` muchos paquetes, aumenta la posibilidad de que se produzcan conflictos con los nombres de las funciones.
+Guárdelo para situaciones muy especiales.
 
-#### How to *not* use a package in Imports
+#### Cómo *no* usar un paquete en Importaciones
 
-Sometimes you have a package listed in `Imports`, but you don't actually use it inside your package or, at least, R doesn't think you use it.
-That leads to a `NOTE` from `R CMD check`:
+A veces tienes un paquete listado en `Imports`, pero en realidad no lo usas dentro de tu paquete o, al menos, R no cree que lo uses.
+Eso lleva a una `NOTE` de `R CMD check`:
 
 ```         
 * checking dependencies in R code ... NOTE
@@ -231,16 +231,16 @@ Namespace in Imports field not imported from: ‘aaapkg’
   All declared Imports should be used.
 ```
 
-This can happen if you need to list an indirect dependency in `Imports`, perhaps to state a minimum version for it.
-The tidyverse meta-package has this problem on a large scale, since it exists mostly to install a bundle of packages at specific versions.
-Another scenario is when your package uses a dependency in such a way that requires another package that is only suggested by the direct dependency[^dependencies-in-practice-1].
-There are various situations where it's not obvious that your package truly needs every package listed in `Imports`, but in fact it does.
+Esto puede suceder si necesita enumerar una dependencia indirecta en "Importaciones", tal vez para indicar una versión mínima para ella.
+El metapaquete tidyverse tiene este problema a gran escala, ya que existe principalmente para instalar un conjunto de paquetes en versiones específicas.
+Otro escenario es cuando su paquete usa una dependencia de tal manera que requiere otro paquete que solo es sugerido por la dependencia directa[^dependencies-in-practice-1].
+Hay varias situaciones en las que no es obvio que su paquete realmente necesite todos los paquetes enumerados en "Importaciones", pero de hecho es así.
 
-[^dependencies-in-practice-1]: For example, if your package needs to call `ggplot2::geom_hex()`, you might choose to list hexbin in `Imports`, since ggplot2 only lists it in `Suggests`.
+[^dependencies-in-practice-1]: Por ejemplo, si su paquete necesita llamar a `ggplot2::geom_hex()`, puede optar por incluir hexbin en `Imports`, ya que ggplot2 solo lo incluye en `Suggests`.
 
-How can you get rid of this `NOTE`?
+¿Cómo puede deshacerse de esta "NOTA"?
 
-Our recommendation is to put a namespace-qualified reference (not a call) to an object in aaapkg in some file below `R/`, such as a `.R` file associated with package-wide setup:
+Nuestra recomendación es colocar una referencia calificada de espacio de nombres (no una llamada) a un objeto en aaapkg en algún archivo debajo de `R/`, como un archivo `.R` asociado con la configuración de todo el paquete:
 
 ```{r}
 #| eval: false
@@ -249,44 +249,44 @@ ignore_unused_imports <- function() {
 }
 ```
 
-You don't need to call `ignore_unused_imports()` anywhere.
-You shouldn't export it.
-You don't have to actually exercise `aaapkg::aaa_fun()`.
-What's important is to access something in aaapkg's namespace with `::`.
+No es necesario llamar a `ignore_unused_imports()` en ningún lado.
+No deberías exportarlo.
+En realidad, no es necesario ejercitar `aaapkg::aaa_fun()`.
+Lo importante es acceder a algo en el espacio de nombres de aaapkg con `::`.
 
-An alternative approach you might be tempted to use is to import `aaapkg::aaa_fun()` into your package's namespace, probably with the roxygen tag `@importFrom aaapkg aaa_fun`.
-This does suppress the `NOTE`, but it also does more.
-This causes aaapkg to be loaded whenever your package is loaded.
-In contrast, if you use the approach we recommend, the aaapkg will only be loaded if your user does something that actually requires it.
-This rarely matters in practice, but it's always nice to minimize or delay the loading of additional packages.
+Un método alternativo que podría verse tentado a utilizar es importar `aaapkg::aaa_fun()` al espacio de nombres de su paquete, probablemente con la etiqueta roxygen `@importFrom aaapkg aaa_fun`.
+Esto suprime la "NOTA", pero también hace más.
+Esto hace que aaapkg se cargue cada vez que se carga su paquete.
+Por el contrario, si utiliza el método que recomendamos, el aaapkg sólo se cargará si su usuario hace algo que realmente lo requiera.
+Esto rara vez importa en la práctica, pero siempre es bueno minimizar o retrasar la carga de paquetes adicionales.
 
-### In test code {#sec-dependencies-in-imports-in-tests}
+### En el código de prueba {#sec-dependencies-in-imports-in-tests}
 
-Refer to external functions in your tests just as you refer to them in the code below `R/`.
-Usually this means you should use `aaapkg::aaa_fun()`.
-But if you have imported a particular function, either specifically or as part of an entire namespace, you can just call it directly in your test code.
+Consulte las funciones externas en sus pruebas tal como las hace en el código debajo de `R/`.
+Generalmente esto significa que debes usar `aaapkg::aaa_fun()`.
+Pero si ha importado una función particular, ya sea específicamente o como parte de un espacio de nombres completo, puede llamarla directamente en su código de prueba.
 
-It's generally a bad idea to use `library(aaapkg)` to attach one of your dependencies somewhere in your tests, because it makes the search path in your tests different from how your package actually works.
-This is covered in more detail in @sec-testing-design-tension.
+Generalmente es una mala idea usar `library(aaapkg)` para adjuntar una de sus dependencias en algún lugar de sus pruebas, porque hace que la ruta de búsqueda en sus pruebas sea diferente de cómo funciona realmente su paquete.
+Esto se trata con más detalle en @sec-testing-design-tension.
 
-### In examples and vignettes
+### En ejemplos y viñetas
 
-If you use a package that appears in `Imports` in one of your examples or vignettes, you'll need to either attach the package with `library(aaapkg)` or use a `aaapkg::aaa_fun()`-style call.
-You can assume that aaapkg is available, because that's what `Imports` guarantees.
-Read more in @sec-man-examples-dependencies-conditional-execution and @sec-vignettes-eval-option.
+Si usa un paquete que aparece en `Imports` en uno de sus ejemplos o viñetas, deberá adjuntar el paquete con `library(aaapkg)` o usar una llamada de estilo `aaapkg::aaa_fun()`.
+Puedes asumir que aaapkg está disponible, porque eso es lo que garantiza `Imports`.
+Lea más en @sec-man-examples-dependencies-conditional-execution y @sec-vignettes-eval-option.
 
-## Package is listed in `Suggests` {#sec-dependencies-in-suggests}
+## El paquete aparece en `Suggests` {#sec-dependencies-in-suggests}
 
-Consider a dependency that is listed in `DESCRIPTION` in `Suggests`:
+Considere una dependencia que aparece en `DESCRIPTION` en `Suggests`:
 
 ``` yaml
 Suggests:
     aaapkg
 ```
 
-You can NOT assume that every user has installed aaapkg (but you can assume that a developer has).
-Whether a user has aaapkg will depend on how they installed your package.
-Most of the functions that are used to install packages support a `dependencies` argument that controls whether to install just the hard dependencies or to take a more expansive approach, which includes suggested packages:
+NO puede asumir que todos los usuarios han instalado aaapkg (pero puede asumir que un desarrollador sí lo ha hecho).
+Que un usuario tenga aaapkg dependerá de cómo instaló su paquete.
+La mayoría de las funciones que se utilizan para instalar paquetes admiten un argumento de "dependencias" que controla si se instalan solo las dependencias físicas o se adopta un enfoque más amplio, que incluye paquetes sugeridos:
 
 ```{r}
 #| eval: false
@@ -295,15 +295,15 @@ remotes::install_github(dependencies =)
 pak::pkg_install(dependencies =)
 ```
 
-Broadly speaking, the default is to not install packages in `Suggests`.
+En términos generales, lo predeterminado es no instalar paquetes en `Suggests`.
 
-### In code below `R/` {#sec-dependencies-in-suggests-r-code}
+### En el código debajo de `R/` {#sec-dependencies-in-suggests-r-code}
 
-Inside a function in your own package, check for the availability of a suggested package with `requireNamespace("aaapkg", quietly = TRUE)`.
-There are two basic scenarios: the dependency is absolutely required or your package offers some sort of fallback behaviour.
+Dentro de una función en su propio paquete, verifique la disponibilidad de un paquete sugerido con `requireNamespace("aaapkg", quietly = TRUE)`.
+Hay dos escenarios básicos: la dependencia es absolutamente necesaria o su paquete ofrece algún tipo de comportamiento alternativo.
 
 ```{r}
-# the suggested package is required 
+# el paquete sugerido es obligatorio 
 my_fun <- function(a, b) {
   if (!requireNamespace("aaapkg", quietly = TRUE)) {
     stop(
@@ -311,10 +311,10 @@ my_fun <- function(a, b) {
       call. = FALSE
     )
   }
-  # code that includes calls such as aaapkg::aaa_fun()
+  # código que incluye llamadas como aaapkg::aaa_fun()
 }
 
-# the suggested package is optional; a fallback method is available
+# el paquete sugerido es opcional; hay un método alternativo disponible
 my_fun <- function(a, b) {
   if (requireNamespace("aaapkg", quietly = TRUE)) {
     aaapkg::aaa_fun()
@@ -324,17 +324,17 @@ my_fun <- function(a, b) {
 }
 ```
 
-The rlang package has some useful functions for checking package availability: `rlang::check_installed()` and `rlang::is_installed()`.
-Here's how the checks around a suggested package could look if you use rlang:
+El paquete rlang tiene algunas funciones útiles para comprobar la disponibilidad del paquete: `rlang::check_installed()` y `rlang::is_installed()`.
+Así es como podrían verse las comprobaciones de un paquete sugerido si usas rlang:
 
 ```{r}
-# the suggested package is required 
+# el paquete sugerido es obligatorio
 my_fun <- function(a, b) {
   rlang::check_installed("aaapkg", reason = "to use `aaa_fun()`")
-  # code that includes calls such as aaapkg::aaa_fun()
+  # código que incluye llamadas como aaapkg::aaa_fun()
 }
 
-# the suggested package is optional; a fallback method is available
+# el paquete sugerido es opcional; hay un método alternativo disponible
 my_fun <- function(a, b) {
   if (rlang::is_installed("aaapkg")) {
     aaapkg::aaa_fun()
@@ -344,23 +344,23 @@ my_fun <- function(a, b) {
 }
 ```
 
-These rlang functions have handy features for programming, such as vectorization over `pkg`, classed errors with a data payload, and, for `check_installed()`, an offer to install the needed package in an interactive session.
+Estas funciones de rlang tienen características útiles para la programación, como vectorización sobre `pkg`, errores clasificados con una carga útil de datos y, para `check_installed()`, una oferta para instalar el paquete necesario en una sesión interactiva.
 
-### In test code {#sec-dependencies-in-suggests-in-tests}
+### En el código de prueba {#sec-dependencies-in-suggests-in-tests}
 
-The tidyverse team generally writes tests as if all suggested packages are available.
-That is, we use them unconditionally in the tests.
+El equipo de tidyverse generalmente escribe pruebas como si todos los paquetes sugeridos estuvieran disponibles.
+Es decir, los utilizamos incondicionalmente en las pruebas.
 
-The motivation for this posture is self-consistency and pragmatism.
-The key package needed to run tests is testthat and it appears in `Suggests`, not in `Imports` or `Depends`.
-Therefore, if the tests are actually executing, that implies that an expansive notion of package dependencies has been applied.
+La motivación para esta postura es la autoconsistencia y el pragmatismo.
+El paquete clave necesario para ejecutar pruebas es testthat y aparece en `Suggests`, no en `Imports` o `Depends`.
+Por lo tanto, si las pruebas realmente se están ejecutando, eso implica que se ha aplicado una noción amplia de dependencias de paquetes.
 
-Also, empirically, in every important scenario of running `R CMD check`, the suggested packages are installed.
-This is generally true for CRAN and we ensure that it's true in our own automated checks.
-However, it's important to note that other package maintainers take a different stance and choose to protect all usage of suggested packages in their tests and vignettes.
+Además, empíricamente, en cada escenario importante de ejecución de `R CMD check`, se instalan los paquetes sugeridos.
+Esto es generalmente cierto para CRAN y nos aseguramos de que así sea en nuestras propias comprobaciones automatizadas.
+Sin embargo, es importante tener en cuenta que otros mantenedores de paquetes adoptan una postura diferente y optan por proteger todo uso de los paquetes sugeridos en sus pruebas y viñetas.
 
-Sometimes even we make an exception and guard the use of a suggested package in a test.
-Here's a test from ggplot2, which uses `testthat::skip_if_not_installed()` to skip execution if the suggested sf package is not available.
+A veces incluso hacemos una excepción y protegemos el uso de un paquete sugerido en una prueba.
+Aquí hay una prueba de ggplot2, que usa `testthat::skip_if_not_installed()` para omitir la ejecución si el paquete sf sugerido no está disponible.
 
 ```{r}
 #| eval: false
@@ -384,87 +384,87 @@ test_that("basic plot builds without error", {
 })
 ```
 
-What might justify the use of `skip_if_not_installed()`?
-In this case, the sf package can be nontrivial to install and it is conceivable that a contributor would want to run the remaining tests, even if sf is not available.
+¿Qué podría justificar el uso de `skip_if_not_installed()`?
+En este caso, la instalación del paquete sf puede no ser fácil y es posible que un colaborador quiera ejecutar las pruebas restantes, incluso si sf no está disponible.
 
-Finally, note that `testthat::skip_if_not_installed(pkg, minimum_version = "x.y.z")` can be used to conditionally skip a test based on the version of the other package.
+Finalmente, tenga en cuenta que `testthat::skip_if_not_installed(pkg, minimal_version = "xyz")` se puede usar para omitir condicionalmente una prueba según la versión del otro paquete.
 
-### In examples and vignettes {#sec-dependencies-in-suggests-in-examples-and-vignettes}
+### En ejemplos y viñetas {#sec-dependencias-en-sugerencias-en-ejemplos-y-viñetas}
 
-Another common place to use a suggested package is in an example and here we often guard with `require()` or `requireNamespace()`.
-This example is from `ggplot2::coord_map()`.
-ggplot2 lists the maps package in `Suggests`.
+Otro lugar común para usar un paquete sugerido es en un ejemplo y aquí a menudo lo protegemos con `require()` o `requireNamespace()`.
+Este ejemplo es de `ggplot2::coord_map()`.
+ggplot2 enumera el paquete de mapas en `Suggests`.
 
 ```{r}
 #| eval: false
 #' @examples
 #' if (require("maps")) {
 #'   nz <- map_data("nz")
-#'   # Prepare a map of NZ
+#'   # Prepara un mapa de Nueva Zelanda
 #'   nzmap <- ggplot(nz, aes(x = long, y = lat, group = group)) +
 #'     geom_polygon(fill = "white", colour = "black")
 #'  
-#'   # Plot it in cartesian coordinates
+#'   # Grafica en cordenadas cartesianas
 #'   nzmap
 #' }
 ```
 
-An example is basically the only place where we would use `require()` inside a package.
-Read more in @sec-dependencies-attach-vs-load.
+Un ejemplo es básicamente el único lugar donde usaríamos `require()` dentro de un paquete.
+Lea más en @sec-dependencies-attach-vs-load.
 
-Our stance regarding the use of suggested packages in vignettes is similar to that for tests.
-The key packages needed to build vignettes (rmarkdown and knitr) are listed in `Suggests`.
-Therefore, if the vignettes are being built, it's reasonable to assume that all of the suggested packages are available.
-We typically use suggested packages unconditionally inside vignettes.
+Nuestra postura con respecto al uso de paquetes sugeridos en viñetas es similar a la de las pruebas.
+Los paquetes clave necesarios para crear viñetas (rmarkdown y knitr) se enumeran en `Suggests`.
+Por lo tanto, si se están creando las viñetas, es razonable suponer que todos los paquetes sugeridos están disponibles.
+Normalmente utilizamos paquetes sugeridos incondicionalmente dentro de viñetas.
 
-But if you choose to use suggested packages conditionally in your vignettes, the knitr chunk option `eval` is very useful for achieving this.
-See @sec-vignettes-eval-option for more.
+Pero si elige utilizar paquetes sugeridos de forma condicional en sus viñetas, la opción knitr chunk `eval` es muy útil para lograrlo.
+Consulte @sec-vignettes-eval-option para obtener más información.
 
-## Package is listed in `Depends` {#sec-dependencies-in-depends}
+## El paquete aparece en `Depends` {#sec-dependencies-in-depends}
 
-Consider a dependency that is listed in `DESCRIPTION` in `Depends`:
+Considere una dependencia que aparece en `DESCRIPTION` en `Depends`:
 
 ``` yaml
 Depends:
     aaapkg
 ```
 
-This situation has a lot in common with a package listed in `Imports`.
-The code inside your package can assume that aaapkg is installed on the system.
-The only difference is that aaapkg will be attached whenever your package is.
+Esta situación tiene mucho en común con un paquete listado en `Imports`.
+El código dentro de su paquete puede asumir que aaapkg está instalado en el sistema.
+La única diferencia es que aaapkg se adjuntará cada vez que se envíe su paquete.
 
-### In code below `R/` and in test code
+### En el código debajo de `R/` y en el código de prueba
 
-Your options are exactly the same as using functions from a package listed in `Imports`:
+Sus opciones son exactamente las mismas que usar funciones de un paquete enumerado en `Imports`:
 
--   Use the `aaapkg::aaa_fun()` syntax.
+-   Utilice la sintaxis `aaapkg::aaa_fun()`.
 
--   Import an individual function with the `@importFrom aaapkg aaa_fun` roxygen tag and call `aaa_fun()` directly.
+-   Importe una función individual con la etiqueta roxygen `@importFrom aaapkg aaa_fun` y llame a `aaa_fun()` directamente.
 
--   Import the entire aaapkg namespace with the `@import aaapkg` roxygen tag and call any function directly.
+-   Importe todo el espacio de nombres aaapkg con la etiqueta roxygen `@import aaapkg` y llame a cualquier función directamente.
 
-The main difference between this situation and a dependency listed in `Imports` is that it's much more common to import the entire namespace of a package listed in `Depends`.
-This often makes sense, due to the special dependency relationship that motivated listing it in `Depends` in the first place.
+La principal diferencia entre esta situación y una dependencia enumerada en `Imports` es que es mucho más común importar el espacio de nombres completo de un paquete enumerado en `Depends`.
+Esto a menudo tiene sentido, debido a la relación de dependencia especial que motivó su inclusión en `Depends` en primer lugar.
 
-### In examples and vignettes
+### En ejemplos y viñetas
 
-This is the most obvious difference with a dependency in `Depends` versus `Imports`.
-Since your package is attached when your examples are executed, so is the package listed in `Depends`.
-You don't have to attach it explicitly with `library(aaapkg)`.
+Esta es la diferencia más obvia entre una dependencia en `Depends` versus `Imports`.
+Dado que su paquete se adjunta cuando se ejecutan sus ejemplos, también se adjunta el paquete que figura en `Depends`.
+No es necesario adjuntarlo explícitamente con `library(aaapkg)`.
 
-The ggforce package `Depends` on ggplot2 and the examples for `ggforce::geom_mark_rect()` use functions like `ggplot2::ggplot()` and `ggplot2::geom_point()` without any explicit call to `library(ggplot2)`:
+El paquete ggforce depende de ggplot2 y los ejemplos de `ggforce::geom_mark_rect()` usan funciones como `ggplot2::ggplot()` y `ggplot2::geom_point()` sin ninguna llamada explícita a `library(ggplot2)`:
 
 ```{r}
 #| eval: false
 ggplot(iris, aes(Petal.Length, Petal.Width)) +
   geom_mark_rect(aes(fill = Species, filter = Species != 'versicolor')) +
   geom_point()
-# example code continues ...
+# el código ejemplo continua ...
 ```
 
-The first line of code executed in one of your vignettes is probably `library(pkg)`, which attaches your package and, as a side effect, attaches any dependency listed in `Depends`.
-You do not need to explicitly attach the dependency before using it.
-The censored package `Depends` on the survival package and the code in `vignette("examples", package = "censored")` starts out like so:
+La primera línea de código ejecutada en una de sus viñetas es probablemente `library(pkg)`, que adjunta su paquete y, como efecto secundario, adjunta cualquier dependencia enumerada en `Depends`.
+No es necesario adjuntar explícitamente la dependencia antes de usarla.
+El paquete censored depende del paquete de suvirval y el código en `vignette("examples", package = "censored")` comienza así:
 
 ```{r}
 #| eval: false
@@ -472,28 +472,28 @@ library(tidymodels)
 library(censored)
 #> Loading required package: survival
 
-# vignette code continues ...
+# código de viñeta continua ...
 ```
 
-## Package is a nonstandard dependency {#sec-dependencies-nonstandard}
+## El paquete es una dependencia no estándar {#sec-dependencies-nonstandard}
 
-In packages developed with devtools, you may see `DESCRIPTION` files that use a couple other nonstandard fields for package dependencies specific to development tasks.
+En los paquetes desarrollados con devtools, es posible que vea archivos `DESCRIPTION` que utilizan un par de campos no estándar para dependencias de paquetes específicas para tareas de desarrollo.
 
-### Depending on the development version of a package
+### Dependiendo de la versión de desarrollo de un paquete
 
-The `Remotes` field can be used when you need to install a dependency from a nonstandard place, i.e. from somewhere besides CRAN or Bioconductor.
-One common example of this is when you're developing against a development version of one of your dependencies.
-During this time, you'll want to install the dependency from its development repository, which is often GitHub.
-The way to specify various remote sources is described in a [devtools vignette](https://devtools.r-lib.org/articles/dependencies.html) and in a [pak help topic](https://pak.r-lib.org/reference/pak_package_sources.html).
+El campo `Remotes` se puede utilizar cuando necesita instalar una dependencia desde un lugar no estándar, es decir, desde algún lugar además de CRAN o Bioconductor.
+Un ejemplo común de esto es cuando estás desarrollando contra una versión de desarrollo de una de tus dependencias.
+Durante este tiempo, querrás instalar la dependencia desde su repositorio de desarrollo, que suele ser GitHub.
+La forma de especificar varias fuentes remotas se describe en una [viñeta de devtools](https://devtools.r-lib.org/articles/dependencies.html) y en un [tema de ayuda del paquete](https://pak.r%20-lib.org/reference/pak_package_sources.html).
 
-The dependency and any minimum version requirement still need to be declared in the normal way in, e.g., `Imports`.
-`usethis::use_dev_package()` helps to make the necessary changes in `DESCRIPTION`.
-If your package temporarily relies on a development version of aaapkg, the affected `DESCRIPTION` fields might evolve like this:
+La dependencia y cualquier requisito de versión mínima aún deben declararse de la forma habitual en, por ejemplo, `Imports`.
+`usethis::use_dev_package()` ayuda a realizar los cambios necesarios en `DESCRIPTION`.
+Si su paquete depende temporalmente de una versión de desarrollo de aaapkg, los campos `DESCRIPTION` afectados podrían evolucionar de esta manera:
 
 <!-- This is unlovely, but I just wanted to get the content down "on paper". It's easier to convey with a concrete example. -->
 
 ```         
-Stable -->               Dev -->                       Stable again
+Estable -->              Desarrollo -->               Estable de nuevo
 ----------------------   ---------------------------   ----------------------
 Package: pkg             Package: pkg                  Package: pkg
 Version: 1.0.0           Version: 1.0.0.9000           Version: 1.1.0
@@ -506,13 +506,13 @@ Imports:                 Imports:                      Imports:
 ::: callout-warning
 ## CRAN
 
-It's important to note that you should not submit your package to CRAN in the intermediate state, meaning with a `Remotes` field and with a dependency required at a version that's not available from CRAN or Bioconductor.
-For CRAN packages, this can only be a temporary development state, eventually resolved when the dependency updates on CRAN and you can bump your minimum version accordingly.
+Es importante tener en cuenta que no debe enviar su paquete a CRAN en el estado intermedio, es decir, con un campo `Remotes` y con una dependencia requerida en una versión que no está disponible en CRAN o Bioconductor.
+Para los paquetes CRAN, esto solo puede ser un estado de desarrollo temporal, que eventualmente se resuelve cuando la dependencia se actualiza en CRAN y usted puede aumentar su versión mínima en consecuencia.
 :::
 
-### `Config/Needs/*` field {#sec-dependencies-nonstandard-config-needs}
+### El campo `Config/Needs/*` {#sec-dependencies-nonstandard-config-needs}
 
-You may also see devtools-developed packages with packages listed in `DESCRIPTION` fields in the form of `Config/Needs/*`, which we described in @sec-description-custom-fields.
+También puede ver paquetes desarrollados por devtools con paquetes enumerados en los campos `DESCRIPTION` en el formato `Config/Needs/*`, que describimos en @sec-description-custom-fields.
 
 ```{=html}
 <!--
@@ -520,20 +520,20 @@ https://github.com/wch/r-source/blob/de49776d9fe54cb4580fbbd04906b40fe2f6117e/sr
 https://github.com/wch/r-source/blob/efacf56dcf2f880b9db8eafa28d49a08d56e861e/src/library/tools/R/utils.R#L1316-L1389
 -->
 ```
-The use of `Config/Needs/*` is not directly related to devtools.
-It's more accurate to say that it's associated with continuous integration workflows made available to the community at <https://github.com/r-lib/actions/> and exposed via functions such as `usethis::use_github_actions()`.
-A `Config/Needs/*` field tells the [`setup-r-dependencies`](https://github.com/r-lib/actions/tree/HEAD/setup-r-dependencies#readme) GitHub Action about extra packages that need to be installed.
+El uso de `Config/Needs/*` no está directamente relacionado con devtools.
+Es más exacto decir que está asociado con flujos de trabajo de integración continua puestos a disposición de la comunidad en <https://github.com/r-lib/actions/> y expuesto a través de funciones como `usethis::use_github_actions()`.
+Un campo `Config/Needs/*` le indica a la acción de GitHub [`setup-r-dependencies`](https://github.com/r-lib/actions/tree/HEAD/setup-r-dependencies#readme) acerca de paquetes adicionales que deben instalarse.
 
-`Config/Needs/website` is the most common and it provides a place to specify packages that aren't a formal dependency, but that must be present in order to build the package's website (@sec-website).
-The readxl package is a good example.
-It has a [non-vignette article on workflows](https://readxl.tidyverse.org/articles/readxl-workflows.html) that shows readxl working in concert with other tidyverse packages, such as readr and purrr.
-But it doesn't make sense for readxl to have a formal dependency on readr or purrr or (even worse) the tidyverse!
+`Config/Needs/website` es el más común y proporciona un lugar para especificar paquetes que no son una dependencia formal, pero que deben estar presentes para construir el sitio web del paquete (@sec-website).
+El paquete readxl es un buen ejemplo.
+Tiene un [artículo sin viñeta sobre flujos de trabajo](https://readxl.tidyverse.org/articles/readxl-workflows.html) que muestra a readxl trabajando en conjunto con otros paquetes de tidyverse, como readr y purrr.
+¡Pero no tiene sentido que readxl tenga una dependencia formal de readr o purrr o (peor aún) tidyverse!
 
-On the left is what readxl has in the `Config/Needs/website` field of `DESCRIPTION` to indicate that the tidyverse is needed in order to build the website, which is also formatted with styling that lives in the `tidyverse/template` GitHub repo.
-On the right is the corresponding excerpt from the configuration of the workflow that builds and deploys the website.
+A la izquierda está lo que readxl tiene en el campo `Configuración/Necesidades/sitio web` de `DESCRIPCIÓN` para indicar que se necesita tidyverse para construir el sitio web, que también está formateado con un estilo que se encuentra en `tidyverse/template` Repositorio de GitHub.
+A la derecha está el extracto correspondiente de la configuración del flujo de trabajo que crea e implementa el sitio web.
 
 ```         
-in DESCRIPTION                  in .github/workflows/pkgdown.yaml
+en DESCRIPTION                  en .github/workflows/pkgdown.yaml
 --------------------------      ---------------------------------
 Config/Needs/website:           - uses: r-lib/actions/setup-r-dependencies@v2
     tidyverse,                    with:
@@ -541,67 +541,67 @@ Config/Needs/website:           - uses: r-lib/actions/setup-r-dependencies@v2
                                     needs: website
 ```
 
-Package websites and continuous integration are discussed more in @sec-website and @sec-sw-dev-practices-ci, respectively.
+Los sitios web de paquetes y la integración continua se analizan con más detalle en @sec-website y @sec-sw-dev-practices-ci, respectivamente.
 
-The `Config/Needs/*` convention is handy because it allows a developer to use `DESCRIPTION` as their definitive record of package dependencies, while maintaining a clean distinction between true runtime dependencies versus those that are only needed for specialized development tasks.
+La convención `Config/Needs/*` es útil porque permite a un desarrollador usar `DESCRIPTION` como su registro definitivo de dependencias de paquetes, manteniendo al mismo tiempo una distinción clara entre las verdaderas dependencias de tiempo de ejecución y aquellas que solo son necesarias para tareas de desarrollo especializadas.
 
-## Exports
+## Exportaciones
 
-For a function to be usable outside of your package, you must **export** it.
-When you create a new package with `usethis::create_package()`, nothing is exported at first, even once you add some functions.
-You can still experiment interactively with `load_all()`, since that loads all functions, not just those that are exported.
-But if you install and attach the package with `library(pkg)` in a fresh R session, you'll notice that no functions are available.
+Para que una función se pueda utilizar fuera de su paquete, debe **exportarla**.
+Cuando crea un nuevo paquete con `usethis::create_package()`, al principio no se exporta nada, ni siquiera una vez que agrega algunas funciones.
+Aún puedes experimentar interactivamente con `load_all()`, ya que carga todas las funciones, no solo las que se exportan.
+Pero si instala y adjunta el paquete con `library(pkg)` en una nueva sesión de R, notará que no hay funciones disponibles.
 
-### What to export
+### Qué exportar
 
-Export functions that you want other people to use.
-Exported functions must be documented, and you must be cautious when changing their interface --- other people are using them!
-Generally, it's better to export too little than too much.
-It's easy to start exporting something that you previously did not; it's hard to stop exporting a function because it might break existing code.
-Always err on the side of caution, and simplicity.
-It's easier to give people more functionality than it is to take away stuff they're used to.
+Exporta funciones que quieras que utilicen otras personas.
+Las funciones exportadas deben estar documentadas y debe tener cuidado al cambiar su interfaz: ¡otras personas las están usando!
+Generalmente es mejor exportar muy poco que demasiado.
+Es fácil empezar a exportar algo que antes no hacía; Es difícil dejar de exportar una función porque podría romper el código existente.
+Siempre opte por el lado de la precaución y la simplicidad.
+Es más fácil darle a las personas más funcionalidades que quitarles cosas a las que están acostumbradas.
 
-We believe that packages that have a wide audience should strive to do one thing and do it well.
-All functions in a package should be related to a single problem (or a set of closely related problems).
-Any functions not related to that purpose should not be exported.
-For example, most of our packages have a `utils.R` file (@sec-code-organising) that contains small utility functions that are useful internally, but aren't part of the core purpose of those packages.
-We don't export such functions.
-There are at least two reasons for this:
+Creemos que los paquetes que tienen una amplia audiencia deben esforzarse por hacer una cosa y hacerlo bien.
+Todas las funciones de un paquete deben estar relacionadas con un único problema (o un conjunto de problemas estrechamente relacionados).
+Cualquier función que no esté relacionada con ese propósito no debe exportarse.
+Por ejemplo, la mayoría de nuestros paquetes tienen un archivo `utils.R` (@sec-code-organising) que contiene pequeñas funciones de utilidad que son útiles internamente, pero que no forman parte del propósito principal de esos paquetes.
+No exportamos tales funciones.
+Hay al menos dos razones para esto:
 
--   Freedom to be less robust and less general.
-    A utility for internal use doesn't have to be implemented in the same way as a function used by others.
-    You just need to cover your own use case.
+-   Libertad para ser menos robusto y menos general.
+    Una utilidad para uso interno no tiene por qué implementarse de la misma manera que una función utilizada por otros.
+    Sólo necesita cubrir su propio caso de uso.
 
--   Regrettable reverse dependencies.
-    You don't want people depending on your package for functionality and functions that are unrelated to its core purpose.
+-   Dependencias inversas lamentables.
+    No desea que las personas dependan de su paquete para obtener funcionalidades y funciones que no están relacionadas con su propósito principal.
 
-That said, if you're creating a package for yourself, it's far less important to be this disciplined.
-Because you know what's in your package, it's fine to have a local "miscellany" package that contains a hodgepodge of functions that you find useful.
-But it is probably not a good idea to release such a package for wider use.
+Dicho esto, si estás creando un paquete para ti mismo, es mucho menos importante ser tan disciplinado.
+Como sabe lo que hay en su paquete, está bien tener un paquete "misceláneo" local que contenga una mezcolanza de funciones que le resulten útiles.
+Pero probablemente no sea una buena idea lanzar un paquete de este tipo para un uso más amplio.
 
-Sometimes your package has a function that could be of interest to other developers extending your package, but not to typical users.
-In this case, you want to export the function, but also to give it a very low profile in terms of public documentation.
-This can be achieved by combining the roxygen tags `@export` and `@keywords internal`.
-The `internal` keyword keeps the function from appearing in the package index, but the associated help topic still exists and the function still appears among those exported in the `NAMESPACE` file.
+A veces su paquete tiene una función que podría ser de interés para otros desarrolladores que amplíen su paquete, pero no para los usuarios típicos.
+En este caso, se desea exportar la función, pero también darle un perfil muy bajo en términos de documentación pública.
+Esto se puede lograr combinando las etiquetas roxygen `@export` y `@keywords internal`.
+La palabra clave `internal` evita que la función aparezca en el índice del paquete, pero el tema de ayuda asociado todavía existe y la función sigue apareciendo entre las exportadas en el archivo `NAMESPACE`.
 
-### Re-exporting
+### Reexportación
 
-Sometimes you want to make something available to users of your package that is actually provided by one of your dependencies.
-When devtools was split into several smaller packages (@sec-setup-usage), many of the user-facing functions moved elsewhere.
-For usethis, the chosen solution was to list it in `Depends` (@sec-dependencies-imports-vs-depends), but that is not a good general solution.
-Instead, devtools now re-exports certain functions that actually live in a different package.
+A veces desea que algo esté disponible para los usuarios de su paquete y que en realidad lo proporciona una de sus dependencias.
+Cuando devtools se dividió en varios paquetes más pequeños (@sec-setup-usage), muchas de las funciones orientadas al usuario se trasladaron a otra parte.
+Para usar esto, la solución elegida fue incluirlo en `Depends` (@sec-dependencies-imports-vs-depends), pero esa no es una buena solución general.
+En cambio, devtools ahora reexporta ciertas funciones que en realidad se encuentran en un paquete diferente.
 
-Here is a blueprint for re-exporting an object from another package, using the `session_info()` function as our example:
+Aquí hay un modelo para reexportar un objeto de otro paquete, usando la función `session_info()` como nuestro ejemplo:
 
-1.  List the package that hosts the re-exported object in `Imports` in `DESCRIPTION`.[^dependencies-in-practice-2]
-    In this case, the `session_info()` function is exported by the sessioninfo package.
+1.  Enumere el paquete que aloja el objeto reexportado en `Imports` en `DESCRIPCIÓN`.[^dependencies-in-practice-2]
+    En este caso, la función `session_info()` se exporta mediante el paquete sessioninfo.
 
     ``` yaml
     Imports:
         sessioninfo
     ```
 
-2.  In one of your `R/*.R` files, have a reference to the target function, preceded by roxygen tags for both importing and exporting.
+2.  En uno de sus archivos `R/*.R`, tenga una referencia a la función de destino, precedida por etiquetas roxygen tanto para importar como para exportar.
 
     ```{r}
     #| eval: false
@@ -610,10 +610,10 @@ Here is a blueprint for re-exporting an object from another package, using the `
     sessioninfo::session_info
     ```
 
-[^dependencies-in-practice-2]: Remember `usethis::use_package()` is helpful for adding dependencies to `DESCRIPTION`.
+[^dependencies-in-practice-2]: Recuerde que `usethis::use_package()` es útil para agregar dependencias a `DESCRIPTION`.
 
-That's it!
-Next time you re-generate NAMESPACE, these two lines will be there (typically interspersed with other exports and imports):
+¡Eso es todo!
+La próxima vez que vuelva a generar NAMESPACE, estas dos líneas estarán allí (normalmente intercaladas con otras exportaciones e importaciones):
 
 ```         
 ...
@@ -623,34 +623,34 @@ importFrom(sessioninfo,session_info)
 ...
 ```
 
-And this explains how `library(devtools)` makes `session_info()` available in the current session.
-This will also lead to the creation of the `man/reexports.Rd` file, which finesses the requirement that your package must document all of its exported functions.
-This help topic lists all re-exported objects and links to their primary documentation.
+Y esto explica cómo `library(devtools)` hace que `session_info()` esté disponible en la sesión actual.
+Esto también conducirá a la creación del archivo `man/reexports.Rd`, que perfecciona el requisito de que su paquete debe documentar todas sus funciones exportadas.
+Este tema de ayuda enumera todos los objetos reexportados y enlaces a su documentación principal.
 
-## Imports and exports related to S3
+## Importaciones y exportaciones relacionadas con S3
 
-R has multiple object-oriented programming (OOP) systems:
+R tiene múltiples sistemas de programación orientada a objetos (OOP):
 
--   S3 is currently the most important for us and is what's addressed in this book.
-    The [S3 chapter of Advanced R](https://adv-r.hadley.nz/s3.html) is a good place to learn more about S3 conceptually and the [vctrs package](https://vctrs.r-lib.org) is worth studying for practical knowledge.
+-   S3 es actualmente el más importante para nosotros y es lo que se aborda en este libro.
+    El [capítulo S3 de Advanced R](https://adv-r.hadley.nz/s3.html) es un buen lugar para aprender más sobre S3 conceptualmente y el [paquete vctrs](https://vctrs.r-%20lib.org) vale la pena estudiarlo para obtener conocimientos prácticos.
 
--   S4 is very important within certain R communities, most notably within the Bioconductor project.
-    We only use S4 when it's necessary for compatibility with other packages.
-    If you want to learn more, the [S4 chapter of Advanced R](https://adv-r.hadley.nz/s4.html) is a good starting point and has recommendations for additional resources.
+-   S4 es muy importante dentro de ciertas comunidades R, sobre todo dentro del proyecto Bioconductor.
+    Solo usamos S4 cuando es necesario por compatibilidad con otros paquetes.
+    Si desea obtener más información, el [capítulo S4 de Advanced R](https://adv-r.hadley.nz/s4.html) es un buen punto de partida y tiene recomendaciones de recursos adicionales.
 
--   R6 is used in many tidyverse packages (broadly defined), but is out of scope for this book.
-    Good places to learn more include the [R6 package website](https://r6.r-lib.org), the [R6 chapter of Advanced R](https://adv-r.hadley.nz/r6.html), and the [roxygen2 documentation related to R6](https://roxygen2.r-lib.org/articles/rd-other.html#r6).
+-   R6 se utiliza en muchos paquetes de tidyverse (definido en sentido amplio), pero está fuera del alcance de este libro.
+    Algunos buenos lugares para obtener más información incluyen el [sitio web del paquete R6](https://r6.r-lib.org), el [capítulo R6 de Advanced R](https://adv-r.hadley.nz/r6.html) y la [documentación de roxygen2 relacionada con R6](https://roxygen2.r-lib.org/articles/rd-other.html#r6).
 
-In terms of namespace issues around S3 classes, the main things to consider are generic functions and their class-specific implementations known as methods.
-If your package "owns" an S3 class, it makes sense to export a user-friendly constructor function.
-This is often just a regular function and there is no special S3 angle.
+En términos de problemas de espacio de nombres en torno a las clases de S3, lo principal a considerar son las funciones genéricas y sus implementaciones específicas de clase conocidas como métodos.
+Si su paquete "posee" una clase S3, tiene sentido exportar una función constructora fácil de usar.
+A menudo, esto es sólo una función normal y no existe un ángulo S3 especial.
 
-If your package "owns" an S3 generic and you want others to be able to use it, you should export the generic.
-For example, the dplyr package exports the generic function `dplyr::count()` and also implements and exports a specific method, `count.data.frame()`:
+Si su paquete "posee" un genérico S3 y desea que otros puedan usarlo, debe exportar el genérico.
+Por ejemplo, el paquete dplyr exporta la función genérica `dplyr::count()` y también implementa y exporta un método específico, `count.data.frame()`:
 
 ```{r}
 #| eval: false
-#' ... all the usual documentation for count() ...
+#' ... toda la documentación habitual para count()...
 #' @export
 count <- function(x, ..., wt = NULL, sort = FALSE, name = NULL) {
   UseMethod("count")
@@ -666,7 +666,7 @@ count.data.frame <- function(
   .drop = group_by_drop_default(x)) { ... }
 ```
 
-The corresponding lines in dplyr's `NAMESPACE` file look like this:
+Las líneas correspondientes en el archivo `NAMESPACE` de dplyr se ven así:
 
 ```         
 ...
@@ -676,10 +676,10 @@ export(count)
 ...
 ```
 
-Now imagine that your package implements a method for `count()` for a class you "own" (not `data.frame`).
-A good example is the dbplyr package, which implements `count()` for the `tbl_lazy` class.
-An add-on package that implements an S3 generic for a new class should list the generic-providing package in `Imports`, import the generic into its namespace, and export its S3 method.
-Here's part of dbplyr's `DESCRIPTION` file:
+Ahora imagina que tu paquete implementa un método para `count()` para una clase de tu "propiedad" (no `data.frame`).
+Un buen ejemplo es el paquete dbplyr, que implementa `count()` para la clase `tbl_lazy`.
+Un paquete complementario que implemente un genérico S3 para una nueva clase debe enumerar el paquete proveedor de genéricos en `Imports`, importar el genérico a su espacio de nombres y exportar su método S3.
+Aquí hay parte del archivo `DESCRIPTION` de dbplyr:
 
 ```         
 Imports: 
@@ -688,7 +688,7 @@ Imports:
     ...
 ```
 
-In `dbplyr/R/verb-count.R`, we have:
+En `dbplyr/R/verb-count.R`, tenemos:
 
 ```{r}
 #| eval: false
@@ -697,7 +697,7 @@ In `dbplyr/R/verb-count.R`, we have:
 count.tbl_lazy <- function(x, ..., wt = NULL, sort = FALSE, name = NULL) { ... }
 ```
 
-In `NAMESPACE`, we have:
+En `NAMESPACE`, tenemos:
 
 ```         
 S3method(count,tbl_lazy)
@@ -705,9 +705,9 @@ S3method(count,tbl_lazy)
 importFrom(dplyr,count)
 ```
 
-Dbplyr also provides methods for various generics provided by the base package, such as `dim()` and `names()`.
-In this case, there is no need to import those generics, but it's still necessary to export the methods.
-In `dbplyr/R/tbl_lazy.R`, we have:
+Dbplyr también proporciona métodos para varios genéricos proporcionados por el paquete base, como `dim()` y `names()`.
+En este caso, no es necesario importar esos genéricos, pero sí es necesario exportar los métodos.
+En `dbplyr/R/tbl_lazy.R`, tenemos:
 
 ```{r}
 #| eval: false
@@ -722,7 +722,7 @@ names.tbl_lazy <- function(x) {
 }
 ```
 
-In `NAMESPACE`, this produces:
+En `NAMESPACE`, esto produce:
 
 ```         
 S3method(dim,tbl_lazy)
@@ -730,13 +730,13 @@ S3method(dim,tbl_lazy)
 S3method(names,tbl_lazy)
 ```
 
-The last and trickiest case is when your package offers a method for a generic "owned" by a package you've listed in `Suggests`.
-The basic idea is that you want to register the availability of your S3 method conditionally, when your package is being loaded.
-If the suggested package is present, your S3 method should be registered, but otherwise it should not.
+El último caso y el más complicado es cuando su paquete ofrece un método genérico "propiedad" de un paquete que ha enumerado en `Suggests`.
+La idea básica es que desea registrar la disponibilidad de su método S3 de forma condicional, cuando se carga su paquete.
+Si el paquete sugerido está presente, su método S3 debería estar registrado, pero en caso contrario no debería estar registrado.
 
-We'll illustrate this with an example.
-Within the tidyverse, the glue package is managed as a low-level package that should have minimal dependencies (@sec-dependencies-tidyverse).
-Glue functions generally return a character vector that also has the `"glue"` S3 class.
+Ilustraremos esto con un ejemplo.
+Dentro de tidyverse, el paquete glue se administra como un paquete de bajo nivel que debe tener dependencias mínimas (@sec-dependencies-tidyverse).
+Las funciones de glue generalmente devuelven un vector de caracteres que también tiene la clase S3 `"glue"`.
 
 ```{r}
 library(glue)
@@ -745,24 +745,24 @@ name <- "Betty"
 class(ret)
 ```
 
-The motivation for this is that it allows glue to offer special methods for `print()`, the `+` operator, and subsetting via `[` and `[[`.
-One downside, though, is that this class attribute complicates string comparisons:
+La motivación para esto es que permite que glue ofrezca métodos especiales para `print()`, el operador `+` y subconjuntos mediante `[` y `[[`.
+Sin embargo, una desventaja es que este atributo de clase complica las comparaciones de cadenas:
 
 ```{r}
 identical(ret, "My name is Betty.")
 all.equal(ret, "My name is Betty.")
 ```
 
-Therefore, for testing, it is helpful if glue offers a method for `testthat::compare()`, which explains why this expectation succeeds:
+Por lo tanto, para las pruebas, es útil si glue ofrece un método para `testthat::compare()`, que explica por qué esta expectativa tiene éxito:
 
 ```{r}
 testthat::expect_equal(ret, "My name is Betty.")
 ```
 
-But glue can't list testthat in `Imports`!
-It must go in `Suggests`.
-The solution is to register the method conditionally when glue is loaded.
-Here is a redacted version of glue's `.onLoad()` function, where you'll see that it conditionally registers some other methods as well:
+¡Pero glue no puede incluir la prueba en `Imports`!
+Debe ir en `Suggests`.
+La solución es registrar el método de forma condicional cuando se carga glue.
+Aquí hay una versión redactada de la función `.onLoad()` de glue, donde verá que también registra condicionalmente algunos otros métodos:
 
 ```{r}
 #| eval: false
@@ -775,8 +775,8 @@ Here is a redacted version of glue's `.onLoad()` function, where you'll see that
 }
 ```
 
-The `s3_register()` function comes from the vctrs package.
-If you don't have an organic need to depend on vctrs, it is common (and encouraged) to simply inline [the `s3_register()` source](https://github.com/r-lib/vctrs/blob/main/R/register-s3.R) into your own package.
-You can't always copy code from other people's packages and paste it into yours, but you can in this case.
-This usage is specifically allowed by the license of the source code of `s3_register()`.
-This provides a great segue into @sec-license, which is all about licensing.
+La función `s3_register()` proviene del paquete vctrs.
+Si no tiene una necesidad orgánica de depender de vctrs, es común (y recomendable) simplemente insertar [la fuente `s3_register()`](https://github.com/r-lib/vctrs/blob/%20main/R/register-s3.R) en su propio paquete.
+No siempre puedes copiar el código de los paquetes de otras personas y pegarlo en el tuyo, pero en este caso puedes hacerlo.
+Este uso está específicamente permitido por la licencia del código fuente de `s3_register()`.
+Esto proporciona una gran transición hacia @sec-license, que tiene que ver con las licencias.
