@@ -67,7 +67,7 @@ book:
     - dependencies-in-practice.qmd
     - license.qmd
   
-  - part: Testing
+  - part: Probar
     chapters:
     - testing-basics.qmd
     - testing-design.qmd
