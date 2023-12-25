@@ -1,59 +1,59 @@
-# Function documentation {#sec-man}
+# Documentación de la función {#sec-man}
 
 ```{r, echo = FALSE}
 source("common.R")
 ```
 
-In this chapter, you'll learn about function documentation, which users access with `?somefunction` or `help("somefunction")`.
-Base R provides a standard way of documenting a package where each function is documented in a **topic,** an `.Rd` file ("R documentation") in the `man/` directory.
-`.Rd` files use a custom syntax, loosely based on LaTeX, and can be rendered to HTML, plain text, or pdf, as needed, for viewing in different contexts.
+En este capítulo, aprenderá sobre la documentación de funciones, a la que los usuarios acceden con `?algunafunción` o `help("algunafunción")`.
+Base R proporciona una forma estándar de documentar un paquete donde cada función está documentada en un **tema**, un archivo `.Rd` ("documentación R") en el directorio `man/`.
+Los archivos `.Rd` utilizan una sintaxis personalizada, basada libremente en LaTeX, y se pueden representar en HTML, texto sin formato o pdf, según sea necesario, para verlos en diferentes contextos.
 
-In the devtools ecosystem, we don't edit `.Rd` files directly with our bare hands.
-Instead, we include specially formatted "roxygen comments" above the source code for each function[^man-1].
-Then we use the [roxygen2 package](https://roxygen2.r-lib.org/index.html) to generate the `.Rd` files from these special comments[^man-2]
-. There are a few advantages to using roxygen2
+En el ecosistema devtools, no editamos archivos `.Rd` directamente con nuestras propias manos.
+En su lugar, incluimos "comentarios de roxygen" con formato especial encima del código fuente para cada función[^man-1].
+Luego usamos el [paquete roxygen2](https://roxygen2.r-lib.org/index.html) para generar los archivos `.Rd` a partir de estos comentarios especiales[^man-2]
+. Hay algunas ventajas al usar roxygen2
 :
 
-[^man-1]: The name "roxygen" is a nod to the Doxygen documentation generator, which inspired the development of an R package named roxygen.
-    Then that original concept was rebooted as roxygen2, similar to ggplot2.
+[^man-1]: El nombre "roxygen" es un guiño al generador de documentación Doxygen, que inspiró el desarrollo de un paquete R llamado roxygen.
+    Luego, ese concepto original se reinició como roxygen2, similar a ggplot2.
 
-[^man-2]: The NAMESPACE file is also generated from these roxygen comments.
-    Or, rather, it *can* be and that is the preferred devtools workflow (@sec-dependencies-NAMESPACE-workflow).
+[^man-2]: El archivo NAMESPACE también se genera a partir de estos comentarios de roxygen.
+    O, mejor dicho, *puede* serlo y ese es el flujo de trabajo preferido de devtools (@sec-dependencies-NAMESPACE-workflow).
 
--   Code and documentation are co-located.
-    When you modify your code, it's easy to remember to also update your documentation.
+-   El código y la documentación están ubicados en el mismo lugar.
+    Cuando modifica su código, es fácil recordar que también debe actualizar su documentación.
 
--   You can use markdown, rather than having to learn a one-off markup language that only applies to `.Rd` files.
-    In addition to formatting, the automatic hyperlinking functionality makes it much, much easier to create richly linked documentation.
+-   Puede utilizar Markdown, en lugar de tener que aprender un lenguaje de marcado único que sólo se aplica a archivos `.Rd`.
+    Además del formato, la función de hipervínculos automáticos hace que sea mucho más fácil crear documentación con muchos enlaces.
 
--   There's a lot of `.Rd` boilerplate that's automated away.
+-   Hay una gran cantidad de texto estándar `.Rd` que está automatizado.
 
--   roxygen2 provides a number of tools for sharing content across documentation topics and even between topics and vignettes.
+-   roxygen2 proporciona una serie de herramientas para compartir contenido entre temas de documentación e incluso entre temas y viñetas.
 
-In this chapter we'll focus on documenting functions, but the same ideas apply to documenting datasets (@sec-documenting-data), classes and generics, and packages.
-You can learn more about those important topics in `vignette("rd-other", package = "roxygen2")`.
+En este capítulo nos centraremos en documentar funciones, pero las mismas ideas se aplican a documentar conjuntos de datos (@sec-documenting-data), clases, genéricos y paquetes.
+Puede obtener más información sobre esos temas importantes en `vignette("rd-other", package = "roxygen2")`.
 
-## roxygen2 basics
+## conceptos básicos de roxygen2
 
-To get started, we'll work through the basic roxygen2 workflow and discuss the overall structure of roxygen2 comments, which are organised into blocks and tags.
-We also highlight the biggest wins of using markdown with roxygen2.
+Para comenzar, analizaremos el flujo de trabajo básico de roxygen2 y analizaremos la estructura general de los comentarios de roxygen2, que están organizados en bloques y etiquetas.
+También destacamos las mayores ventajas de utilizar Markdown con roxygen2.
 
-### The documentation workflow {#sec-man-workflow}
+### El flujo de trabajo de documentación {#sec-man-workflow}
 
-Unlike with testthat, there's no obvious opening move to declare that you're going to use roxygen2 for documentation.
-That's because the use of roxygen2 is purely a matter of your development workflow.
-It has no effect on, e.g., how a package gets checked or built.
-We think the roxygen approach is the best way to generate your `.Rd` files, but officially R only cares about the files themselves, not how they came to be.
+A diferencia de testthat, no hay un movimiento de apertura obvio para declarar que vas a utilizar roxygen2 para la documentación.
+Esto se debe a que el uso de roxygen2 es puramente una cuestión de su flujo de trabajo de desarrollo.
+No tiene ningún efecto, por ejemplo, sobre cómo se comprueba o construye un paquete.
+Creemos que el enfoque de roxygen es la mejor manera de generar archivos `.Rd`, pero oficialmente R solo se preocupa por los archivos en sí, no por cómo surgieron.
 
-Your documentation workflow truly begins when you start to add roxygen comments above your functions.
-Roxygen comment lines always start with `#'` , the usual `#` for a comment, followed immediately by a single quote `'`:
+Su flujo de trabajo de documentación realmente comienza cuando comienza a agregar comentarios de roxygen encima de sus funciones.
+Las líneas de comentarios de Roxygen siempre comienzan con `#'`, el `#` habitual para un comentario, seguido inmediatamente por una comilla simple `'`:
 
 ```{r}
-#' Add together two numbers
+#' Suma dos números
 #' 
-#' @param x A number.
-#' @param y A number.
-#' @returns A numeric vector.
+#' @param x Un número.
+#' @param y Un número.
+#' @returns Un vector numéro.
 #' @examples
 #' add(1, 1)
 #' add(10, 1)
@@ -65,36 +65,36 @@ add <- function(x, y) {
 ::: callout-tip
 ## RStudio
 
-Usually you write your function first, then its documentation.
-Once the function definition exists, put your cursor somewhere in it and do *Code \> Insert Roxygen Skeleton* to get a great head start on the roxygen comment.
+Por lo general, primero escribe su función y luego su documentación.
+Una vez que exista la definición de la función, coloque el cursor en algún lugar de ella y haga *Código \> Insertar esqueleto de Roxygen* para obtener una gran ventaja en el comentario de roxygen.
 :::
 
-Once you have at least one roxygen comment, run `devtools::document()` to generate (or update) your package's `.Rd` files[^man-3].
-Under the hood, this ultimately calls `roxygen2::roxygenise()`. The roxygen block above generates a `man/add.Rd` file that looks like this:
+Una vez que tenga al menos un comentario de roxygen, ejecute `devtools::document()` para generar (o actualizar) los archivos `.Rd` de su paquete[^man-3].
+En el fondo, esto finalmente se llama `roxygen2::roxygenise()`. El bloque roxygen anterior genera un archivo `man/add.Rd` que se ve así:
 
-[^man-3]: Running `devtools::document()` also affects another field in `DESCRIPTION`, which looks like this: `RoxygenNote: 7.2.1`.
-    This records which version of roxygen2 was last used in a package, which makes it easier for devtools (and its underlying packages) to make an intelligent guess about when to re-`document()` a package and when to leave well enough alone.
-    In a collaborative setting, this also reduces nuisance changes to the `.Rd` files, by making the relevant roxygen2 version highly visible.
+[^man-3]: La ejecución de `devtools::document()` también afecta a otro campo en `DESCRIPTION`, que se ve así: `RoxygenNote: 7.2.1`.
+    Esto registra qué versión de roxygen2 se usó por última vez en un paquete, lo que facilita que devtools (y sus paquetes subyacentes) hagan una suposición inteligente sobre cuándo volver a `document()` un paquete y cuándo dejarlo en paz.
+    En un entorno colaborativo, esto también reduce los cambios molestos en los archivos `.Rd`, al hacer que la versión relevante de roxygen2 sea muy visible.
 
 ``` text
 % Generated by roxygen2: do not edit by hand
 % Please edit documentation in R/add.R
 \name{add}
 \alias{add}
-\title{Add together two numbers}
+\title{Suma dos números}
 \usage{
 add(x, y)
 }
 \arguments{
-\item{x}{A number.}
+\item{x}{Un número.}
 
-\item{y}{A number.}
+\item{y}{Un número.}
 }
 \value{
-A numeric vector.
+Un vector numéro.
 }
 \description{
-Add together two numbers
+Suma dos números
 }
 \examples{
 add(1, 1)
@@ -105,34 +105,34 @@ add(10, 1)
 ::: callout-tip
 ## RStudio
 
-You can also run `devtools::document()` with the keyboard shortcut Ctrl/Cmd + Shift + D or via the *Build* menu or pane.
+También puede ejecutar `devtools::document()` con el método abreviado de teclado Ctrl/Cmd + Shift + D o mediante el menú o panel *Construir*.
 :::
 
-If you've used LaTeX before, this should look vaguely familiar since the `.Rd` format is loosely based on LaTeX.
-If you are interested in the `.Rd` format, you can read more in [Writing R Extensions](https://cran.r-project.org/doc/manuals/R-exts.html#Rd-format).
-But generally you'll never need to look at `.Rd` files, except to commit them to your package's Git repository.
+Si ha usado LaTeX antes, esto debería resultarle vagamente familiar ya que el formato `.Rd` se basa libremente en LaTeX.
+Si está interesado en el formato `.Rd`, puede leer más en [Escribir extensiones R](https://cran.r-project.org/doc/manuals/R-exts.html#Rd-format).
+Pero generalmente nunca necesitarás mirar archivos `.Rd`, excepto para enviarlos al repositorio Git de tu paquete.
 
-How does this `.Rd` file correspond to the documentation you see in R?
-When you run `?add`, `help("add")`, or `example("add")`, R looks for an `.Rd` file containing `\alias{add}`.
-It then parses the file, converts it into HTML, and displays it.
-@fig-rendered-help-topic-add shows how this help topic would look in RStudio:
+¿Cómo se corresponde este archivo `.Rd` con la documentación que ves en R?
+Cuando ejecuta `?add`, `help("add")` o `example("add")`, R busca un archivo `.Rd` que contenga `\alias{add}`.
+Luego analiza el archivo, lo convierte a HTML y lo muestra.
+@fig-rendered-help-topic-add muestra cómo se vería este tema de ayuda en RStudio:
 
 ```{r}
 #| label: fig-rendered-help-topic-add
 #| echo: false
 #| out-width: ~
 #| fig-cap: >
-#|   Help topic rendered to HTML.
+#|   Tema de ayuda representado en HTML.
 #| fig-alt: >
-#|   Screenshot of the help topic for the add() function.
+#|   Captura de pantalla del tema de ayuda para la función add().
 knitr::include_graphics("images/man-add.png", dpi = 220)
 ```
 
 ::: callout-warning
 ## `R CMD check` warning
 
-You should document all exported functions and datasets.
-Otherwise, you'll get this warning from `R CMD check`:
+Debe documentar todas las funciones y conjuntos de datos exportados.
+De lo contrario, recibirá esta advertencia de `R CMD check`:
 
 ```         
 W  checking for missing documentation entries (614ms)
@@ -143,57 +143,57 @@ W  checking for missing documentation entries (614ms)
   All user-level objects in a package should have documentation entries.
 ```
 
-Conversely, you probably don't want to document unexported functions.
-If you want to use roxygen comments for internal documentation, include the `@noRd` tag to suppress the creation of the `.Rd` file.
+Por el contrario, probablemente no desees documentar funciones no exportadas.
+Si desea utilizar comentarios de roxygen para la documentación interna, incluya la etiqueta `@noRd` para suprimir la creación del archivo `.Rd`.
 :::
 
-This is also a good time to explain something you may have noticed in your `DESCRIPTION` file:
+Este también es un buen momento para explicar algo que quizás hayas notado en tu archivo `DESCRIPTION`:
 
 ```         
 Roxygen: list(markdown = TRUE)
 ```
 
-devtools/usethis includes this by default when initiating a `DESCRIPTION` file and it gives roxygen2 a heads-up that your package uses markdown syntax in its roxygen comments.[^man-4]
+devtools/usethis incluye esto de forma predeterminada al iniciar un archivo `DESCRIPTION` y le avisa a roxygen2 de que su paquete usa sintaxis de rebajas en sus comentarios de roxygen.[^man-4]
 
-[^man-4]: This is part of the explanation promised in @sec-description-custom-fields, where we also clarify that, with our current conventions, this field should really be called `Config/Needs/roxygen`, instead of `Roxygen`.
-    We highly recommend that you use markdown in all new packages and that you migrate older-but-actively maintained packages to markdown syntax.
-    In this case, you can call `usethis::use_roxygen_md()` to update `DESCRIPTION` and get a reminder about the roxygen2md package, which can help with conversion.
+[^man-4]: Esto es parte de la explicación prometida en @sec-description-custom-fields, donde también aclaramos que, con nuestras convenciones actuales, este campo realmente debería llamarse `Config/Needs/roxygen`, en su lugar.
+    de `Roxigen`.
+    Le recomendamos encarecidamente que utilice Markdown en todos los paquetes nuevos y que migre los paquetes más antiguos pero que se mantienen activamente a la sintaxis Markdown.
+    En este caso, puede llamar a `usethis::use_roxygen_md()` para actualizar `DESCRIPTION` y recibir un recordatorio sobre el paquete roxygen2md, que puede ayudar con la conversión.
 
-The default help-seeking process looks inside **installed** packages, so to see your package's documentation during development, devtools overrides the usual help functions with modified versions that know to consult the current **source** package.
-To activate these overrides, you'll need to run `devtools::load_all()` at least once.
-If it feels like your edits to the roxygen comments aren't having an effect, double check that you have actually regenerated the `.Rd` files with `devtools::document()` and that you've loaded your package.
-When you call `?function`, you should see "Rendering development documentation ...".
+El proceso de búsqueda de ayuda predeterminado busca dentro de los paquetes **instalados**, por lo que para ver la documentación de su paquete durante el desarrollo, devtools anula las funciones de ayuda habituales con versiones modificadas que saben consultar el paquete **fuente** actual.
+Para activar estas anulaciones, necesitarás ejecutar `devtools::load_all()` al menos una vez.
+Si siente que sus ediciones en los comentarios de roxygen no están teniendo efecto, verifique que haya regenerado los archivos `.Rd` con `devtools::document()` y que haya cargado su paquete.
+Cuando llama a `?Función`, debería ver "Representación de documentación de desarrollo ...".
 
-To summarize, there are four steps in the basic roxygen2 workflow:
+En resumen, hay cuatro pasos en el flujo de trabajo básico de roxygen2:
 
-1.  Add roxygen2 comments to your `.R` files.
+1.  Agregue comentarios de roxygen2 a sus archivos `.R`.
 
-2.  Run `devtools::document()` or press Ctrl/Cmd + Shift + D to convert roxygen2 comments to `.Rd` files.
+2.  Ejecute `devtools::document()` o presione Ctrl/Cmd + Shift + D para convertir los comentarios de roxygen2 en archivos `.Rd`.
 
-3.  Preview documentation with `?function`.
+3.  Obtenga una vista previa de la documentación con `?función`.
 
-4.  Rinse and repeat until the documentation looks the way you want.
+4.  Enjuague y repita hasta que la documentación tenga el aspecto deseado.
 
-### roxygen2 comments, blocks, and tags {#sec-man-roxygen-comments}
+### comentarios, bloques y etiquetas de roxygen2 {#sec-man-roxygen-comments}
 
-Now that you understand the basic workflow, we'll go into more detail about the syntax.
-roxygen2 comments start with `#'` and all the roxygen2 comments preceding a function are collectively called a **block**.
-Blocks are broken up by **tags**, which look like `@tagName tagValue`, and the content of a tag extends from the end of the tag name to the start of the next tag[^man-5].
-A block can contain text before the first tag which is called the **introduction**. By default, each block generates a single documentation **topic**, i.e. a single `.Rd` file[^man-6] in the `man/` directory
-.
+Ahora que comprende el flujo de trabajo básico, entraremos en más detalles sobre la sintaxis.
+Los comentarios de roxygen2 comienzan con `#'` y todos los comentarios de roxygen2 que preceden a una función se denominan colectivamente **bloque**.
+Los bloques se dividen en **etiquetas**, que se parecen a `@tagName tagValue`, y el contenido de una etiqueta se extiende desde el final del nombre de la etiqueta hasta el inicio de la siguiente etiqueta [^man-5].
+Un bloque puede contener texto antes de la primera etiqueta que se denomina **introducción**. De forma predeterminada, cada bloque genera un único **tema** de documentación, es decir, un único archivo `.Rd`[^man-6] en el directorio `man/`.
 
-[^man-5]: Or the end of the block, if it's the last tag.
+[^man-5]: O el final del bloque, si es la última etiqueta.
 
-[^man-6]: The name of the file is automatically derived from the object you're documenting.
+[^man-6]: el nombre del archivo se deriva automáticamente del objeto que estás documentando.
 
-Throughout this chapter we'll show you roxygen2 comments from real tidyverse packages, focusing on [stringr](https://stringr.tidyverse.org), since the functions there tend to be fairly straightforward, leading to documentation that's understandable with relatively little context.
-We attach stringr here so that its functions are hyperlinked in the rendered book (more on that in section @sec-man-key-md-features).
+A lo largo de este capítulo, le mostraremos comentarios de roxygen2 de paquetes tidyverse reales, centrándonos en [stringr](https://stringr.tidyverse.org), ya que las funciones allí tienden a ser bastante sencillas, lo que lleva a documentación comprensible con relativamente poco contexto.
+Adjuntamos stringr aquí para que sus funciones tengan un hipervínculo en el libro renderizado (más sobre esto en la sección @sec-man-key-md-features).
 
 ```{r}
 library(stringr)
 ```
 
-Here's a simple first example: the documentation for `str_unique()`.
+Aquí hay un primer ejemplo simple: la documentación para `str_unique()`.
 
 ```{r}
 #' Remove duplicated strings
@@ -219,55 +219,55 @@ str_unique <- function(string, ...) {
 }
 ```
 
-Here the introduction includes the title ("Remove duplicated strings") and a basic description of what the function does.
-The introduction is followed by five tags: two `@param`s, one `@returns`, one `@seealso`, one `@examples`, and one `@export`.
+Aquí la introducción incluye el título ("Eliminar cadenas duplicadas") y una descripción básica de lo que hace la función.
+La introducción va seguida de cinco etiquetas: dos `@param`s, una `@returns`, una `@seealso`, una `@examples` y una `@export`.
 
-Note that the block has an intentional line length (typically the same as that used for the surrounding R code) and the second and subsequent lines of the long `@param` tag are indented, which makes the entire block easier to scan.
-You can get more roxygen2 style advice in the [tidyverse style guide](https://style.tidyverse.org/documentation.html).
+Tenga en cuenta que el bloque tiene una longitud de línea intencional (generalmente la misma que se usa para el código R circundante) y la segunda línea y las siguientes de la etiqueta larga `@param` tienen sangría, lo que hace que todo el bloque sea más fácil de escanear.
+Puedes obtener más consejos de estilo de roxygen2 en la [guía de estilo de tidyverse](https://style.tidyverse.org/documentation.html).
 
 ::: callout-tip
 ## RStudio
 
-It can be aggravating to manually manage the line length of roxygen comments, so be sure to try out *Code \> Reflow Comment* (Ctrl/Cmd+Shift+/).
+Puede resultar molesto administrar manualmente la longitud de línea de los comentarios de roxygen, así que asegúrese de probar *Code \> Reflow Comment* (Ctrl/Cmd+Shift+/).
 :::
 
-Note also that the order in which tags appear in your roxygen comments (or even in handwritten `.Rd` files) does not dictate the order in rendered documentation.
-The order of presentation is determined by tooling within base R.
+Tenga en cuenta también que el orden en que aparecen las etiquetas en sus comentarios de roxygen (o incluso en archivos `.Rd` escritos a mano) no dicta el orden en la documentación representada.
+El orden de presentación se determina mediante herramientas dentro de la base R.
 
-The following sections go into more depth for the most important tags.
-We start with the introduction, which provides the title, description, and details.
-Then we cover the inputs (the function arguments), outputs (the return value), and examples.
-Next we discuss links and cross-references, then finish off with techniques for sharing documentation between topics.
+Las siguientes secciones profundizan en las etiquetas más importantes.
+Comenzamos con la introducción, que proporciona el título, la descripción y los detalles.
+Luego cubrimos las entradas (los argumentos de la función), las salidas (el valor de retorno) y los ejemplos.
+A continuación, analizamos enlaces y referencias cruzadas y terminamos con técnicas para compartir documentación entre temas.
 
-### Key markdown features {#sec-man-key-md-features}
+### Funciones claves de markdown {#sec-man-key-md-features}
 
-For the most part, general markdown and R Markdown knowledge suffice for taking advantage of markdown in roxygen2.
-But there are a few pieces of syntax that are so important we want to highlight them here.
-You'll see these in many of the examples in this chapter.
+En su mayor parte, el conocimiento general de Markdown y R Markdown es suficiente para aprovechar el Markdown en roxygen2.
+Pero hay algunas piezas de sintaxis que son tan importantes que queremos resaltarlas aquí.
+Los verá en muchos de los ejemplos de este capítulo.
 
-**Backticks for inline code**: Use backticks to format a piece of text as code, i.e. in a fixed width font.
-Example:
+**Comillas invertidas para código en línea**: utilice comillas invertidas para formatear un fragmento de texto como código, es decir, en una fuente de ancho fijo.
+Ejemplo:
 
 ```{r}
 #' I like `thisfunction()`, because it's great.
 ```
 
-**Square brackets for an auto-linked function**: Enclose text like `somefunction()` and `somepackage::somefunction()` in square brackets to get an automatic link to that function's documentation.
-Be sure to include the trailing parentheses, because it's good style and and it causes the function to be formatted as code, i.e. you don't need to add backticks.
-Example:
+**Corchetes para una función con enlace automático**: incluya texto como `alguna función()` y `algún paquete::alguna función()` entre corchetes para obtener un enlace automático a la documentación de esa función.
+Asegúrese de incluir los paréntesis finales, porque tiene un buen estilo y hace que la función se formatee como código, es decir, no es necesario agregar comillas invertidas.
+Ejemplo:
 
 ```{r}
-#' It's obvious that `thisfunction()` is better than [otherpkg::otherfunction()]
-#' or even our own [olderfunction()].
+#' Es obvio que `thisfunction()` es mejor que [otherpkg::otherfunction()]
+#' o incluso nuestra propia [función anterior()].
 ```
 
-**Vignettes**: If you refer to a vignette with an inline call to `vignette("some-topic")`, it serves a dual purpose.
-First, this is literally the R code you would execute to view a vignette locally.
-But wait there's more!
-In many rendered contexts, this automatically becomes a hyperlink to that same vignette in a pkgdown website.
-Here we use that to link to some very relevant vignettes[^man-7]:
+**Viñetas**: si hace referencia a una viñeta con una llamada en línea a `vignette("some-topic")`, tiene un doble propósito.
+Primero, este es literalmente el código R que ejecutaría para ver una viñeta localmente.
+¡Pero espera hay mas!
+En muchos contextos renderizados, esto se convierte automáticamente en un hipervínculo a esa misma viñeta en un sitio web pkgdown.
+Aquí lo usamos para vincular algunas viñetas muy relevantes[^man-7]:
 
-[^man-7]: These calls include an explicit specification of `package = "somepackage"`, since it can't be inferred from context, i.e. the context is a Quarto book, not package documentation.
+[^man-7]: Estas llamadas incluyen una especificación explícita de `package = "algúnpaquete"`, ya que no se puede inferir del contexto, es decir, el contexto es un libro en cuarto, no la documentación del paquete.
 
 -   `vignette("rd-formatting", package = "roxygen2")`
 
@@ -275,73 +275,73 @@ Here we use that to link to some very relevant vignettes[^man-7]:
 
 -   `vignette("linking", package = "pkgdown")`
 
-**Lists**: Bullet lists break up the dreaded "wall of text" and can make your documentation easier to scan.
-You can use them in the description of the function or of an argument and also for the return value.
-It is not necessary to include a blank line before the list, but that is also allowed.
+**Listas**: Las listas con viñetas rompen el temido "muro de texto" y pueden hacer que su documentación sea más fácil de escanear.
+Puedes usarlos en la descripción de la función o de un argumento y también para el valor de retorno.
+No es necesario incluir una línea en blanco antes de la lista, pero eso también está permitido.
 
 ```{r}
-#' Best features of `thisfunction()`:
-#' * Smells nice
-#' * Has good vibes
+#' Mejores características de `thisfunction()`:
+#' * Huele bien
+#' * Tiene buena vibra
 ```
 
-## Title, description, details
+## Título, descripción, detalles
 
-The introduction provides a title, description, and, optionally, details, for the function.
-While it's possible to use explicit tags in the introduction, we usually rely on implicit tags when possible:
+La introducción proporciona un título, una descripción y, opcionalmente, detalles de la función.
+Si bien es posible utilizar etiquetas explícitas en la introducción, normalmente utilizamos etiquetas implícitas cuando es posible:
 
--   The **title** is taken from the first sentence.
-    It should be written in sentence case, not end in a full stop, and be followed by a blank line.
-    The title is shown in various function indexes (e.g. `help(package = "somepackage")`) and is what the user will usually see when browsing multiple functions.
+-   El **título** está tomado de la primera frase.
+    Debe escribirse en mayúsculas y minúsculas, no terminar en punto y estar seguido de una línea en blanco.
+    El título se muestra en varios índices de funciones (por ejemplo, `help(package = "algúnpaquete")`) y es lo que el usuario normalmente verá cuando explore múltiples funciones.
 
--   The **description** is taken from the next paragraph.
-    It's shown at the top of documentation and should briefly describe the most important features of the function.
+-   La **descripción** está tomada del siguiente párrafo.
+    Se muestra en la parte superior de la documentación y debe describir brevemente las características más importantes de la función.
 
--   Additional **details** are anything after the description.
-    Details are optional, but can be any length so are useful if you want to dig deep into some important aspect of the function.
-    Note that, even though the details come right after the description in the introduction, they appear much later in rendered documentation.
+-   **Detalles** adicionales son cualquier cosa después de la descripción.
+    Los detalles son opcionales, pero pueden tener cualquier longitud, por lo que son útiles si desea profundizar en algún aspecto importante de la función.
+    Tenga en cuenta que, aunque los detalles aparecen justo después de la descripción en la introducción, aparecen mucho más tarde en la documentación renderizada.
 
-The following sections describe each component in more detail, and then discuss a few useful related tags.
+Las siguientes secciones describen cada componente con más detalle y luego analizan algunas etiquetas relacionadas útiles.
 
-### Title
+### Título
 
-When writing the title, it's useful to think about how it will appear in the reference index.
-When a user skims the index, how will they know which functions will solve their current problem?
-This requires thinking about what your functions have in common (which doesn't need to be repeated in every title) and what is unique to that function (which should be highlighted in the title).
+Al escribir el título, es útil pensar en cómo aparecerá en el índice de referencia.
+Cuando un usuario hojea el índice, ¿cómo sabrá qué funciones resolverán su problema actual?
+Esto requiere pensar en qué tienen en común sus funciones (que no es necesario repetir en cada título) y qué es exclusivo de esa función (que debe resaltarse en el título).
 
-When we wrote this chapter, we found the function titles for stringr to be somewhat disappointing.
-But they provide a useful negative case study:
+Cuando escribimos este capítulo, encontramos que los títulos de las funciones de stringr eran algo decepcionantes.
+Pero proporcionan un útil estudio de caso negativo:
 
--   `str_detect()`: Detect the presence or absence of a pattern in a string
--   `str_extract()`: Extract matching patterns from a string
--   `str_locate()`: Locate the position of patterns in a string
--   `str_match()`: Extract matched groups from a string
+-   `str_detect()`: Detecta la presencia o ausencia de un patrón en una cadena
+-   `str_extract()`: Extrae patrones coincidentes de una cadena
+-   `str_locate()`: Localiza la posición de los patrones en una cadena
+-   `str_match()`: Extrae grupos coincidentes de una cadena
 
-There's a lot of repetition ("pattern", "from a string") and the verb used for the function name is repeated in the title, so if you don't understand the function already, the title seems unlikely to help much.
-Hopefully we'll have improved those titles by the time you read this!
+Hay mucha repetición ("pattern", "from a string") y el verbo usado para el nombre de la función se repite en el título, por lo que si aún no comprende la función, es poco probable que el título le ayude mucho.
+¡Esperamos haber mejorado esos títulos cuando leas esto!
 
-In contrast, these titles from dplyr are much better[^man-8]:
+En cambio, estos títulos de dplyr son mucho mejores[^man-8]:
 
-[^man-8]: Like all the examples, these might have changed a bit since we wrote this book, because we're constantly striving to do better.
-    You might compare what's in the book to what we now use, and consider if you think if it's an improvement.
+[^man-8]: Como todos los ejemplos, es posible que estos hayan cambiado un poco desde que escribimos este libro, porque nos esforzamos constantemente por hacerlo mejor.
+    Podrías comparar lo que hay en el libro con lo que usamos ahora y considerar si crees que es una mejora.
 
--   `mutate()`: Create, modify, and delete columns
--   `summarise()`: Summarise each group down to one row
--   `filter()`: Keep rows that match a condition
--   `select()`: Keep or drop columns using their names and types
--   `arrange()`: Order rows using column values
+-   `mutate()`: Crear, modificar y eliminar columnas
+-   `summarise()`: Resume cada grupo en una fila
+-   `filtro()`: Mantiene las filas que coinciden con una condición
+-   `select()`: Mantener o eliminar columnas usando sus nombres y tipos
+-   `arrange()`: Ordena filas usando valores de columna
 
-Here we try to succinctly describe what the function does, making sure to describe whether it affects rows, columns, or groups.
-We do our best to use synonyms, instead of repeating the function name, to hopefully give folks another chance to understand the intent of the function.
+Aquí intentamos describir de manera sucinta lo que hace la función, asegurándonos de describir si afecta a filas, columnas o grupos.
+Hacemos nuestro mejor esfuerzo para usar sinónimos, en lugar de repetir el nombre de la función, para darle a la gente otra oportunidad de comprender la intención de la función.
 
-### Description
+### Descripción
 
-The purpose of the description is to summarize the goal of the function, usually in a single paragraph.
-This can be challenging for simple functions, because it can feel like you're just repeating the title of the function.
-Try to find a slightly different wording, if you can.
-It's okay if this feels a little repetitive; it's often useful for users to see the same thing expressed in two different ways.
-It's a little extra work, but the extra effort is often worth it.
-Here's the description for `str_detect()`:
+El propósito de la descripción es resumir el objetivo de la función, generalmente en un solo párrafo.
+Esto puede ser un desafío para funciones simples, porque puede parecer que simplemente estás repitiendo el título de la función.
+Si puedes, intenta encontrar una redacción ligeramente diferente.
+Está bien si esto te parece un poco repetitivo; A menudo resulta útil para los usuarios ver lo mismo expresado de dos maneras diferentes.
+Es un poco de trabajo extra, pero el esfuerzo extra a menudo vale la pena.
+Aquí está la descripción de `str_detect()`:
 
 ```{r}
 #' Detect the presence/absence of a match
@@ -351,8 +351,8 @@ Here's the description for `str_detect()`:
 #' `grepl(pattern, string)`.
 ```
 
-If you want more than one paragraph, you must use an explicit `@description` tag to prevent the second (and subsequent) paragraphs from being turned into the `@details`.
-Here's a two-paragraph `@description` from `str_view()`:
+Si desea más de un párrafo, debe usar una etiqueta `@description` explícita para evitar que el segundo párrafo (y los siguientes) se conviertan en `@details`.
+Aquí hay una `@description` de dos párrafos de `str_view()`:
 
 ```{r}
 #' View strings and matches
@@ -366,7 +366,7 @@ Here's a two-paragraph `@description` from `str_view()`:
 #' possible, matches and unusual whitespace are coloured blue and `NA`s red.
 ```
 
-Here's another example from `str_like()`, which has a bullet list in `@description`:
+Aquí hay otro ejemplo de `str_like()`, que tiene una lista con viñetas en `@description`:
 
 ```{r}
 #' Detect a pattern in the same way as `SQL`'s `LIKE` operator
@@ -381,21 +381,21 @@ Here's another example from `str_like()`, which has a bullet list in `@descripti
 #' * The match is case insensitive by default.
 ```
 
-Basically, if you're going to include an empty line in your description, you'll need to use an explicit `@description` tag.
+Básicamente, si vas a incluir una línea vacía en tu descripción, necesitarás usar una etiqueta `@description` explícita.
 
-Finally, it's often particularly hard to write a good description if you've just written the function, because the purpose often seems very obvious.
-Do your best, and then come back later, when you've forgotten exactly what the function does.
-Once you've re-derived what the function does, you'll be able to write a better description.
+Finalmente, a menudo es particularmente difícil escribir una buena descripción si acabas de escribir la función, porque el propósito a menudo parece muy obvio.
+Haz tu mejor esfuerzo y vuelve más tarde, cuando hayas olvidado exactamente qué hace la función.
+Una vez que haya vuelto a derivar lo que hace la función, podrá escribir una mejor descripción.
 
-### Details
+### Detalles
 
-The `@details` are just any additional details or explanation that you think your function needs.
-Most functions don't need details, but some functions need a lot.
-If you have a lot of information to convey, it's a good idea to use informative markdown headings to break the details up into manageable sections[^man-9].
-Here's an example from `dplyr::mutate()`. We've elided some of the details to keep this example short, but you should still get a sense of how we used headings to break up the content in to skimmable chunks:
+Los `@details` son solo cualquier detalle o explicación adicional que crea que su función necesita.
+La mayoría de las funciones no necesitan detalles, pero algunas funciones necesitan muchos.
+Si tiene mucha información que transmitir, es una buena idea utilizar títulos de rebajas informativos para dividir los detalles en secciones manejables[^man-9].
+Aquí hay un ejemplo de `dplyr::mutate()`. Hemos omitido algunos de los detalles para que este ejemplo sea breve, pero aún así deberías tener una idea de cómo usamos los títulos para dividir el contenido en partes que se pueden leer:
 
-[^man-9]: In older code, you might see the use of `@section title:` which was used to create sections before roxygen2 had full markdown support.
-    If you've used these in the past, you can now turn them into markdown headings.
+[^man-9]: En el código anterior, es posible que veas el uso de `@section title:` que se usaba para crear secciones antes de que roxygen2 tuviera soporte completo para rebajas.
+    Si los ha usado en el pasado, ahora puede convertirlos en títulos de markdown.
 
 ```{r}
 #' Create, modify, and delete columns
@@ -420,23 +420,23 @@ Here's an example from `dplyr::mutate()`. We've elided some of the details to ke
 #' ...
 ```
 
-This is a good time to remind ourselves that, even though a heading like `Useful mutate functions` in the example above comes immediately after the description in the roxygen block, the content appears much later in the rendered documentation.
-The details (whether they use section headings or not) appear after the function usage, arguments, and return value.
+Este es un buen momento para recordarnos que, aunque un título como "Funciones de mutación útiles" en el ejemplo anterior aparece inmediatamente después de la descripción en el bloque roxygen, el contenido aparece mucho más tarde en la documentación renderizada.
+Los detalles (ya sea que usen encabezados de sección o no) aparecen después del uso de la función, los argumentos y el valor de retorno.
 
-## Arguments
+## Argumentos
 
-For most functions, the bulk of your work will go towards documenting how each argument affects the output of the function.
-For this purpose, you'll use `@param` (short for parameter, a synonym of argument) followed by the argument name and a description of its action.
+Para la mayoría de las funciones, la mayor parte de su trabajo se destinará a documentar cómo cada argumento afecta el resultado de la función.
+Para este propósito, usará `@param` (abreviatura de parámetro, sinónimo de argumento) seguido del nombre del argumento y una descripción de su acción.
 
-The highest priority is to provide a succinct summary of the allowed inputs and what the parameter does.
-For example, here's how `str_detect()` documents `string`:
+La máxima prioridad es proporcionar un resumen sucinto de las entradas permitidas y lo que hace el parámetro.
+Por ejemplo, así es como `str_detect()` documenta el `string`:
 
 ```{r}
 #' @param string Input vector. Either a character vector, or something
 #'  coercible to one.
 ```
 
-And here are three of the arguments to `str_flatten()`:
+Y aquí están tres de los argumentos de `str_flatten()`:
 
 ```{r}
 #' @param collapse String to insert between each piece. Defaults to `""`.
@@ -445,20 +445,20 @@ And here are three of the arguments to `str_flatten()`:
 #'   will be `NA` if any element of `string` is `NA`.
 ```
 
-Note that `@param collapse` and `@param na.rm` describe their default arguments.
-This is often a good practice because the function usage (which shows the default values) and the argument description are often quite far apart in the rendered documentation.
-But there are downsides.
-The main one is that this duplication means you'll need to make updates in two places if you change the default value; we believe this small amount of extra work is worth it to make the life of the user easier.
+Tenga en cuenta que `@param collapse` y `@param na.rm` describen sus argumentos predeterminados.
+Esta suele ser una buena práctica porque el uso de la función (que muestra los valores predeterminados) y la descripción del argumento suelen estar bastante separados en la documentación representada.
+Pero hay desventajas.
+La principal es que esta duplicación significa que necesitarás realizar actualizaciones en dos lugares si cambias el valor predeterminado; Creemos que esta pequeña cantidad de trabajo extra vale la pena para facilitar la vida del usuario.
 
-If an argument has a fixed set of possible parameters, you should list them.
-If they're simple, you can just list them in a sentence, like in `str_trim()`:
+Si un argumento tiene un conjunto fijo de posibles parámetros, debes enumerarlos.
+Si son simples, puedes enumerarlos en una oración, como en `str_trim()`:
 
 ```{r}
 #' @param side Side on which to remove whitespace: `"left"`, `"right"`, or
 #'   `"both"` (the default).
 ```
 
-If they need more explanation, you might use a bulleted list, as in `str_wrap()`:
+Si necesitan más explicaciones, puedes usar una lista con viñetas, como en `str_wrap()`:
 
 ```{r}
 #' @param whitespace_only A boolean.
@@ -466,8 +466,8 @@ If they need more explanation, you might use a bulleted list, as in `str_wrap()`
 #'   * `FALSE`: can break on any non-word character (e.g. `/`, `-`).
 ```
 
-The documentation for most arguments will be relatively short, often one or two sentences.
-But you should take as much space as you need, and you'll see some examples of multi-paragraph argument docs shortly.
+La documentación para la mayoría de los argumentos será relativamente breve, a menudo una o dos oraciones.
+Pero debes ocupar todo el espacio que necesites y en breve verás algunos ejemplos de documentos con argumentos de varios párrafos.
 
 ### Multiple arguments
 

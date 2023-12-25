@@ -73,7 +73,7 @@ book:
     - testing-design.qmd
     - testing-advanced.qmd
     
-  - part: Documentation
+  - part: Documentación
     chapters:
     - man.qmd
     - vignettes.qmd
