@@ -469,18 +469,18 @@ Si necesitan más explicaciones, puedes usar una lista con viñetas, como en `st
 La documentación para la mayoría de los argumentos será relativamente breve, a menudo una o dos oraciones.
 Pero debes ocupar todo el espacio que necesites y en breve verás algunos ejemplos de documentos con argumentos de varios párrafos.
 
-### Multiple arguments
+### Múltiples argumentos
 
-If the behavior of multiple arguments is tightly coupled, you can document them together by separating the names with commas (with no spaces).
-For example, `x` and `y` are interchangeable in `str_equal()`, so they're documented together:
+Si el comportamiento de varios argumentos está estrechamente relacionado, puede documentarlos juntos separando los nombres con comas (sin espacios).
+Por ejemplo, `x` e `y` son intercambiables en `str_equal()`, por lo que se documentan juntos:
 
 ```{r}
-#' @param x,y A pair of character vectors.
+#' @param x,y Un par de vectores de caracteres.
 ```
 
-In `str_sub()`, `start` and `end` define the range of characters to replace.
-But instead of supplying both, you can use just `start` if you pass in a two-column matrix.
-So it makes sense to document them together:
+En `str_sub()`, `start` y `end` definen el rango de caracteres a reemplazar.
+Pero en lugar de proporcionar ambos, puede usar simplemente `start` si pasa una matriz de dos columnas.
+Por eso tiene sentido documentarlos juntos:
 
 ```{r}
 #' @param start,end A pair of integer vectors defining the range of characters
@@ -491,20 +491,20 @@ So it makes sense to document them together:
 #'   and `end`, or `start` and `length`.
 ```
 
-In `str_wrap()`, `indent` and `exdent` define the indentation for the first line and all subsequent lines, respectively:
+En `str_wrap()`, `indent` y `exdent` definen la sangría para la primera línea y todas las líneas posteriores, respectivamente:
 
 ```{r}
 #' @param indent,exdent A non-negative integer giving the indent for the
 #'   first line (`indent`) and all subsequent lines (`exdent`).
 ```
 
-### Inheriting arguments
+### Heredar argumentos
 
-If your package contains many closely related functions, it's common for them to have arguments that share the same name and meaning.
-It would be both annoying and error prone to copy and paste the same `@param` documentation to every function, so roxygen2 provides `@inheritParams` which allows you to inherit argument documentation from another function, possibly even in another package.
+Si su paquete contiene muchas funciones estrechamente relacionadas, es común que tengan argumentos que compartan el mismo nombre y significado.
+Sería molesto y propenso a errores copiar y pegar la misma documentación `@param` en cada función, por lo que roxygen2 proporciona `@inheritParams` que le permite heredar documentación de argumentos de otra función, posiblemente incluso en otro paquete.
 
-stringr uses `@inheritParams` extensively because most functions have `string` and `pattern` arguments.
-The detailed and definitive documentation belongs to `str_detect()`:
+stringr usa `@inheritParams` ampliamente porque la mayoría de las funciones tienen argumentos `string` y `pattern`.
+La documentación detallada y definitiva pertenece a `str_detect()`:
 
 ```{r}
 #' @param string Input vector. Either a character vector, or something
@@ -525,10 +525,10 @@ The detailed and definitive documentation belongs to `str_detect()`:
 #'   `boundary("character")`.
 ```
 
-Then the other stringr functions use `@inheritParams str_detect` to get this detailed documentation for `string` and `pattern` without having to duplicate that text.
+Luego, las otras funciones stringr usan `@inheritParams str_detect` para obtener esta documentación detallada para `string` y `pattern` sin tener que duplicar ese texto.
 
-`@inheritParams` only inherits docs for arguments that the function actually uses and that aren't already documented, so you can document some arguments locally and inherit others.
-`str_match()` uses this to inherit `str_detect()`'s standard documentation for the `string` argument, while providing its own specialized documentation for `pattern`:
+`@inheritParams` solo hereda documentos para los argumentos que la función realmente usa y que aún no están documentados, por lo que puedes documentar algunos argumentos localmente y heredar otros.
+`str_match()` usa esto para heredar la documentación estándar de `str_detect()` para el argumento `string`, mientras proporciona su propia documentación especializada para `pattern`:
 
 ```{r}
 #' @inheritParams str_detect
@@ -537,34 +537,34 @@ Then the other stringr functions use `@inheritParams str_detect` to get this det
 #'   The pattern should contain at least one capturing group.
 ```
 
-Now that we've discussed default values and inheritance we can bring up one more dilemma.
-Sometimes there's tension between giving detailed information on an argument (acceptable values, default value, how the argument is used, etc.) and making the documentation amenable to reuse in other functions (which might differ in some specifics).
-This can motivate you to assess whether it's truly worth it for related functions to handle the same input in different ways or if standardization would be beneficial.
+Ahora que hemos analizado los valores predeterminados y la herencia, podemos plantear un dilema más.
+A veces existe tensión entre brindar información detallada sobre un argumento (valores aceptables, valor predeterminado, cómo se usa el argumento, etc.) y hacer que la documentación se pueda reutilizar en otras funciones (que pueden diferir en algunos detalles).
+Esto puede motivarlo a evaluar si realmente vale la pena que funciones relacionadas manejen la misma entrada de diferentes maneras o si la estandarización sería beneficiosa.
 
-You can inherit documentation from a function in another package by using the standard `::` notation, i.e. `@inheritParams anotherpackage::function`.
-This does introduce one small annoyance: now the documentation for your package is no longer self-contained and the version of `anotherpackage` can affect the generated docs.
-Beware of spurious diffs introduced by contributors who run `devtools::document()` with a different installed version of the inherited-from package.
+Puede heredar documentación de una función en otro paquete usando la notación estándar `::`, es decir, `@inheritParams anotherpackage::function`.
+Esto introduce una pequeña molestia: ahora la documentación de su paquete ya no es independiente y la versión de "otro paquete" puede afectar los documentos generados.
+Tenga cuidado con las diferencias falsas introducidas por los contribuyentes que ejecutan `devtools::document()` con una versión instalada diferente del paquete heredado.
 
-## Return value {#sec-man-returns}
+## Valor de retorno {#sec-man-returns}
 
-A function's output is as important as its inputs.
-Documenting the output is the job of the `@returns`[^man-10] tag.
-Here the priority is to describe the overall "shape" of the output, i.e. what sort of object it is, and its dimensions (if that makes sense).
-For example, if your function returns a vector you might describe its type and length, or if your function returns a data frame you might describe the names and types of the columns and the expected number of rows.
+La salida de una función es tan importante como sus entradas.
+Documentar el resultado es el trabajo de la etiqueta `@returns`[^man-10].
+Aquí la prioridad es describir la "forma" general del resultado, es decir, qué tipo de objeto es y sus dimensiones (si eso tiene sentido).
+Por ejemplo, si su función devuelve un vector, puede describir su tipo y longitud, o si su función devuelve un marco de datos, puede describir los nombres y tipos de las columnas y el número esperado de filas.
 
-[^man-10]: For historical reasons, you can also use `@return`, but we now favor `@returns` because it reads more naturally.
+[^man-10]: Por razones históricas, también puedes usar `@return`, pero ahora preferimos `@returns` porque se lee de forma más natural.
 
-The `@returns` documentation for functions in stringr is straightforward because almost all functions return some type of vector with the same length as one of the inputs.
-For example, here's how `str_like()` describes its output:
+La documentación `@returns` para funciones en stringr es sencilla porque casi todas las funciones devuelven algún tipo de vector con la misma longitud que una de las entradas.
+Por ejemplo, así es como `str_like()` describe su salida:
 
 ```{r}
 #' @returns A logical vector the same length as `string`.
 ```
 
-A more complicated case is the joint documentation for `str_locate()` and `str_locate_all()`[^man-11].
-`str_locate()` returns an integer matrix, and `str_locate_all()` returns a list of matrices, so the text needs to describe what determines the rows and columns.
+Un caso más complicado es la documentación conjunta de `str_locate()` y `str_locate_all()`[^man-11].
+`str_locate()` devuelve una matriz de números enteros y `str_locate_all()` devuelve una lista de matrices, por lo que el texto necesita describir lo que determina las filas y columnas.
 
-[^man-11]: We'll come back how to document multiple functions in one topic in @sec-man-multiple-functions.
+[^man-11]: Volveremos sobre cómo documentar múltiples funciones en un tema en @sec-man-multiple-functions.
 
 ```{r}
 #' @returns
@@ -581,11 +581,11 @@ A more complicated case is the joint documentation for `str_locate()` and `str_l
 #'   [stringi::stri_locate()] for the underlying implementation.
 ```
 
-In other cases it can be easier to figure out what to highlight by thinking about the set of functions and how they differ.
-For example, most dplyr functions return a data frame, so just saying `@returns A data frame` is not very useful.
-Instead, we tried to identify exactly what makes each function different.
-We decided it makes sense to describe each function in terms of how it affects the rows, the columns, the groups, and the attributes.
-For example, this describes the return value of `dplyr::filter()`:
+En otros casos, puede ser más fácil descubrir qué resaltar pensando en el conjunto de funciones y en qué se diferencian.
+Por ejemplo, la mayoría de las funciones de dplyr devuelven un marco de datos, por lo que decir simplemente `@returns Un marco de datos` no es muy útil.
+En cambio, intentamos identificar exactamente qué hace que cada función sea diferente.
+Decidimos que tiene sentido describir cada función en términos de cómo afecta las filas, las columnas, los grupos y los atributos.
+Por ejemplo, esto describe el valor de retorno de `dplyr::filter()`:
 
 ```{r}
 #' @returns
@@ -597,8 +597,8 @@ For example, this describes the return value of `dplyr::filter()`:
 #' * Data frame attributes are preserved.
 ```
 
-`@returns` is also a good place to describe any important warnings or errors that the user might see.
-For example `readr::read_csv()` mentions what happens if there are any parsing problems:
+`@returns` también es un buen lugar para describir cualquier advertencia o error importante que el usuario pueda ver.
+Por ejemplo, `readr::read_csv()` menciona lo que sucede si hay algún problema de análisis:
 
 ```{r}
 #' @returns A [tibble()]. If there are parsing problems, a warning will alert you.
@@ -606,50 +606,50 @@ For example `readr::read_csv()` mentions what happens if there are any parsing p
 ```
 
 ::: callout-warning
-## Submitting to CRAN
+## Envío a CRAN
 
-For your initial CRAN submission, all functions must document their return value.
-While this may not be scrutinized in subsequent submissions, it's still a good practice.
-There's currently no way to check that you've documented the return value of every function (we're [working on it](https://github.com/r-lib/roxygen2/issues/1334)) which is why you'll notice some tidyverse functions lack output documentation.
-But we certainly aspire to provide this information across the board.
+Para su envío inicial de CRAN, todas las funciones deben documentar su valor de retorno.
+Si bien es posible que esto no se analice en presentaciones posteriores, sigue siendo una buena práctica.
+Actualmente no hay forma de verificar que haya documentado el valor de retorno de cada función (estamos [trabajando en ello](https://github.com/r-lib/roxygen2/issues/1334)) y es por eso que Notarás que algunas funciones de tidyverse carecen de documentación de salida.
+Pero ciertamente aspiramos a proporcionar esta información en todos los ámbitos.
 :::
 
-## Examples {#sec-man-examples}
+## Ejemplos {#sec-man-examples}
 
-Describing what a function does is great, but *showing* how it works is even better.
-That's the role of the `@examples` tag, which uses executable R code to demonstrate what a function can do.
-Unlike other parts of the documentation where we've focused mainly on what you should write, here we'll briefly give some content advice and then focus mainly on the mechanics.
+Describir lo que hace una función es genial, pero *mostrar* cómo funciona es aún mejor.
+Esa es la función de la etiqueta `@examples`, que utiliza código R ejecutable para demostrar lo que puede hacer una función.
+A diferencia de otras partes de la documentación donde nos hemos centrado principalmente en lo que debes escribir, aquí daremos brevemente algunos consejos de contenido y luego nos centraremos principalmente en las mecánicas.
 
-The main dilemma with examples is that you must jointly satisfy two requirements:
+El principal dilema con los ejemplos es que debes cumplir conjuntamente dos requisitos:
 
--   Your example code should be readable and realistic.
-    Examples are documentation that you provide for the benefit of the user, i.e. a real human, working interactively, trying to get their actual work done with your package.
+-   Su código de ejemplo debe ser legible y realista.
+    Algunos ejemplos son la documentación que usted proporciona para el beneficio del usuario, es decir, un ser humano real, que trabaja interactivamente, tratando de realizar su trabajo real con su paquete.
 
--   Your example code must run without error and with no side effects in many non-interactive contexts over which you have limited or no control, such as when CRAN runs `R CMD check` or when your package website is built via GitHub Actions.
+-   Su código de ejemplo debe ejecutarse sin errores y sin efectos secundarios en muchos contextos no interactivos sobre los cuales tiene control limitado o nulo, como cuando CRAN ejecuta `R CMD check` o cuando el sitio web de su paquete se crea a través de GitHub Actions.
 
-It turns out that there is often tension between these goals and you'll need to find a way to make your examples as useful as you can for users, while also satisfying the requirements of CRAN (if that's your goal) or other automated infrastructure.
+Resulta que a menudo existe tensión entre estos objetivos y necesitará encontrar una manera de hacer que sus ejemplos sean lo más útiles posible para los usuarios, y al mismo tiempo satisfacer los requisitos de CRAN (si ese es su objetivo) u otra infraestructura automatizada.
 
-The mechanics of examples are complex because they must never error and they're executed in four different situations:
+La mecánica de los ejemplos es compleja porque nunca deben producir errores y se ejecutan en cuatro situaciones diferentes:
 
--   Interactively using the `example()` function.
--   During `R CMD check` on your computer, or another computer you control (e.g. in GitHub Actions).
--   During `R CMD check` run by CRAN.
--   When your pkgdown website is being built, often via GitHub Actions or similar.
+-   Utilizando interactivamente la función `ejemplo()`.
+-   Durante `R CMD check` su computadora u otra computadora que controle (por ejemplo, en GitHub Actions).
+-   Durante `R CMD check` ejecutada por CRAN.
+-   Cuando se está creando su sitio web pkgdown, a menudo a través de GitHub Actions o similar.
 
-After discussing what to put in your examples, we'll talk about keeping your examples self-contained, how to display errors if needed, handling dependencies, running examples conditionally, and alternatives to the `@examples` tag for including example code.
+Después de discutir qué poner en sus ejemplos, hablaremos sobre cómo mantener sus ejemplos autónomos, cómo mostrar errores si es necesario, manejar dependencias, ejecutar ejemplos condicionalmente y alternativas a la etiqueta `@examples` para incluir código de ejemplo.
 
 ::: callout-tip
 ## RStudio
 
-When preparing `.R` scripts or `.Rmd` / `.qmd` reports, it's handy to use Ctrl/Cmd + Enter or the *Run* button to send a line of R code to the console for execution.
-Happily, you can use the same workflow for executing and developing the `@examples` in your roxygen comments.
-Remember to do `devtools::load_all()` often, to stay synced with the package source.
+Al preparar scripts `.R` o informes `.Rmd`/`.qmd`, es útil usar Ctrl/Cmd + Enter o el botón *Ejecutar* para enviar una línea de código R a la consola para su ejecución.
+Afortunadamente, puedes usar el mismo flujo de trabajo para ejecutar y desarrollar los `@examples` en tus comentarios de roxygen.
+Recuerde hacer `devtools::load_all()` con frecuencia para permanecer sincronizado con el código fuente del paquete.
 :::
 
-### Contents
+### Contenido
 
-Use examples to first show the basic operation of the function, then to highlight any particularly important properties.
-For example, `str_detect()` starts by showing a few simple variations and then highlights a feature that's easy to miss: as well as passing a vector of strings and one pattern, you can also pass one string and vector of patterns.
+Utilice ejemplos para mostrar primero el funcionamiento básico de la función y luego resaltar las propiedades particularmente importantes.
+Por ejemplo, `str_detect()` comienza mostrando algunas variaciones simples y luego resalta una característica que es fácil pasar por alto: además de pasar un vector de cadenas y un patrón, también puedes pasar una cadena y un vector de patrones.
 
 ```{r}
 #' @examples
@@ -662,11 +662,11 @@ For example, `str_detect()` starts by showing a few simple variations and then h
 #' str_detect("aecfg", letters)
 ```
 
-Try to stay focused on the most important features without getting into the weeds of every last edge case: if you make the examples too long, it becomes hard for the user to find the key application that they're looking for.
-If you find yourself writing very long examples, it may be a sign that you should write a vignette instead.
+Intente concentrarse en las características más importantes sin meterse en los detalles de cada caso extremo: si hace que los ejemplos sean demasiado largos, al usuario le resultará difícil encontrar la aplicación clave que está buscando.
+Si te encuentras escribiendo ejemplos muy extensos, puede ser una señal de que deberías escribir una viñeta.
 
-There aren't any formal ways to break up your examples into sections but you can use sectioning comments that use many `---` to create a visual breakdown.
-Here's an example from `tidyr::chop()`:
+No existen formas formales de dividir los ejemplos en secciones, pero puede utilizar comentarios de sección que utilicen muchos `---` para crear un desglose visual.
+Aquí hay un ejemplo de `tidyr::chop()`:
 
 ```{r}
 #' @examples
@@ -684,62 +684,62 @@ Here's an example from `tidyr::chop()`:
 #' df %>% unchop(y, keep_empty = TRUE)
 ```
 
-Strive to keep the examples focused on the specific function that you're documenting.
-If you can make the point with a familiar built-in dataset, like `mtcars`, do so.
-If you find yourself needing to do a bunch of setup to create a dataset or object to use in the example, it may be a sign that you need to create a package dataset or even a helper function.
-See @sec-data, @sec-data-example-path-helper, and @sec-testing-advanced-fixture-helper for ideas.
-Making it easy to write (and read) examples will greatly improve the quality of your documentation.
+Esfuércese por mantener los ejemplos centrados en la función específica que está documentando.
+Si puede expresar su punto con un conjunto de datos integrado familiar, como `mtcars`, hágalo.
+Si necesita realizar muchas configuraciones para crear un conjunto de datos u objeto para usar en el ejemplo, puede ser una señal de que necesita crear un conjunto de datos de paquete o incluso una función auxiliar.
+Consulte @sec-data, @sec-data-example-path-helper y @sec-testing-advanced-fixture-helper para obtener ideas.
+Facilitar la escritura (y lectura) de ejemplos mejorará enormemente la calidad de su documentación.
 
-Also, remember that examples are not tests.
-Examples should be focused on the authentic and typical usage you've designed for and that you want to encourage.
-The test suite is the more appropriate place to exhaustively exercise all of the arguments and to explore weird, pathological edge cases.
+Además, recuerde que los ejemplos no son pruebas.
+Los ejemplos deben centrarse en el uso auténtico y típico para el que ha diseñado y que desea fomentar.
+El conjunto de pruebas es el lugar más apropiado para ejercitar exhaustivamente todos los argumentos y explorar casos extremos extraños y patológicos.
 
-### Leave the world as you found it
+### Deja el mundo como lo encontraste
 
-Your examples should be self-contained.
-For example, this means:
+Sus ejemplos deben ser autónomos.
+Por ejemplo, esto significa:
 
--   If you modify `options()`, reset them at the end of the example.
--   If you create a file, create it somewhere in `tempdir()`, and make sure to delete it at the end of the example.
--   Don't change the working directory.
--   Don't write to the clipboard (unless a user is present to provide some form of consent).
+-   Si modifica `options()`, restablezcalas al final del ejemplo.
+-   Si crea un archivo, créelo en algún lugar de `tempdir()` y asegúrese de eliminarlo al final del ejemplo.
+-   No cambie el directorio de trabajo.
+-   No escribir en el portapapeles (a menos que un usuario esté presente para dar algún tipo de consentimiento).
 
-This has a lot of overlap with our recommendations for tests (see section @sec-testing-design-self-contained) and even for the R functions in your package (see section @sec-code-r-landscape).
-However, due to the way that examples are run during `R CMD check`, the tools available for making examples self-contained are much more limited.
-Unfortunately, you can't use the withr package or even `on.exit()` to schedule clean up, like restoring options or deleting a file.
-Instead, you'll need to do it by hand.
-If you can avoid doing something that must then be undone, that is the best way to go and this is especially true for examples.
+Esto se superpone mucho con nuestras recomendaciones para pruebas (consulte la sección @sec-testing-design-self-contained) e incluso con las funciones de R en su paquete (consulte la sección @sec-code-r-landscape).
+Sin embargo, debido a la forma en que se ejecutan los ejemplos durante la "verificación R CMD", las herramientas disponibles para hacer que los ejemplos sean autónomos son mucho más limitadas.
+Desafortunadamente, no puedes usar el paquete withr o incluso `on.exit()` para programar una limpieza, como restaurar opciones o eliminar un archivo.
+En su lugar, deberás hacerlo a mano.
+Si puede evitar hacer algo que luego debe deshacerse, esa es la mejor manera de hacerlo y esto es especialmente cierto en el caso de los ejemplos.
 
-These constraints are often in tension with good documentation, if you're trying to document a function that somehow changes the state of the world.
-For example, you have to "show your work", i.e. all of your code, which means that your users will see all of the setup and teardown, even it is not typical for authentic usage.
-If you're finding it hard to follow the rules, this might be another sign to switch to a vignette (see @sec-vignettes).
-
-::: callout-warning
-## Submitting to CRAN
-
-Many of these constraints are also mentioned in the [CRAN repository policy](https://cran.r-project.org/web/packages/policies.html), which you must adhere to when submitting to CRAN.
-Use find in page to locate "malicious or anti-social" to see the details.
-:::
-
-Additionally, you want your examples to send the user on a short walk, not a long hike.
-Examples need to execute relatively quickly so users can quickly see the results, it doesn't take ages to build your website, automated checks happen quickly, and it doesn't take up computing resources when submitting to CRAN.
+Estas restricciones a menudo están en tensión con una buena documentación, si estás tratando de documentar una función que de alguna manera cambia el estado del mundo.
+Por ejemplo, tienes que "mostrar tu trabajo", es decir, todo tu código, lo que significa que tus usuarios verán toda la configuración y el desmontaje, incluso si no es típico de un uso auténtico.
+Si le resulta difícil seguir las reglas, esta podría ser otra señal para cambiar a una viñeta (consulte @sec-vignettes).
 
 ::: callout-warning
-## Submitting to CRAN
+## Envío a CRAN
 
-All examples must run in under 10 minutes.
+Muchas de estas restricciones también se mencionan en la \[política del repositorio de CRAN\] (https://cran.r-project.org/web/packages/policies.html), que debe cumplir al realizar envíos a CRAN.
+Utilice buscar en la página para localizar "malicioso o antisocial" y ver los detalles.
 :::
 
-### Errors {#sec-man-examples-errors}
+Además, desea que sus ejemplos envíen al usuario a una caminata corta, no a una caminata larga.
+Los ejemplos deben ejecutarse relativamente rápido para que los usuarios puedan ver rápidamente los resultados, no lleva mucho tiempo crear su sitio web, las verificaciones automatizadas se realizan rápidamente y no consume recursos informáticos cuando se envían a CRAN.
 
-Your examples cannot throw any errors, so don't include flaky code that can fail for reasons beyond your control.
-In particular, it's best to avoid accessing websites, because `R CMD check` will fail whenever the website is down.
+::: callout-warning
+## Envío a CRAN
 
-What can you do if you want to include code that causes an error for the purposes of teaching?
-There are two basic options:
+Todos los ejemplos deben ejecutarse en menos de 10 minutos.
+:::
 
--   You can wrap the code in `try()` so that the error is shown, but doesn't stop execution of the examples.
-    For example, `dplyr::bind_cols()` uses `try()` to show you what happens if you attempt to column-bind two data frames with different numbers of rows:
+### Errores {#sec-man-examples-errors}
+
+Sus ejemplos no pueden arrojar ningún error, así que no incluya código defectuoso que pueda fallar por razones fuera de su control.
+En particular, es mejor evitar el acceso a sitios web, porque la `R CMD check` fallará cada vez que el sitio web no funcione.
+
+¿Qué puede hacer si desea incluir código que cause un error con fines didácticos?
+Hay dos opciones básicas:
+
+-   Puedes ajustar el código en `try()` para que se muestre el error, pero no detenga la ejecución de los ejemplos.
+    Por ejemplo, `dplyr::bind_cols()` usa `try()` para mostrarle lo que sucede si intenta vincular dos marcos de datos con diferentes números de filas:
 
     ```{r}
     #' @examples
@@ -748,7 +748,7 @@ There are two basic options:
     #' try(bind_cols(tibble(x = 1:3), tibble(y = 1:2)))
     ```
 
--   You can wrap the code in `\dontrun{}`[^man-12], so it is never run by `example()`. The example above would look like this if you used `\dontrun{}` instead of `try()`.
+-   Puedes ajustar el código en `\dontrun{}`[^man-12], de modo que nunca se ejecute mediante `example()`. El ejemplo anterior se vería así si usara `\dontrun{}` en lugar de `try()`.
 
     ```{r}
     #' # Row sizes must be compatible when column-binding
@@ -757,22 +757,22 @@ There are two basic options:
     #' }
     ```
 
-[^man-12]: You used to be able to use `\donttest{}` for a similar purpose, but we no longer recommend it because CRAN sets a special flag that causes the code to be executed anyway.
+[^man-12]: Solías poder usar `\donttest{}` para un propósito similar, pero ya no lo recomendamos porque CRAN establece un indicador especial que hace que el código se ejecute de todos modos.
 
-We generally recommend using `try()` so that the reader can see an example of the error in action.
+Generalmente recomendamos usar `try()` para que el lector pueda ver un ejemplo del error en acción.
 
 ::: callout-warning
-## Submitting to CRAN
+## Envío a CRAN
 
-For the initial CRAN submission of your package, all functions must have at least one example and the example code can't all be wrapped inside `\dontrun{}`.
-If the code can only be run under specific conditions, use the techniques below to express those pre-conditions.
+Para el envío CRAN inicial de su paquete, todas las funciones deben tener al menos un ejemplo y el código de ejemplo no puede estar incluido dentro de `\dontrun{}`.
+Si el código solo se puede ejecutar bajo condiciones específicas, utilice las técnicas siguientes para expresar esas condiciones previas.
 :::
 
-### Dependencies and conditional execution {#sec-man-examples-dependencies-conditional-execution}
+### Dependencias y ejecución condicional {#sec-man-examples-dependencies-conditional-execution}
 
-An additional source of errors in examples is the use of external dependencies: you can only use packages in your examples that your package formally depends on (i.e. that appear in `Imports` or `Suggests`).
-Furthermore, example code is run in the user's environment, not the package environment, so you'll have to either explicitly attach the dependency with `library()` or refer to each function with `::`.
-For example, dbplyr is a dplyr extension package, so all of its examples start with `library(dplyr)`:
+Una fuente adicional de errores en los ejemplos es el uso de dependencias externas: en sus ejemplos sólo puede usar paquetes de los que su paquete depende formalmente (es decir, que aparecen en `Imports` o `Sugests`).
+Además, el código de ejemplo se ejecuta en el entorno del usuario, no en el entorno del paquete, por lo que tendrás que adjuntar explícitamente la dependencia con `library()` o hacer referencia a cada función con `::`.
+Por ejemplo, dbplyr es un paquete de extensión dplyr, por lo que todos sus ejemplos comienzan con `library(dplyr)`:
 
 ```{r}
 #' @examples
@@ -783,7 +783,7 @@ For example, dbplyr is a dplyr extension package, so all of its examples start w
 #' df_sqlite %>% summarise(x = sd(x, na.rm = TRUE)) %>% show_query()
 ```
 
-In the past, we recommended only using code from suggested packages inside a block like this:
+En el pasado, recomendábamos usar únicamente código de paquetes sugeridos dentro de un bloque como este:
 
 ```{r}
 #' @examples
@@ -792,17 +792,17 @@ In the past, we recommended only using code from suggested packages inside a blo
 #' }
 ```
 
-We no longer believe that approach is a good idea, because:
+Ya no creemos que ese enfoque sea una buena idea porque:
 
--   Our policy is to expect that suggested packages are installed when running `R CMD check`[^man-13] and this informs what we do in examples, tests, and vignettes.
--   The cost of putting example code inside `{ … }` is high: you can no longer see intermediate results, such as when the examples are rendered in the package's website. The cost of a package not being installed is low: users can usually recognize the associated error and resolve it themselves, i.e. by installing the missing package.
+-   Nuestra política es esperar que los paquetes sugeridos se instalen al ejecutar `R CMD check`[^man-13] y esto informa lo que hacemos en ejemplos, pruebas y viñetas.
+-   El coste de poner código de ejemplo dentro de `{… }` es alto: ya no se pueden ver resultados intermedios, como cuando los ejemplos se muestran en el sitio web del paquete. El coste de no instalar un paquete es bajo: los usuarios normalmente pueden reconocer el error asociado y resolverlo ellos mismos, es decir, instalando el paquete que falta.
 
-[^man-13]: This is certainly true for CRAN and is true in most other automated checking scenarios, such as our GitHub Actions workflows.
+[^man-13]: Esto es ciertamente cierto para CRAN y es cierto en la mayoría de los otros escenarios de verificación automatizada, como nuestros flujos de trabajo de GitHub Actions.
 
-In other cases, your example code may depend on something other than a package.
-For example, if your examples talk to a web API, you probably only want to run them for an authenticated user, and never want such code to run on CRAN.
-In this case, you really do need conditional execution.
-The entry-level solution is to express this explicitly:
+En otros casos, su código de ejemplo puede depender de algo más que un paquete.
+Por ejemplo, si sus ejemplos se refieren a una API web, probablemente solo desee ejecutarlos para un usuario autenticado y nunca desee que dicho código se ejecute en CRAN.
+En este caso, realmente necesitas una ejecución condicional.
+La solución básica es expresar esto explícitamente:
 
 ```{r}
 #' @examples
@@ -811,10 +811,10 @@ The entry-level solution is to express this explicitly:
 #' }
 ```
 
-The condition could be quite general, such as `interactive()`, or very specific, such as a custom predicate function provided by your package.
-But this use of `if()` still suffers from the downside highlighted above, where the rendered examples don't clearly show what's going on inside the `{ … }` block.
+La condición podría ser bastante general, como `interactive()`, o muy específica, como una función de predicado personalizada proporcionada por su paquete.
+Pero este uso de `if()` todavía sufre el inconveniente resaltado anteriormente, donde los ejemplos renderizados no muestran claramente lo que sucede dentro del bloque `{... }`.
 
-The `@examplesIf` tag is a great alternative to `@examples` in this case:
+La etiqueta `@examplesIf` es una excelente alternativa a `@examples` en este caso:
 
 ```{r}
 #' @examplesIf some_condition()
@@ -822,57 +822,57 @@ The `@examplesIf` tag is a great alternative to `@examples` in this case:
 #' some_more_functions()
 ```
 
-This looks almost like the snippet just above, but has several advantages:
+Esto se parece casi al fragmento de arriba, pero tiene varias ventajas:
 
--   Users won't actually see the `if() { … }` machinery when they are reading your documentation from within R or on a pkgdown website.
-    Users only see realistic code.
+-   Los usuarios en realidad no verán la maquinaria `if() {... }` cuando lean su documentación desde R o en un sitio web de pkgdown.
+    Los usuarios sólo ven código realista.
 
--   The example code renders fully in pkgdown.
+-   El código de ejemplo se muestra completamente en pkgdown.
 
--   The example code runs when it should and does not run when it should not.
+-   El código de ejemplo se ejecuta cuando debería y no se ejecuta cuando no debería.
 
--   This doesn't run afoul of CRAN's prohibition of putting all your example code inside `\dontrun{}`.
+-   Esto no va en contra de la prohibición de CRAN de poner todo el código de ejemplo dentro de `\dontrun{}`.
 
-For example, [googledrive](https://googledrive.tidyverse.org/reference/index.html) uses `@examplesIf` in almost every function, guarded by `googledrive::drive_has_token()`.
-Here's how the examples for `googledrive::drive_publish()` begin:
+Por ejemplo, [googledrive](https://googledrive.tidyverse.org/reference/index.html) usa `@examplesIf` en casi todas las funciones, protegido por `googledrive::drive_has_token()`.
+Así es como comienzan los ejemplos de `googledrive::drive_publish()`:
 
 ```{r}
 #' @examplesIf drive_has_token()
-#' # Create a file to publish
+#' # Crea un archivo para publicar
 #' file <- drive_example_remote("chicken_sheet") %>%
 #'   drive_cp()
 #'
-#' # Publish file
+#' # Publica el archivo
 #' file <- drive_publish(file)
 #' ...
 ```
 
-The example code doesn't run on CRAN, because there's no token.
-It does run when the pkgdown site is built, because we can set up a token securely.
-And, if a normal user executes this code, they'll be prompted to sign in to Google, if they haven't already.
+El código de ejemplo no se ejecuta en CRAN porque no hay ningún token.
+Se ejecuta cuando se crea el sitio pkgdown, porque podemos configurar un token de forma segura.
+Y, si un usuario normal ejecuta este código, se le pedirá que inicie sesión en Google, si aún no lo ha hecho.
 
-### Intermixing examples and text
+### Mezclar ejemplos y texto
 
-An alternative to examples is to use R Markdown code blocks elsewhere in your roxygen comments, either ```` ```R ```` if you just want to show some code, or ```` ```{r} ```` if you want the code to be run.
-These can be effective techniques but there are downsides to each:
+Una alternativa a los ejemplos es usar bloques de código R Markdown en otras partes de tus comentarios de roxygen, ya sea ```` ```R ```` si solo quieres mostrar algo de código, o ```` ```{r} ```` si desea que se ejecute el código.
+Estas pueden ser técnicas efectivas, pero cada una tiene sus desventajas:
 
--   The code in ```` ```R ```` blocks is never run; this means it's easy to accidentally introduce syntax errors or to forget to update it when your package changes.
--   The code in ```` ```{r} ```` blocks is run every time you document the package. This has the nice advantage of including the output in the documentation (unlike examples), but the code can't take very long to run or your iterative documentation workflow will become quite painful.
+-   El código en los bloques ```` ```R ```` nunca se ejecuta; esto significa que es fácil introducir accidentalmente errores de sintaxis u olvidarse de actualizarlo cuando cambia el paquete.
+-   El código en los bloques ```` ```{r} ```` se ejecuta cada vez que documentas el paquete. Esto tiene la gran ventaja de incluir el resultado en la documentación (a diferencia de los ejemplos), pero el código no puede tardar mucho en ejecutarse o su flujo de trabajo de documentación iterativo se volverá bastante doloroso.
 
-## Re-using documentation
+## Reutilizar documentación
 
-roxygen2 provides a number of features that allow you to reuse documentation across topics.
-They are documented in `vignette("reuse", package = "roxygen2")`, so here we'll focus on the three most important:
+roxygen2 proporciona una serie de funciones que le permiten reutilizar la documentación en todos los temas.
+Están documentados en `vignette("reuse", package = "roxygen2")`, por lo que aquí nos centraremos en los tres más importantes:
 
--   Documenting multiple functions in one topic.
--   Inheriting documentation from another topic.
--   Using child documents to share prose between topics, or to share between documentation topics and vignettes.
+-   Documentar múltiples funciones en un solo tema.
+-   Heredar documentación de otro tema.
+-   Usar documentos secundarios para compartir prosa entre temas, o para compartir entre temas de documentación y viñetas.
 
-### Multiple functions in one topic {#sec-man-multiple-functions}
+### Múltiples funciones en un tema {#sec-man-multiple-functions}
 
-By default, each function gets its own documentation topic, but if two functions are very closely connected, you can combine the documentation for multiple functions into a single topic.
-For example, take `str_length()` and `str_width()`, which provide two different ways of computing the size of a string.
-As you can see from the description, both functions are documented together, because this makes it easier to see how they differ:
+De forma predeterminada, cada función tiene su propio tema de documentación, pero si dos funciones están muy relacionadas, puede combinar la documentación de varias funciones en un solo tema.
+Por ejemplo, tomemos `str_length()` y `str_width()`, que proporcionan dos formas diferentes de calcular el tamaño de una cadena.
+Como puede ver en la descripción, ambas funciones están documentadas juntas, porque esto hace que sea más fácil ver en qué se diferencian:
 
 ```{r}
 #' The length/width of a string
@@ -891,7 +891,7 @@ str_length <- function(string) {
 }
 ```
 
-To merge the two topics, `str_width()` uses `@rdname str_length` to add its documentation to an existing topic:
+Para fusionar los dos temas, `str_width()` usa `@rdname str_length` para agregar su documentación a un tema existente:
 
 ```{r}
 #' @rdname str_length
@@ -900,84 +900,84 @@ str_width <- function(string) {
 }
 ```
 
-This technique works best for functions that have a lot in common, i.e. similar return values and examples, in addition to similar arguments.
+Esta técnica funciona mejor para funciones que tienen mucho en común, es decir, valores de retorno y ejemplos similares, además de argumentos similares.
 
-### Inheriting documentation
+### Heredar documentación
 
-In other cases, functions in a package might share many related behaviors, but aren't closely enough connected that you want to document them together.
-We've discussed `@inheritParams` above, but there are three variations that allow you to inherit other things:
+En otros casos, las funciones de un paquete pueden compartir muchos comportamientos relacionados, pero no están lo suficientemente conectadas como para que desee documentarlas juntas.
+Hemos discutido `@inheritParams` arriba, pero hay tres variaciones que le permiten heredar otras cosas:
 
--   `@inherit source_function` will inherit all supported components from `source_function()`.
+-   `@inherit source_function` heredará todos los componentes compatibles de `source_function()`.
 
--   `@inheritSection source_function Section title` will inherit the single section with title "Section title" from `source_function()`.
+-   `@inheritSection source_function Título de la sección` heredará la sección única con el título "Título de la sección" de `source_function()`.
 
--   `@inheritDotParams` automatically generates parameter documentation for `...` for the common case where you pass `...` on to another function.
+-   `@inheritDotParams` genera automáticamente documentación de parámetros para `...` para el caso común en el que pasa `...` a otra función.
 
-See <https://roxygen2.r-lib.org/articles/reuse.html#inheriting-documentation> for more details.
+Ver <https://roxygen2.r-lib.org/articles/reuse.html#inheriting-documentation> para más detalles.
 
-### Child documents
+### Documentos secundarios
 
-Finally, you can reuse the same `.Rmd` or `.md` document in the function documentation, `README.Rmd`, and vignettes by using R Markdown child documents.
-The syntax looks like this:
+Finalmente, puede reutilizar el mismo documento `.Rmd` o `.md` en la documentación de la función, `README.Rmd`, y viñetas utilizando documentos secundarios de R Markdown.
+La sintaxis se ve así:
 
 ```{r}
 #' ```{r child = "man/rmd/filename.Rmd"}
 #' ```
 ```
 
-This is a feature we use very sparingly in the tidyverse, but one place we do use it is in dplyr, because a number of functions use the same syntax as `select()` and we want to provide all the info in one place:
+Esta es una característica que usamos con moderación en tidyverse, pero un lugar donde sí la usamos es en dplyr, porque varias funciones usan la misma sintaxis que `select()` y queremos proporcionar toda la información en un solo lugar:
 
 ```{r}
-#' # Overview of selection features
+#' # Descripción general de las funciones de selección
 #'
 #' ```{r, child = "man/rmd/overview.Rmd"}
 #' ```
 ```
 
-Then `man/rmd/overview.Rmd` contains the repeated markdown:
+Luego `man/rmd/overview.Rmd` contiene la rebaja repetida:
 
 ``` md
-Tidyverse selections implement a dialect of R where operators make
-it easy to select variables:
+Las selecciones de Tidyverse implementan un dialecto de R donde los operadores hacen
+Es fácil seleccionar variables:
 
-- `:` for selecting a range of consecutive variables.
-- `!` for taking the complement of a set of variables.
-- `&` and `|` for selecting the intersection or the union of two
-  sets of variables.
-- `c()` for combining selections.
+- `:` para seleccionar un rango de variables consecutivas.
+- `!` para tomar el complemento de un conjunto de variables.
+- `&` y `|` para seleccionar la intersección o la unión de dos
+  conjuntos de variables.
+- `c()` para combinar selecciones.
 
 ...
 ```
 
-If the Rmd file contains roxygen (Markdown-style) links to other help topics, then some care is needed.
-See <https://roxygen2.r-lib.org/dev/articles/reuse.html#child-documents> for details.
+Si el archivo Rmd contiene enlaces roxygen (estilo Markdown) a otros temas de ayuda, entonces se necesita algo de cuidado.
+Ver <https://roxygen2.r-lib.org/dev/articles/reuse.html#child-documents> para detalles.
 
-## Help topic for the package {#sec-man-package-doc}
+## Tema de ayuda para el paquete {#sec-man-package-doc}
 
-This chapter focuses on function documentation, but remember you can document other things, as detailed in `vignette("rd-other", package = "roxygen2")`.
-In particular, you can create a help topic for the package itself by documenting the special sentinel `"_PACKAGE"`.
-The resulting `.Rd` file automatically pulls in information parsed from the `DESCRIPTION`, including title, description, list of authors, and useful URLs.
-This help topic appears alongside all your other topics and can also be accessed with `package?pkgname`, e.g. `package?usethis`, or even just `?usethis`.
+Este capítulo se centra en la documentación de funciones, pero recuerde que puede documentar otras cosas, como se detalla en `vignette("rd-other", paquete = "roxygen2")`.
+En particular, puede crear un tema de ayuda para el paquete en sí documentando el centinela especial `"_PACKAGE"`.
+El archivo `.Rd` resultante extrae automáticamente información analizada de la `DESCRIPTION`, incluido el título, la descripción, la lista de autores y las URL útiles.
+Este tema de ayuda aparece junto con todos los demás temas y también se puede acceder a él con `package?pkgname`, por ejemplo, `package?usethis`, o incluso simplemente con `?usethis`.
 
-We recommend calling `usethis::use_package_doc()` to set up this package-level documentation in a dummy file `R/{pkgname}-package.R`, whose contents will look something like this:
+Recomendamos llamar a `usethis::use_package_doc()` para configurar esta documentación a nivel de paquete en un archivo ficticio `R/{pkgname}-package.R`, cuyo contenido se verá así:
 
 ```{r, eval = FALSE}
 #' @keywords internal 
 "_PACKAGE"
 ```
 
-The `R/{pkgname}-package.R` file is the main reason we wanted to mention `use_package_doc()` and package-level documentation here.
-It turns out there are a few other package-wide housekeeping tasks for which this file is a very natural home.
-For example, it's a sensible, central location for import directives, i.e. for importing individual functions from your dependencies or even entire namespaces.
-In @sec-dependencies-in-imports-r-code, we recommend importing specific functions via `usethis::use_import_from()` and this function is designed to write the associated roxygen tags into the `R/{pkgname}-package.R` file created by `use_package_doc()`.
-So, putting it all together, this is a minimal example of how the `R/{pkgname}-package.R` file might look:
+El archivo `R/{pkgname}-package.R` es la razón principal por la que queríamos mencionar aquí `use_package_doc()` y la documentación a nivel de paquete.
+Resulta que hay algunas otras tareas de limpieza de todo el paquete para las cuales este archivo es un hogar muy natural.
+Por ejemplo, es una ubicación central sensata para directivas de importación, es decir, para importar funciones individuales desde sus dependencias o incluso espacios de nombres completos.
+En @sec-dependencies-in-imports-r-code, recomendamos importar funciones específicas a través de `usethis::use_import_from()` y esta función está diseñada para escribir las etiquetas roxygen asociadas en el paquete `R/{pkgname}. Archivo R` creado por `use_package_doc()`.
+Entonces, poniéndolo todo junto, este es un ejemplo mínimo de cómo podría verse el archivo `R/{pkgname}-package.R`:
 
 ```{r, eval = FALSE}
 #' @keywords internal 
 "_PACKAGE"
 
-# The following block is used by usethis to automatically manage
-# roxygen namespace tags. Modify with care!
+# El siguiente bloque es utilizado por usethis para administrar automáticamente
+# etiquetas de espacio de nombres de roxygen. ¡Modifique con cuidado!
 ## usethis namespace: start
 #' @importFrom glue glue_collapse
 ## usethis namespace: end
