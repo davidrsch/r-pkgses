@@ -954,7 +954,7 @@ Ver <https://roxygen2.r-lib.org/dev/articles/reuse.html#child-documents> para de
 
 ## Tema de ayuda para el paquete {#sec-man-package-doc}
 
-Este capítulo se centra en la documentación de funciones, pero recuerde que puede documentar otras cosas, como se detalla en `vignette("rd-other", paquete = "roxygen2")`.
+Este capítulo se centra en la documentación de funciones, pero recuerde que puede documentar otras cosas, como se detalla en `vignette("rd-other", package = "roxygen2")`.
 En particular, puede crear un tema de ayuda para el paquete en sí documentando el centinela especial `"_PACKAGE"`.
 El archivo `.Rd` resultante extrae automáticamente información analizada de la `DESCRIPTION`, incluido el título, la descripción, la lista de autores y las URL útiles.
 Este tema de ayuda aparece junto con todos los demás temas y también se puede acceder a él con `package?pkgname`, por ejemplo, `package?usethis`, o incluso simplemente con `?usethis`.
