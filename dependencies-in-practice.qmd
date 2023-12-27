@@ -389,7 +389,7 @@ En este caso, la instalación del paquete sf puede no ser fácil y es posible qu
 
 Finalmente, tenga en cuenta que `testthat::skip_if_not_installed(pkg, minimal_version = "xyz")` se puede usar para omitir condicionalmente una prueba según la versión del otro paquete.
 
-### En ejemplos y viñetas {#sec-dependencias-en-sugerencias-en-ejemplos-y-viñetas}
+### En ejemplos y viñetas {#sec-dependencies-in-suggests-in-examples-and-vignettes}
 
 Otro lugar común para usar un paquete sugerido es en un ejemplo y aquí a menudo lo protegemos con `require()` o `requireNamespace()`.
 Este ejemplo es de `ggplot2::coord_map()`.

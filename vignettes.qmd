@@ -1,99 +1,101 @@
-# Vignettes {#sec-vignettes}
+# Viñetas {#sec-vignettes}
 
 ```{r, echo = FALSE}
 source("common.R")
 ```
 
-A vignette is a long-form guide to your package.
-Function documentation is great if you know the name of the function you need, but it's useless otherwise.
-In contrast, a vignette can be framed around a target problem that your package is designed to solve.
-The vignette format is perfect for showing a workflow that solves that particular problem, start to finish.
-Vignettes afford you different opportunities than help topics: you have much more control over the integration of code and prose and it's a better setting for showing how multiple functions work together.
+Una viñeta es una guía detallada de su paquete.
+La documentación de funciones es excelente si conoce el nombre de la función que necesita, pero de lo contrario es inútil.
+Por el contrario, una viñeta se puede enmarcar en torno a un problema objetivo que su paquete está diseñado para resolver.
+El formato de viñeta es perfecto para mostrar un flujo de trabajo que resuelve ese problema en particular, de principio a fin.
+Las viñetas le brindan diferentes oportunidades que los temas de ayuda: tiene mucho más control sobre la integración del código y la prosa y es una mejor configuración para mostrar cómo funcionan múltiples funciones juntas.
 
-Many existing packages have vignettes and you can see all the vignettes associated with your installed packages with `browseVignettes()`.
-To limit that to a particular package, you can specify the package's name like so: `browseVignettes("tidyr")`.
-You can read a specific vignette with the `vignette()` function, e.g. `vignette("rectangle", package = "tidyr")`.
-To see vignettes for a package that you haven't installed, look at the "Vignettes" listing on its CRAN page, e.g. <https://cran.r-project.org/web/packages/tidyr/index.html>.
+Muchos paquetes existentes tienen viñetas y puede ver todas las viñetas asociadas con sus paquetes instalados con `browseVignettes()`.
+Para limitar eso a un paquete en particular, puede especificar el nombre del paquete así: `browseVignettes("tidyr")`.
+Puede leer una viñeta específica con la función `vignette()`, por ejemplo, `vignette("rectangle", package = "tidyr")`.
+Para ver viñetas de un paquete que no ha instalado, consulte la lista "Viñetas" en su página CRAN, por ejemplo.
+<https://cran.r-project.org/web/packages/tidyr/index.html>.
 
-However, we much prefer to discover and read vignettes from a package's website, which is the topic of @sec-website[^vignettes-1].
-Compare the above to what it feels like to access tidyr's vignettes from its website: <https://tidyr.tidyverse.org/articles/index.html>.
-Note that pkgdown uses the term "article", which feels like the right vocabulary for package users.
-The technical distinction between a vignette (which ships with a package) and an article (which is only available on the website; see @sec-vignettes-article) is something the package developer needs to think about.
-A pkgdown website presents all of the documentation of a package in a cohesive, interlinked way that makes it more navigable and useful.
-This chapter is ostensibly about vignettes, but the way we do things is heavily influenced by how those vignettes fit into a pkgdown website.
+Sin embargo, preferimos descubrir y leer viñetas del sitio web de un paquete, que es el tema de @sec-website[^vignettes-1].
+Compare lo anterior con lo que se siente al acceder a las viñetas de tidyr desde su sitio web: <https://tidyr.tidyverse.org/articles/index.html>.
+Tenga en cuenta que pkgdown utiliza el término "artículo", que parece el vocabulario adecuado para los usuarios del paquete.
+La distinción técnica entre una viñeta (que se envía con un paquete) y un artículo (que solo está disponible en el sitio web; consulte @sec-vignettes-article) es algo en lo que el desarrollador del paquete debe pensar.
+Un sitio web pkgdown presenta toda la documentación de un paquete de una manera coherente e interconectada que lo hace más navegable y útil.
+Aparentemente, este capítulo trata sobre viñetas, pero la forma en que hacemos las cosas está fuertemente influenciada por cómo esas viñetas encajan en un sitio web pkgdown.
 
-[^vignettes-1]: This obviously depends on the quality of one's internet connection, so we make an effort to recommend behaviours that are compatible with base R's tooling around installed vignettes.
+[^vignettes-1]: Esto obviamente depende de la calidad de la conexión a Internet, por lo que nos esforzamos en recomendar comportamientos que sean compatibles con las herramientas de base R en torno a las viñetas instaladas.
 
-In this book, we're going to use R Markdown to write our vignettes[^vignettes-2], just as we did for function documentation in @sec-man-key-md-features. If you're not already familiar with R Markdown you'll need to learn the basics elsewhere; a good place to start is <https://rmarkdown.rstudio.com/>.
+En este libro, usaremos R Markdown para escribir nuestras viñetas[^vignettes-2], tal como lo hicimos para la documentación de funciones en @sec-man-key-md-features. Si aún no está familiarizado con R Markdown, necesitará aprender los conceptos básicos en otro lugar; un buen lugar para empezar es <https://rmarkdown.rstudio.com/>.
 
-[^vignettes-2]: Sweave is the original system used for authoring vignettes (Sweave files usually have extension `.Rnw`).
-    Similar to our advice about how to author function documentation (@sec-man), we think it makes more sense to use a markdown-based syntax for vignettes than a one-off, LaTeX-associated format.
-    This choice also affects the form of rendered vignettes: Sweave vignettes render to PDF, whereas R Markdown vignettes render to HTML.
-    We recommend converting Sweave vignettes to R Markdown.
+[^vignettes-2]: Sweave es el sistema original utilizado para crear viñetas (los archivos Sweave generalmente tienen la extensión `.Rnw`).
+    De manera similar a nuestro consejo sobre cómo crear documentación de funciones (@sec-man), creemos que tiene más sentido usar una sintaxis basada en rebajas para viñetas que un formato único asociado a LaTeX.
+    Esta elección también afecta la forma de las viñetas renderizadas: las viñetas Sweave se renderizan en PDF, mientras que las viñetas R Markdown se renderizan en HTML.
+    Recomendamos convertir viñetas de Sweave a R Markdown.
 
-In general, we embrace a somewhat circumscribed vignette workflow, i.e. there are many things that base R allows for, that we simply don't engage in.
-For example, we treat `inst/doc/`[^vignettes-3] in the same way as `man/` and `NAMESPACE`, i.e. as something semi-opaque that is managed by automated tooling and that we don't modify by hand.
-Base R's vignette system allows for various complicated maneuvers that we just try to avoid.
-In vignettes, more than anywhere else, the answer to "But how do I do X?" is often "Don't do X".
+En general, adoptamos un flujo de trabajo de viñeta algo circunscrito, es decir, hay muchas cosas que la base R permite, en las que simplemente no participamos.
+Por ejemplo, tratamos `inst/doc/`[^vignettes-3] de la misma manera que `man/` y `NAMESPACE`, es decir, como algo semiopaco que se gestiona mediante herramientas automatizadas y que no modificamos.
+manualmente.
+El sistema de viñetas de Base R permite varias maniobras complicadas que simplemente intentamos evitar.
+En las viñetas, más que en cualquier otro lugar, la respuesta a "¿Pero cómo hago X?" suele ser "No hagas X".
 
-[^vignettes-3]: The `inst/doc/` folder is where vignettes go once they're built, when `R CMD build` makes the package bundle.
+[^vignettes-3]: La carpeta `inst/doc/` es donde van las viñetas una vez creadas, cuando `R CMD build` crea el paquete.
 
-## Workflow for writing a vignette {#sec-vignettes-workflow-writing}
+## Flujo de trabajo para escribir una viñeta {#sec-vignettes-workflow-writing}
 
-To create your first vignette, run:
+Para crear su primera viñeta, ejecute:
 
 ```{r, eval = FALSE}
 usethis::use_vignette("my-vignette")
 ```
 
-This does the following:
+Esto hace lo siguiente:
 
-1.  Creates a `vignettes/` directory.
+1.  Crea un directorio `viñetas/`.
 
-2.  Adds the necessary dependencies to `DESCRIPTION`, i.e. adds knitr to the `VignetteBuilder` field and adds both knitr and rmarkdown to `Suggests`.
+2.  Agrega las dependencias necesarias a `DESCRIPCIÓN`, es decir, agrega knitr al campo `VignetteBuilder` y agrega knitr y rmarkdown a `Suggests`.
 
-3.  Drafts a vignette, `vignettes/my-vignette.Rmd`.
+3.  Redacta una viñeta, `vignettes/my-vignette.Rmd`.
 
-4.  Adds some patterns to `.gitignore` to ensure that files created as a side effect of previewing your vignettes are kept out of source control (we'll say more about this later).
+4.  Agrega algunos patrones a `.gitignore` para garantizar que los archivos creados como efecto secundario de la vista previa de sus viñetas se mantengan fuera del control de fuente (diremos más sobre esto más adelante).
 
-This draft document has the key elements of an R Markdown vignette and leaves you in a position to add your content.
-You also call `use_vignette()` to create your second and all subsequent vignettes; it will just skip any setup that's already been done.
+Este borrador del documento tiene los elementos clave de una viñeta de R Markdown y le permite agregar su contenido.
+También llama a `use_vignette()` para crear su segunda viñeta y todas las siguientes; simplemente omitirá cualquier configuración que ya se haya realizado.
 
-Once you have the draft vignette, the workflow is straightforward:
+Una vez que tenga el borrador de la viñeta, el flujo de trabajo es sencillo:
 
-1.  Start adding prose and code chunks to the vignette.
-    Use `devtools::load_all()` as needed and use your usual interactive workflow for developing the code chunks.
+1.  Comience a agregar prosa y fragmentos de código a la viñeta.
+    Utilice `devtools::load_all()` según sea necesario y utilice su flujo de trabajo interactivo habitual para desarrollar los fragmentos de código.
 
-2.  Render the entire vignette periodically.
+2.  Renderice periódicamente la viñeta completa.
 
-    This requires some intention, because unlike tests, by default, a vignette is rendered using the currently installed version of your package, not with the current source package, thanks to the initial call to `library(yourpackage)`.
+    Esto requiere cierta intención, porque a diferencia de las pruebas, de forma predeterminada, una viñeta se representa usando la versión actualmente instalada de su paquete, no con el paquete fuente actual, gracias a la llamada inicial a `library(supaquete)`.
 
-    One option is to properly install your current source package with `devtools::install()` or, in RStudio, Ctrl/Cmd + Shift + B.
-    Then use your usual workflow for rendering an `.Rmd` file.
-    For example, press Ctrl/Cmd + Shift + K or click ![](images/knit.png){width="45"}.
+    Una opción es instalar correctamente su paquete fuente actual con `devtools::install()` o, en RStudio, Ctrl/Cmd + Shift + B.
+    Luego use su flujo de trabajo habitual para renderizar un archivo `.Rmd`.
+    Por ejemplo, presione Ctrl/Cmd + Shift + K o haga clic en ![](images/knit.png){width="45"}.
 
-    Or you could properly install your package and request that vignettes be built, with `install(build_vignettes = TRUE)`, then use `browseVignettes()`.
+    O puede instalar correctamente su paquete y solicitar que se creen viñetas, con `install(build_vignettes = TRUE)`, luego usar `browseVignettes()`.
 
-    Another option is to use `devtools::build_rmd("vignettes/my-vignette.Rmd")` to render the vignette.
-    This builds your vignette against a (temporarily installed) development version of your package.
+    Otra opción es usar `devtools::build_rmd("vignettes/my-vignette.Rmd")` para representar la viñeta.
+    Esto construye su viñeta contra una versión de desarrollo (instalada temporalmente) de su paquete.
 
-    It's very easy to overlook this issue and be puzzled when your vignette preview doesn't seem to reflect recent developments in the package.
-    Double check that you're building against the current version!
+    Es muy fácil pasar por alto este problema y quedar desconcertado cuando la vista previa de su viñeta no parece reflejar los desarrollos recientes en el paquete.
+    ¡Comprueba que estás compilando con la versión actual!
 
-3.  Rinse and repeat until the vignette looks the way you want.
+3.  Enjuague y repita hasta que la viñeta luzca como desea.
 
-If you're regularly checking your entire package (@sec-workflow101-r-cmd-check), which we strongly recommend, this will help to keep your vignettes in good working order.
-In particular, this will alert you if a vignette makes use of a package that's not a formal dependency.
-We will come back to these package-level workflow issues below in @sec-vignettes-how-built-checked.
+Si revisa periódicamente todo su paquete (@sec-workflow101-r-cmd-check), lo cual recomendamos encarecidamente, esto ayudará a mantener sus viñetas en buen estado de funcionamiento.
+En particular, esto le alertará si una viñeta utiliza un paquete que no es una dependencia formal.
+Volveremos a estos problemas de flujo de trabajo a nivel de paquete a continuación en @sec-vignettes-how-built-checked.
 
-## Metadata
+## Metadatos
 
-The first few lines of the vignette contain important metadata.
-The default template contains the following information:
+Las primeras líneas de la viñeta contienen metadatos importantes.
+La plantilla predeterminada contiene la siguiente información:
 
 ```         
 ---
-title: "Vignette Title"
+title: "Título de viñeta"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -102,41 +104,41 @@ vignette: >
 ---
 ```
 
-This metadata is written in [YAML](https://yaml.org/), a format designed to be both human and computer readable.
-YAML frontmatter is a common feature of R Markdown files.
-The syntax is much like that of the `DESCRIPTION` file, where each line consists of a field name, a colon, then the value of the field.
-The one special YAML feature we're using here is `>`.
-It indicates that the following lines of text are plain text and shouldn't use any special YAML features.
+Estos metadatos están escritos en [YAML](https://yaml.org/), un formato diseñado para ser legible tanto por humanos como por computadoras.
+El frontmatter YAML es una característica común de los archivos R Markdown.
+La sintaxis es muy parecida a la del archivo `DESCRIPTION`, donde cada línea consta de un nombre de campo, dos puntos y luego el valor del campo.
+La única característica especial de YAML que estamos usando aquí es `>`.
+Indica que las siguientes líneas de texto son texto sin formato y no deben utilizar ninguna característica especial de YAML.
 
-The default vignette template uses these fields:
+La plantilla de viñeta predeterminada utiliza estos campos:
 
--   `title`: this is the title that appears in the vignette.
-    If you change it, make sure to make the same change to `VignetteIndexEntry{}`.
-    They should be the same, but unfortunately that's not automatic.
+-   `title`: este es el título que aparece en la viñeta.
+    Si lo cambia, asegúrese de realizar el mismo cambio en `VignetteIndexEntry{}`.
+    Deberían ser iguales, pero lamentablemente eso no es automático.
 
--   `output`: this specifies the output format.
-    There are many options that are useful for regular reports (including html, pdf, slideshows, etc.), but `rmarkdown::html_vignette` has been specifically designed for this exact purpose.
-    See `?rmarkdown::html_vignette` for more details.
+-   `salida`: esto especifica el formato de salida.
+    Hay muchas opciones que son útiles para informes regulares (incluidos html, pdf, presentaciones de diapositivas, etc.), pero `rmarkdown::html_vignette` ha sido diseñado específicamente para este propósito exacto.
+    Consulte `?rmarkdown::html_vignette` para obtener más detalles.
 
--   `vignette`: this is a block of special metadata needed by R.
-    Here, you can see the legacy of LaTeX vignettes: the metadata looks like LaTeX comments.
-    The only entry you might need to modify is the `\VignetteIndexEntry{}`.
-    This is how the vignette appears in the vignette index and it should match the `title`.
-    Leave the other two lines alone.
-    They tell R to use `knitr` to process the file and that the file is encoded in UTF-8 (the only encoding you should ever use for a vignette).
+-   `vignette`: este es un bloque de metadatos especiales que necesita R.
+    Aquí puede ver el legado de las viñetas de LaTeX: los metadatos parecen comentarios de LaTeX.
+    La única entrada que quizás necesite modificar es `\VignetteIndexEntry{}`.
+    Así es como aparece la viñeta en el índice de viñetas y debe coincidir con el "título".
+    Deja las otras dos líneas en paz.
+    Le dicen a R que use `knitr` para procesar el archivo y que el archivo esté codificado en UTF-8 (la única codificación que debería usar para una viñeta).
 
-We generally don't use these fields, but you will see them in other packages:
+Generalmente no usamos estos campos, pero los verá en otros paquetes:
 
--   `author`: we don't use this unless the vignette is written by someone not already credited as a package author.
+-   `autor`: no usamos esto a menos que la viñeta esté escrita por alguien que aún no esté acreditado como autor del paquete.
 
--   `date`: we think this usually does more harm than good, since it's not clear what the `date` is meant to convey.
-    Is it the last time the vignette source was updated?
-    In that case you'll have to manage it manually and it's easy to forget to update it.
-    If you manage `date` programmatically with `Sys.date()`, the date reflects when the vignette was built, i.e. when the package bundle was created, which has nothing to do with when the vignette or package was last modified.
-    We've decided it's best to omit the `date`.
+-   `date`: creemos que esto suele hacer más daño que bien, ya que no está claro qué pretende transmitir la `date`.
+    ¿Es la última vez que se actualizó la fuente de la viñeta?
+    En ese caso, tendrás que administrarlo manualmente y es fácil olvidarte de actualizarlo.
+    Si administra `date` programáticamente con `Sys.date()`, la fecha refleja cuándo se creó la viñeta, es decir, cuándo se creó el paquete, que no tiene nada que ver con cuándo se modificó por última vez la viñeta o el paquete.
+    Hemos decidido que es mejor omitir la `date`.
 
-The draft vignette also includes two R chunks.
-The first one configures our preferred way of displaying code output and looks like this:
+El borrador de la viñeta también incluye dos fragmentos de R.
+El primero configura nuestra forma preferida de mostrar la salida del código y tiene este aspecto:
 
 ````{verbatim}
 ```{r, include = FALSE}
@@ -147,7 +149,7 @@ knitr::opts_chunk$set(
 ```
 ````
 
-The second chunk just attaches the package the vignette belongs to.
+El segundo fragmento simplemente adjunta el paquete al que pertenece la viñeta.
 
 ````{verbatim}
 ```{r setup}
@@ -155,82 +157,83 @@ library(yourpackage)
 ```
 ````
 
-You might be tempted to (temporarily) replace this `library()` call with `load_all()`, but we advise that you don't.
-Instead, use the techniques given in @sec-vignettes-workflow-writing to exercise your vignette code with the current source package.
+Es posible que tenga la tentación de reemplazar (temporalmente) esta llamada `library()` con `load_all()`, pero le recomendamos que no lo haga.
+En su lugar, utilice las técnicas proporcionadas en @sec-vignettes-workflow-writing para ejercitar su código de viñeta con el paquete fuente actual.
 
-## Advice on writing vignettes
+## Consejos para escribir viñetas
 
-> If you're thinking without writing, you only think you're thinking.
+> Si estás pensando sin escribir, sólo piensas que estás pensando.
 > --- Leslie Lamport
 
-When writing a vignette, you're teaching someone how to use your package.
-You need to put yourself in the reader's shoes, and adopt a "beginner's mind".
-This can be difficult because it's hard to forget all of the knowledge that you've already internalized.
-For this reason, we find in-person teaching to be a really useful way to get feedback.
-You're immediately confronted with what you've forgotten that only you know.
+Al escribir una viñeta, le estás enseñando a alguien cómo usar tu paquete.
+Debe ponerse en el lugar del lector y adoptar una "mente de principiante".
+Esto puede resultar difícil porque es difícil olvidar todo el conocimiento que ya ha interiorizado.
+Por este motivo, consideramos que la enseñanza presencial es una forma realmente útil de obtener retroalimentación.
+Inmediatamente te enfrentas a lo que has olvidado y que sólo tú sabes.
 
-A useful side effect of this approach is that it helps you improve your code.
-It forces you to re-see the initial on-boarding process and to appreciate the parts that are hard.
-Our experience is that explaining how code works often reveals some problems that need fixing.
+Un efecto secundario útil de este enfoque es que le ayuda a mejorar su código.
+Te obliga a volver a ver el proceso de incorporación inicial y a apreciar las partes que son difíciles.
+Nuestra experiencia es que explicar cómo funciona el código a menudo revela algunos problemas que deben solucionarse.
 
-In fact, a key part of the tidyverse package release process is writing a blog post: we now do that before submitting to CRAN, because of the number of times it's revealed some subtle problem that requires a fix.
-It's also fair to say that the tidyverse and its supporting packages would benefit from more "how-to" guides, so that's an area where we are constantly trying to improve.
+De hecho, una parte clave del proceso de lanzamiento del paquete tidyverse es escribir una publicación en el blog: ahora lo hacemos antes de enviarlo a CRAN, debido a la cantidad de veces que se revela algún problema sutil que requiere solución.
+También es justo decir que tidyverse y sus paquetes de soporte se beneficiarían de más guías prácticas, por lo que es un área en la que intentamos mejorar constantemente.
 
-Writing a vignette also makes a nice break from coding.
-Writing seems to use a different part of the brain from programming, so if you're sick of programming, try writing for a bit.
+Escribir una viñeta también supone un buen descanso de la codificación.
+La escritura parece utilizar una parte del cerebro diferente a la de la programación, así que si estás cansado de la programación, intenta escribir un poco.
 
-Here are some resources we've found helpful:
+Aquí hay algunos recursos que hemos encontrado útiles:
 
--   Literally anything written by Kathy Sierra.
-    She is not actively writing at the moment, but her content is mostly timeless and is full of advice about programming, teaching, and how to create valuable tools.
-    See her original blog, [Creating passionate users](https://headrush.typepad.com/), or the site that came after, [Serious Pony](https://web.archive.org/web/20230411010913/https://seriouspony.com/blog/).
+-   Literalmente cualquier cosa escrita por Kathy Sierra.
+    No escribe activamente en este momento, pero su contenido es en su mayor parte atemporal y está lleno de consejos sobre programación, enseñanza y cómo crear herramientas valiosas.
+    Vea su blog original, [Creando usuarios apasionados](https://headrush.typepad.com/), o el sitio posterior, [Serious Pony](https://web.archive.org/web/20230411010913/https%20://seriouspony.com/blog/).
 
--   "Style: Lessons in Clarity and Grace" by Joseph M. Williams and Joseph Bizup.
-    This book helps you understand the structure of writing so that you'll be better able to recognise and fix bad writing.
+-   "Estilo: Lecciones de claridad y gracia" de Joseph M. Williams y Joseph Bizup.
+    Este libro le ayuda a comprender la estructura de la escritura para que pueda reconocer y corregir mejor la mala escritura.
 
-### Diagrams
+### Diagramas
 
 ::: callout-warning
-## Submitting to CRAN
+## Envío a CRAN
 
-You'll need to watch the file size.
-If you include a lot of graphics, it's easy to create a very large file.
-Be on the look out for a `NOTE` that complains about an overly large directory.
-You might need to take explicit measures, such as lowering the resolution, reducing the number of figures, or switching from a vignette to an article (@sec-vignettes-article).
+Tendrás que vigilar el tamaño del archivo.
+Si incluye muchos gráficos, es fácil crear un archivo muy grande.
+Esté atento a una "NOTA" que se queja de un directorio demasiado grande.
+Es posible que debas tomar medidas explícitas, como reducir la resolución, reducir el número de figuras o cambiar de una viñeta a un artículo (@sec-vignettes-article).
 :::
 
-### Links
+### Enlaces
 
-There is no official way to link to help topics from vignettes or *vice versa* or from one vignette to another.
+No existe una forma oficial de vincular temas de ayuda desde viñetas o *viceversa* o de una viñeta a otra.
 
-This is a concrete example of why we think pkgdown sites are a great way to present package documentation, because pkgdown makes it easy (literally zero effort, in many cases) to get these hyperlinked cross-references.
-This is documented in `vignette("linking", package = "pkgdown")`.
-If you're reading this book online, the inline call to `vignette()` in the previous sentence should be hyperlinked to the corresponding vignette in pkgdown[^vignettes-4], using the same toolchain that will create automatic links in your pkgdown websites!
-We discussed this syntax previously in @sec-man-key-md-features, in the context of function documentation.
+Este es un ejemplo concreto de por qué creemos que los sitios pkgdown son una excelente manera de presentar documentación de paquetes, porque pkgdown hace que sea fácil (literalmente sin esfuerzo, en muchos casos) obtener estas referencias cruzadas con hipervínculos.
+Esto está documentado en `vignette("linking", package = "pkgdown")`.
+Si estás leyendo este libro en línea, la llamada en línea a `vignette()` en la oración anterior debe tener un hipervínculo a la viñeta correspondiente en pkgdown[^vignettes-4], usando la misma cadena de herramientas que creará enlaces automáticos en tu pkgdown.
+sitios web!
+Discutimos esta sintaxis anteriormente en @sec-man-key-md-features, en el contexto de la documentación de funciones.
 
-[^vignettes-4]: And, for anyone else, executing this code in the R console will open the vignette, if the host package is installed.
+[^vignettes-4]: Y, para cualquier otra persona, ejecutar este código en la consola R abrirá la viñeta, si el paquete host está instalado.
 
-Automatic links are generated for functions in the host package, namespace-qualified functions in another package, vignettes, and more.
-Here are the two most important examples of automatically linked text:
+Se generan enlaces automáticos para funciones en el paquete host, funciones calificadas para espacios de nombres en otro paquete, viñetas y más.
+Estos son los dos ejemplos más importantes de texto vinculado automáticamente:
 
--   `` `some_function()` ``: Autolinked to the documentation of `some_function()`, within the pkgdown site of its host package.
-    Note the use of backticks and the trailing parentheses.
+-   `` `some_function()` ``: Autoenlazado a la documentación de `some_function()`, dentro del sitio pkgdown de su paquete host.
+    Tenga en cuenta el uso de comillas invertidas y paréntesis finales.
 
--   `` `vignette("fascinating-topic")` ``: Autolinked to the "fascinating-topic" article within the pkgdown site of its host package.
-    Note the use of backticks.
+-   `` `vignette("fascinating-topic")` ``: Vinculado automáticamente al artículo "fascinating-topic" dentro del sitio pkgdown de su paquete host.
+    Tenga en cuenta el uso de comillas invertidas.
 
-### Filepaths
+### Rutas de archivos
 
-Sometimes it is necessary to refer to another file from a vignette.
-The best way to do this depends on the application:
+A veces es necesario hacer referencia a otro archivo de una viñeta.
+La mejor manera de hacerlo depende de la aplicación:
 
--   A figure created by code evaluated in the vignette: By default, in the `.Rmd` workflow that we recommend, this takes care of itself.
-    Such figures are automatically embedded into the `.html` using data URIs.
-    You don't need to do anything.
-    Example: `vignette("extending-ggplot2", package = "ggplot2")` generates a few figures in evaluated code chunks.
+-   Una figura creada por código evaluado en la viñeta: De forma predeterminada, en el flujo de trabajo `.Rmd` que recomendamos, esto se soluciona solo.
+    Estas cifras se incrustan automáticamente en `.html` mediante URI de datos.
+    No necesitas hacer nada.
+    Ejemplo: `vignette("extending-ggplot2", package = "ggplot2")` genera algunas cifras en fragmentos de código evaluados.
 
--   An external file that could be useful to users or elsewhere in the package (not just in vignettes): Put such a file in `inst/` (@sec-misc-inst), perhaps in `inst/extdata/` (@sec-data-extdata), and refer to it with `system.file()` or `fs::path_package()` (@sec-data-system-file).
-    Example from `vignette("sf2", package = "sf")`:
+-   Un archivo externo que podría ser útil para los usuarios o en cualquier otra parte del paquete (no solo en viñetas): coloque dicho archivo en `inst/` (@sec-misc-inst), tal vez en `inst/extdata/` (@sec-data-extdata), y consúltelo con `system.file()` o `fs::path_package()` (@sec-data-system-file).
+    Ejemplo de `vignette("sf2", package = "sf")`:
 
     `````{verbatim}
     ````{r}
@@ -241,9 +244,9 @@ The best way to do this depends on the application:
     ```
     `````
 
--   An external file whose utility is limited to your vignettes: put it alongside the vignette source files in `vignettes/` and refer to it with a filepath that is relative to `vignettes/`.
+-   Un archivo externo cuya utilidad se limita a sus viñetas: colóquelo junto a los archivos fuente de las viñetas en `vignettes/` y consúltelo con una ruta de archivo relativa a `vignettes/`.
 
-    Example: The source of `vignette("tidy-data", package = "tidyr")` is found at `vignettes/tidy-data.Rmd` and it includes a chunk that reads a file located at `vignettes/weather.csv` like so:
+    Ejemplo: la fuente de `vignette("tidy-data", package = "tidyr")` se encuentra en `vignettes/tidy-data.Rmd` e incluye un fragmento que lee un archivo ubicado en `vignettes/weather.csv`así:
 
     ````{verbatim}
     ```{r}
@@ -252,8 +255,8 @@ The best way to do this depends on the application:
     ```
     ````
 
--   An external graphics file: put it in `vignettes/`, refer to it with a filepath that is relative to `vignettes/` and use `knitr::include_graphics()` inside a code chunk.
-    Example from `vignette("sheet-geometry", package = "readxl")`:
+-   Un archivo de gráficos externo: colóquelo en `vignettes/`, consúltelo con una ruta de archivo relativa a `vignettes/` y use `knitr::include_graphics()` dentro de un fragmento de código.
+    Ejemplo de `vignette("sheet-geometry", package = "readxl")`:
 
     ````{verbatim}
     ```{r out.width = '70%', echo = FALSE}
@@ -261,57 +264,58 @@ The best way to do this depends on the application:
     ```
     ````
 
-### How many vignettes?
+### ¿Cuántas viñetas?
 
-For simpler packages, one vignette is often sufficient.
-If your package is named "somepackage", call this vignette `somepackage.Rmd`.
-This takes advantage of a pkgdown convention, where the vignette that's named after the package gets an automatic "Get started" link in the top navigation bar.
+Para paquetes más simples, una viñeta suele ser suficiente.
+Si su paquete se llama "algúnpaquete", llame a esta viñeta `algúnpaquete.Rmd`.
+Esto aprovecha una convención pkgdown, donde la viñeta que lleva el nombre del paquete obtiene un enlace automático "Get started" en la barra de navegación superior.
 
-More complicated packages probably need more than one vignette.
-It can be helpful to think of vignettes like chapters of a book -- they should be self-contained, but still link together into a cohesive whole.
+Los paquetes más complicados probablemente necesiten más de una viñeta.
+Puede resultar útil pensar en las viñetas como capítulos de un libro: deben ser independientes, pero aun así estar unidos formando un todo cohesivo.
 
-### Scientific publication
+### Publicación científica
 
-Vignettes can also be useful if you want to explain the details of your package.
-For example, if you have implemented a complex statistical algorithm, you might want to describe all the details in a vignette so that users of your package can understand what's going on under the hood, and be confident that you've implemented the algorithm correctly.
-In this case, you might also consider submitting your vignette to the [Journal of Statistical Software](http://jstatsoft.org/) or [The R Journal](http://journal.r-project.org/).
-Both journals are electronic only and peer-reviewed.
-Comments from reviewers can be very helpful for improving your package and vignette.
+Las viñetas también pueden resultar útiles si desea explicar los detalles de su paquete.
+Por ejemplo, si ha implementado un algoritmo estadístico complejo, es posible que desee describir todos los detalles en una viñeta para que los usuarios de su paquete puedan entender lo que sucede bajo el capó y estar seguros de que ha implementado el algoritmo correctamente.
+En este caso, también podría considerar enviar su viñeta al [Journal of Statistical Software](http://jstatsoft.org/) o [The R Journal](http://journal.r-project.org/).
+Ambas revistas son únicamente electrónicas y están revisadas por pares.
+Los comentarios de los revisores pueden ser muy útiles para mejorar su paquete y viñeta.
 
-If you just want to provide something very lightweight so folks can easily cite your package, consider the [Journal of Open Source Software](https://joss.theoj.org).
-This journal has a particularly speedy submission and review process, and is where we published "[*Welcome to the Tidyverse*](https://joss.theoj.org/papers/10.21105/joss.01686)", a paper we wrote so that folks could have a single paper to cite and all the tidyverse authors would get some academic credit.
+Si solo desea proporcionar algo muy liviano para que la gente pueda citar fácilmente su paquete, considere el [Journal of Open Source Software](https://joss.theoj.org).
+Esta revista tiene un proceso de envío y revisión particularmente rápido, y es donde publicamos "[*Welcome to the Tidyverse*](https://joss.theoj.org/papers/10.21105/joss.01686)", un artículo que escribimos para que la gente pudiera tener un solo artículo para citar y todos los autores de tidyverse obtuvieran algún crédito académico.
 
-## Special considerations for vignette code {#sec-vignettes-eval-option}
+## Consideraciones especiales para el código de viñeta {#sec-vignettes-eval-option}
 
-A recurring theme is that the R code inside a package needs to be written differently from the code in your analysis scripts and reports.
-This is true for your functions (@sec-code-when-executed), tests (@sec-testing-design-principles), and examples (@sec-man-examples), and it's also true for vignettes.
-In terms of what you can and cannot do, vignettes are fairly similar to examples, although some of the mechanics differ.
+Un tema recurrente es que el código R dentro de un paquete debe escribirse de manera diferente al código en sus scripts e informes de análisis.
+Esto es cierto para sus funciones (@sec-code-when-executed), pruebas (@sec-testing-design-principles) y ejemplos (@sec-man-examples), y también es cierto para las viñetas.
+En términos de lo que puedes y no puedes hacer, las viñetas son bastante similares a los ejemplos, aunque algunas de las mecánicas difieren.
 
-Any package used in a vignette must be a formal dependency, i.e. it must be listed in `Imports` or `Suggests` in `DESCRIPTION`.
-Similar to our stance in tests (@sec-dependencies-in-suggests-in-tests), our policy is to write vignettes under the assumption that suggested packages will be installed in any context where the vignette is being built (@sec-dependencies-in-suggests-in-examples-and-vignettes).
-We generally use suggested packages unconditionally in vignettes.
-But, as with tests, if a package is particularly hard to install, we might make an exception and take extra measures to guard its use.
+Cualquier paquete utilizado en una viñeta debe ser una dependencia formal, es decir, debe aparecer en `Imports` o `Suggests` en `DESCRIPTION`.
+De manera similar a nuestra postura en las pruebas (@sec-dependencies-in-suggests-in-tests), nuestra política es escribir viñetas bajo el supuesto de que los paquetes sugeridos se instalarán en cualquier contexto donde se esté creando la viñeta (@sec-dependencies-in-suggests-in-examples-and-vignettes).
+Generalmente utilizamos paquetes sugeridos incondicionalmente en viñetas.
+Pero, al igual que con las pruebas, si un paquete es particularmente difícil de instalar, podríamos hacer una excepción y tomar medidas adicionales para proteger su uso.
 
-There are many other reasons why it might not be possible to evaluate all of the code in a vignette in certain contexts, such as on CRAN's machines or in CI/CD.
-These include all the usual suspects: lack of authentication credentials, long-running code, or code that is vulnerable to intermittent failure.
+Hay muchas otras razones por las que podría no ser posible evaluar todo el código en una viñeta en ciertos contextos, como en las máquinas de CRAN o en CI/CD.
+Estos incluyen todos los sospechosos habituales: falta de credenciales de autenticación, código de ejecución prolongada o código vulnerable a fallas intermitentes.
 
-The main method for controlling evaluation in an `.Rmd` document is the `eval` code chunk option, which can be `TRUE` (the default) or `FALSE`.
-Importantly, the value of `eval` can be the result of evaluating an expression.
-Here are some relevant examples:
+El método principal para controlar la evaluación en un documento `.Rmd` es la opción de fragmento de código `eval`, que puede ser `TRUE` (el valor predeterminado) o `FALSE`.
+Es importante destacar que el valor de `eval` puede ser el resultado de evaluar una expresión.
+A continuación se muestran algunos ejemplos relevantes:
 
--   `eval = requireNamespace("somedependency")`
--   `eval = !identical(Sys.getenv("SOME_THING_YOU_NEED"), "")`
--   `eval = file.exists("credentials-you-need")`
+-   `eval = requireNamespace("algunadependencia")`
+-   `eval = !identical(Sys.getenv("ALGO_QUE_NECESITA"), "")`
+-   `eval = file.exists("credenciales-que-necesita")`
 
-The `eval` option can be set for an individual chunk, but in a vignette it's likely that you'll want to evaluate most or all of the chunks or practically none of them.
-In the latter case, you'll want to use `knitr::opts_chunk$set(eval = FALSE)` in an early, hidden chunk to make `eval = FALSE` the default for the remainder of the vignette.
-You can still override with `eval = TRUE` in individual chunks.
+La opción `eval` se puede configurar para un fragmento individual, pero en una viñeta es probable que desees evaluar la mayoría o todos los fragmentos o prácticamente ninguno de ellos.
+En el último caso, querrás usar `knitr::opts_chunk$set(eval = FALSE)` en un fragmento inicial oculto para hacer que `eval = FALSE` sea el valor predeterminado para el resto de la viñeta.
+Aún puedes anular con `eval = TRUE` en fragmentos individuales.
 
-In vignettes, we use the `eval` option in a similar way as `@examplesIf` in examples (@sec-man-examples-dependencies-conditional-execution).
-If the code can only be run under specific conditions, you must find a way to to check for those pre-conditions programmatically at runtime and use the result to set the `eval` option.
+En viñetas, usamos la opción `eval` de manera similar a `@examplesIf` en los ejemplos (@sec-man-examples-dependencies-conditional-execution).
+Si el código solo se puede ejecutar bajo condiciones específicas, debe encontrar una manera de verificar esas condiciones previas mediante programación en tiempo de ejecución y usar el resultado para configurar la opción `eval`.
 
-Here are the first few chunks in a vignette from googlesheets4, which wraps the Google Sheets API. The vignette code can only be run if we are able to decrypt a token that allows us to authenticate with the API.
-That fact is recorded in `can_decrypt`, which is then set as the vignette-wide default for `eval`.
+Estos son los primeros fragmentos de una viñeta de googlesheets4, que engloba la API de Google Sheets.
+El código de viñeta solo se puede ejecutar si somos capaces de descifrar un token que nos permita autenticarnos con la API.
+Ese hecho se registra en `can_decrypt`, que luego se establece como el valor predeterminado de toda la viñeta para `eval`.
 
 ````{verbatim}
 ```{r setup, include = FALSE}
@@ -337,50 +341,50 @@ library(googlesheets4)
 ```
 ````
 
-Notice the second chunk uses `eval = !can_decrypt`, which prints an explanatory message for anyone who builds the vignette without the necessary credentials.
+Observe que el segundo fragmento usa `eval = !can_decrypt`, que imprime un mensaje explicativo para cualquiera que cree la viñeta sin las credenciales necesarias.
 
-The example above shows a few more handy chunk options.
-Use `include = FALSE` for chunks that should be evaluated but not seen in the rendered vignette.
-The `echo` option controls whether code is printed, in addition to output.
-Finally, `error = TRUE` is what allows you to purposefully execute code that could throw an error.
-The error will appear in the vignette, just as it would for your user, but it won't prevent the execution of the rest of your vignette's code, nor will it cause `R CMD check` to fail.
-This is something that works much better in a vignette than in an example.
+El ejemplo anterior muestra algunas opciones de fragmentos más útiles.
+Utilice `include = FALSE` para fragmentos que deben evaluarse pero no verse en la viñeta representada.
+La opción `echo` controla si se imprime el código, además de la salida.
+Finalmente, `error = TRUE` es lo que le permite ejecutar código intencionalmente que podría generar un error.
+El error aparecerá en la viñeta, tal como lo haría para su usuario, pero no impedirá la ejecución del resto del código de su viñeta, ni provocará que falle la `R CMD check`.
+Esto es algo que funciona mucho mejor en una viñeta que en un ejemplo.
 
-Many other options are described at <https://yihui.name/knitr/options>.
+Muchas otras opciones se describen en <https://yihui.name/knitr/options>.
 
-### Article instead of vignette {#sec-vignettes-article}
+### Artículo en lugar de viñeta {#sec-vignettes-article}
 
-There is one last technique, if you don't want any of your code to execute on CRAN.
-Instead of a vignette, you can create an article, which is a term used by pkgdown for a vignette-like `.Rmd` document that is not shipped with the package, but that appears only in the website.
-An article will be less accessible than a vignette, for certain users, such as those with limited internet access, because it is not present in the local installation.
-But that might be an acceptable compromise, for example, for a package that wraps a web API.
+Existe una última técnica, si no desea que ningún código se ejecute en CRAN.
+En lugar de una viñeta, puede crear un artículo, que es un término utilizado por pkgdown para un documento `.Rmd` similar a una viñeta que no se envía con el paquete, pero que aparece sólo en el sitio web.
+Un artículo será menos accesible que una viñeta para ciertos usuarios, como aquellos con acceso limitado a Internet, porque no está presente en la instalación local.
+Pero ese podría ser un compromiso aceptable, por ejemplo, para un paquete que incluye una API web.
 
-You can draft a new article with `usethis::use_article()`, which ensures the article will be `.Rbuildignore`d.
-A great reason to use an article instead of a vignette is to show your package working in concert with other packages that you don't want to depend on formally.
-Another compelling use case is when an article really demands lots of graphics.
-This is problematic for a vignette, because the large size of the package causes problems with `R CMD check` (and, therefore, CRAN) and is also burdensome for everyone who installs it, especially those with limited internet.
+Puede redactar un nuevo artículo con `usethis::use_article()`, lo que garantiza que el artículo será `.Rbuildignore`d.
+Una buena razón para utilizar un artículo en lugar de una viñeta es mostrar que su paquete funciona en conjunto con otros paquetes de los que no desea depender formalmente.
+Otro caso de uso atractivo es cuando un artículo realmente exige muchos gráficos.
+Esto es problemático para una viñeta, porque el gran tamaño del paquete causa problemas con `R CMD check` (y, por lo tanto, CRAN) y también es una carga para todos los que lo instalan, especialmente aquellos con Internet limitado.
 
-## How vignettes are built and checked {#sec-vignettes-how-built-checked}
+## Cómo se construyen y verifican las viñetas {#sec-vignettes-how-built-checked}
 
-We close this chapter by returning to a few workflow issues we didn't cover in @sec-vignettes-workflow-writing: How do the `.Rmd` files get turned into the vignettes consumed by users of an installed package?
-What does `R CMD check` do with vignettes?
-What are the implications for maintaining your vignettes?
+Cerramos este capítulo volviendo a algunos problemas de flujo de trabajo que no cubrimos en @sec-vignettes-workflow-writing: ¿Cómo se convierten los archivos `.Rmd` en viñetas consumidas por los usuarios de un paquete instalado?
+¿Qué hace `R CMD check` con las viñetas?
+¿Cuáles son las implicaciones para mantener sus viñetas?
 
-It can be helpful to appreciate the big difference between the workflow for function documentation and vignettes.
-The source of function documentation is stored in roxygen comments in `.R` files below `R/`.
-We use `devtools::document()` to generate `.Rd` files below `man/`.
-These `man/*.Rd` files are part of the source package.
-The official R machinery cares *only* about the `.Rd` files.
+Puede resultar útil apreciar la gran diferencia entre el flujo de trabajo para la documentación de funciones y las viñetas.
+La fuente de la documentación de la función se almacena en los comentarios de roxygen en archivos `.R` debajo de `R/`.
+Usamos `devtools::document()` para generar archivos `.Rd` debajo de `man/`.
+Estos archivos `man/*.Rd` son parte del paquete fuente.
+La maquinaria oficial de R se preocupa *sólo* por los archivos `.Rd`.
 
-Vignettes are very different because the `.Rmd` source is considered part of the source package and the official machinery (`R CMD build` and `check`) interacts with vignette source and built vignettes in many ways.
-The result is that the vignette workflow feels more constrained, since the official tooling basically treats vignettes somewhat like tests, instead of documentation.
+Las viñetas son muy diferentes porque la fuente `.Rmd` se considera parte del paquete fuente y la maquinaria oficial (`R CMD build` y `check`) interactúa con la fuente de la viñeta y las viñetas construidas de muchas maneras.
+El resultado es que el flujo de trabajo de viñetas se siente más restringido, ya que las herramientas oficiales básicamente tratan las viñetas como pruebas, en lugar de documentación.
 
-### `R CMD build` and vignettes {#sec-vignettes-how-built}
+### `R CMD build` y viñetas {#sec-vignettes-how-built}
 
-First, it's important to realize that the `vignettes/*.Rmd` source files exist only when a package is in source (@sec-source-package) or bundled form (@sec-bundled-package).
-Vignettes are rendered when a source package is converted to a bundle via `R CMD build` or a convenience wrapper such as `devtools::build()`.
-The rendered products (`.html`) are placed in `inst/doc/`, along with their source (`.Rmd`) and extracted R code (`.R`; discussed in @sec-vignettes-how-checked).
-Finally, when a package binary is made (@sec-structure-binary), the `inst/doc/` directory is promoted to a top-level `doc/` directory, as happens with everything below `inst/`.
+Primero, es importante darse cuenta de que los archivos fuente `vignettes/*.Rmd` existen solo cuando un paquete está en formato fuente (@sec-source-package) o en formato empaquetado (@sec-bundled-package).
+Las viñetas se representan cuando un paquete fuente se convierte en un paquete mediante `R CMD build` o un contenedor conveniente como `devtools::build()`.
+Los productos renderizados (`.html`) se colocan en `inst/doc/`, junto con su fuente (`.Rmd`) y el código R extraído (`.R`; discutido en @sec-vignettes-how-checked) .
+Finalmente, cuando se crea un paquete binario (@sec-structure-binary), el directorio `inst/doc/` se promueve a un directorio `doc/` de nivel superior, como sucede con todo lo que está debajo de `inst/`.
 
 ```{=html}
 <!--
@@ -391,84 +395,83 @@ https://github.com/r-lib/devtools/issues/2394
 https://github.com/r-lib/pkgbuild/issues/58
 -->
 ```
-The key takeaway from the above is that it is awkward to keep rendered vignettes in a source package and this has implications for the vignette development workflow.
-It is tempting to fight this (and many have tried), but based on years of experience and discussion, the devtools philosophy is to accept this reality.
+TLa conclusión clave de lo anterior es que resulta incómodo mantener viñetas renderizadas en un paquete fuente y esto tiene implicaciones para el flujo de trabajo de desarrollo de viñetas.
+Es tentador luchar contra esto (y muchos lo han intentado), pero basándose en años de experiencia y discusión, la filosofía de devtools es aceptar esta realidad.
 
-Assuming that you don't try to keep built vignettes around persistently in your source package, here are our recommendations for various scenarios:
+Suponiendo que no intenta mantener viñetas creadas de manera persistente en su paquete fuente, aquí están nuestras recomendaciones para varios escenarios:
 
--   Active, iterative work on your vignettes: Use your usual interactive `.Rmd` workflow (such as the ![](images/knit.png){width="45"} button) or `devtools::build_rmd("vignettes/my-vignette.Rmd")` to render a vignette to `.html` in the `vignettes/` directory.
-    Regard the `.html` as a disposable preview.
-    (If you initiate vignettes with `use_vignette()`, this `.html` will already be gitignored.)
+-   Trabajo activo e iterativo en sus viñetas: use su flujo de trabajo interactivo habitual `.Rmd` (como el botón ![](images/knit.png){width="45"}) o `devtools::build_rmd("vignettes /my-vignette.Rmd")` para representar una viñeta en `.html` en el directorio `vignettes/`. Considere el `.html` como una vista previa desechable.
+    (Si inicia viñetas con `use_vignette()`, este `.html` ya será ignorado).
 
--   Make the current state of vignettes in a development version available to the world:
+-   Poner a disposición del mundo el estado actual de las viñetas en una versión de desarrollo:
 
-    -   Offer a pkgdown website, preferably with automated "build and deploy", such as using GitHub Actions to deploy to GitHub Pages.
-        Here are tidyr's vignettes in the development version (note the "dev" in the URL): <https://tidyr.tidyverse.org/dev/articles/index.html>.
+    -   Ofrecer un sitio web pkgdown, preferiblemente con "construcción e implementación" automatizada, como el uso de GitHub Actions para implementar en GitHub Pages.
+        Aquí están las viñetas de tidyr en la versión de desarrollo (tenga en cuenta "dev" en la URL): <https://tidyr.tidyverse.org/dev/articles/index.html>.
 
-    -   Be aware that anyone who installs directly from GitHub will need to explicitly request vignettes, e.g. with `devtools::install_github(dependencies = TRUE, build_vignettes = TRUE)`.
+    -   Tenga en cuenta que cualquiera que instale directamente desde GitHub deberá solicitar viñetas explícitamente, por ejemplo, con `devtools::install_github(dependencies = TRUE, build_vignettes = TRUE)`.
 
--   Make the current state of vignettes in a development version available locally:
+-   Hacer que el estado actual de las viñetas en una versión de desarrollo esté disponible localmente:
 
-    -   Install your package locally and request that vignettes be built and installed, e.g. with `devtools::install(dependencies = TRUE, build_vignettes = TRUE)`.
+    -   Instale su paquete localmente y solicite que se creen e instalen viñetas, por ejemplo, con `devtools::install(dependencies = TRUE, build_vignettes = TRUE)`.
 
--   Prepare built vignettes for a CRAN submission: Don't try to do this by hand or in advance.
-    Allow vignette (re-)building to happen as part of `devtools::submit_cran()` or `devtools::release()`, both of which build the package.
+-   Prepare viñetas creadas para un envío CRAN: no intente hacerlo a mano o con anticipación.
+    Permita que la (re)compilación de viñetas se realice como parte de `devtools::submit_cran()` o `devtools::release()`, los cuales compilan el paquete.
 
 ```{=html}
 <!--
 https://github.com/r-lib/devtools/issues/2485
 -->
 ```
-If you really do want to build vignettes in the official manner on an *ad hoc* basis, `devtools::build_vignettes()` will do this.
-But we've seen this lead to developer frustration, because it leaves the package in a peculiar form that is a mishmash of a source package and an unpacked package bundle.
-This nonstandard situation can then lead to even more confusion.
-For example, it's not clear how these not-actually-installed vignettes are meant to be accessed.
-Most developers should avoid using `build_vignettes()` and, instead, pick one of the approaches outlined above.
+Si realmente desea crear viñetas de manera oficial de forma *ad hoc*, `devtools::build_vignettes()` lo hará.
+Pero hemos visto que esto genera frustración en los desarrolladores, porque deja el paquete en una forma peculiar que es una mezcla de un paquete fuente y un paquete desempaquetado.
+Esta situación atípica puede generar aún más confusión.
+Por ejemplo, no está claro cómo se debe acceder a estas viñetas que no están realmente instaladas.
+La mayoría de los desarrolladores deberían evitar el uso de `build_vignettes()` y, en su lugar, elegir uno de los enfoques descritos anteriormente.
 
 ::: callout-tip
-## Pre-built vignettes (or other documentation)
+## Viñetas prediseñadas (or other documentation)
 
-We highly recommend treating `inst/doc/` as a strictly machine-writable directory for vignettes.
-We recommend that you do not take advantage of the fact that you can place arbitrary pre-built documentation in `inst/doc/`.
-This opinion permeates the devtools ecosystem which, by default, cleans out `inst/doc/` during various development tasks, to combat the problem of stale documentation.
+Recomendamos encarecidamente tratar `inst/doc/` como un directorio estrictamente editable por máquina para viñetas.
+Le recomendamos que no aproveche el hecho de que puede colocar documentación prediseñada arbitraria en `inst/doc/`.
+Esta opinión impregna el ecosistema devtools que, de forma predeterminada, limpia `inst/doc/` durante diversas tareas de desarrollo, para combatir el problema de la documentación obsoleta.
 
-However, we acknowledge that there are exceptions to every rule.
-In some domains, it might be impractical to rebuild vignettes as often as our recommended workflow implies.
-Here are a few tips:
+Sin embargo, reconocemos que existen excepciones a cada regla.
+En algunos dominios, puede resultar poco práctico reconstruir viñetas con tanta frecuencia como implica nuestro flujo de trabajo recomendado.
+Aquí hay algunos consejos:
 
--   You can prevent the cleaning of `inst/doc/` with `pkgbuild::build(clean_doc =)`.
-    You can put `Config/build/clean-inst-doc: FALSE` in `DESCRIPTION` to prevent pkgbuild and rcmdcheck from cleaning `inst/doc/`.
+-   Puedes evitar la limpieza de `inst/doc/` con `pkgbuild::build(clean_doc =)`.
+    Puede poner `Config/build/clean-inst-doc: FALSE` en `DESCRIPTION` para evitar que pkgbuild y rcmdcheck limpien `inst/doc/`.
 
--   The rOpenSci tech note [How to precompute package vignettes or pkgdown articles](https://ropensci.org/blog/2019/12/08/precompute-vignettes/) describes a clever, lightweight technique for keeping a manually-updated vignette in `vignettes/`.
+-   La nota técnica de rOpenSci [Cómo precalcular viñetas de paquetes o artículos pkgdown](https://ropensci.org/blog/2019/12/08/precompute-vignettes/) describe una técnica inteligente y liviana para mantener una viñeta actualizada manualmente en `viñetas/`.
 
--   The [R.rsp](https://henrikbengtsson.github.io/R.rsp/index.html) package offers explicit support for static vignettes.
+-   El paquete [R.rsp](https://henrikbengtsson.github.io/R.rsp/index.html) ofrece soporte explícito para viñetas estáticas.
 :::
 
-### `R CMD check` and vignettes {#sec-vignettes-how-checked}
+### `R CMD check` y viñetas {#sec-vignettes-how-checked}
 
-We conclude with a discussion of how vignettes are treated by `R CMD check`.
-This official checker expects a package bundle created by `R CMD build`, as described above.
-In the devtools workflow, we usually rely on `devtools::check()`, which automatically does this build step for us, before checking the package.
-`R CMD check` has various command line options and also consults many environment variables.
-We're taking a maximalist approach here, i.e. we describe all the checks that *could* happen.
+Concluimos con una discusión sobre cómo las viñetas son tratadas por `R CMD check`.
+Este verificador oficial espera un paquete creado por `R CMD build`, como se describe anteriormente.
+En el flujo de trabajo de devtools, generalmente confiamos en `devtools::check()`, que realiza automáticamente este paso de compilación por nosotros, antes de verificar el paquete.
+`R CMD check` tiene varias opciones de línea de comando y también consulta muchas variables de entorno.
+Estamos adoptando un enfoque maximalista aquí, es decir, describimos todas las comprobaciones que *podrían* ocurrir.
 
-`R CMD check` does some static analysis of vignette code and scrutinizes the existence, size, and modification times of various vignette-related files.
-If your vignettes use packages that don't appear in `DESCRIPTION`, that is caught here.
-If files that should exist don't exist or *vice versa*, that is caught here.
-This should not happen if you use the standard vignette workflow outlined in this chapter and is usually the result of some experiment that you've done, intentionally or not.
+`R CMD check` realiza un análisis estático del código de viñeta y examina la existencia, el tamaño y los tiempos de modificación de varios archivos relacionados con viñetas.
+Si sus viñetas usan paquetes que no aparecen en `DESCRIPTION`, eso se recoge aquí.
+Si los archivos que deberían existir no existen o *viceversa*, eso se recoge aquí.
+Esto no debería suceder si utiliza el flujo de trabajo de viñeta estándar descrito en este capítulo y generalmente es el resultado de algún experimento que haya realizado, intencionalmente o no.
 
-The vignette code is then extracted into a `.R` file, using the "tangle" feature of the relevant vignette engine (knitr, in our case), and run.
-The code originating from chunks marked as `eval = FALSE` will be commented out in this file and, therefore, is not executed.
-Then the vignettes are rebuilt from source, using the "weave" feature of the vignette engine (knitr, for us).
-This executes all the vignette code yet again, except for chunks marked `eval = FALSE`.
+Luego, el código de viñeta se extrae en un archivo `.R`, utilizando la función `tangle` del motor de viñeta correspondiente (knitr, en nuestro caso), y se ejecuta.
+El código que se origina a partir de fragmentos marcados como `eval = FALSE` se comentará en este archivo y, por lo tanto, no se ejecutará.
+Luego, las viñetas se reconstruyen desde la fuente, utilizando la función `weave` del motor de viñetas (knitr, para nosotros).
+Esto ejecuta todo el código de viñeta una vez más, excepto los fragmentos marcados como `eval = FALSE`.
 
 ::: callout-warning
-## Submitting to CRAN
+## Envío a CRAN
 
-CRAN's incoming and ongoing checks use `R CMD check` which, as described above, exercises vignette code up to two times.
-Therefore, it is important to conditionally suppress the execution of code that is doomed to fail on CRAN.
+Las comprobaciones entrantes y en curso de CRAN utilizan `R CMD check` que, como se describe anteriormente, ejercita el código de viñeta hasta dos veces.
+Por lo tanto, es importante suprimir condicionalmente la ejecución de código condenado a fallar en CRAN.
 
-However, it's important to note that the package bundle and binaries distributed by CRAN actually use the built vignettes included in your submission.
-Yes, CRAN will attempt to rebuild your vignettes regularly, but this is for quality control purposes.
-CRAN distributes the vignettes you built.
+Sin embargo, es importante tener en cuenta que el paquete y los archivos binarios distribuidos por CRAN en realidad utilizan las viñetas integradas incluidas en su envío.
+Sí, CRAN intentará reconstruir sus viñetas periódicamente, pero esto es con fines de control de calidad.
+CRAN distribuye las viñetas que usted creó.
 :::
