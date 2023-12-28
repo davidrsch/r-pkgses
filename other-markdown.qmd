@@ -1,75 +1,75 @@
-# Other markdown files {#sec-other-markdown}
+# Otros archivos markdown {#sec-other-markdown}
 
 ```{r, echo = FALSE}
 source("common.R")
 ```
 
-In this chapter we highlight two files that are conventionally used to provide some package-level documentation.
-These two are important, because they are featured on both the CRAN landing page and the pkgdown site for a package:
+En este capítulo destacamos dos archivos que se utilizan convencionalmente para proporcionar documentación a nivel de paquete.
+Estos dos son importantes porque aparecen tanto en la página de inicio de CRAN como en el sitio de pkgdown de un paquete:
 
--   `README.md`, which describes what the package does (@sec-readme).
-    The `README` plays an especially important role on GitHub or similar platforms.
+-   `README.md`, que describe lo que hace el paquete (@sec-readme).
+    El `README` juega un papel especialmente importante en GitHub o plataformas similares.
 
--   `NEWS.md`, which describes how the package has changed over time (@sec-news).
+-   `NEWS.md`, que describe cómo ha cambiado el paquete con el tiempo (@sec-news).
 
-Even if your package is intended for a very limited audience and might not ever be released on CRAN, these files can be very useful.
-These two files don't have to be written in Markdown, but they can be.
-In keeping with our practices for help topics and vignettes, it's our strong recommendation and it's what we describe here.
+Incluso si su paquete está destinado a una audiencia muy limitada y es posible que nunca se publique en CRAN, estos archivos pueden resultar muy útiles.
+Estos dos archivos no tienen que estar escritos en Markdown, pero pueden estarlo.
+De acuerdo con nuestras prácticas para temas de ayuda y viñetas, es nuestra fuerte recomendación y es lo que describimos aquí.
 
 ## `README` {#sec-readme}
 
-First, we'll talk about the role of the `README` file and we leave off the file extension, until we're ready to talk about mechanics.
+Primero, hablaremos sobre la función del archivo `README` y dejaremos de lado la extensión del archivo, hasta que estemos listos para hablar sobre la mecánica.
 
-The goal of the `README` is to answer the following questions about your package:
+El objetivo del `README` es responder las siguientes preguntas sobre su paquete:
 
--   Why should I use it?
--   How do I use it?
--   How do I get it?
+-   ¿Por qué debería usarlo?
+-   ¿Como lo uso?
+-   ¿Como lo consigo?
 
-The `README` file is a long-established convention in software, going back decades.
-Some of its traditional content is found elsewhere in an R package, for example, we use the `DESCRIPTION` file to document authorship and licensing.
+El archivo `README` es una convención de software establecida desde hace décadas.
+Parte de su contenido tradicional se encuentra en otra parte de un paquete R; por ejemplo, usamos el archivo `DESCRIPTION` para documentar la autoría y la licencia.
 
-When you write your `README`, try to put yourself in the shoes of someone who's come across your package and is trying to figure out if it solves a problem they have.
-If they decide that your package looks promising, the `README` should also show them how to install it and how to do one or two basic tasks.
-Here's a good template for `README`:
+Cuando escriba su `README`, intente ponerse en el lugar de alguien que se encontró con su paquete y está tratando de descubrir si resuelve un problema que tiene.
+Si deciden que su paquete parece prometedor, el `README` también debería mostrarles cómo instalarlo y cómo realizar una o dos tareas básicas.
+Aquí hay una buena plantilla para `README`:
 
-1.  A paragraph that describes the high-level purpose of the package.
+1.  Un párrafo que describa el propósito de alto nivel del paquete.
 
-2.  An example that shows how to use the package to solve a simple problem.
+2.  Un ejemplo que muestra cómo utilizar el paquete para resolver un problema sencillo.
 
-3.  Installation instructions, giving code that can be copied and pasted into R.
+3.  Instrucciones de instalación, con código que se puede copiar y pegar en R.
 
-4.  An overview that describes the main components of the package.
-    For more complex packages, this will point to vignettes for more details.
-    This is also a good place to describe how your package fits into the ecosystem of its target domain.
+4.  Una descripción general que describe los componentes principales del paquete.
+    Para paquetes más complejos, esto apuntará a viñetas para obtener más detalles.
+    Este también es un buen lugar para describir cómo encaja su paquete en el ecosistema de su dominio de destino.
 
-### `README.Rmd` and `README.md`
+### `README.Rmd` y `README.md`
 
-As mentioned above, we prefer to write `README` in Markdown, i.e. to have `README.md`.
-This will be rendered as HTML and displayed in several important contexts:
+Como se mencionó anteriormente, preferimos escribir `README` en Markdown, es decir, tener `README.md`.
+Esto se representará como HTML y se mostrará en varios contextos importantes:
 
--   The repository home page, if you maintain your package on GitHub (or a similar host).
+-   La página de inicio del repositorio, si mantiene su paquete en GitHub (o un host similar).
 
     -   [https://github.com/tidyverse/dplyr](https://github.com/tidyverse/dplyr#readme)
 
--   On CRAN, if you release your package there.
+-   En CRAN, si libera su paquete allí.
 
     -   <https://cran.r-project.org/web/packages/dplyr/index.html>
 
-        Notice the hyperlinked "README" under "Materials".
+        Observe el hipervínculo "README" en "Materials".
 
--   As the home page of your pkgdown site, if you have one.
+-   Como página de inicio de su sitio pkgdown, si tiene uno.
 
     -   <https://dplyr.tidyverse.org>
 
-Given that it's best to include a couple of examples in `README.md`, ideally you would generate it with R Markdown.
-That is, it works well to have `README.Rmd` as the main source file, which you then render to `README.md`.
+Dado que es mejor incluir un par de ejemplos en `README.md`, lo ideal sería generarlo con R Markdown.
+Es decir, funciona bien tener `README.Rmd` como archivo fuente principal, que luego se representa en `README.md`.
 
-The easiest way to get started is to use `usethis::use_readme_rmd()`.[^other-markdown-1]
-This creates a template `README.Rmd` and adds it to `.Rbuildignore`, since only `README.md` should be included in the package bundle.
-The template looks like this:
+La forma más sencilla de empezar es utilizar `usethis::use_readme_rmd()`.[^other-markdown-1]
+Esto crea una plantilla `README.Rmd` y la agrega a `.Rbuildignore`, ya que solo se debe incluir `README.md` en el paquete.
+La plantilla se ve así:
 
-[^other-markdown-1]: If it really doesn't make sense to include any executable code chunks, `usethis::use_readme_md()` is similar, except that it gives you a basic `README.md` file.
+[^other-markdown-1]: Si realmente no tiene sentido incluir fragmentos de código ejecutable, `usethis::use_readme_md()` es similar, excepto que le proporciona un archivo `README.md` básico.
 
 ````{verbatim, lang = "markdown"}
 ---
@@ -87,79 +87,79 @@ knitr::opts_chunk$set(
 )
 ```
 
-# somepackage
+# algunpaquete
 
 <!-- badges: start -->
 
 <!-- badges: end -->
 
-The goal of somepackage is to ...
+El objetivo de algún paquete es...
 
-## Installation
+## Instalación
 
-You can install the development version of somepackage from [GitHub](https://github.com/) with:
+Puedes instalar la versión de desarrollo de algún paquete desde [GitHub](https://github.com/) con:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("jane/somepackage")
+devtools::install_github("jane/algunpaquete")
 ```
 
-## Example
+## Ejemplo
 
-This is a basic example which shows you how to solve a common problem:
+Este es un ejemplo básico que muestra cómo resolver un problema común:
 
 ```{r example}
 library(somepackage)
-## basic example code
+## código de ejemplo básico
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+¿Qué tiene de especial usar `README.Rmd` en lugar de simplemente `README.md`?
+Puedes incluir fragmentos de R así:
 
 ```{r cars}
 summary(cars)
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-`devtools::build_readme()` is handy for this.
+Aún necesitarás renderizar `README.Rmd` regularmente para mantener `README.md` actualizado.
+`devtools::build_readme()` es útil para esto.
 
-You can also embed plots, for example:
+También puedes incrustar gráficos, por ejemplo:
 
 ```{r pressure, echo = FALSE}
 plot(pressure)
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+En ese caso, no olvide confirmar y enviar los archivos de figuras resultantes para que se muestren en GitHub y CRAN.
 ````
 
-A few things to note about this starter `README.Rmd`:
+Algunas cosas a tener en cuenta sobre este iniciador `README.Rmd`:
 
--   It renders to [GitHub Flavored Markdown](https://github.github.com/gfm/).
+-   Se representa en \[GitHub Flavored Markdown\] (https://github.github.com/gfm/).
 
--   It includes a comment to remind you to edit `README.Rmd`, not `README.md`.
+-   Incluye un comentario para recordarle que debe editar `README.Rmd`, no `README.md`.
 
--   It sets up our recommended knitr options, including saving images to `man/figures/README-` which ensures that they're included in your built package.
-    This is important so that your `README` works when it's displayed by CRAN.
+-   Configura nuestras opciones de knitr recomendadas, incluido guardar imágenes en `man/figures/README-`, lo que garantiza que estén incluidas en su paquete creado.
+    Esto es importante para que su `README` funcione cuando CRAN lo muestre.
 
--   It sets up a place for future badges, such as results from automatic continuous integration checks (@sec-sw-dev-practices-ci).
-    Examples of functions that insert development badges:
+-   Crea un lugar para futuras insignias, como los resultados de las comprobaciones automáticas de integración continua (@sec-sw-dev-practices-ci).
+    Ejemplos de funciones que insertan insignias de desarrollo:
 
-    -   `usethis::use_cran_badge()` reports the current version of your package on CRAN.
+    -   `usethis::use_cran_badge()` informa la versión actual de su paquete en CRAN.
 
-    -   `usethis::use_coverage()` reports test coverage.
+    -   `usethis::use_coverage()` informa la cobertura de la prueba.
 
-    -   `use_github_actions()` and friends report the `R CMD check` status of your development package.
+    -   `use_github_actions()` y amigos informan el estado de `R CMD check` de su paquete de desarrollo.
 
--   It includes placeholders where you should provide code for package installation and for some basic usage.
+-   Incluye marcadores de posición donde debes proporcionar código para la instalación del paquete y para algunos usos básicos.
 
--   It reminds you of key facts about maintaining your `README`.
+-   Le recuerda datos clave sobre el mantenimiento de su `README`.
 
-You'll need to remember to re-render `README.Rmd` periodically and, most especially, before release.
-The best function to use for this is `devtools::build_readme()`, because it is guaranteed to render `README.Rmd` against the current source code of your package.
+Deberá recordar volver a renderizar `README.Rmd` periódicamente y, sobre todo, antes del lanzamiento.
+La mejor función para usar para esto es `devtools::build_readme()`, porque se garantiza que renderizará `README.Rmd` con el código fuente actual de su paquete.
 
-The devtools ecosystem tries to help you keep `README.Rmd` up-to-date in two ways:
+El ecosistema devtools intenta ayudarle a mantener actualizado `README.Rmd` de dos maneras:
 
--   If your package is also a Git repo, `use_readme_rmd()` automatically adds the following pre-commit hook:
+-   Si su paquete también es un repositorio de Git, `use_readme_rmd()` agrega automáticamente el siguiente gancho de confirmación previa:
 
     ``` bash
     #!/bin/bash
@@ -169,80 +169,82 @@ The devtools ecosystem tries to help you keep `README.Rmd` up-to-date in two way
     fi 
     ```
 
-    This prevents a `git commit` if `README.Rmd` is more recently modified than `README.md`.
-    If the hook is preventing a commit you really want to make, you can override it with `git commit --no-verify`.
-    Note that Git commit hooks are not stored in the repository, so this hook needs to be added to any fresh clone.
-    For example, you could re-run `usethis::use_readme_rmd()` and discard the changes to `README.Rmd`.
+    Esto evita un `git commit` si `README.Rmd` se modificó más recientemente que `README.md`.
+    Si el gancho impide una confirmación que realmente desea realizar, puede anularla con `git commit --no-verify`.
+    Tenga en cuenta que los enlaces de confirmación de Git no se almacenan en el repositorio, por lo que este enlace debe agregarse a cualquier clon nuevo.
+    Por ejemplo, podría volver a ejecutar `usethis::use_readme_rmd()` y descartar los cambios en `README.Rmd`.
 
--   The release checklist placed by `usethis::use_release_issue()` includes a reminder to call `devtools::build_readme()`.
+-   La lista de verificación de lanzamiento colocada por `usethis::use_release_issue()` incluye un recordatorio para llamar a `devtools::build_readme()`.
 
 ## `NEWS` {#sec-news}
 
-The `README` is aimed at new users, whereas the `NEWS` file is aimed at existing users: it should list all the changes in each release that a user might notice or want to learn more about.
-As with `README`, it's a well-established convention for open source software to have a `NEWS` file, which is also sometimes called a changelog.
+El archivo "README" está dirigido a nuevos usuarios, mientras que el archivo "NEWS" está dirigido a usuarios existentes: debe enumerar todos los cambios en cada versión que un usuario podría notar o sobre los que desearía obtener más información.
+Al igual que con `README`, es una convención bien establecida para que el software de código abierto tenga un archivo `NEWS`, que a veces también se denomina registro de cambios.
 
-As with `README`, base R tooling does not *require* that NEWS be a Markdown file, but it does allow for that and it's our strong preference.
-A `NEWS.md` file is pleasant to read on GitHub, on your pkgdown site, and is reachable from your package's CRAN landing page.
-We demonstrate this again with dplyr:
+Al igual que con `README`, las herramientas base R no *requieren* que NEWS sea un archivo Markdown, pero sí lo permite y es nuestra fuerte preferencia.
+Es agradable leer un archivo `NEWS.md` en GitHub, en su sitio pkgdown, y se puede acceder a él desde la página de inicio de CRAN de su paquete.
+Demostramos esto nuevamente con dplyr:
 
--   `NEWS.md` in dplyr's GitHub repo:
+-   `NEWS.md` en el repositorio de GitHub de dplyr:
 
     -   <https://github.com/tidyverse/dplyr/blob/main/NEWS.md>
 
--   On CRAN, if you release your package there.
+-   En CRAN, si libera su paquete allí.
 
     -   <https://cran.r-project.org/web/packages/dplyr/index.html>
 
-        Notice the hyperlinked "NEWS" under "Materials".
+        Observe el hipervínculo "NOTICIAS" en "Materiales".
 
--   On your package site, available as the "Changelog" from the "News" dropdown menu in the main navbar:
+-   En el sitio de su paquete, disponible como "Registro de cambios" en el menú desplegable "Noticias" en la barra de navegación principal:
 
     -   <https://dplyr.tidyverse.org/news/index.html>
 
-You can use `usethis::use_news_md()` to initiate the `NEWS.md` file; many other lifecycle- and release-related functions in the devtools ecosystem will make appropriate changes to `NEWS.md` as your package evolves.
+Puede utilizar `usethis::use_news_md()` para iniciar el archivo `NEWS.md`; Muchas otras funciones relacionadas con el ciclo de vida y el lanzamiento en el ecosistema devtools realizarán los cambios apropiados en `NEWS.md` a medida que su paquete evolucione.
 
-Here's a hypothetical `NEWS.md` file:
+Aquí hay un archivo hipotético `NEWS.md`:Puede utilizar `usethis::use_news_md()` para iniciar el archivo `NEWS.md`; Muchas otras funciones relacionadas con el ciclo de vida y el lanzamiento en el ecosistema devtools realizarán los cambios apropiados en `NEWS.md` a medida que su paquete evolucione.
+
+Aquí hay un archivo hipotético `NEWS.md`:
 
 ``` markdown
-# foofy (development version)
+# foofy (versión de desarrollo)
 
-* Better error message when grooving an invalid grobble (#206).
+* Mejor mensaje de error al ranurar un grobble no válido (#206).
 
 # foofy 1.0.0
 
-## Major changes
+## Cambios principales
 
-* Can now work with all grooveable grobbles!
+* ¡Ahora puede funcionar con todos los grobbles ranurables!
 
-## Minor improvements and bug fixes
+## Mejoras menores y correcciones de errores
 
-* Printing scrobbles no longer errors (@githubusername, #100).
+*  La impresión de scrobbles ya no produce errores (@githubusername, #100).
 
-* Wibbles are now 55% less jibbly (#200).
+*  Los Wibbles ahora son un 55 % menos jibbly (#200).
 ```
 
-The example above demonstrates some organizing principles for `NEWS.md`:
+El ejemplo anterior demuestra algunos principios de organización para `NEWS.md`:
 
--   Use a top-level heading for each version: e.g. `# somepackage 1.0.0`.
-    The most recent version should go at the top.
-    Typically the top-most entry in `NEWS.md` of your source package will read `# somepackage (development version)`.[^other-markdown-2]
+-   Utilice un encabezado de nivel superior para cada versión: por ejemplo, `# algún paquete 1.0.0`.
+    La versión más reciente debería ir en la parte superior.
+    Normalmente, la entrada superior en `NEWS.md` de su paquete fuente dirá `# algún paquete (versión de desarrollo)`.[^other-markdown-2]
 
--   Each change should be part of a bulleted list.
-    If you have a lot of changes, you might want to break them up using subheadings, `## Major changes`, `## Bug fixes`, etc.
+-   Cada cambio debe formar parte de una lista con viñetas.
+    Si tiene muchos cambios, es posible que desee dividirlos usando subtítulos, `## Cambios importantes`, `## Corrección de errores`, etc.
 
-    We usually stick with a simple list until we're close to a release, at which point we organize into sections and refine the text.
-    It's hard to know in advance exactly what sections you'll need.
-    The release checklist placed by `usethis::use_release_issue()` includes a reminder to polish the `NEWS.md` file.
-    In that phase, it can be helpful to remember that `NEWS.md` is a user-facing record of change, in contrast to, e.g., commit messages, which are developer-facing.
+    Por lo general, nos atenemos a una lista simple hasta que nos acercamos al lanzamiento, momento en el que nos organizamos en secciones y refinamos el texto.
+    Es difícil saber de antemano exactamente qué secciones necesitará.
+    La lista de verificación de lanzamiento colocada por `usethis::use_release_issue()` incluye un recordatorio para pulir el archivo `NEWS.md`.
+    En esa fase, puede ser útil recordar que `NEWS.md` es un registro de cambios de cara al usuario, a diferencia de, por ejemplo, los mensajes de confirmación, que están de cara al desarrollador.
 
--   If an item is related to an issue in GitHub, include the issue number in parentheses, e.g. `(#​10)`.
-    If an item is related to a pull request, include the pull request number and the author, e.g. `(#​101, @hadley)`.
-    This helps an interested reader to find relevant context on GitHub and, in your pkgdown site, these issue and pull request numbers and usernames will be hyperlinks.
-    We generally omit the username if the contributor is already recorded in `DESCRIPTION`.
+-   Si un elemento está relacionado con un problema en GitHub, incluya el número del problema entre paréntesis, por ejemplo, `(#​10)`.
+    Si un elemento está relacionado con una solicitud de extracción, incluya el número de la solicitud de extracción y el autor, por ejemplo, `(#​101, @hadley)`.
+    Esto ayuda a un lector interesado a encontrar contexto relevante en GitHub y, en su sitio pkgdown, estos números de problemas y solicitudes de extracción y nombres de usuario serán hipervínculos.
+    Generalmente omitimos el nombre de usuario si el colaborador ya está registrado en `DESCRIPTION`.
 
-[^other-markdown-2]: pkgdown supports a few other wording choices for these headings, see more at <https://pkgdown.r-lib.org/reference/build_news.html>.
+[^other-markdown-2]: pkgdown admite algunas otras opciones de redacción para estos títulos; consulte más información en <https://pkgdown.r-lib.org/reference/build_news.html>.
 
-The main challenge with `NEWS.md` is getting into the habit of noting any user-visible change when you make it.
-It's especially easy to forget this when accepting external contributions.
-Before release, it can be useful to use your version control tooling to compare the source of the release candidate to the previous release.
-This often surfaces missing `NEWS` items.
+El principal desafío con `NEWS.md` es adquirir el hábito de notar cualquier cambio visible para el usuario cuando lo realiza.
+Es especialmente fácil olvidar esto al aceptar contribuciones externas.
+Antes del lanzamiento, puede resultar útil utilizar las herramientas de control de versiones para comparar el origen de la versión candidata con la versión anterior.
+Esto a menudo muestra elementos de `NEWS` que faltan.
