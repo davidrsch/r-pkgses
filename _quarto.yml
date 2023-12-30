@@ -80,7 +80,7 @@ book:
     - other-markdown.qmd
     - website.qmd
   
-  - part: Maintenance and distribution
+  - part: Mantenimiento y distribución
     chapters:
     - software-development-practices.qmd
     - lifecycle.qmd
