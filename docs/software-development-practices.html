@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - 20&nbsp; Prácticas de desarrollo de software</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./lifecycle.html" rel="next">
+<link href="./website.html" rel="prev">
+<link href="./images/cover-2e-small.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software-development-practices.html">Mantenimiento y distribución</a></li><li class="breadcrumb-item"><a href="./software-development-practices.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Prácticas de desarrollo de software</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">El paquete en el interior de su código</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Componentes de un paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Código R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Otros componentes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Metadatos del paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Probar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Diseñar su conjunto de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Técnicas de prueba avanzadas</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentación</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Otros archivos markdown</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Sitio web</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Mantenimiento y distribución</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Prácticas de desarrollo de software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Lifecycle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Releasing to CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li>
+<a href="#sec-sw-dev-practices-git-github" id="toc-sec-sw-dev-practices-git-github" class="nav-link active" data-scroll-target="#sec-sw-dev-practices-git-github"><span class="header-section-number">20.1</span> Git y GitHub</a>
+  <ul class="collapse">
+<li><a href="#pr%C3%A1ctica-est%C3%A1ndar" id="toc-práctica-estándar" class="nav-link" data-scroll-target="#pr%C3%A1ctica-est%C3%A1ndar"><span class="header-section-number">20.1.1</span> Práctica estándar</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-sw-dev-practices-ci" id="toc-sec-sw-dev-practices-ci" class="nav-link" data-scroll-target="#sec-sw-dev-practices-ci"><span class="header-section-number">20.2</span> Integración continua</a>
+  <ul class="collapse">
+<li><a href="#sec-sw-dev-practices-gha" id="toc-sec-sw-dev-practices-gha" class="nav-link" data-scroll-target="#sec-sw-dev-practices-gha"><span class="header-section-number">20.2.1</span> Acciones de GitHub</a></li>
+  <li><a href="#r-cmd-check-a-trav%C3%A9s-de-gha" id="toc-r-cmd-check-a-través-de-gha" class="nav-link" data-scroll-target="#r-cmd-check-a-trav%C3%A9s-de-gha"><span class="header-section-number">20.2.2</span> <code>R CMD check</code> a través de GHA</a></li>
+  <li><a href="#otros-usos-de-gha" id="toc-otros-usos-de-gha" class="nav-link" data-scroll-target="#otros-usos-de-gha"><span class="header-section-number">20.2.3</span> Otros usos de GHA</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title"><span id="sec-sw-dev-practices" class="quarto-section-identifier"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Prácticas de desarrollo de software</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><p>En esta última parte del libro, nos alejamos para considerar prácticas de desarrollo que pueden hacerlo más productivo y elevar la calidad de su trabajo. Aquí discutiremos el uso del control de versiones y la integración continua. En <a href="lifecycle.html"><span>Capítulo&nbsp;21</span></a> analizamos cómo varía la naturaleza del mantenimiento del paquete a lo largo del ciclo de vida de un paquete.</p>
+<p>Notarás que recomendamos utilizar ciertas herramientas:</p>
+<ul>
+<li><p>Un entorno de desarrollo integrado (IDE). En <a href="workflow101.html#sec-workflow101-rstudio-projects"><span>Sección&nbsp;4.2</span></a> fomentamos el uso de RStudio IDE para el trabajo de desarrollo de paquetes. Eso es lo que documentamos, ya que es lo que usamos y devtools está desarrollado para funcionar especialmente bien con RStudio. Pero incluso si no es RStudio, recomendamos encarecidamente trabajar con un IDE que tenga soporte específico para el desarrollo de paquetes R y R.</p></li>
+<li><p>Control de versiones. Recomendamos encarecidamente el uso de control de versiones formal y, en este momento, Git es la opción obvia. Decimos esto basándonos en la prevalencia general de Git y, específicamente, en su popularidad dentro del ecosistema de paquetes R. En <a href="#sec-sw-dev-practices-git-github"><span>Sección&nbsp;20.1</span></a>, explicamos por qué creemos que el control de versiones es tan importante.</p></li>
+<li><p>Control de versiones alojadas. Recomendamos encarecidamente sincronizar sus repositorios Git locales con un servicio alojado y, en este momento, GitHub es la opción obvia, o al menos “una”. Esto también se trata en <a href="#sec-sw-dev-practices-git-github"><span>Sección&nbsp;20.1</span></a>.</p></li>
+<li><p>Integración e implementación continuas, también conocidas como CI/CD (o incluso simplemente CI). Esta terminología proviene del mundo general de la ingeniería de software y puede parecer un tanto grandiosa o intimidante cuando se aplica a su paquete R personal. Todo lo que esto realmente significa es que usted configura tareas específicas de desarrollo de paquetes para que se realicen automáticamente cuando envía un nuevo trabajo a su repositorio alojado. Normalmente querrás ejecutar <code>R CMD check</code> y reconstruir e implementar el sitio web de tu paquete. En <a href="#sec-sw-dev-practices-ci"><span>Sección&nbsp;20.2</span></a>, mostramos cómo hacer esto con GitHub Actions.</p></li>
+</ul>
+<p>Se podría pensar que estas herramientas de estilo profesional son excesivas para alguien que no se gana la vida desarrollando software. Si bien no recomendamos obligarse a hacer todo lo anterior el primer día de su primer proyecto de “hola mundo”, en realidad creemos que estas herramientas son ampliamente aplicables para el desarrollo de paquetes R.</p>
+<p>La razón principal es que estas herramientas hacen que sea mucho más fácil hacer lo correcto, por ejemplo, experimentar, documentar, probar, verificar y colaborar. Al adoptar un conjunto de herramientas compartido, los desarrolladores de paquetes nuevos y a tiempo parcial obtienen acceso a los mismos flujos de trabajo utilizados por los expertos. Esto requiere cierta fe e inversión inicial, pero creemos que vale la pena.</p>
+<section id="sec-sw-dev-practices-git-github" class="level2" data-number="20.1"><h2 data-number="20.1" class="anchored" data-anchor-id="sec-sw-dev-practices-git-github">
+<span class="header-section-number">20.1</span> Git y GitHub</h2>
+<p><a href="https://git-scm.com">Git</a> es un sistema de control de versiones que se creó originalmente para coordinar el trabajo de un grupo global de desarrolladores que trabajan en el kernel de Linux. Git gestiona la evolución de un conjunto de archivos — llamado repositorio — de una manera altamente estructurada y recomendamos que cada paquete R también sea un repositorio Git (y también, probablemente, un proyecto RStudio; <a href="workflow101.html#sec-workflow101-rstudio-projects"><span>Sección&nbsp;4.2</span></a>).</p>
+<p>Un desarrollador independiente que trabaje en una sola computadora se beneficiará al adoptar el control de versiones. Pero, para la mayoría de nosotros, ese beneficio no es lo suficientemente grande como para compensar el dolor de instalar y usar Git. En nuestra opinión, para la mayoría de las personas, las ventajas de Git solo superan las desventajas una vez que das el paso adicional de conectar tu repositorio local a un host remoto como <a href="https://github.com">GitHub</a>. El uso conjunto de Git y GitHub ofrece muchos beneficios que justifican con creces la curva de aprendizaje.</p>
+<section id="práctica-estándar" class="level3" data-number="20.1.1"><h3 data-number="20.1.1" class="anchored" data-anchor-id="práctica-estándar">
+<span class="header-section-number">20.1.1</span> Práctica estándar</h3>
+<p>Esta recomendación está bien alineada con las prácticas generales actuales en el desarrollo de software. A continuación se muestran algunos datos relevantes de la <a href="https://survey.stackoverflow.co/2022/#overview">encuesta para desarrolladores de Stack Overflow de 2022</a>, que se basa en aproximadamente 70.000 respuestas.</p>
+<ul>
+<li><p>El 94% reporta usar Git. El segundo sistema de control de versiones más utilizado fue SVN, utilizado por el 5% de los encuestados.</p></li>
+<li><p>Para proyectos personales, el 87% de los encuestados afirma utilizar GitHub, seguido de GitLab (21%) y Bitbucket (11%). La clasificación es la misma, aunque menos sesgada para el trabajo profesional: GitHub sigue dominando con un 56%, seguido de GitLab (29%) y Bitbucket (18%).</p></li>
+</ul>
+<p>Incluso podemos aprender un poco sobre los hábitos de los desarrolladores de paquetes R, basándonos en las URL que se encuentran en los archivos <code>DESCRIPTION</code> de los paquetes CRAN. En marzo de 2023, hay alrededor de 19.000 paquetes en CRAN, de los cuales aproximadamente el 55 % tienen un campo “URL” no vacío (más de 10.000). De ellos, el 80% tiene una URL de GitHub (más de 8K), seguido de GitLab (poco más del 1%) y Bitbucket (alrededor del 0,5%).</p>
+<p>La prevalencia de Git/GitHub, tanto dentro de la comunidad R como más allá, debería ayudarle a sentirse seguro de que la adopción tendrá beneficios tangibles. Además, la gran popularidad de estas herramientas significa que hay muchos recursos disponibles para aprender a usar Git y GitHub y para despegarse<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>Dos recursos específicos que abordan la intersección de Git/GitHub y el mundo R son el sitio web <a href="https://happygitwithr.com/index.html">Happy Git y GitHub para el usuarioR</a> y el artículo “Disculpe, ¿tiene ¿Un momento para hablar sobre el control de versiones?” <span class="citation" data-cites="bryan2018-tas">(<a href="references.html#ref-bryan2018-tas" role="doc-biblioref">Bryan 2018</a>)</span>.</p>
+<p>Concluimos esta sección con algunos ejemplos de por qué Git/GitHub puede ser valioso específicamente para el desarrollo de paquetes R:</p>
+<ul>
+<li><p>Comunicación con los usuarios: los problemas de GitHub son adecuados para recibir informes de errores y solicitudes de funciones. A diferencia del correo electrónico enviado al responsable, otras personas pueden acceder a estas conversaciones y realizar búsquedas.</p></li>
+<li><p>Colaboración: las solicitudes de extracción de GitHub son una forma muy sencilla para que los contribuyentes externos ayuden a corregir errores y agregar funciones.</p></li>
+<li><p>Distribución: Funciones como <code>devtools::install_github("r-lib/devtools")</code> y <code>pak::pak("r-lib/devtools")</code> permiten a las personas instalar fácilmente la versión de desarrollo de su paquete, según un repositorio de fuentes. De manera más general, cualquiera puede instalar su paquete desde cualquier referencia de Git válida, como una rama, un SHA específico, una solicitud de extracción o una etiqueta.</p></li>
+<li><p>Sitio web: GitHub Pages es una de las formas más sencillas de ofrecer un sitio web para su paquete (<a href="website.html#sec-website-deployment"><span>Sección&nbsp;19.2</span></a>).</p></li>
+<li><p>Integración continua: este es en realidad el tema de la siguiente sección, así que sigue leyendo para obtener más información.</p></li>
+</ul></section></section><section id="sec-sw-dev-practices-ci" class="level2" data-number="20.2"><h2 data-number="20.2" class="anchored" data-anchor-id="sec-sw-dev-practices-ci">
+<span class="header-section-number">20.2</span> Integración continua</h2>
+<p>Como dijimos en la introducción, la integración y el despliegue continuos se abrevian comúnmente como CI/CD o simplemente CI. Para el desarrollo de paquetes R, lo que esto significa en la práctica es:</p>
+<ol type="1">
+<li><p>Alojas tu paquete fuente en una plataforma como GitHub. El punto clave es que el repositorio alojado proporciona la estructura formal para integrar el trabajo de múltiples contribuyentes. A veces, varios desarrolladores tienen permiso para enviar (así es como se administran los paquetes tidyverse y r-lib). En otros casos, sólo el responsable principal tiene permiso de inserción. En cualquiera de los modelos, los contribuyentes externos pueden proponer cambios mediante una solicitud de extracción.</p></li>
+<li><p>Configura una o más tareas de desarrollo para que se ejecuten automáticamente cuando ocurren ciertos eventos en el repositorio alojado, como una solicitud de inserción o extracción. Por ejemplo, para un paquete R, es extremadamente valioso configurar una ejecución automática de <code>R CMD check</code>. Esto le ayuda a descubrir roturas rápidamente, cuando es más fácil de diagnosticar y reparar, y es de gran ayuda para evaluar si acepta una contribución externa.</p></li>
+</ol>
+<p>En general, el uso del control de versiones alojado y la integración continua pueden hacer que el desarrollo avance más fluida y rápidamente.</p>
+<p>Incluso para un desarrollador en solitario, ejecutar “R CMD check” de forma remota, posiblemente en un par de sistemas operativos diferentes, es un arma poderosa contra el temido problema de “funciona en mi máquina”. Especialmente para los paquetes destinados a CRAN, el uso de CI disminuye la posibilidad de sorpresas desagradables justo antes del lanzamiento.</p>
+<section id="sec-sw-dev-practices-gha" class="level3" data-number="20.2.1"><h3 data-number="20.2.1" class="anchored" data-anchor-id="sec-sw-dev-practices-gha">
+<span class="header-section-number">20.2.1</span> Acciones de GitHub</h3>
+<p>TLa forma más sencilla de empezar a utilizar CI es alojar su paquete en GitHub y utilizar su servicio complementario, GitHub Actions (GHA). Luego puede utilizar varias funciones de usethis para configurar los llamados flujos de trabajo GHA. usethis copia los archivos de configuración del flujo de trabajo de <a href="https://github.com/r-lib/actions/#readme"><code>r-lib/actions</code></a>, que es donde el equipo de tidyverse mantiene la infraestructura de GHA útil para la comunidad R.</p>
+</section><section id="r-cmd-check-a-través-de-gha" class="level3" data-number="20.2.2"><h3 data-number="20.2.2" class="anchored" data-anchor-id="r-cmd-check-a-través-de-gha">
+<span class="header-section-number">20.2.2</span> <code>R CMD check</code> a través de GHA</h3>
+<p>Si solo usa CI para una cosa, debería ser ejecutar “R CMD check”. Si llama a <code><a href="https://usethis.r-lib.org/reference/use_github_action.html">usethis::use_github_action()</a></code> sin argumentos, puede elegir entre algunos de los flujos de trabajo más útiles. Así es como se ve ese menú al momento de escribir este artículo:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">use_github_action</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>Which action do you want to add? (<span class="dv">0</span> to exit)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>(See <span class="sc">&lt;</span>https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>r<span class="sc">-</span>lib<span class="sc">/</span>actions<span class="sc">/</span>tree<span class="sc">/</span>v2<span class="sc">/</span>examples<span class="sc">&gt;</span> <span class="cf">for</span> other options) </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span> check<span class="sc">-</span>standard<span class="sc">:</span> Run <span class="st">`</span><span class="at">R CMD check</span><span class="st">`</span> on Linux, macOS, and Windows</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span> test<span class="sc">-</span>coverage<span class="sc">:</span> Compute test coverage and report to https<span class="sc">:</span><span class="er">//</span>about.codecov.io</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span><span class="sc">:</span> pr<span class="sc">-</span>commands<span class="sc">:</span> Add <span class="sc">/</span>document and <span class="sc">/</span>style commands <span class="cf">for</span> pull requests</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>Selection<span class="sc">:</span> </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>check-standard</code> es muy recomendable, especialmente para cualquier paquete que esté (o aspire a estar) en CRAN. Ejecuta <code>R CMD check</code> en algunas combinaciones de sistema operativo y versión R. Esto aumenta sus posibilidades de detectar rápidamente código que depende de las idiosincrasias de una plataforma específica, al tiempo que sigue siendo fácil hacer que el código sea más portátil.</p>
+<p>Después de hacer esa selección, verá algunos mensajes como este:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#&gt; ✔ Creating '.github/'</span></span>
+<span><span class="co">#&gt; ✔ Adding '*.html' to '.github/.gitignore'</span></span>
+<span><span class="co">#&gt; ✔ Creating '.github/workflows/'</span></span>
+<span><span class="co">#&gt; ✔ Saving 'r-lib/actions/examples/check-standard.yaml@v2' to .github/workflows/R-CMD-check.yaml'</span></span>
+<span><span class="co">#&gt; • Learn more at &lt;https://github.com/r-lib/actions/blob/v2/examples/README.md&gt;.</span></span>
+<span><span class="co">#&gt; ✔ Adding R-CMD-check badge to 'README.md'</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Las cosas clave que suceden aquí son:</p>
+<ul>
+<li><p>Se escribe un nuevo archivo de flujo de trabajo de GHA en <code>.github/workflows/R-CMD-check.yaml</code>. Los flujos de trabajo de GHA se especifican mediante archivos YAML. El mensaje revela la fuente de YAML y ofrece un enlace para obtener más información.</p></li>
+<li><p>Se pueden realizar algunas adiciones útiles a varios archivos “ignorados”.</p></li>
+<li><p>Se agrega una insignia que informa el resultado de <code>R CMD check</code> a su archivo README, si se creó con usethis y tiene una insignia identificable “área de estacionamiento”. De lo contrario, se le proporcionará un texto que podrá copiar y pegar.</p></li>
+</ul>
+<p>Confirme estos cambios de archivos y envíelos a GitHub. Si visita la sección “Acciones” de su repositorio, debería ver que se ha iniciado una ejecución de flujo de trabajo de GHA. A su debido tiempo, su éxito (o fracaso) se informará allí, en su insignia README y en sus notificaciones de GitHub (dependiendo de su configuración personal).</p>
+<p>¡Felicidades! Su paquete ahora se beneficiará de controles aún más regulares.</p>
+</section><section id="otros-usos-de-gha" class="level3" data-number="20.2.3"><h3 data-number="20.2.3" class="anchored" data-anchor-id="otros-usos-de-gha">
+<span class="header-section-number">20.2.3</span> Otros usos de GHA</h3>
+<p>Como lo sugiere el menú interactivo, <code><a href="https://usethis.r-lib.org/reference/use_github_action.html">usethis::use_github_action()</a></code> le brinda acceso a flujos de trabajo prediseñados distintos de <code>R CMD check</code>. Además de las opciones destacadas, puede usarlo para configurar cualquiera de los flujos de trabajo de ejemplo en <a href="https://github.com/r-lib/actions/tree/v2-branch/examples#readme"><code>r-lib/actions</code></a> pasando el nombre del flujo de trabajo. Por ejemplo:</p>
+<ul>
+<li>
+<code>use_github_action("test-coverage")</code> configura un flujo de trabajo para rastrear la cobertura de prueba de su paquete, como se describe en <a href="testing-design.html#sec-testing-design-coverage"><span>Sección&nbsp;14.1.1</span></a>.</li>
+</ul>
+<p>Dado que GHA le permite ejecutar código arbitrario, hay muchas otras cosas para las que puede usarlo:</p>
+<ul>
+<li><p>Construir el sitio web de su paquete e implementar el sitio renderizado en GitHub Pages, como se describe en <a href="website.html#sec-website-deployment"><span>Sección&nbsp;19.2</span></a>. Véase también <code>?usethis::use_pkgdown_github_pages()</code>.</p></li>
+<li><p>Volver a publicar el sitio web de un libro cada vez que se realiza un cambio en la fuente. (¡Como lo hacemos con este libro!).</p></li>
+</ul>
+<p>Si los flujos de trabajo de ejemplo no cubren su caso de uso exacto, también puede desarrollar su propio flujo de trabajo. Incluso en este caso, los flujos de trabajo de ejemplo suelen resultar útiles como inspiración. El repositorio <a href="https://github.com/r-lib/actions/#readme"><code>r-lib/actions</code></a> también contiene importantes bloques de construcción de nivel inferior, como acciones para instalar R o instalar todos los dependencias indicadas en un archivo <code>DESCRIPTION</code>.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-bryan2018-tas" class="csl-entry" role="listitem">
+Bryan, Jennifer. 2018. <span>«Excuse Me, Do You Have a Moment to Talk About Version Control?»</span> <em>The American Statistician</em> 72 (1): 20-27. <a href="https://doi.org/10.1080/00031305.2017.1399928">https://doi.org/10.1080/00031305.2017.1399928</a>.
+</div>
+</div>
+</section></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>Presentamos GitHub aquí, para el control de versiones alojadas, porque es lo que usamos y lo que tiene el mejor soporte en devtools. Sin embargo, todos los principios generales e incluso algunos detalles son válidos para plataformas alternativas, como Gitlab y Bitbucket.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./website.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Sitio web</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./lifecycle.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Lifecycle</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+</body></html>

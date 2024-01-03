@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - 16&nbsp; Documentación de la función</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./vignettes.html" rel="next">
+<link href="./testing-advanced.html" rel="prev">
+<link href="./images/cover-2e-small.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./man.html">Documentación</a></li><li class="breadcrumb-item"><a href="./man.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">El paquete en el interior de su código</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Componentes de un paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Código R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Otros componentes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Metadatos del paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Probar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Diseñar su conjunto de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Técnicas de prueba avanzadas</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentación</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Otros archivos markdown</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Website</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Maintenance and distribution</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Software development practices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Lifecycle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Releasing to CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li>
+<a href="#conceptos-b%C3%A1sicos-de-roxygen2" id="toc-conceptos-básicos-de-roxygen2" class="nav-link active" data-scroll-target="#conceptos-b%C3%A1sicos-de-roxygen2"><span class="header-section-number">16.1</span> conceptos básicos de roxygen2</a>
+  <ul class="collapse">
+<li><a href="#sec-man-workflow" id="toc-sec-man-workflow" class="nav-link" data-scroll-target="#sec-man-workflow"><span class="header-section-number">16.1.1</span> El flujo de trabajo de documentación</a></li>
+  <li><a href="#sec-man-roxygen-comments" id="toc-sec-man-roxygen-comments" class="nav-link" data-scroll-target="#sec-man-roxygen-comments"><span class="header-section-number">16.1.2</span> comentarios, bloques y etiquetas de roxygen2</a></li>
+  <li><a href="#sec-man-key-md-features" id="toc-sec-man-key-md-features" class="nav-link" data-scroll-target="#sec-man-key-md-features"><span class="header-section-number">16.1.3</span> Funciones claves de markdown</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#t%C3%ADtulo-descripci%C3%B3n-detalles" id="toc-título-descripción-detalles" class="nav-link" data-scroll-target="#t%C3%ADtulo-descripci%C3%B3n-detalles"><span class="header-section-number">16.2</span> Título, descripción, detalles</a>
+  <ul class="collapse">
+<li><a href="#t%C3%ADtulo" id="toc-título" class="nav-link" data-scroll-target="#t%C3%ADtulo"><span class="header-section-number">16.2.1</span> Título</a></li>
+  <li><a href="#descripci%C3%B3n" id="toc-descripción" class="nav-link" data-scroll-target="#descripci%C3%B3n"><span class="header-section-number">16.2.2</span> Descripción</a></li>
+  <li><a href="#detalles" id="toc-detalles" class="nav-link" data-scroll-target="#detalles"><span class="header-section-number">16.2.3</span> Detalles</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#argumentos" id="toc-argumentos" class="nav-link" data-scroll-target="#argumentos"><span class="header-section-number">16.3</span> Argumentos</a>
+  <ul class="collapse">
+<li><a href="#m%C3%BAltiples-argumentos" id="toc-múltiples-argumentos" class="nav-link" data-scroll-target="#m%C3%BAltiples-argumentos"><span class="header-section-number">16.3.1</span> Múltiples argumentos</a></li>
+  <li><a href="#heredar-argumentos" id="toc-heredar-argumentos" class="nav-link" data-scroll-target="#heredar-argumentos"><span class="header-section-number">16.3.2</span> Heredar argumentos</a></li>
+  </ul>
+</li>
+  <li><a href="#sec-man-returns" id="toc-sec-man-returns" class="nav-link" data-scroll-target="#sec-man-returns"><span class="header-section-number">16.4</span> Valor de retorno</a></li>
+  <li>
+<a href="#sec-man-examples" id="toc-sec-man-examples" class="nav-link" data-scroll-target="#sec-man-examples"><span class="header-section-number">16.5</span> Ejemplos</a>
+  <ul class="collapse">
+<li><a href="#contenido" id="toc-contenido" class="nav-link" data-scroll-target="#contenido"><span class="header-section-number">16.5.1</span> Contenido</a></li>
+  <li><a href="#deja-el-mundo-como-lo-encontraste" id="toc-deja-el-mundo-como-lo-encontraste" class="nav-link" data-scroll-target="#deja-el-mundo-como-lo-encontraste"><span class="header-section-number">16.5.2</span> Deja el mundo como lo encontraste</a></li>
+  <li><a href="#sec-man-examples-errors" id="toc-sec-man-examples-errors" class="nav-link" data-scroll-target="#sec-man-examples-errors"><span class="header-section-number">16.5.3</span> Errores</a></li>
+  <li><a href="#sec-man-examples-dependencies-conditional-execution" id="toc-sec-man-examples-dependencies-conditional-execution" class="nav-link" data-scroll-target="#sec-man-examples-dependencies-conditional-execution"><span class="header-section-number">16.5.4</span> Dependencias y ejecución condicional</a></li>
+  <li><a href="#mezclar-ejemplos-y-texto" id="toc-mezclar-ejemplos-y-texto" class="nav-link" data-scroll-target="#mezclar-ejemplos-y-texto"><span class="header-section-number">16.5.5</span> Mezclar ejemplos y texto</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#reutilizar-documentaci%C3%B3n" id="toc-reutilizar-documentación" class="nav-link" data-scroll-target="#reutilizar-documentaci%C3%B3n"><span class="header-section-number">16.6</span> Reutilizar documentación</a>
+  <ul class="collapse">
+<li><a href="#sec-man-multiple-functions" id="toc-sec-man-multiple-functions" class="nav-link" data-scroll-target="#sec-man-multiple-functions"><span class="header-section-number">16.6.1</span> Múltiples funciones en un tema</a></li>
+  <li><a href="#heredar-documentaci%C3%B3n" id="toc-heredar-documentación" class="nav-link" data-scroll-target="#heredar-documentaci%C3%B3n"><span class="header-section-number">16.6.2</span> Heredar documentación</a></li>
+  <li><a href="#documentos-secundarios" id="toc-documentos-secundarios" class="nav-link" data-scroll-target="#documentos-secundarios"><span class="header-section-number">16.6.3</span> Documentos secundarios</a></li>
+  </ul>
+</li>
+  <li><a href="#sec-man-package-doc" id="toc-sec-man-package-doc" class="nav-link" data-scroll-target="#sec-man-package-doc"><span class="header-section-number">16.7</span> Tema de ayuda para el paquete</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title"><span id="sec-man" class="quarto-section-identifier"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><p>En este capítulo, aprenderá sobre la documentación de funciones, a la que los usuarios acceden con <code>?algunafunción</code> o <code>help("algunafunción")</code>. Base R proporciona una forma estándar de documentar un paquete donde cada función está documentada en un <strong>tema</strong>, un archivo <code>.Rd</code> (“documentación R”) en el directorio <code>man/</code>. Los archivos <code>.Rd</code> utilizan una sintaxis personalizada, basada libremente en LaTeX, y se pueden representar en HTML, texto sin formato o pdf, según sea necesario, para verlos en diferentes contextos.</p>
+<p>En el ecosistema devtools, no editamos archivos <code>.Rd</code> directamente con nuestras propias manos. En su lugar, incluimos “comentarios de roxygen” con formato especial encima del código fuente para cada función<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Luego usamos el <a href="https://roxygen2.r-lib.org/index.html">paquete roxygen2</a> para generar los archivos <code>.Rd</code> a partir de estos comentarios especiales<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> . Hay algunas ventajas al usar roxygen2 :</p>
+<ul>
+<li><p>El código y la documentación están ubicados en el mismo lugar. Cuando modifica su código, es fácil recordar que también debe actualizar su documentación.</p></li>
+<li><p>Puede utilizar Markdown, en lugar de tener que aprender un lenguaje de marcado único que sólo se aplica a archivos <code>.Rd</code>. Además del formato, la función de hipervínculos automáticos hace que sea mucho más fácil crear documentación con muchos enlaces.</p></li>
+<li><p>Hay una gran cantidad de texto estándar <code>.Rd</code> que está automatizado.</p></li>
+<li><p>roxygen2 proporciona una serie de herramientas para compartir contenido entre temas de documentación e incluso entre temas y viñetas.</p></li>
+</ul>
+<p>En este capítulo nos centraremos en documentar funciones, pero las mismas ideas se aplican a documentar conjuntos de datos (<a href="data.html#sec-documenting-data"><span>Sección&nbsp;7.1.2</span></a>), clases, genéricos y paquetes. Puede obtener más información sobre esos temas importantes en <code><a href="https://roxygen2.r-lib.org/articles/rd-other.html">vignette("rd-other", package = "roxygen2")</a></code>.</p>
+<section id="conceptos-básicos-de-roxygen2" class="level2" data-number="16.1"><h2 data-number="16.1" class="anchored" data-anchor-id="conceptos-básicos-de-roxygen2">
+<span class="header-section-number">16.1</span> conceptos básicos de roxygen2</h2>
+<p>Para comenzar, analizaremos el flujo de trabajo básico de roxygen2 y analizaremos la estructura general de los comentarios de roxygen2, que están organizados en bloques y etiquetas. También destacamos las mayores ventajas de utilizar Markdown con roxygen2.</p>
+<section id="sec-man-workflow" class="level3" data-number="16.1.1"><h3 data-number="16.1.1" class="anchored" data-anchor-id="sec-man-workflow">
+<span class="header-section-number">16.1.1</span> El flujo de trabajo de documentación</h3>
+<p>A diferencia de testthat, no hay un movimiento de apertura obvio para declarar que vas a utilizar roxygen2 para la documentación. Esto se debe a que el uso de roxygen2 es puramente una cuestión de su flujo de trabajo de desarrollo. No tiene ningún efecto, por ejemplo, sobre cómo se comprueba o construye un paquete. Creemos que el enfoque de roxygen es la mejor manera de generar archivos <code>.Rd</code>, pero oficialmente R solo se preocupa por los archivos en sí, no por cómo surgieron.</p>
+<p>Su flujo de trabajo de documentación realmente comienza cuando comienza a agregar comentarios de roxygen encima de sus funciones. Las líneas de comentarios de Roxygen siempre comienzan con <code>#'</code>, el <code>#</code> habitual para un comentario, seguido inmediatamente por una comilla simple <code>'</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' Suma dos números</span></span>
+<span><span class="co">#' </span></span>
+<span><span class="co">#' @param x Un número.</span></span>
+<span><span class="co">#' @param y Un número.</span></span>
+<span><span class="co">#' @returns Un vector numéro.</span></span>
+<span><span class="co">#' @examples</span></span>
+<span><span class="co">#' add(1, 1)</span></span>
+<span><span class="co">#' add(10, 1)</span></span>
+<span><span class="va">add</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">x</span> <span class="op">+</span> <span class="va">y</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Por lo general, primero escribe su función y luego su documentación. Una vez que exista la definición de la función, coloque el cursor en algún lugar de ella y haga <em>Código &gt; Insertar esqueleto de Roxygen</em> para obtener una gran ventaja en el comentario de roxygen.</p>
+</div>
+</div>
+<p>Una vez que tenga al menos un comentario de roxygen, ejecute <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code> para generar (o actualizar) los archivos <code>.Rd</code> de su paquete<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. En el fondo, esto finalmente se llama <code><a href="https://roxygen2.r-lib.org/reference/roxygenize.html">roxygen2::roxygenise()</a></code>. El bloque roxygen anterior genera un archivo <code>man/add.Rd</code> que se ve así:</p>
+<pre class="text"><code>% Generated by roxygen2: do not edit by hand
+% Please edit documentation in R/add.R
+\name{add}
+\alias{add}
+\title{Suma dos números}
+\usage{
+add(x, y)
+}
+\arguments{
+\item{x}{Un número.}
+
+\item{y}{Un número.}
+}
+\value{
+Un vector numéro.
+}
+\description{
+Suma dos números
+}
+\examples{
+add(1, 1)
+add(10, 1)
+}</code></pre>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>También puede ejecutar <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code> con el método abreviado de teclado Ctrl/Cmd + Shift + D o mediante el menú o panel <em>Construir</em>.</p>
+</div>
+</div>
+<p>Si ha usado LaTeX antes, esto debería resultarle vagamente familiar ya que el formato <code>.Rd</code> se basa libremente en LaTeX. Si está interesado en el formato <code>.Rd</code>, puede leer más en <a href="https://cran.r-project.org/doc/manuals/R-exts.html#Rd-format">Escribir extensiones R</a>. Pero generalmente nunca necesitarás mirar archivos <code>.Rd</code>, excepto para enviarlos al repositorio Git de tu paquete.</p>
+<p>¿Cómo se corresponde este archivo <code>.Rd</code> con la documentación que ves en R? Cuando ejecuta <code>?add</code>, <code>help("add")</code> o <code>example("add")</code>, R busca un archivo <code>.Rd</code> que contenga <code>\alias{add}</code>. Luego analiza el archivo, lo convierte a HTML y lo muestra. <a href="#fig-rendered-help-topic-add">Figura&nbsp;<span>16.1</span></a> muestra cómo se vería este tema de ayuda en RStudio:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-rendered-help-topic-add" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/man-add.png" class="img-fluid figure-img" alt="Captura de pantalla del tema de ayuda para la función add()." width="590"></p>
+<figcaption class="figure-caption">Figura&nbsp;16.1: Tema de ayuda representado en HTML.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<code>R CMD check</code> warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Debe documentar todas las funciones y conjuntos de datos exportados. De lo contrario, recibirá esta advertencia de <code>R CMD check</code>:</p>
+<pre><code>W  checking for missing documentation entries (614ms)
+  Undocumented code objects:
+    ‘somefunction’
+  Undocumented data sets:
+    ‘somedata’
+  All user-level objects in a package should have documentation entries.</code></pre>
+<p>Por el contrario, probablemente no desees documentar funciones no exportadas. Si desea utilizar comentarios de roxygen para la documentación interna, incluya la etiqueta <code>@noRd</code> para suprimir la creación del archivo <code>.Rd</code>.</p>
+</div>
+</div>
+<p>Este también es un buen momento para explicar algo que quizás hayas notado en tu archivo <code>DESCRIPTION</code>:</p>
+<pre><code>Roxygen: list(markdown = TRUE)</code></pre>
+<p>devtools/usethis incluye esto de forma predeterminada al iniciar un archivo <code>DESCRIPTION</code> y le avisa a roxygen2 de que su paquete usa sintaxis de markdown en sus comentarios de roxygen.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>El proceso de búsqueda de ayuda predeterminado busca dentro de los paquetes <strong>instalados</strong>, por lo que para ver la documentación de su paquete durante el desarrollo, devtools anula las funciones de ayuda habituales con versiones modificadas que saben consultar el paquete <strong>fuente</strong> actual. Para activar estas anulaciones, necesitarás ejecutar <code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code> al menos una vez. Si siente que sus ediciones en los comentarios de roxygen no están teniendo efecto, verifique que haya regenerado los archivos <code>.Rd</code> con <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code> y que haya cargado su paquete. Cuando llama a <code>?Función</code>, debería ver “Representación de documentación de desarrollo …”.</p>
+<p>En resumen, hay cuatro pasos en el flujo de trabajo básico de roxygen2:</p>
+<ol type="1">
+<li><p>Agregue comentarios de roxygen2 a sus archivos <code>.R</code>.</p></li>
+<li><p>Ejecute <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code> o presione Ctrl/Cmd + Shift + D para convertir los comentarios de roxygen2 en archivos <code>.Rd</code>.</p></li>
+<li><p>Obtenga una vista previa de la documentación con <code>?función</code>.</p></li>
+<li><p>Enjuague y repita hasta que la documentación tenga el aspecto deseado.</p></li>
+</ol></section><section id="sec-man-roxygen-comments" class="level3" data-number="16.1.2"><h3 data-number="16.1.2" class="anchored" data-anchor-id="sec-man-roxygen-comments">
+<span class="header-section-number">16.1.2</span> comentarios, bloques y etiquetas de roxygen2</h3>
+<p>Ahora que comprende el flujo de trabajo básico, entraremos en más detalles sobre la sintaxis. Los comentarios de roxygen2 comienzan con <code>#'</code> y todos los comentarios de roxygen2 que preceden a una función se denominan colectivamente <strong>bloque</strong>. Los bloques se dividen en <strong>etiquetas</strong>, que se parecen a <code>@tagName tagValue</code>, y el contenido de una etiqueta se extiende desde el final del nombre de la etiqueta hasta el inicio de la siguiente etiqueta <a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. Un bloque puede contener texto antes de la primera etiqueta que se denomina <strong>introducción</strong>. De forma predeterminada, cada bloque genera un único <strong>tema</strong> de documentación, es decir, un único archivo <code>.Rd</code><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> en el directorio <code>man/</code>.</p>
+<p>A lo largo de este capítulo, le mostraremos comentarios de roxygen2 de paquetes tidyverse reales, centrándonos en <a href="https://stringr.tidyverse.org">stringr</a>, ya que las funciones allí tienden a ser bastante sencillas, lo que lleva a documentación comprensible con relativamente poco contexto. Adjuntamos stringr aquí para que sus funciones tengan un hipervínculo en el libro renderizado (más sobre esto en la sección <a href="#sec-man-key-md-features"><span>Sección&nbsp;16.1.3</span></a>).</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org">stringr</a></span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Aquí hay un primer ejemplo simple: la documentación para <code><a href="https://stringr.tidyverse.org/reference/str_unique.html">str_unique()</a></code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' Remove duplicated strings</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' `str_unique()` removes duplicated values, with optional control over</span></span>
+<span><span class="co">#' how duplication is measured.</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @param string Input vector. Either a character vector, or something</span></span>
+<span><span class="co">#'  coercible to one.</span></span>
+<span><span class="co">#' @param ... Other options used to control matching behavior between duplicate</span></span>
+<span><span class="co">#'   strings. Passed on to [stringi::stri_opts_collator()].</span></span>
+<span><span class="co">#' @returns A character vector, usually shorter than `string`.</span></span>
+<span><span class="co">#' @seealso [unique()], [stringi::stri_unique()] which this function wraps.</span></span>
+<span><span class="co">#' @examples</span></span>
+<span><span class="co">#' str_unique(c("a", "b", "c", "b", "a"))</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' # Use ... to pass additional arguments to stri_unique()</span></span>
+<span><span class="co">#' str_unique(c("motley", "mötley", "pinguino", "pingüino"))</span></span>
+<span><span class="co">#' str_unique(c("motley", "mötley", "pinguino", "pingüino"), strength = 1)</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">str_unique</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">string</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Aquí la introducción incluye el título (“Eliminar cadenas duplicadas”) y una descripción básica de lo que hace la función. La introducción va seguida de cinco etiquetas: dos <code>@param</code>s, una <code>@returns</code>, una <code>@seealso</code>, una <code>@examples</code> y una <code>@export</code>.</p>
+<p>Tenga en cuenta que el bloque tiene una longitud de línea intencional (generalmente la misma que se usa para el código R circundante) y la segunda línea y las siguientes de la etiqueta larga <code>@param</code> tienen sangría, lo que hace que todo el bloque sea más fácil de escanear. Puedes obtener más consejos de estilo de roxygen2 en la <a href="https://style.tidyverse.org/documentation.html">guía de estilo de tidyverse</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Puede resultar molesto administrar manualmente la longitud de línea de los comentarios de roxygen, así que asegúrese de probar <em>Code &gt; Reflow Comment</em> (Ctrl/Cmd+Shift+/).</p>
+</div>
+</div>
+<p>Tenga en cuenta también que el orden en que aparecen las etiquetas en sus comentarios de roxygen (o incluso en archivos <code>.Rd</code> escritos a mano) no dicta el orden en la documentación representada. El orden de presentación se determina mediante herramientas dentro de la base R.</p>
+<p>Las siguientes secciones profundizan en las etiquetas más importantes. Comenzamos con la introducción, que proporciona el título, la descripción y los detalles. Luego cubrimos las entradas (los argumentos de la función), las salidas (el valor de retorno) y los ejemplos. A continuación, analizamos enlaces y referencias cruzadas y terminamos con técnicas para compartir documentación entre temas.</p>
+</section><section id="sec-man-key-md-features" class="level3" data-number="16.1.3"><h3 data-number="16.1.3" class="anchored" data-anchor-id="sec-man-key-md-features">
+<span class="header-section-number">16.1.3</span> Funciones claves de markdown</h3>
+<p>En su mayor parte, el conocimiento general de Markdown y R Markdown es suficiente para aprovechar el Markdown en roxygen2. Pero hay algunas piezas de sintaxis que son tan importantes que queremos resaltarlas aquí. Los verá en muchos de los ejemplos de este capítulo.</p>
+<p><strong>Comillas invertidas para código en línea</strong>: utilice comillas invertidas para formatear un fragmento de texto como código, es decir, en una fuente de ancho fijo. Ejemplo:</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' I like `thisfunction()`, because it's great.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Corchetes para una función con enlace automático</strong>: incluya texto como <code>alguna función()</code> y <code>algún paquete::alguna función()</code> entre corchetes para obtener un enlace automático a la documentación de esa función. Asegúrese de incluir los paréntesis finales, porque tiene un buen estilo y hace que la función se formatee como código, es decir, no es necesario agregar comillas invertidas. Ejemplo:</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' Es obvio que `thisfunction()` es mejor que [otherpkg::otherfunction()]</span></span>
+<span><span class="co">#' o incluso nuestra propia [función anterior()].</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Viñetas</strong>: si hace referencia a una viñeta con una llamada en línea a <code>vignette("some-topic")</code>, tiene un doble propósito. Primero, este es literalmente el código R que ejecutaría para ver una viñeta localmente. ¡Pero espera hay mas! En muchos contextos renderizados, esto se convierte automáticamente en un hipervínculo a esa misma viñeta en un sitio web pkgdown. Aquí lo usamos para vincular algunas viñetas muy relevantes<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>:</p>
+<ul>
+<li><p><code><a href="https://roxygen2.r-lib.org/articles/rd-formatting.html">vignette("rd-formatting", package = "roxygen2")</a></code></p></li>
+<li><p><code><a href="https://roxygen2.r-lib.org/articles/reuse.html">vignette("reuse", package = "roxygen2")</a></code></p></li>
+<li><p><code><a href="https://pkgdown.r-lib.org/articles/linking.html">vignette("linking", package = "pkgdown")</a></code></p></li>
+</ul>
+<p><strong>Listas</strong>: Las listas con viñetas rompen el temido “muro de texto” y pueden hacer que su documentación sea más fácil de escanear. Puedes usarlos en la descripción de la función o de un argumento y también para el valor de retorno. No es necesario incluir una línea en blanco antes de la lista, pero eso también está permitido.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' Mejores características de `thisfunction()`:</span></span>
+<span><span class="co">#' * Huele bien</span></span>
+<span><span class="co">#' * Tiene buena vibra</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section><section id="título-descripción-detalles" class="level2" data-number="16.2"><h2 data-number="16.2" class="anchored" data-anchor-id="título-descripción-detalles">
+<span class="header-section-number">16.2</span> Título, descripción, detalles</h2>
+<p>La introducción proporciona un título, una descripción y, opcionalmente, detalles de la función. Si bien es posible utilizar etiquetas explícitas en la introducción, normalmente utilizamos etiquetas implícitas cuando es posible:</p>
+<ul>
+<li><p>El <strong>título</strong> está tomado de la primera frase. Debe escribirse en mayúsculas y minúsculas, no terminar en punto y estar seguido de una línea en blanco. El título se muestra en varios índices de funciones (por ejemplo, <code><a href="https://rdrr.io/pkg/alg%C3%BAnpaquete/man">help(package = "algúnpaquete")</a></code>) y es lo que el usuario normalmente verá cuando explore múltiples funciones.</p></li>
+<li><p>La <strong>descripción</strong> está tomada del siguiente párrafo. Se muestra en la parte superior de la documentación y debe describir brevemente las características más importantes de la función.</p></li>
+<li><p><strong>Detalles</strong> adicionales son cualquier cosa después de la descripción. Los detalles son opcionales, pero pueden tener cualquier longitud, por lo que son útiles si desea profundizar en algún aspecto importante de la función. Tenga en cuenta que, aunque los detalles aparecen justo después de la descripción en la introducción, aparecen mucho más tarde en la documentación renderizada.</p></li>
+</ul>
+<p>Las siguientes secciones describen cada componente con más detalle y luego analizan algunas etiquetas relacionadas útiles.</p>
+<section id="título" class="level3" data-number="16.2.1"><h3 data-number="16.2.1" class="anchored" data-anchor-id="título">
+<span class="header-section-number">16.2.1</span> Título</h3>
+<p>Al escribir el título, es útil pensar en cómo aparecerá en el índice de referencia. Cuando un usuario hojea el índice, ¿cómo sabrá qué funciones resolverán su problema actual? Esto requiere pensar en qué tienen en común sus funciones (que no es necesario repetir en cada título) y qué es exclusivo de esa función (que debe resaltarse en el título).</p>
+<p>Cuando escribimos este capítulo, encontramos que los títulos de las funciones de stringr eran algo decepcionantes. Pero proporcionan un útil estudio de caso negativo:</p>
+<ul>
+<li>
+<code><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect()</a></code>: Detecta la presencia o ausencia de un patrón en una cadena</li>
+<li>
+<code><a href="https://stringr.tidyverse.org/reference/str_extract.html">str_extract()</a></code>: Extrae patrones coincidentes de una cadena</li>
+<li>
+<code><a href="https://stringr.tidyverse.org/reference/str_locate.html">str_locate()</a></code>: Localiza la posición de los patrones en una cadena</li>
+<li>
+<code><a href="https://stringr.tidyverse.org/reference/str_match.html">str_match()</a></code>: Extrae grupos coincidentes de una cadena</li>
+</ul>
+<p>Hay mucha repetición (“pattern”, “from a string”) y el verbo usado para el nombre de la función se repite en el título, por lo que si aún no comprende la función, es poco probable que el título le ayude mucho. ¡Esperamos haber mejorado esos títulos cuando leas esto!</p>
+<p>En cambio, estos títulos de dplyr son mucho mejores<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>:</p>
+<ul>
+<li>
+<code>mutate()</code>: Crear, modificar y eliminar columnas</li>
+<li>
+<code>summarise()</code>: Resume cada grupo en una fila</li>
+<li>
+<code>filtro()</code>: Mantiene las filas que coinciden con una condición</li>
+<li>
+<code>select()</code>: Mantener o eliminar columnas usando sus nombres y tipos</li>
+<li>
+<code>arrange()</code>: Ordena filas usando valores de columna</li>
+</ul>
+<p>Aquí intentamos describir de manera sucinta lo que hace la función, asegurándonos de describir si afecta a filas, columnas o grupos. Hacemos nuestro mejor esfuerzo para usar sinónimos, en lugar de repetir el nombre de la función, para darle a la gente otra oportunidad de comprender la intención de la función.</p>
+</section><section id="descripción" class="level3" data-number="16.2.2"><h3 data-number="16.2.2" class="anchored" data-anchor-id="descripción">
+<span class="header-section-number">16.2.2</span> Descripción</h3>
+<p>El propósito de la descripción es resumir el objetivo de la función, generalmente en un solo párrafo. Esto puede ser un desafío para funciones simples, porque puede parecer que simplemente estás repitiendo el título de la función. Si puedes, intenta encontrar una redacción ligeramente diferente. Está bien si esto te parece un poco repetitivo; A menudo resulta útil para los usuarios ver lo mismo expresado de dos maneras diferentes. Es un poco de trabajo extra, pero el esfuerzo extra a menudo vale la pena. Aquí está la descripción de <code><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' Detect the presence/absence of a match</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' `str_detect()` returns a logical vector with `TRUE` for each element of</span></span>
+<span><span class="co">#' `string` that matches `pattern` and `FALSE` otherwise. It's equivalent to</span></span>
+<span><span class="co">#' `grepl(pattern, string)`.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Si desea más de un párrafo, debe usar una etiqueta <code>@description</code> explícita para evitar que el segundo párrafo (y los siguientes) se conviertan en <code>@details</code>. Aquí hay una <code>@description</code> de dos párrafos de <code><a href="https://stringr.tidyverse.org/reference/str_view.html">str_view()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' View strings and matches</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @description</span></span>
+<span><span class="co">#' `str_view()` is used to print the underlying representation of a string and</span></span>
+<span><span class="co">#' to see how a `pattern` matches.</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' Matches are surrounded by `&lt;&gt;` and unusual whitespace (i.e. all whitespace</span></span>
+<span><span class="co">#' apart from `" "` and `"\n"`) are surrounded by `{}` and escaped. Where</span></span>
+<span><span class="co">#' possible, matches and unusual whitespace are coloured blue and `NA`s red.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Aquí hay otro ejemplo de <code><a href="https://stringr.tidyverse.org/reference/str_like.html">str_like()</a></code>, que tiene una lista con viñetas en <code>@description</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' Detect a pattern in the same way as `SQL`'s `LIKE` operator</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @description</span></span>
+<span><span class="co">#' `str_like()` follows the conventions of the SQL `LIKE` operator:</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' * Must match the entire string.</span></span>
+<span><span class="co">#' * `_` matches a single character (like `.`).</span></span>
+<span><span class="co">#' * `%` matches any number of characters (like `.*`).</span></span>
+<span><span class="co">#' * `\%` and `\_` match literal `%` and `_`.</span></span>
+<span><span class="co">#' * The match is case insensitive by default.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Básicamente, si vas a incluir una línea vacía en tu descripción, necesitarás usar una etiqueta <code>@description</code> explícita.</p>
+<p>Finalmente, a menudo es particularmente difícil escribir una buena descripción si acabas de escribir la función, porque el propósito a menudo parece muy obvio. Haz tu mejor esfuerzo y vuelve más tarde, cuando hayas olvidado exactamente qué hace la función. Una vez que haya vuelto a derivar lo que hace la función, podrá escribir una mejor descripción.</p>
+</section><section id="detalles" class="level3" data-number="16.2.3"><h3 data-number="16.2.3" class="anchored" data-anchor-id="detalles">
+<span class="header-section-number">16.2.3</span> Detalles</h3>
+<p>Los <code>@details</code> son solo cualquier detalle o explicación adicional que crea que su función necesita. La mayoría de las funciones no necesitan detalles, pero algunas funciones necesitan muchos. Si tiene mucha información que transmitir, es una buena idea utilizar títulos de markdown informativos para dividir los detalles en secciones manejables<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>. Aquí hay un ejemplo de <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">dplyr::mutate()</a></code>. Hemos omitido algunos de los detalles para que este ejemplo sea breve, pero aún así deberías tener una idea de cómo usamos los títulos para dividir el contenido en partes que se pueden leer:</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' Create, modify, and delete columns</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' `mutate()` creates new columns that are functions of existing variables.</span></span>
+<span><span class="co">#' It can also modify (if the name is the same as an existing</span></span>
+<span><span class="co">#' column) and delete columns (by setting their value to `NULL`).</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @section Useful mutate functions:</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' * [`+`], [`-`], [log()], etc., for their usual mathematical meanings</span></span>
+<span><span class="co">#' </span></span>
+<span><span class="co">#' ...</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @section Grouped tibbles:</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' Because mutating expressions are computed within groups, they may</span></span>
+<span><span class="co">#' yield different results on grouped tibbles. This will be the case</span></span>
+<span><span class="co">#' as soon as an aggregating, lagging, or ranking function is</span></span>
+<span><span class="co">#' involved. Compare this ungrouped mutate:</span></span>
+<span><span class="co">#' </span></span>
+<span><span class="co">#' ...</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Este es un buen momento para recordarnos que, aunque un título como “Funciones de mutación útiles” en el ejemplo anterior aparece inmediatamente después de la descripción en el bloque roxygen, el contenido aparece mucho más tarde en la documentación renderizada. Los detalles (ya sea que usen encabezados de sección o no) aparecen después del uso de la función, los argumentos y el valor de retorno.</p>
+</section></section><section id="argumentos" class="level2" data-number="16.3"><h2 data-number="16.3" class="anchored" data-anchor-id="argumentos">
+<span class="header-section-number">16.3</span> Argumentos</h2>
+<p>Para la mayoría de las funciones, la mayor parte de su trabajo se destinará a documentar cómo cada argumento afecta el resultado de la función. Para este propósito, usará <code>@param</code> (abreviatura de parámetro, sinónimo de argumento) seguido del nombre del argumento y una descripción de su acción.</p>
+<p>La máxima prioridad es proporcionar un resumen sucinto de las entradas permitidas y lo que hace el parámetro. Por ejemplo, así es como <code><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect()</a></code> documenta el <code>string</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @param string Input vector. Either a character vector, or something</span></span>
+<span><span class="co">#'  coercible to one.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Y aquí están tres de los argumentos de <code><a href="https://stringr.tidyverse.org/reference/str_flatten.html">str_flatten()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @param collapse String to insert between each piece. Defaults to `""`.</span></span>
+<span><span class="co">#' @param last Optional string to use in place of the final separator.</span></span>
+<span><span class="co">#' @param na.rm Remove missing values? If `FALSE` (the default), the result </span></span>
+<span><span class="co">#'   will be `NA` if any element of `string` is `NA`.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Tenga en cuenta que <code>@param collapse</code> y <code>@param na.rm</code> describen sus argumentos predeterminados. Esta suele ser una buena práctica porque el uso de la función (que muestra los valores predeterminados) y la descripción del argumento suelen estar bastante separados en la documentación representada. Pero hay desventajas. La principal es que esta duplicación significa que necesitarás realizar actualizaciones en dos lugares si cambias el valor predeterminado; Creemos que esta pequeña cantidad de trabajo extra vale la pena para facilitar la vida del usuario.</p>
+<p>Si un argumento tiene un conjunto fijo de posibles parámetros, debes enumerarlos. Si son simples, puedes enumerarlos en una oración, como en <code><a href="https://stringr.tidyverse.org/reference/str_trim.html">str_trim()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @param side Side on which to remove whitespace: `"left"`, `"right"`, or</span></span>
+<span><span class="co">#'   `"both"` (the default).</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Si necesitan más explicaciones, puedes usar una lista con viñetas, como en <code><a href="https://stringr.tidyverse.org/reference/str_wrap.html">str_wrap()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @param whitespace_only A boolean.</span></span>
+<span><span class="co">#'   * `TRUE` (the default): wrapping will only occur at whitespace.</span></span>
+<span><span class="co">#'   * `FALSE`: can break on any non-word character (e.g. `/`, `-`).</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>La documentación para la mayoría de los argumentos será relativamente breve, a menudo una o dos oraciones. Pero debes ocupar todo el espacio que necesites y en breve verás algunos ejemplos de documentos con argumentos de varios párrafos.</p>
+<section id="múltiples-argumentos" class="level3" data-number="16.3.1"><h3 data-number="16.3.1" class="anchored" data-anchor-id="múltiples-argumentos">
+<span class="header-section-number">16.3.1</span> Múltiples argumentos</h3>
+<p>Si el comportamiento de varios argumentos está estrechamente relacionado, puede documentarlos juntos separando los nombres con comas (sin espacios). Por ejemplo, <code>x</code> e <code>y</code> son intercambiables en <code><a href="https://stringr.tidyverse.org/reference/str_equal.html">str_equal()</a></code>, por lo que se documentan juntos:</p>
+<div class="cell">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @param x,y Un par de vectores de caracteres.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En <code><a href="https://stringr.tidyverse.org/reference/str_sub.html">str_sub()</a></code>, <code>start</code> y <code>end</code> definen el rango de caracteres a reemplazar. Pero en lugar de proporcionar ambos, puede usar simplemente <code>start</code> si pasa una matriz de dos columnas. Por eso tiene sentido documentarlos juntos:</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @param start,end A pair of integer vectors defining the range of characters</span></span>
+<span><span class="co">#'   to extract (inclusive).</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#'   Alternatively, instead of a pair of vectors, you can pass a matrix to</span></span>
+<span><span class="co">#'   `start`. The matrix should have two columns, either labelled `start`</span></span>
+<span><span class="co">#'   and `end`, or `start` and `length`.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En <code><a href="https://stringr.tidyverse.org/reference/str_wrap.html">str_wrap()</a></code>, <code>indent</code> y <code>exdent</code> definen la sangría para la primera línea y todas las líneas posteriores, respectivamente:</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @param indent,exdent A non-negative integer giving the indent for the</span></span>
+<span><span class="co">#'   first line (`indent`) and all subsequent lines (`exdent`).</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="heredar-argumentos" class="level3" data-number="16.3.2"><h3 data-number="16.3.2" class="anchored" data-anchor-id="heredar-argumentos">
+<span class="header-section-number">16.3.2</span> Heredar argumentos</h3>
+<p>Si su paquete contiene muchas funciones estrechamente relacionadas, es común que tengan argumentos que compartan el mismo nombre y significado. Sería molesto y propenso a errores copiar y pegar la misma documentación <code>@param</code> en cada función, por lo que roxygen2 proporciona <code>@inheritParams</code> que le permite heredar documentación de argumentos de otra función, posiblemente incluso en otro paquete.</p>
+<p>stringr usa <code>@inheritParams</code> ampliamente porque la mayoría de las funciones tienen argumentos <code>string</code> y <code>pattern</code>. La documentación detallada y definitiva pertenece a <code><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @param string Input vector. Either a character vector, or something</span></span>
+<span><span class="co">#'  coercible to one.</span></span>
+<span><span class="co">#' @param pattern Pattern to look for.</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#'   The default interpretation is a regular expression, as described in</span></span>
+<span><span class="co">#'   `vignette("regular-expressions")`. Use [regex()] for finer control of the</span></span>
+<span><span class="co">#'   matching behaviour.</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#'   Match a fixed string (i.e. by comparing only bytes), using</span></span>
+<span><span class="co">#'   [fixed()]. This is fast, but approximate. Generally,</span></span>
+<span><span class="co">#'   for matching human text, you'll want [coll()] which</span></span>
+<span><span class="co">#'   respects character matching rules for the specified locale.</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#'   Match character, word, line and sentence boundaries with</span></span>
+<span><span class="co">#'   [boundary()]. An empty pattern, "", is equivalent to</span></span>
+<span><span class="co">#'   `boundary("character")`.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Luego, las otras funciones stringr usan <code>@inheritParams str_detect</code> para obtener esta documentación detallada para <code>string</code> y <code>pattern</code> sin tener que duplicar ese texto.</p>
+<p><code>@inheritParams</code> solo hereda documentos para los argumentos que la función realmente usa y que aún no están documentados, por lo que puedes documentar algunos argumentos localmente y heredar otros. <code><a href="https://stringr.tidyverse.org/reference/str_match.html">str_match()</a></code> usa esto para heredar la documentación estándar de <code><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect()</a></code> para el argumento <code>string</code>, mientras proporciona su propia documentación especializada para <code>pattern</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @inheritParams str_detect</span></span>
+<span><span class="co">#' @param pattern Unlike other stringr functions, `str_match()` only supports</span></span>
+<span><span class="co">#'   regular expressions, as described `vignette("regular-expressions")`. </span></span>
+<span><span class="co">#'   The pattern should contain at least one capturing group.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Ahora que hemos analizado los valores predeterminados y la herencia, podemos plantear un dilema más. A veces existe tensión entre brindar información detallada sobre un argumento (valores aceptables, valor predeterminado, cómo se usa el argumento, etc.) y hacer que la documentación se pueda reutilizar en otras funciones (que pueden diferir en algunos detalles). Esto puede motivarlo a evaluar si realmente vale la pena que funciones relacionadas manejen la misma entrada de diferentes maneras o si la estandarización sería beneficiosa.</p>
+<p>Puede heredar documentación de una función en otro paquete usando la notación estándar <code>::</code>, es decir, <code>@inheritParams anotherpackage::function</code>. Esto introduce una pequeña molestia: ahora la documentación de su paquete ya no es independiente y la versión de “otro paquete” puede afectar los documentos generados. Tenga cuidado con las diferencias falsas introducidas por los contribuyentes que ejecutan <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code> con una versión instalada diferente del paquete heredado.</p>
+</section></section><section id="sec-man-returns" class="level2" data-number="16.4"><h2 data-number="16.4" class="anchored" data-anchor-id="sec-man-returns">
+<span class="header-section-number">16.4</span> Valor de retorno</h2>
+<p>La salida de una función es tan importante como sus entradas. Documentar el resultado es el trabajo de la etiqueta <code>@returns</code><a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>. Aquí la prioridad es describir la “forma” general del resultado, es decir, qué tipo de objeto es y sus dimensiones (si eso tiene sentido). Por ejemplo, si su función devuelve un vector, puede describir su tipo y longitud, o si su función devuelve un marco de datos, puede describir los nombres y tipos de las columnas y el número esperado de filas.</p>
+<p>La documentación <code>@returns</code> para funciones en stringr es sencilla porque casi todas las funciones devuelven algún tipo de vector con la misma longitud que una de las entradas. Por ejemplo, así es como <code><a href="https://stringr.tidyverse.org/reference/str_like.html">str_like()</a></code> describe su salida:</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @returns A logical vector the same length as `string`.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Un caso más complicado es la documentación conjunta de <code><a href="https://stringr.tidyverse.org/reference/str_locate.html">str_locate()</a></code> y <code><a href="https://stringr.tidyverse.org/reference/str_locate.html">str_locate_all()</a></code><a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>. <code><a href="https://stringr.tidyverse.org/reference/str_locate.html">str_locate()</a></code> devuelve una matriz de números enteros y <code><a href="https://stringr.tidyverse.org/reference/str_locate.html">str_locate_all()</a></code> devuelve una lista de matrices, por lo que el texto necesita describir lo que determina las filas y columnas.</p>
+<div class="cell">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @returns</span></span>
+<span><span class="co">#' * `str_locate()` returns an integer matrix with two columns and</span></span>
+<span><span class="co">#'   one row for each element of `string`. The first column, `start`,</span></span>
+<span><span class="co">#'   gives the position at the start of the match, and the second column, `end`,</span></span>
+<span><span class="co">#'   gives the position of the end.</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#'* `str_locate_all()` returns a list of integer matrices with the same</span></span>
+<span><span class="co">#'   length as `string`/`pattern`. The matrices have columns `start` and `end`</span></span>
+<span><span class="co">#'   as above, and one row for each match.</span></span>
+<span><span class="co">#' @seealso</span></span>
+<span><span class="co">#'   [str_extract()] for a convenient way of extracting matches,</span></span>
+<span><span class="co">#'   [stringi::stri_locate()] for the underlying implementation.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En otros casos, puede ser más fácil descubrir qué resaltar pensando en el conjunto de funciones y en qué se diferencian. Por ejemplo, la mayoría de las funciones de dplyr devuelven un marco de datos, por lo que decir simplemente <code>@returns Un marco de datos</code> no es muy útil. En cambio, intentamos identificar exactamente qué hace que cada función sea diferente. Decidimos que tiene sentido describir cada función en términos de cómo afecta las filas, las columnas, los grupos y los atributos. Por ejemplo, esto describe el valor de retorno de <code><a href="https://dplyr.tidyverse.org/reference/filter.html">dplyr::filter()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @returns</span></span>
+<span><span class="co">#' An object of the same type as `.data`. The output has the following properties:</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' * Rows are a subset of the input, but appear in the same order.</span></span>
+<span><span class="co">#' * Columns are not modified.</span></span>
+<span><span class="co">#' * The number of groups may be reduced (if `.preserve` is not `TRUE`).</span></span>
+<span><span class="co">#' * Data frame attributes are preserved.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>@returns</code> también es un buen lugar para describir cualquier advertencia o error importante que el usuario pueda ver. Por ejemplo, <code><a href="https://readr.tidyverse.org/reference/read_delim.html">readr::read_csv()</a></code> menciona lo que sucede si hay algún problema de análisis:</p>
+<div class="cell">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @returns A [tibble()]. If there are parsing problems, a warning will alert you.</span></span>
+<span><span class="co">#'   You can retrieve the full details by calling [problems()] on your dataset.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Envío a CRAN
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para su envío inicial de CRAN, todas las funciones deben documentar su valor de retorno. Si bien es posible que esto no se analice en presentaciones posteriores, sigue siendo una buena práctica. Actualmente no hay forma de verificar que haya documentado el valor de retorno de cada función (estamos <a href="https://github.com/r-lib/roxygen2/issues/1334">trabajando en ello</a>) y es por eso que Notarás que algunas funciones de tidyverse carecen de documentación de salida. Pero ciertamente aspiramos a proporcionar esta información en todos los ámbitos.</p>
+</div>
+</div>
+</section><section id="sec-man-examples" class="level2" data-number="16.5"><h2 data-number="16.5" class="anchored" data-anchor-id="sec-man-examples">
+<span class="header-section-number">16.5</span> Ejemplos</h2>
+<p>Describir lo que hace una función es genial, pero <em>mostrar</em> cómo funciona es aún mejor. Esa es la función de la etiqueta <code>@examples</code>, que utiliza código R ejecutable para demostrar lo que puede hacer una función. A diferencia de otras partes de la documentación donde nos hemos centrado principalmente en lo que debes escribir, aquí daremos brevemente algunos consejos de contenido y luego nos centraremos principalmente en las mecánicas.</p>
+<p>El principal dilema con los ejemplos es que debes cumplir conjuntamente dos requisitos:</p>
+<ul>
+<li><p>Su código de ejemplo debe ser legible y realista. Algunos ejemplos son la documentación que usted proporciona para el beneficio del usuario, es decir, un ser humano real, que trabaja interactivamente, tratando de realizar su trabajo real con su paquete.</p></li>
+<li><p>Su código de ejemplo debe ejecutarse sin errores y sin efectos secundarios en muchos contextos no interactivos sobre los cuales tiene control limitado o nulo, como cuando CRAN ejecuta <code>R CMD check</code> o cuando el sitio web de su paquete se crea a través de GitHub Actions.</p></li>
+</ul>
+<p>Resulta que a menudo existe tensión entre estos objetivos y necesitará encontrar una manera de hacer que sus ejemplos sean lo más útiles posible para los usuarios, y al mismo tiempo satisfacer los requisitos de CRAN (si ese es su objetivo) u otra infraestructura automatizada.</p>
+<p>La mecánica de los ejemplos es compleja porque nunca deben producir errores y se ejecutan en cuatro situaciones diferentes:</p>
+<ul>
+<li>Utilizando interactivamente la función <code>ejemplo()</code>.</li>
+<li>Durante <code>R CMD check</code> su computadora u otra computadora que controle (por ejemplo, en GitHub Actions).</li>
+<li>Durante <code>R CMD check</code> ejecutada por CRAN.</li>
+<li>Cuando se está creando su sitio web pkgdown, a menudo a través de GitHub Actions o similar.</li>
+</ul>
+<p>Después de discutir qué poner en sus ejemplos, hablaremos sobre cómo mantener sus ejemplos autónomos, cómo mostrar errores si es necesario, manejar dependencias, ejecutar ejemplos condicionalmente y alternativas a la etiqueta <code>@examples</code> para incluir código de ejemplo.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Al preparar scripts <code>.R</code> o informes <code>.Rmd</code>/<code>.qmd</code>, es útil usar Ctrl/Cmd + Enter o el botón <em>Ejecutar</em> para enviar una línea de código R a la consola para su ejecución. Afortunadamente, puedes usar el mismo flujo de trabajo para ejecutar y desarrollar los <code>@examples</code> en tus comentarios de roxygen. Recuerde hacer <code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code> con frecuencia para permanecer sincronizado con el código fuente del paquete.</p>
+</div>
+</div>
+<section id="contenido" class="level3" data-number="16.5.1"><h3 data-number="16.5.1" class="anchored" data-anchor-id="contenido">
+<span class="header-section-number">16.5.1</span> Contenido</h3>
+<p>Utilice ejemplos para mostrar primero el funcionamiento básico de la función y luego resaltar las propiedades particularmente importantes. Por ejemplo, <code><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect()</a></code> comienza mostrando algunas variaciones simples y luego resalta una característica que es fácil pasar por alto: además de pasar un vector de cadenas y un patrón, también puedes pasar una cadena y un vector de patrones.</p>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @examples</span></span>
+<span><span class="co">#' fruit &lt;- c("apple", "banana", "pear", "pineapple")</span></span>
+<span><span class="co">#' str_detect(fruit, "a")</span></span>
+<span><span class="co">#' str_detect(fruit, "^a")</span></span>
+<span><span class="co">#' str_detect(fruit, "a$")</span></span>
+<span><span class="co">#' </span></span>
+<span><span class="co">#' # Also vectorised over pattern</span></span>
+<span><span class="co">#' str_detect("aecfg", letters)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Intente concentrarse en las características más importantes sin meterse en los detalles de cada caso extremo: si hace que los ejemplos sean demasiado largos, al usuario le resultará difícil encontrar la aplicación clave que está buscando. Si te encuentras escribiendo ejemplos muy extensos, puede ser una señal de que deberías escribir una viñeta.</p>
+<p>No existen formas formales de dividir los ejemplos en secciones, pero puede utilizar comentarios de sección que utilicen muchos <code>---</code> para crear un desglose visual. Aquí hay un ejemplo de <code><a href="https://tidyr.tidyverse.org/reference/chop.html">tidyr::chop()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @examples</span></span>
+<span><span class="co">#' # Chop ----------------------------------------------------------------------</span></span>
+<span><span class="co">#' df &lt;- tibble(x = c(1, 1, 1, 2, 2, 3), y = 1:6, z = 6:1)</span></span>
+<span><span class="co">#' # Note that we get one row of output for each unique combination of</span></span>
+<span><span class="co">#' # non-chopped variables</span></span>
+<span><span class="co">#' df %&gt;% chop(c(y, z))</span></span>
+<span><span class="co">#' # cf nest</span></span>
+<span><span class="co">#' df %&gt;% nest(data = c(y, z))</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' # Unchop --------------------------------------------------------------------</span></span>
+<span><span class="co">#' df &lt;- tibble(x = 1:4, y = list(integer(), 1L, 1:2, 1:3))</span></span>
+<span><span class="co">#' df %&gt;% unchop(y)</span></span>
+<span><span class="co">#' df %&gt;% unchop(y, keep_empty = TRUE)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esfuércese por mantener los ejemplos centrados en la función específica que está documentando. Si puede expresar su punto con un conjunto de datos integrado familiar, como <code>mtcars</code>, hágalo. Si necesita realizar muchas configuraciones para crear un conjunto de datos u objeto para usar en el ejemplo, puede ser una señal de que necesita crear un conjunto de datos de paquete o incluso una función auxiliar. Consulte <a href="data.html"><span>Capítulo&nbsp;7</span></a>, <a href="data.html#sec-data-example-path-helper"><span>Sección&nbsp;7.3.2</span></a> y <a href="testing-advanced.html#sec-testing-advanced-fixture-helper"><span>Sección&nbsp;15.1.1</span></a> para obtener ideas. Facilitar la escritura (y lectura) de ejemplos mejorará enormemente la calidad de su documentación.</p>
+<p>Además, recuerde que los ejemplos no son pruebas. Los ejemplos deben centrarse en el uso auténtico y típico para el que ha diseñado y que desea fomentar. El conjunto de pruebas es el lugar más apropiado para ejercitar exhaustivamente todos los argumentos y explorar casos extremos extraños y patológicos.</p>
+</section><section id="deja-el-mundo-como-lo-encontraste" class="level3" data-number="16.5.2"><h3 data-number="16.5.2" class="anchored" data-anchor-id="deja-el-mundo-como-lo-encontraste">
+<span class="header-section-number">16.5.2</span> Deja el mundo como lo encontraste</h3>
+<p>Sus ejemplos deben ser autónomos. Por ejemplo, esto significa:</p>
+<ul>
+<li>Si modifica <code><a href="https://rdrr.io/r/base/options.html">options()</a></code>, restablezcalas al final del ejemplo.</li>
+<li>Si crea un archivo, créelo en algún lugar de <code><a href="https://rdrr.io/r/base/tempfile.html">tempdir()</a></code> y asegúrese de eliminarlo al final del ejemplo.</li>
+<li>No cambie el directorio de trabajo.</li>
+<li>No escribir en el portapapeles (a menos que un usuario esté presente para dar algún tipo de consentimiento).</li>
+</ul>
+<p>Esto se superpone mucho con nuestras recomendaciones para pruebas (consulte la sección <a href="testing-design.html#sec-testing-design-self-contained"><span>Sección&nbsp;14.2.2</span></a>) e incluso con las funciones de R en su paquete (consulte la sección <a href="code.html#sec-code-r-landscape"><span>Sección&nbsp;6.5</span></a>). Sin embargo, debido a la forma en que se ejecutan los ejemplos durante la “verificación R CMD”, las herramientas disponibles para hacer que los ejemplos sean autónomos son mucho más limitadas. Desafortunadamente, no puedes usar el paquete withr o incluso <code><a href="https://rdrr.io/r/base/on.exit.html">on.exit()</a></code> para programar una limpieza, como restaurar opciones o eliminar un archivo. En su lugar, deberás hacerlo a mano. Si puede evitar hacer algo que luego debe deshacerse, esa es la mejor manera de hacerlo y esto es especialmente cierto en el caso de los ejemplos.</p>
+<p>Estas restricciones a menudo están en tensión con una buena documentación, si estás tratando de documentar una función que de alguna manera cambia el estado del mundo. Por ejemplo, tienes que “mostrar tu trabajo”, es decir, todo tu código, lo que significa que tus usuarios verán toda la configuración y el desmontaje, incluso si no es típico de un uso auténtico. Si le resulta difícil seguir las reglas, esta podría ser otra señal para cambiar a una viñeta (consulte <a href="vignettes.html"><span>Capítulo&nbsp;17</span></a>).</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Envío a CRAN
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Muchas de estas restricciones también se mencionan en la [política del repositorio de CRAN] (https://cran.r-project.org/web/packages/policies.html), que debe cumplir al realizar envíos a CRAN. Utilice buscar en la página para localizar “malicioso o antisocial” y ver los detalles.</p>
+</div>
+</div>
+<p>Además, desea que sus ejemplos envíen al usuario a una caminata corta, no a una caminata larga. Los ejemplos deben ejecutarse relativamente rápido para que los usuarios puedan ver rápidamente los resultados, no lleva mucho tiempo crear su sitio web, las verificaciones automatizadas se realizan rápidamente y no consume recursos informáticos cuando se envían a CRAN.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Envío a CRAN
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Todos los ejemplos deben ejecutarse en menos de 10 minutos.</p>
+</div>
+</div>
+</section><section id="sec-man-examples-errors" class="level3" data-number="16.5.3"><h3 data-number="16.5.3" class="anchored" data-anchor-id="sec-man-examples-errors">
+<span class="header-section-number">16.5.3</span> Errores</h3>
+<p>Sus ejemplos no pueden arrojar ningún error, así que no incluya código defectuoso que pueda fallar por razones fuera de su control. En particular, es mejor evitar el acceso a sitios web, porque la <code>R CMD check</code> fallará cada vez que el sitio web no funcione.</p>
+<p>¿Qué puede hacer si desea incluir código que cause un error con fines didácticos? Hay dos opciones básicas:</p>
+<ul>
+<li>
+<p>Puedes ajustar el código en <code><a href="https://rdrr.io/r/base/try.html">try()</a></code> para que se muestre el error, pero no detenga la ejecución de los ejemplos. Por ejemplo, <code><a href="https://dplyr.tidyverse.org/reference/bind_cols.html">dplyr::bind_cols()</a></code> usa <code><a href="https://rdrr.io/r/base/try.html">try()</a></code> para mostrarle lo que sucede si intenta vincular dos marcos de datos con diferentes números de filas:</p>
+<div class="cell">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @examples</span></span>
+<span><span class="co">#' ...</span></span>
+<span><span class="co">#' # Row sizes must be compatible when column-binding</span></span>
+<span><span class="co">#' try(bind_cols(tibble(x = 1:3), tibble(y = 1:2)))</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</li>
+<li>
+<p>Puedes ajustar el código en <code>\dontrun{}</code><a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>, de modo que nunca se ejecute mediante <code><a href="https://rdrr.io/r/utils/example.html">example()</a></code>. El ejemplo anterior se vería así si usara <code>\dontrun{}</code> en lugar de <code><a href="https://rdrr.io/r/base/try.html">try()</a></code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' # Row sizes must be compatible when column-binding</span></span>
+<span><span class="co">#' \dontrun{</span></span>
+<span><span class="co">#' bind_cols(tibble(x = 1:3), tibble(y = 1:2)))</span></span>
+<span><span class="co">#' }</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</li>
+</ul>
+<p>Generalmente recomendamos usar <code><a href="https://rdrr.io/r/base/try.html">try()</a></code> para que el lector pueda ver un ejemplo del error en acción.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Envío a CRAN
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para el envío CRAN inicial de su paquete, todas las funciones deben tener al menos un ejemplo y el código de ejemplo no puede estar incluido dentro de <code>\dontrun{}</code>. Si el código solo se puede ejecutar bajo condiciones específicas, utilice las técnicas siguientes para expresar esas condiciones previas.</p>
+</div>
+</div>
+</section><section id="sec-man-examples-dependencies-conditional-execution" class="level3" data-number="16.5.4"><h3 data-number="16.5.4" class="anchored" data-anchor-id="sec-man-examples-dependencies-conditional-execution">
+<span class="header-section-number">16.5.4</span> Dependencias y ejecución condicional</h3>
+<p>Una fuente adicional de errores en los ejemplos es el uso de dependencias externas: en sus ejemplos sólo puede usar paquetes de los que su paquete depende formalmente (es decir, que aparecen en <code>Imports</code> o <code>Sugests</code>). Además, el código de ejemplo se ejecuta en el entorno del usuario, no en el entorno del paquete, por lo que tendrás que adjuntar explícitamente la dependencia con <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> o hacer referencia a cada función con <code>::</code>. Por ejemplo, dbplyr es un paquete de extensión dplyr, por lo que todos sus ejemplos comienzan con <code><a href="https://dplyr.tidyverse.org">library(dplyr)</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @examples</span></span>
+<span><span class="co">#' library(dplyr)</span></span>
+<span><span class="co">#' df &lt;- data.frame(x = 1, y = 2)</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' df_sqlite &lt;- tbl_lazy(df, con = simulate_sqlite())</span></span>
+<span><span class="co">#' df_sqlite %&gt;% summarise(x = sd(x, na.rm = TRUE)) %&gt;% show_query()</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En el pasado, recomendábamos usar únicamente código de paquetes sugeridos dentro de un bloque como este:</p>
+<div class="cell">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @examples</span></span>
+<span><span class="co">#' if (requireNamespace("suggestedpackage", quietly = TRUE)) { </span></span>
+<span><span class="co">#'   # some example code</span></span>
+<span><span class="co">#' }</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Ya no creemos que ese enfoque sea una buena idea porque:</p>
+<ul>
+<li>Nuestra política es esperar que los paquetes sugeridos se instalen al ejecutar <code>R CMD check</code><a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a> y esto informa lo que hacemos en ejemplos, pruebas y viñetas.</li>
+<li>El coste de poner código de ejemplo dentro de <code>{… }</code> es alto: ya no se pueden ver resultados intermedios, como cuando los ejemplos se muestran en el sitio web del paquete. El coste de no instalar un paquete es bajo: los usuarios normalmente pueden reconocer el error asociado y resolverlo ellos mismos, es decir, instalando el paquete que falta.</li>
+</ul>
+<p>En otros casos, su código de ejemplo puede depender de algo más que un paquete. Por ejemplo, si sus ejemplos se refieren a una API web, probablemente solo desee ejecutarlos para un usuario autenticado y nunca desee que dicho código se ejecute en CRAN. En este caso, realmente necesitas una ejecución condicional. La solución básica es expresar esto explícitamente:</p>
+<div class="cell">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @examples</span></span>
+<span><span class="co">#' if (some_condition()) {</span></span>
+<span><span class="co">#'   # some example code</span></span>
+<span><span class="co">#' }</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>La condición podría ser bastante general, como <code><a href="https://rdrr.io/r/base/interactive.html">interactive()</a></code>, o muy específica, como una función de predicado personalizada proporcionada por su paquete. Pero este uso de <code>if()</code> todavía sufre el inconveniente resaltado anteriormente, donde los ejemplos renderizados no muestran claramente lo que sucede dentro del bloque <code>{... }</code>.</p>
+<p>La etiqueta <code>@examplesIf</code> es una excelente alternativa a <code>@examples</code> en este caso:</p>
+<div class="cell">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @examplesIf some_condition()</span></span>
+<span><span class="co">#' some_other_function()</span></span>
+<span><span class="co">#' some_more_functions()</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esto se parece casi al fragmento de arriba, pero tiene varias ventajas:</p>
+<ul>
+<li><p>Los usuarios en realidad no verán la maquinaria <code>if() {... }</code> cuando lean su documentación desde R o en un sitio web de pkgdown. Los usuarios sólo ven código realista.</p></li>
+<li><p>El código de ejemplo se muestra completamente en pkgdown.</p></li>
+<li><p>El código de ejemplo se ejecuta cuando debería y no se ejecuta cuando no debería.</p></li>
+<li><p>Esto no va en contra de la prohibición de CRAN de poner todo el código de ejemplo dentro de <code>\dontrun{}</code>.</p></li>
+</ul>
+<p>Por ejemplo, <a href="https://googledrive.tidyverse.org/reference/index.html">googledrive</a> usa <code>@examplesIf</code> en casi todas las funciones, protegido por <code><a href="https://googledrive.tidyverse.org/reference/drive_has_token.html">googledrive::drive_has_token()</a></code>. Así es como comienzan los ejemplos de <code><a href="https://googledrive.tidyverse.org/reference/drive_publish.html">googledrive::drive_publish()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @examplesIf drive_has_token()</span></span>
+<span><span class="co">#' # Crea un archivo para publicar</span></span>
+<span><span class="co">#' file &lt;- drive_example_remote("chicken_sheet") %&gt;%</span></span>
+<span><span class="co">#'   drive_cp()</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' # Publica el archivo</span></span>
+<span><span class="co">#' file &lt;- drive_publish(file)</span></span>
+<span><span class="co">#' ...</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>El código de ejemplo no se ejecuta en CRAN porque no hay ningún token. Se ejecuta cuando se crea el sitio pkgdown, porque podemos configurar un token de forma segura. Y, si un usuario normal ejecuta este código, se le pedirá que inicie sesión en Google, si aún no lo ha hecho.</p>
+</section><section id="mezclar-ejemplos-y-texto" class="level3" data-number="16.5.5"><h3 data-number="16.5.5" class="anchored" data-anchor-id="mezclar-ejemplos-y-texto">
+<span class="header-section-number">16.5.5</span> Mezclar ejemplos y texto</h3>
+<p>Una alternativa a los ejemplos es usar bloques de código R Markdown en otras partes de tus comentarios de roxygen, ya sea <code>```R</code> si solo quieres mostrar algo de código, o <code>```{r}</code> si desea que se ejecute el código. Estas pueden ser técnicas efectivas, pero cada una tiene sus desventajas:</p>
+<ul>
+<li>El código en los bloques <code>```R</code> nunca se ejecuta; esto significa que es fácil introducir accidentalmente errores de sintaxis u olvidarse de actualizarlo cuando cambia el paquete.</li>
+<li>El código en los bloques <code>```{r}</code> se ejecuta cada vez que documentas el paquete. Esto tiene la gran ventaja de incluir el resultado en la documentación (a diferencia de los ejemplos), pero el código no puede tardar mucho en ejecutarse o su flujo de trabajo de documentación iterativo se volverá bastante doloroso.</li>
+</ul></section></section><section id="reutilizar-documentación" class="level2" data-number="16.6"><h2 data-number="16.6" class="anchored" data-anchor-id="reutilizar-documentación">
+<span class="header-section-number">16.6</span> Reutilizar documentación</h2>
+<p>roxygen2 proporciona una serie de funciones que le permiten reutilizar la documentación en todos los temas. Están documentados en <code><a href="https://roxygen2.r-lib.org/articles/reuse.html">vignette("reuse", package = "roxygen2")</a></code>, por lo que aquí nos centraremos en los tres más importantes:</p>
+<ul>
+<li>Documentar múltiples funciones en un solo tema.</li>
+<li>Heredar documentación de otro tema.</li>
+<li>Usar documentos secundarios para compartir prosa entre temas, o para compartir entre temas de documentación y viñetas.</li>
+</ul>
+<section id="sec-man-multiple-functions" class="level3" data-number="16.6.1"><h3 data-number="16.6.1" class="anchored" data-anchor-id="sec-man-multiple-functions">
+<span class="header-section-number">16.6.1</span> Múltiples funciones en un tema</h3>
+<p>De forma predeterminada, cada función tiene su propio tema de documentación, pero si dos funciones están muy relacionadas, puede combinar la documentación de varias funciones en un solo tema. Por ejemplo, tomemos <code><a href="https://stringr.tidyverse.org/reference/str_length.html">str_length()</a></code> y <code><a href="https://stringr.tidyverse.org/reference/str_length.html">str_width()</a></code>, que proporcionan dos formas diferentes de calcular el tamaño de una cadena. Como puede ver en la descripción, ambas funciones están documentadas juntas, porque esto hace que sea más fácil ver en qué se diferencian:</p>
+<div class="cell">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' The length/width of a string</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @description</span></span>
+<span><span class="co">#' `str_length()` returns the number of codepoints in a string. These are</span></span>
+<span><span class="co">#' the individual elements (which are often, but not always letters) that</span></span>
+<span><span class="co">#' can be extracted with [str_sub()].</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' `str_width()` returns how much space the string will occupy when printed</span></span>
+<span><span class="co">#' in a fixed width font (i.e. when printed in the console).</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' ...</span></span>
+<span><span class="va">str_length</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">string</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Para fusionar los dos temas, <code><a href="https://stringr.tidyverse.org/reference/str_length.html">str_width()</a></code> usa <code>@rdname str_length</code> para agregar su documentación a un tema existente:</p>
+<div class="cell">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @rdname str_length</span></span>
+<span><span class="va">str_width</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">string</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esta técnica funciona mejor para funciones que tienen mucho en común, es decir, valores de retorno y ejemplos similares, además de argumentos similares.</p>
+</section><section id="heredar-documentación" class="level3" data-number="16.6.2"><h3 data-number="16.6.2" class="anchored" data-anchor-id="heredar-documentación">
+<span class="header-section-number">16.6.2</span> Heredar documentación</h3>
+<p>En otros casos, las funciones de un paquete pueden compartir muchos comportamientos relacionados, pero no están lo suficientemente conectadas como para que desee documentarlas juntas. Hemos discutido <code>@inheritParams</code> arriba, pero hay tres variaciones que le permiten heredar otras cosas:</p>
+<ul>
+<li><p><code>@inherit source_function</code> heredará todos los componentes compatibles de <code>source_function()</code>.</p></li>
+<li><p><code>@inheritSection source_function Título de la sección</code> heredará la sección única con el título “Título de la sección” de <code>source_function()</code>.</p></li>
+<li><p><code>@inheritDotParams</code> genera automáticamente documentación de parámetros para <code>...</code> para el caso común en el que pasa <code>...</code> a otra función.</p></li>
+</ul>
+<p>Ver <a href="https://roxygen2.r-lib.org/articles/reuse.html#inheriting-documentation" class="uri">https://roxygen2.r-lib.org/articles/reuse.html#inheriting-documentation</a> para más detalles.</p>
+</section><section id="documentos-secundarios" class="level3" data-number="16.6.3"><h3 data-number="16.6.3" class="anchored" data-anchor-id="documentos-secundarios">
+<span class="header-section-number">16.6.3</span> Documentos secundarios</h3>
+<p>Finalmente, puede reutilizar el mismo documento <code>.Rmd</code> o <code>.md</code> en la documentación de la función, <code>README.Rmd</code>, y viñetas utilizando documentos secundarios de R Markdown. La sintaxis se ve así:</p>
+<div class="cell">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' ```{r child = "man/rmd/filename.Rmd"}</span></span>
+<span><span class="co">#' ```</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esta es una característica que usamos con moderación en tidyverse, pero un lugar donde sí la usamos es en dplyr, porque varias funciones usan la misma sintaxis que <code>select()</code> y queremos proporcionar toda la información en un solo lugar:</p>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' # Descripción general de las funciones de selección</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' ```{r, child = "man/rmd/overview.Rmd"}</span></span>
+<span><span class="co">#' ```</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Luego <code>man/rmd/overview.Rmd</code> contiene la rebaja repetida:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode md code-with-copy"><code class="sourceCode markdown"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>Las selecciones de Tidyverse implementan un dialecto de R donde los operadores hacen</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>Es fácil seleccionar variables:</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`:`</span> para seleccionar un rango de variables consecutivas.</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`!`</span> para tomar el complemento de un conjunto de variables.</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`&amp;`</span> y <span class="in">`|`</span> para seleccionar la intersección o la unión de dos</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>  conjuntos de variables.</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="in">`c()`</span> para combinar selecciones.</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>...</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Si el archivo Rmd contiene enlaces roxygen (estilo Markdown) a otros temas de ayuda, entonces se necesita algo de cuidado. Ver <a href="https://roxygen2.r-lib.org/dev/articles/reuse.html#child-documents" class="uri">https://roxygen2.r-lib.org/dev/articles/reuse.html#child-documents</a> para detalles.</p>
+</section></section><section id="sec-man-package-doc" class="level2" data-number="16.7"><h2 data-number="16.7" class="anchored" data-anchor-id="sec-man-package-doc">
+<span class="header-section-number">16.7</span> Tema de ayuda para el paquete</h2>
+<p>Este capítulo se centra en la documentación de funciones, pero recuerde que puede documentar otras cosas, como se detalla en <code><a href="https://roxygen2.r-lib.org/articles/rd-other.html">vignette("rd-other", package = "roxygen2")</a></code>. En particular, puede crear un tema de ayuda para el paquete en sí documentando el centinela especial <code>"_PACKAGE"</code>. El archivo <code>.Rd</code> resultante extrae automáticamente información analizada de la <code>DESCRIPTION</code>, incluido el título, la descripción, la lista de autores y las URL útiles. Este tema de ayuda aparece junto con todos los demás temas y también se puede acceder a él con <code>package?pkgname</code>, por ejemplo, <code>package?usethis</code>, o incluso simplemente con <code>?usethis</code>.</p>
+<p>Recomendamos llamar a <code><a href="https://usethis.r-lib.org/reference/use_package_doc.html">usethis::use_package_doc()</a></code> para configurar esta documentación a nivel de paquete en un archivo ficticio <code>R/{pkgname}-package.R</code>, cuyo contenido se verá así:</p>
+<div class="cell">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @keywords internal </span></span>
+<span><span class="st">"_PACKAGE"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>El archivo <code>R/{pkgname}-package.R</code> es la razón principal por la que queríamos mencionar aquí <code>use_package_doc()</code> y la documentación a nivel de paquete. Resulta que hay algunas otras tareas de limpieza de todo el paquete para las cuales este archivo es un hogar muy natural. Por ejemplo, es una ubicación central sensata para directivas de importación, es decir, para importar funciones individuales desde sus dependencias o incluso espacios de nombres completos. En <a href="dependencies-in-practice.html#sec-dependencies-in-imports-r-code"><span>Sección&nbsp;11.4.1</span></a>, recomendamos importar funciones específicas a través de <code><a href="https://usethis.r-lib.org/reference/use_import_from.html">usethis::use_import_from()</a></code> y esta función está diseñada para escribir las etiquetas roxygen asociadas en el paquete <code>R/{pkgname}. Archivo R</code> creado por <code>use_package_doc()</code>. Entonces, poniéndolo todo junto, este es un ejemplo mínimo de cómo podría verse el archivo <code>R/{pkgname}-package.R</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @keywords internal </span></span>
+<span><span class="st">"_PACKAGE"</span></span>
+<span></span>
+<span><span class="co"># El siguiente bloque es utilizado por usethis para administrar automáticamente</span></span>
+<span><span class="co"># etiquetas de espacio de nombres de roxygen. ¡Modifique con cuidado!</span></span>
+<span><span class="co">## usethis namespace: start</span></span>
+<span><span class="co">#' @importFrom glue glue_collapse</span></span>
+<span><span class="co">## usethis namespace: end</span></span>
+<span><span class="cn">NULL</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>El nombre “roxygen” es un guiño al generador de documentación Doxygen, que inspiró el desarrollo de un paquete R llamado roxygen. Luego, ese concepto original se reinició como roxygen2, similar a ggplot2.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>El archivo NAMESPACE también se genera a partir de estos comentarios de roxygen. O, mejor dicho, <em>puede</em> serlo y ese es el flujo de trabajo preferido de devtools (<a href="dependencies-in-practice.html#sec-dependencies-NAMESPACE-workflow"><span>Sección&nbsp;11.3</span></a>).<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>La ejecución de <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code> también afecta a otro campo en <code>DESCRIPTION</code>, que se ve así: <code>RoxygenNote: 7.2.1</code>. Esto registra qué versión de roxygen2 se usó por última vez en un paquete, lo que facilita que devtools (y sus paquetes subyacentes) hagan una suposición inteligente sobre cuándo volver a <code>document()</code> un paquete y cuándo dejarlo en paz. En un entorno colaborativo, esto también reduce los cambios molestos en los archivos <code>.Rd</code>, al hacer que la versión relevante de roxygen2 sea muy visible.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Esto es parte de la explicación prometida en <a href="description.html#sec-description-custom-fields"><span>Sección&nbsp;9.8</span></a>, donde también aclaramos que, con nuestras convenciones actuales, este campo realmente debería llamarse <code>Config/Needs/roxygen</code>, en su lugar. de <code>Roxigen</code>. Le recomendamos encarecidamente que utilice Markdown en todos los paquetes nuevos y que migre los paquetes más antiguos pero que se mantienen activamente a la sintaxis Markdown. En este caso, puede llamar a <code><a href="https://usethis.r-lib.org/reference/use_roxygen_md.html">usethis::use_roxygen_md()</a></code> para actualizar <code>DESCRIPTION</code> y recibir un recordatorio sobre el paquete roxygen2md, que puede ayudar con la conversión.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>O el final del bloque, si es la última etiqueta.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>el nombre del archivo se deriva automáticamente del objeto que estás documentando.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Estas llamadas incluyen una especificación explícita de <code>package = "algúnpaquete"</code>, ya que no se puede inferir del contexto, es decir, el contexto es un libro en cuarto, no la documentación del paquete.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Como todos los ejemplos, es posible que estos hayan cambiado un poco desde que escribimos este libro, porque nos esforzamos constantemente por hacerlo mejor. Podrías comparar lo que hay en el libro con lo que usamos ahora y considerar si crees que es una mejora.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>En el código anterior, es posible que veas el uso de <code>@section title:</code> que se usaba para crear secciones antes de que roxygen2 tuviera soporte completo para markdown. Si los ha usado en el pasado, ahora puede convertirlos en títulos de markdown.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>Por razones históricas, también puedes usar <code>@return</code>, pero ahora preferimos <code>@returns</code> porque se lee de forma más natural.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>Volveremos sobre cómo documentar múltiples funciones en un tema en <a href="#sec-man-multiple-functions"><span>Sección&nbsp;16.6.1</span></a>.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>Solías poder usar <code>\donttest{}</code> para un propósito similar, pero ya no lo recomendamos porque CRAN establece un indicador especial que hace que el código se ejecute de todos modos.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>Esto es ciertamente cierto para CRAN y es cierto en la mayoría de los otros escenarios de verificación automatizada, como nuestros flujos de trabajo de GitHub Actions.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./testing-advanced.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Técnicas de prueba avanzadas</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./vignettes.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+</body></html>

@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - 22&nbsp; Liberando a CRAN</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./lifecycle.html" rel="prev">
+<link href="./images/cover-2e-small.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software-development-practices.html">Mantenimiento y distribución</a></li><li class="breadcrumb-item"><a href="./release.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">El paquete en el interior de su código</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Componentes de un paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Código R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Otros componentes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Metadatos del paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Probar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Diseñar su conjunto de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Técnicas de prueba avanzadas</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentación</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Otros archivos markdown</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Sitio web</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Mantenimiento y distribución</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Prácticas de desarrollo de software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Ciclo de vida</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li><a href="#decidir-el-tipo-de-lanzamiento" id="toc-decidir-el-tipo-de-lanzamiento" class="nav-link active" data-scroll-target="#decidir-el-tipo-de-lanzamiento"><span class="header-section-number">22.1</span> Decidir el tipo de lanzamiento</a></li>
+  <li>
+<a href="#sec-release-initial" id="toc-sec-release-initial" class="nav-link" data-scroll-target="#sec-release-initial"><span class="header-section-number">22.2</span> Lanzamiento inicial de CRAN: consideraciones especiales</a>
+  <ul class="collapse">
+<li><a href="#pol%C3%ADticas-de-cran" id="toc-políticas-de-cran" class="nav-link" data-scroll-target="#pol%C3%ADticas-de-cran"><span class="header-section-number">22.2.1</span> Políticas de CRAN</a></li>
+  </ul>
+</li>
+  <li><a href="#mantenerse-al-d%C3%ADa-con-el-cambio" id="toc-mantenerse-al-día-con-el-cambio" class="nav-link" data-scroll-target="#mantenerse-al-d%C3%ADa-con-el-cambio"><span class="header-section-number">22.3</span> Mantenerse al día con el cambio</a></li>
+  <li>
+<a href="#doble-r-cmd-check" id="toc-doble-r-cmd-check" class="nav-link" data-scroll-target="#doble-r-cmd-check"><span class="header-section-number">22.4</span> Doble <code>R CMD check</code></a>
+  <ul class="collapse">
+<li><a href="#sec-cran-flavors-services" id="toc-sec-cran-flavors-services" class="nav-link" data-scroll-target="#sec-cran-flavors-services"><span class="header-section-number">22.4.1</span> CRAN consulta sabores y servicios relacionados</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-release-revdep-checks" id="toc-sec-release-revdep-checks" class="nav-link" data-scroll-target="#sec-release-revdep-checks"><span class="header-section-number">22.5</span> Comprobaciones de dependencia inversa</a>
+  <ul class="collapse">
+<li><a href="#revdeps-y-cambios-importantes" id="toc-revdeps-y-cambios-importantes" class="nav-link" data-scroll-target="#revdeps-y-cambios-importantes"><span class="header-section-number">22.5.1</span> Revdeps y cambios importantes</a></li>
+  </ul>
+</li>
+  <li><a href="#sec-release-cran-comments" id="toc-sec-release-cran-comments" class="nav-link" data-scroll-target="#sec-release-cran-comments"><span class="header-section-number">22.6</span> Actualizar comentarios para CRAN</a></li>
+  <li><a href="#sec-release-process" id="toc-sec-release-process" class="nav-link" data-scroll-target="#sec-release-process"><span class="header-section-number">22.7</span> El proceso de envío</a></li>
+  <li><a href="#modos-de-fallo" id="toc-modos-de-fallo" class="nav-link" data-scroll-target="#modos-de-fallo"><span class="header-section-number">22.8</span> Modos de fallo</a></li>
+  <li><a href="#sec-release-post-acceptance" id="toc-sec-release-post-acceptance" class="nav-link" data-scroll-target="#sec-release-post-acceptance"><span class="header-section-number">22.9</span> Celebrando el éxito</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title"><span id="sec-release" class="quarto-section-identifier"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><p>Hemos estado señalando inquietudes específicas de CRAN a lo largo del libro, en nuestro recorrido por las distintas partes de un paquete, como pruebas y ejemplos. En este capítulo, nos centramos en el proceso real de publicar un paquete en CRAN, por primera vez o como una actualización.</p>
+<p>La expresión más concreta de nuestro proceso de lanzamiento es la lista de verificación producida por <code><a href="https://usethis.r-lib.org/reference/use_release_issue.html">usethis::use_release_issue()</a></code>, que abre una edición de GitHub que contiene una lista de tareas pendientes. Esta lista de verificación evoluciona constantemente y responde a algunas características del paquete, así que no se sorprenda si ve algo un poco diferente de lo que mostramos aquí. Las preocupaciones principales son bastante eternas y usaremos esta lista de verificación para ayudar a estructurar este capítulo.</p>
+<p>Pero primero: tenga en cuenta que se arrepentirá profundamente si aborda la preparación de su paquete para CRAN como una actividad separada que realiza <em>después</em> de completar el desarrollo planificado para una versión. Este consejo es extremadamente relevante aquí:</p>
+<blockquote class="blockquote">
+<p>Si te duele, hazlo con más frecuencia. – Martin Fowler<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+</blockquote>
+<p>En el contexto actual, interprete que esto significa que debe ejecutar <code>R CMD check</code> con regularidad, preferiblemente en múltiples plataformas, y abordar rápidamente cualquier problema que surja. Recuerde que nuestra forma preferida de hacer esto es a través de <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code> (<a href="workflow101.html#sec-workflow101-r-cmd-check"><span>Sección&nbsp;4.5</span></a>).</p>
+<p>¿Por qué querrías hacer algo que te resulta doloroso con más frecuencia? Porque conduce a menos dolor en general. Primero, resolver 5 problemas es más de 5 veces más difícil que resolver 1. Es desmoralizador verse bloqueado por varios errores y la posibilidad de que se produzcan interacciones desagradables entre ellos hace que cada uno de ellos sea más difícil de aislar y corregir. En segundo lugar, la retroalimentación rápida tiende a reducir el número total de errores. Una vez que aprenda alguna lección de la manera más difícil, es poco probable que cometa el mismo error docenas de veces en otras partes de su paquete. ¡Finalmente, la práctica hace la perfección! Con una mayor exposición, mejorará en la interpretación y respuesta a los problemas que surjan en <code>R CMD check</code>.</p>
+<p>Otra reacción natural es: ¿por qué no elimino este dolor por completo al no publicar mi paquete en CRAN? Para ciertos tipos de paquetes, esta puede ser la decisión correcta. Un ejemplo de ello es un paquete personal de funciones auxiliares. Otro ejemplo es un paquete que admite una organización específica, siempre que también tenga un método razonable para distribuir ese paquete a sus usuarios. La razón principal para tener su paquete en CRAN es darle mayor alcance. La gran mayoría de los usuarios de R sólo instalan paquetes de CRAN, ya sea por política personal o de la empresa o simplemente por falta de conocimiento sobre las alternativas. CRAN proporciona visibilidad, facilidad de instalación y un sello de autenticidad. El proceso de envío de CRAN puede ser frustrante, pero tiene muchas ventajas y este capítulo pretende hacerlo lo más sencillo posible.</p>
+<p>El proceso de liberación que describimos aquí se utiliza mejor como una lista de verificación previa al vuelo, que complementa sus esfuerzos continuos para mantener su paquete pasando la <code>R CMD check</code> de manera limpia y compatible con CRAN. Hay dos grandes descubrimientos que a menudo surgen con el proceso de lanzamiento de CRAN:</p>
+<ul>
+<li><p>Si ha estado haciendo la vista gorda ante las ADVERTENCIAS y ERRORES de <code>R CMD check</code>, realmente tiene que estudiarlos y eliminarlos ahora. Incluso deberías eliminar tantas NOTAS como sea posible.</p></li>
+<li><p>Incluso si su paquete pasa limpiamente la <code>R CMD check</code> en su máquina, puede resultar revelador cuando abandona este entorno acogedor y familiar y, en cambio, es verificado en un servidor remoto, configurado por otra persona, ejecutando un sistema completamente diferente. Sistema operativo. Por eso es tan valioso utilizar un servicio de integración continua como GitHub Actions (<a href="software-development-practices.html#sec-sw-dev-practices-gha"><span>Sección&nbsp;20.2.1</span></a>) para comprobar periódicamente su paquete en macOS, Windows y Linux.</p></li>
+</ul>
+<p>Estos son los pasos principales en el proceso de liberación:</p>
+<ol type="1">
+<li>Determine el tipo de versión, que dicta el número de versión.</li>
+<li>Si el paquete ya está en CRAN: realice la debida diligencia sobre los resultados de CRAN existentes. Si se trata de una primera versión: confirme que cumple con las políticas de CRAN.</li>
+<li>Actualice los archivos de documentación, como <code>README.md</code> y <code>NEWS.md</code>.</li>
+<li>Doble <code>check()</code> para que su paquete se transmita limpiamente en múltiples sistemas operativos y en la versión publicada y en desarrollo de R.</li>
+<li>Realice comprobaciones de dependencia inversa, si otros paquetes dependen del suyo.</li>
+<li>Envíe el paquete a CRAN y espere la aceptación.</li>
+<li>Cree una versión de GitHub y prepárese para la próxima versión incrementando el número de versión.</li>
+<li>Publicitar la nueva versión.</li>
+</ol>
+<section id="decidir-el-tipo-de-lanzamiento" class="level2" data-number="22.1"><h2 data-number="22.1" class="anchored" data-anchor-id="decidir-el-tipo-de-lanzamiento">
+<span class="header-section-number">22.1</span> Decidir el tipo de lanzamiento</h2>
+<p>Cuando llame a <code>use_release_issue()</code>, se le preguntará qué tipo de lanzamiento desea realizar.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">use_release_issue</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>✔ Setting active project to <span class="st">'/Users/jenny/rrr/usethis'</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Current version is <span class="dv">2</span>.<span class="dv">1</span>.<span class="dv">6</span>.<span class="fl">9000.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>What should the release version be? (<span class="dv">0</span> to exit) </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span> major <span class="sc">-</span><span class="ot">-&gt;</span> <span class="dv">3</span>.<span class="fl">0.0</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span> minor <span class="sc">-</span><span class="ot">-&gt;</span> <span class="dv">2</span>.<span class="fl">2.0</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span><span class="sc">:</span> patch <span class="sc">-</span><span class="ot">-&gt;</span> <span class="dv">2</span>.<span class="fl">1.7</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>Selection<span class="sc">:</span> </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>La pregunta inmediata parece bastante mecánica: ¿qué componente del número de versión desea incrementar? Pero recuerde que analizamos las diferencias sustanciales en los tipos de lanzamiento en <a href="lifecycle.html#sec-lifecycle-release-type"><span>Sección&nbsp;21.5</span></a>.</p>
+<p>En nuestro flujo de trabajo, este número de versión planificada se registra en la edición de GitHub que contiene la lista de verificación de lanzamiento, pero en realidad no incrementamos la versión en <code>DESCRIPTION</code> hasta más adelante en el proceso (<a href="#sec-release-process"><span>Sección&nbsp;22.7</span></a>). Sin embargo, es importante declarar el tipo de versión por adelantado, porque el proceso (y, por lo tanto, la lista de verificación) se ve diferente, por ejemplo, para una versión de parche versus una versión principal.</p>
+</section><section id="sec-release-initial" class="level2" data-number="22.2"><h2 data-number="22.2" class="anchored" data-anchor-id="sec-release-initial">
+<span class="header-section-number">22.2</span> Lanzamiento inicial de CRAN: consideraciones especiales</h2>
+<p>Cada nuevo paquete recibe un mayor nivel de escrutinio por parte de CRAN. Además de las habituales comprobaciones automatizadas, los nuevos paquetes también son revisados por un humano, lo que inevitablemente introduce cierta subjetividad y aleatoriedad. Hay muchos paquetes en CRAN que no serían aceptados en su forma actual si se presentaran hoy como un paquete completamente nuevo. Esto no pretende desanimarte. Pero debe tener en cuenta que, sólo porque vea algo de práctica en un paquete establecido (o incluso en base R), no significa que pueda hacer lo mismo en su nuevo paquete.</p>
+<p>Afortunadamente, la comunidad mantiene listas de “errores” comunes para los nuevos paquetes. Si su paquete aún no está en CRAN, la lista de verificación comienza con una sección especial que refleja esta sabiduría colectiva reciente. Prestar atención a estos elementos de la lista de verificación ha mejorado drásticamente la tasa de éxito de nuestro equipo en los envíos iniciales.</p>
+<p>Primer lanzamiento</p>
+<ul class="task-list">
+<li>
+<input type="checkbox"><code><a href="https://usethis.r-lib.org/reference/use_news_md.html">usethis::use_news_md()</a></code>
+</li>
+<li>
+<input type="checkbox"><code><a href="https://usethis.r-lib.org/reference/use_cran_comments.html">usethis::use_cran_comments()</a></code>
+</li>
+<li>
+<input type="checkbox">Actualice (aspiracional) de las instrucciones de instalación en <code>README</code>
+</li>
+<li>
+<input type="checkbox">Revisar <code>Title:</code> y <code>Description:</code>
+</li>
+<li>
+<input type="checkbox">Verifique que todas las funciones exportadas tengan <code>@returns</code> y <code>@examples</code>
+</li>
+<li>
+<input type="checkbox">Compruebe que <code>Authors@R:</code> incluya un titular de derechos de autor (rol ‘cph’)</li>
+<li>
+<input type="checkbox">Verifique la licencia de los archivos incluidos</li>
+<li>
+<input type="checkbox">Revisar <a href="https://github.com/DavisVaughan/extrachecks" class="uri">https://github.com/DavisVaughan/extrachecks</a>
+</li>
+</ul>
+<p>Si aún no tiene un archivo <code>NEWS.md</code>, le recomendamos que cree uno ahora con <code><a href="https://usethis.r-lib.org/reference/use_news_md.html">usethis::use_news_md()</a></code>. Eventualmente querrás este archivo y esto anticipa el hecho de que la descripción de tu eventual versión de GitHub (<a href="#sec-release-post-acceptance"><span>Sección&nbsp;22.9</span></a>) se extrae de <code>NEWS.md</code>.</p>
+<p><code><a href="https://usethis.r-lib.org/reference/use_cran_comments.html">usethis::use_cran_comments()</a></code> inicia un archivo para contener los comentarios de envío de su paquete. Al principio es muy básico, por ejemplo:</p>
+<pre><code>## R CMD check results
+
+0 errors | 0 warnings | 1 note
+
+* This is a new release.</code></pre>
+<p>En versiones posteriores, este archivo deja de tener sentido; por ejemplo, es donde informamos los resultados de las comprobaciones de dependencia inversa. Este no es un lugar para extenderse con largas explicaciones sobre su envío. En general, debería eliminar la necesidad de tales explicaciones, especialmente para una presentación inicial.</p>
+<p>Recomendamos encarecidamente que su paquete tenga un archivo README (<a href="other-markdown.html#sec-readme"><span>Sección&nbsp;18.1</span></a>). Si es así, este es un buen momento para consultar las instrucciones de instalación que se proporcionan allí. Es posible que deba cambiar las instrucciones para instalarlo desde GitHub a instalarlo desde CRAN, en anticipación a la aceptación de su paquete.</p>
+<p>Los campos <code>Title</code> y <code>Description</code> de <code>DESCRIPTION</code> son verdaderos puntos críticos durante la revisión humana de CRAN. Revise detenidamente los consejos proporcionados en <a href="description.html#sec-description-title-and-description"><span>Sección&nbsp;9.2</span></a>. Compruebe también que <code>Authors@R</code> incluya un titular de derechos de autor, indicado por la función ‘cph’. Los dos escenarios más comunes son que agrega ‘cph’ a sus otros roles (probablemente ‘cre’ y ‘aut’) o que agrega su empleador a <code>Authors@R:</code> con ‘cph’ y, tal vez, ‘fnd’ role. (Cuando acredita a un financiador a través del rol ‘fnd’, se reconoce en el pie de página de su sitio web pkgdown). Este también es un buen momento para asegurarse de que la dirección de correo electrónico del mantenedor sea apropiada. Ésta es la única manera en que CRAN puede comunicarse con usted. Si hay problemas y no pueden comunicarse con usted, eliminarán su paquete de CRAN. Asegúrese de que esta dirección de correo electrónico esté disponible por un tiempo y que no esté muy filtrada.</p>
+<p>Verifique que cada una de sus funciones exportadas documente su valor de retorno (con la etiqueta <code>@returns</code>, <a href="man.html#sec-man-returns"><span>Sección&nbsp;16.4</span></a>) y tenga una sección <code>@examples</code> (<a href="man.html#sec-man-examples"><span>Sección&nbsp;16.5</span></a>). Si tiene ejemplos que no se pueden ejecutar en CRAN, es absolutamente necesario utilizar las técnicas en <a href="man.html#sec-man-examples-dependencies-conditional-execution"><span>Sección&nbsp;16.5.4</span></a> para expresar las condiciones previas relevantes correctamente. No tome atajos, como no tener ejemplos, comentar sus ejemplos o poner todos sus ejemplos dentro de <code>\dontrun{}</code>.</p>
+<p>Si tiene código de terceros incrustado en su paquete, verifique que cumple y declara correctamente su licencia (<a href="license.html#sec-code-you-bundle"><span>Sección&nbsp;12.4</span></a>).</p>
+<p>Finalmente, aproveche cualquier lista de comprobaciones <em>ad hoc</em> que otros desarrolladores de paquetes hayan experimentado recientemente con CRAN. En el momento de escribir, <a href="https://github.com/DavisVaughan/extrachecks" class="uri">https://github.com/DavisVaughan/extrachecks</a> es un buen lugar para encontrar este tipo de informes de primera mano. Leer dicha lista y modificar preventivamente su paquete a menudo puede marcar la diferencia entre una aceptación sin problemas y un proceso frustrante que requiere múltiples intentos.</p>
+<section id="políticas-de-cran" class="level3" data-number="22.2.1"><h3 data-number="22.2.1" class="anchored" data-anchor-id="políticas-de-cran">
+<span class="header-section-number">22.2.1</span> Políticas de CRAN</h3>
+<p>Le alertamos sobre políticas CRAN específicas a lo largo de este libro y, especialmente, a través de este capítulo. Sin embargo, se trata de un objetivo en movimiento, por lo que vale la pena hacer un esfuerzo para mantenerse informado sobre los cambios futuros en la política de CRAN.</p>
+<p>El hogar oficial de la política CRAN es <a href="https://cran.r-project.org/web/packages/policies.html" class="uri">https://cran.r-project.org/web/packages/policies.html</a>. Sin embargo, no es muy práctico leer este documento, por ejemplo, una vez a la semana y simplemente esperar notar algún cambio. El repositorio de GitHub <a href="https://github.com/eddelbuettel/crp">eddelbuettel/crp</a> monitorea la Política del repositorio de CRAN al rastrear la evolución de los archivos subyacentes en la fuente del sitio web de CRAN. Por lo tanto, el historial de confirmaciones de ese repositorio hace que los cambios de políticas sean mucho más fáciles de navegar. Es posible que también desee seguir la <a href="https://fosstodon.org/@CRANberriesFeed@mas.to">cuenta de CRAN Policy Watch Mastodon</a>, que suena cada vez que se detecta un cambio.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>La <a href="https://stat.ethz.ch/mailman/listinfo/r-package-devel">lista de correo de R-package-devel</a> es otro buen recurso para aprender más sobre el desarrollo de paquetes. Puede suscribirse para estar al tanto de lo que hablan otros mantenedores. Incluso si no está suscrito, puede resultar útil buscar en esta lista cuando esté investigando un tema específico.</p>
+</section></section><section id="mantenerse-al-día-con-el-cambio" class="level2" data-number="22.3"><h2 data-number="22.3" class="anchored" data-anchor-id="mantenerse-al-día-con-el-cambio">
+<span class="header-section-number">22.3</span> Mantenerse al día con el cambio</h2>
+<p>Ahora pasamos a los elementos principales de la lista de verificación para una versión menor o mayor de un paquete que ya está en CRAN. Muchos de estos elementos también aparecen en la lista de verificación de un parche o lanzamiento inicial.</p>
+<ul class="task-list">
+<li>
+<input type="checkbox">Verifique los resultados actuales de la verificación CRAN</li>
+<li>
+<input type="checkbox">Compruebe si se debe avanzar algún proceso de desaprobación, como se describe en <a href="https://lifecycle.r-lib.org/articles/communicate.html#gradual-deprecation">Desaprobación gradual</a>
+</li>
+<li>
+<input type="checkbox"><a href="https://style.tidyverse.org/news.html#news-release">Pulir NEWS</a>
+</li>
+<li>
+<input type="checkbox"><code><a href="https://rdrr.io/pkg/urlchecker/man/url_check.html">urlchecker::url_check()</a></code>
+</li>
+<li>
+<input type="checkbox"><code><a href="https://devtools.r-lib.org/reference/build_rmd.html">devtools::build_readme()</a></code>
+</li>
+</ul>
+<p>Estos primeros elementos confirman que su paquete se mantiene al día con su entorno y consigo mismo. El primer elemento, “Verificar los resultados actuales de la verificación de CRAN”, será un hipervínculo a los resultados de la verificación de CRAN para la versión del paquete que se encuentra actualmente en CRAN. Si hay ADVERTENCIAS, ERRORES o NOTAS allí, debe investigar y determinar qué está pasando. Ocasionalmente puede haber un problema intermitente en CRAN, pero en términos generales, cualquier resultado que no sea “OK” es algo que debe abordar con la versión que está preparando. Es posible que descubra que su paquete se encuentra en un estado disfuncional debido a cambios en la base R, las políticas de CRAN, las herramientas de CRAN o los paquetes de los que depende.</p>
+<p>Si está en el proceso de desaprobar una función o un argumento, una versión menor o mayor es un buen momento para considerar avanzar ese proceso como se describe en <a href="lifecycle.html#sec-lifecycle-stages-and-package"><span>Sección&nbsp;21.7</span></a>. Este también es un buen momento para mirar todas las viñetas de <code>NEWS</code> que se han acumulado desde el último lanzamiento (“Pulir noticias”). Incluso si ha sido diligente al anotar todos los cambios dignos de noticia, es probable que estas viñetas se beneficien de alguna reorganización y edición para lograr coherencia y claridad (<a href="other-markdown.html#sec-news"><span>Sección&nbsp;18.2</span></a>).</p>
+<p>Otra comprobación muy importante es ejecutar <code><a href="https://rdrr.io/pkg/urlchecker/man/url_check.html">urlchecker::url_check()</a></code>. Las comprobaciones de URL de CRAN se describen en <a href="https://cran.r-project.org/web/packages/URL_checks.html" class="uri">https://cran.r-project.org/web/packages/URL_checks.html</a> y se implementan mediante código que se incluye con el propio R. Sin embargo, estos controles no se exponen de una manera muy útil. El paquete urlchecker se creó para solucionar este problema y expone la lógica de verificación de URL de CRAN en la función <code>url_check()</code>. Los principales problemas que surgen tienden a ser las URL que ya no funcionan o las URL que utilizan la redirección. Obviamente, deberás actualizar o eliminar cualquier URL que ya no exista. La redirección, sin embargo, es más complicada. Si el código de estado es “301 movido permanentemente”, la opinión de CRAN es que su paquete debe usar la URL redirigida. El problema es que muchas personas no siguen <a href="https://www.rfc-editor.org/rfc/rfc7231#section-6.4.2">RFC7231</a> al pie de la letra y utilizan este tipo de redirección incluso cuando tienen una intención diferente, es decir, su intención es proporcionar una URL estable y fácil de usar que luego redirige a algo menos fácil de usar o más volátil. Si una URL legítima que desea utilizar no cumple con las comprobaciones de CRAN, tendrá que elegir entre un par de opciones poco atractivas. Podría intentar explicar la situación a CRAN, pero esto requiere una revisión humana y, por lo tanto, no se recomienda. O puede convertir dichas URL en texto textual sin hipervínculos. Tenga en cuenta también que aunque urlchecker utiliza el mismo <em>código</em> que CRAN, sus resultados locales aún pueden diferir de los de CRAN, debido a diferencias en otras condiciones ambientales, como variables de entorno y capacidades del sistema.</p>
+<p>Si tiene un archivo <code>README.Rmd</code>, también querrá reconstruir el archivo estático <code>README.md</code> con la versión actual de su paquete. La mejor función para usar para esto es <a href="https://devtools.r-lib.org/reference/build_rmd.html"><code>devtools::build_readme()</code></a>, porque se garantiza que renderizará <code>README.Rmd</code> contra el código fuente actual de su paquete.</p>
+</section><section id="doble-r-cmd-check" class="level2" data-number="22.4"><h2 data-number="22.4" class="anchored" data-anchor-id="doble-r-cmd-check">
+<span class="header-section-number">22.4</span> Doble <code>R CMD check</code>
+</h2>
+<p>A continuación vienen un par de elementos relacionados con la <code>R CMD check</code>. Recuerde que esta no debería ser la primera vez que ejecuta <code>R CMD check</code> desde la versión anterior. Con suerte, está ejecutando <code>R CMD check</code> con frecuencia durante el desarrollo local y está utilizando un servicio de integración continua, como GitHub Actions. Este pretende ser un recordatorio final de último momento para comprobar que todo sigue bien:</p>
+<ul class="task-list">
+<li><p><input type="checkbox"><code>devtools::check(remote = TRUE, manual = TRUE)</code>. Esto sucede en su máquina de desarrollo principal, presumiblemente con la versión actual de R, y con algunas comprobaciones adicionales que generalmente se desactivan para acelerar el desarrollo diario.</p></li>
+<li><p><input type="checkbox"><code><a href="https://devtools.r-lib.org/reference/check_win.html">devtools::check_win_devel()</a></code>. Esto envía su paquete para que lo verifiquen con el servicio win-builder de CRAN, con la última versión de desarrollo de R (también conocido como r-devel). Debería recibir un correo electrónico en unos 30 minutos con un enlace a los resultados de la verificación. Es una buena idea verificar su paquete con r-devel, porque la base R y <code>R CMD check</code> están en constante evolución. La política de CRAN exige la verificación con r-devel y se realizará como parte de las verificaciones entrantes de CRAN. No tiene sentido saltarse este paso y esperar lo mejor.</p></li>
+</ul>
+<p>Tenga en cuenta que la brevedad de esta lista refleja implícitamente que los paquetes de tidyverse se verifican después de cada envío a través de GitHub Actions, en múltiples sistemas operativos y versiones de R (incluida la versión de desarrollo), y que la mayor parte del equipo de tidyverse desarrolla principalmente en macOS. CRAN espera que usted “haga todos los esfuerzos razonables” para que su paquete funcione en todas las principales plataformas R y los paquetes que no funcionan en al menos dos normalmente no serán aceptados.</p>
+<p>La siguiente subsección (<a href="#sec-cran-flavors-services"><span>Sección&nbsp;22.4.1</span></a>) es de lectura opcional con más detalles sobre todas las plataformas que le interesan a CRAN y cómo puede acceder a ellas. Si sus controles continuos son más limitados que los nuestros, es posible que desee compensarlo con controles previos al envío más exhaustivos. También puede necesitar este conocimiento para solucionar un problema concreto que surja en las comprobaciones de CRAN, ya sea para un envío entrante o para un paquete que ya está en CRAN.</p>
+<p>Al ejecutar <code>R CMD check</code> para un envío CRAN, debe solucionar cualquier problema que aparezca:</p>
+<ul>
+<li><p>Debe corregir todos los “ERRORES” y “ADVERTENCIAS”. CRAN no aceptará un paquete que contenga errores o advertencias.</p></li>
+<li><p>Eliminar tantas <code>NOTAS</code> como sea posible. Cada “NOTA” requiere supervisión humana, lo que crea fricciones tanto para usted como para CRAN. Si hay notas que no cree que sean importantes, casi siempre es más fácil arreglarlas (incluso si la solución es un poco complicada) que persuadir a CRAN de que están bien. Consulte nuestra <a href="https://r-pkgs.org/R-CMD-check.html">guía solo en línea sobre <code>R CMD check</code></a> para obtener detalles sobre cómo solucionar problemas individuales.</p></li>
+<li>
+<p>Si no puede eliminar una <code>NOTA</code>, inclúyala en <code>cran-comments.md</code> y explique por qué cree que es falsa. Analizaremos este archivo con más detalle en <a href="#sec-release-cran-comments"><span>Sección&nbsp;22.6</span></a>.</p>
+<p>Tenga en cuenta que siempre habrá una “NOTA” cuando envíe su paquete por primera vez. Esto le recuerda a CRAN que se trata de un envío nuevo y que necesitarán realizar algunas comprobaciones adicionales. No puede eliminar esta “NOTA”, así que simplemente mencione en “cran-comments.md” que este es su primer envío.</p>
+</li>
+</ul>
+<section id="sec-cran-flavors-services" class="level3" data-number="22.4.1"><h3 data-number="22.4.1" class="anchored" data-anchor-id="sec-cran-flavors-services">
+<span class="header-section-number">22.4.1</span> CRAN consulta sabores y servicios relacionados</h3>
+<p>CRAN ejecuta <code>R CMD check</code> en todos los paquetes contribuidos al momento del envío y de forma regular, en múltiples plataformas o lo que ellos llaman “sabores”. Puede ver los tipos de cheques actuales de CRAN aquí: <a href="https://cran.r-project.org/web/checks/check_flavors.html" class="uri">https://cran.r-project.org/web/checks/check_flavors.html</a>. Hay varias combinaciones de:</p>
+<ul>
+<li>Sistema operativo y CPU: Windows, macOS (x86_64, arm64), Linux (varias distribuciones)</li>
+<li>Versión R: r-devel, r-release, r-oldrel</li>
+<li>Compiladores C, C++, FORTRAN</li>
+<li>Configuración regional, en el sentido de la variable de entorno <code>LC_CTYPE</code> (se trata de qué lenguaje humano está en uso y codificación de caracteres)</li>
+</ul>
+<p>Es casi seguro que los tipos de verificación de CRAN incluyen plataformas distintas a su(s) entorno(s) de desarrollo preferido, por lo que eventualmente necesitará hacer un esfuerzo explícito para verificar y, tal vez, solucionar problemas de su paquete en estos otros tipos.</p>
+<p>No sería práctico que los desarrolladores de paquetes individuales mantuvieran personalmente todas estas plataformas de prueba. En lugar de eso, recurrimos a varios recursos mantenidos por la comunidad y por CRAN para esto. Aquí hay una selección, en orden de cuán centrales son para nuestras prácticas actuales:</p>
+<ul>
+<li><p>GitHub Actions (GHA) es nuestro medio principal para probar paquetes en múltiples versiones, como se describe en <a href="software-development-practices.html#sec-sw-dev-practices-gha"><span>Sección&nbsp;20.2.1</span></a>.</p></li>
+<li>
+<p>Constructor de R-hub (R-hub). Este es un servicio respaldado por R Consortium donde los desarrolladores de paquetes pueden enviar su paquete para verificaciones que repliquen varios tipos de verificación CRAN.</p>
+<p>Puede utilizar R-hub a través de una interfaz web (<a href="https://builder.r-hub.io" class="uri">https://builder.r-hub.io</a>) o, como recomendamos, a través del <a href="https://r-hub.github.io%20/rubo/">paquete Rhub R</a>.</p>
+<p><code>rhub::check_for_cran()</code> es una buena opción para un paquete CRAN típico y es moralmente similar al flujo de trabajo de GHA configurado por <code>usethis::use_github_action("check-standard")</code>. Sin embargo, a diferencia de GHA, R-hub actualmente no cubre macOS, sólo Windows y Linux.</p>
+<p>Rhub también le ayuda a acceder a algunos de los tipos de cheques más exóticos y ofrece controles especializados relevantes para paquetes con código compilado, como <code>rhub::check_with_sanitizers()</code>.</p>
+</li>
+<li>
+<p>El generador de macOS es un servicio mantenido por el personal de CRAN que crea los archivos binarios de macOS para los paquetes de CRAN. Esta es una adición relativamente nueva a la lista y verifica paquetes con “la misma configuración y paquetes disponibles que la máquina de compilación CRAN M1”.</p>
+<p>Puede enviar su paquete usando la interfaz web (<a href="https://mac.r-project.org/macbuilder/submit.html" class="uri">https://mac.r-project.org/macbuilder/submit.html</a>) o con <code><a href="https://devtools.r-lib.org/reference/check_mac_release.html">devtools::check_mac_release()</a></code>.</p>
+</li>
+</ul></section></section><section id="sec-release-revdep-checks" class="level2" data-number="22.5"><h2 data-number="22.5" class="anchored" data-anchor-id="sec-release-revdep-checks">
+<span class="header-section-number">22.5</span> Comprobaciones de dependencia inversa</h2>
+<ul class="task-list">
+<li>
+<input type="checkbox"><code>revdepcheck::revdep_check(num_workers = 4)</code>
+</li>
+</ul>
+<p>Este elemento inofensivo de la lista de verificación puede representar en realidad una cantidad considerable de esfuerzo. En un nivel alto, la verificación de sus dependencias inversas (“revdeps”) se divide en:</p>
+<ul>
+<li><p>Forme una lista de sus dependencias inversas. Estos son paquetes CRAN que enumeran su paquete en sus campos <code>Depends</code>, <code>Imports</code>, <code>Suggests</code> o <code>LinkingTo</code>.</p></li>
+<li><p>Ejecute <code>R CMD check</code> en cada uno.</p></li>
+<li><p>Asegúrese de no haber roto el paquete de otra persona con los cambios planificados en su paquete.</p></li>
+</ul>
+<p>Cada uno de estos pasos puede requerir mucho trabajo y juicio. Por lo tanto, si no tiene dependencias inversas, debería alegrarse de poder omitir este paso. Si solo tiene un par de dependencias inversas, probablemente pueda hacerlo “a mano”, es decir, descargar el código fuente de cada paquete y ejecutar <code>R CMD check</code>.</p>
+<p>Aquí explicamos formas de realizar comprobaciones de dependencia inversa a escala, que es el problema al que nos enfrentamos. Algunos de los paquetes mantenidos por nuestro equipo tienen miles de dependencias inversas e incluso algunos de los paquetes de nivel inferior tienen cientos. Tenemos que abordar esto de forma automatizada y esta sección será de gran utilidad para otros mantenedores en el mismo barco.</p>
+<p>Todas nuestras herramientas de dependencia inversa se concentran en el paquete revdepcheck (<a href="https://revdepcheck.r-lib.org/" class="uri">https://revdepcheck.r-lib.org/</a>). Tenga en cuenta que, al menos en el momento de escribir este artículo, el paquete revdepcheck no está en CRAN. Puedes instalarlo desde Github a través de <code>devtools::install_github("r-lib/revdepcheck")</code> o <code>pak::pak("r-lib/revdepcheck")</code>.</p>
+<p>Haga esto cuando esté listo para realizar comprobaciones de revdep por primera vez:</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_revdep.html">use_revdep</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esto realiza una configuración única en los archivos <code>.gitignore</code> y <code>.Rbuildignore</code> de su paquete. La comprobación de Revdep creará algunas carpetas bastante grandes debajo de <code>revdep/</code>, por lo que definitivamente querrás configurar estos archivos ignorados. También verá este recordatorio para realizar verificaciones de revdep de esta manera, como sugiere el elemento de la lista de verificación:</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">revdepcheck</span><span class="fu">::</span><span class="fu">revdep_check</span><span class="op">(</span>num_workers <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esto ejecuta <code>⁠R CMD check⁠</code> en todas sus dependencias inversas, con nuestra recomendación de utilizar 4 trabajadores paralelos para acelerar las cosas. La salida se parece a esto:</p>
+<pre><code>&gt; revdepcheck::revdep_check(num_workers = 4)
+── INIT ───────────────────────────────────── Computing revdeps ──
+── INSTALL ───────────────────────────────────────── 2 versions ──
+Installing CRAN version of cellranger
+also installing the dependencies 'cli', 'glue', 'utf8', 'fansi', 'lifecycle', 'magrittr', 'pillar', 'pkgconfig', 'rlang', 'vctrs', 'rematch', 'tibble'
+
+Installing DEV version of cellranger
+Installing 13 packages: rlang, lifecycle, glue, cli, vctrs, utf8, fansi, pkgconfig, pillar, magrittr, tibble, rematch2, rematch
+── CHECK ─────────────────────────────────────────── 8 packages ──
+✔ AOV1R 0.1.0                     ── E: 0     | W: 0     | N: 0
+✔ mschart 0.4.0                   ── E: 0     | W: 0     | N: 0
+✔ googlesheets4 1.0.1             ── E: 0     | W: 0     | N: 1
+✔ readODS 1.8.0                   ── E: 0     | W: 0     | N: 0
+✔ readxl 1.4.2                    ── E: 0     | W: 0     | N: 0
+✔ readxlsb 0.1.6                  ── E: 0     | W: 0     | N: 0
+✔ unpivotr 0.6.3                  ── E: 0     | W: 0     | N: 0
+✔ tidyxl 1.0.8                    ── E: 0     | W: 0     | N: 0                  
+OK: 8                                                                                 
+BROKEN: 0
+Total time: 6 min
+── REPORT ────────────────────────────────────────────────────────
+Writing summary to 'revdep/README.md'
+Writing problems to 'revdep/problems.md'
+Writing failures to 'revdep/failures.md'
+Writing CRAN report to 'revdep/cran.md'</code></pre>
+<p>Para minimizar los falsos positivos, <code>revdep_check()</code> ejecuta <code>⁠R CMD check⁠</code> dos veces por revdep: una vez con la versión publicada de su paquete actualmente en CRAN y otra vez con la versión de desarrollo local, es decir, con su versión candidata. ¿Por qué dos cheques? Porque a veces el revdep ya está fallando en la <code>R CMD check</code> y sería incorrecto culpar a la versión planificada por la falla. <code>revdep_check()</code> informa los paquetes que no se pueden verificar y, lo más importante, aquellos en los que hay los llamados “cambios a peor”, es decir, donde su versión candidata está asociada con nuevos problemas. Tenga en cuenta también que <code>revdep_check()</code> siempre funciona con una biblioteca de paquetes temporal e independiente, es decir, no modificará su biblioteca de usuario o sistema predeterminada.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+equipo tidyverse
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>De hecho, utilizamos una función diferente para nuestras comprobaciones de dependencia inversa: <code>revdepcheck::cloud_check()</code>. Esto ejecuta las comprobaciones en la nube, masivamente en paralelo, lo que hace posible ejecutar comprobaciones de revdep para paquetes como testthat (con &gt;10,000 revdeps) en solo unas pocas horas.</p>
+<p><code>cloud_check()</code> ha cambiado las reglas del juego para nosotros, permitiéndonos ejecutar comprobaciones revdep con más frecuencia. Por ejemplo, incluso hacemos esto ahora cuando evaluamos el impacto de un posible cambio en un paquete (<a href="lifecycle.html#sec-lifecycle-breaking-change-definition"><span>Sección&nbsp;21.4</span></a>), en lugar de hacerlo justo antes de un lanzamiento.</p>
+<p>Al momento de escribir este artículo, <code>cloud_check()</code> solo está disponible para los mantenedores de paquetes en Posit, pero esperamos ofrecer este servicio a la comunidad R en general en el futuro.</p>
+</div>
+</div>
+<p>Además de algunos mensajes interactivos, los resultados de la verificación revdep se escriben en la carpeta <code>revdep/</code>:</p>
+<ul>
+<li>
+<code>revdep/README.md</code>: Este es un resumen de alto nivel dirigido a mantenedores. El nombre del archivo y el formato Markdown son muy intencionados para crear una buena página de inicio para la carpeta <code>revdep/</code> en GitHub.</li>
+<li>
+<code>revdep/problems.md</code>: enumera los revdeps que parecen estar rotos por su versión candidata.</li>
+<li>
+<code>revdep/failures.md</code>: enumera los revdep que no se pudieron verificar, generalmente debido a un error de instalación, ya sea del propio revdep o de una de sus dependencias.</li>
+<li>
+<code>revdep/cran.md</code>: Este es un resumen de alto nivel dirigido a CRAN. Debes copiar y pegar esto en <code>cran-comments.md</code> (<a href="#sec-release-cran-comments"><span>Sección&nbsp;22.6</span></a>).</li>
+<li>Otros archivos y carpetas, como <code>checks.noindex</code>, <code>data.sqlite</code> y <code>library.noindex</code>. Estos son para uso interno de revdepcheck y no los discutiremos más.</li>
+</ul>
+<p>La forma más sencilla de tener una idea de estos diferentes archivos es consultar los últimos resultados de revdep para algunos paquetes tidyverse, como <a href="https://github.com/tidyverse/dplyr/tree/main/revdep">dplyr</a> o <a href="https://github.com/tidyverse/tidyr/tree/main/revdep">tidyr</a>.</p>
+<p>Los resultados de la verificación revdep (local, en la nube o CRAN) no son perfectos, porque no es una tarea sencilla. Hay varias razones por las que un resultado puede faltar, ser incorrecto o contradictorio en diferentes ejecuciones.</p>
+<ul>
+<li><p>Falsos positivos: a veces revdepcheck informa que un paquete se ha roto, pero en realidad todo está bien (o, al menos, no peor que antes). Esto ocurre más comúnmente debido a pruebas inestables que fallan aleatoriamente (<a href="testing-advanced.html#sec-testing-advanced-skip-on-cran"><span>Sección&nbsp;15.4.1</span></a>), como las solicitudes HTTP. Esto también puede suceder porque la instancia se queda sin espacio en disco u otros recursos, por lo que la primera verificación con la versión CRAN tiene éxito y la segunda verificación con la versión dev falla. A veces es obvio que el problema no está relacionado con su paquete.</p></li>
+<li><p>Falsos negativos: a veces se ha roto un paquete, pero no lo detectas. Para nosotros, esto suele suceder cuando <code>cloud_check()</code> no puede verificar un revdep porque no se puede instalar, generalmente debido a que falta un requisito del sistema (por ejemplo, Java). Estos se informan por separado como “no se pudo probar”, pero aún se incluyen en <code>problems.md</code>, porque aún podría tratarse de una rotura directa causada por su paquete. Por ejemplo, si elimina una función exportada que utiliza otro paquete, la instalación fallará.</p></li>
+</ul>
+<p>En general, estas diferencias son menos preocupantes ahora que las propias comprobaciones de revdep de CRAN están bien automatizadas, por lo que las nuevas fallas normalmente no involucran a un humano.</p>
+<section id="revdeps-y-cambios-importantes" class="level3" data-number="22.5.1"><h3 data-number="22.5.1" class="anchored" data-anchor-id="revdeps-y-cambios-importantes">
+<span class="header-section-number">22.5.1</span> Revdeps y cambios importantes</h3>
+<p>Si la verificación revdep revela roturas, debe examinar cada falla y determinar si se trata de:</p>
+<ul>
+<li><p>Un falso positivo.</p></li>
+<li><p>Un cambio continuo, es decir, una falla causada por el uso no autorizado de su paquete.</p></li>
+<li><p>Un error en tu paquete que necesitas corregir.</p></li>
+<li><p>Un cambio radical deliberado.</p></li>
+</ul>
+<p>Si su actualización romperá otro paquete (independientemente del motivo), debe informar al mantenedor, para que él lo escuche primero de usted, en lugar de CRAN. La mejor manera de hacerlo es con un parche que actualice su paquete para que funcione bien con el suyo, tal vez en forma de solicitud de extracción. Esto puede suponer una cantidad decente de trabajo y ciertamente no es factible para todos los mantenedores. Pero resolver algunos de ellos puede ser una buena manera de enfrentar el dolor que causa el cambio radical y reconsiderar si los beneficios superan los costos. En la mayoría de los casos, es probable que un cambio que afecte a los revdeps también rompa el código menos visible que se encuentra fuera de los paquetes CRAN, como scripts, informes y aplicaciones Shiny.</p>
+<p>Si decide continuar, funciones como <code>revdepcheck::revdep_maintainers()</code> y <code>revdepcheck::revdep_email()</code> pueden ayudarle a notificar a los mantenedores de revdep <em>en masa</em>. Asegúrese de que el correo electrónico incluya un enlace a la documentación que describa los cambios importantes más comunes y cómo solucionarlos. Debe informar a los mantenedores cuándo planea enviar su versión a CRAN (recomendamos avisar con al menos dos semanas de anticipación), para que puedan enviar su versión actualizada antes de eso. Cuando llegue la fecha de lanzamiento, vuelva a ejecutar sus comprobaciones para ver cuántos problemas se han resuelto. Explique cualquier falla restante en <code>cran-comments.md</code> como se demuestra en <a href="#sec-release-cran-comments"><span>Sección&nbsp;22.6</span></a>. Los dos casos más comunes son que no puede verificar un paquete porque no puede instalarlo localmente o un cambio legítimo en la API que el mantenedor aún no ha abordado. Siempre que haya avisado con suficiente antelación, CRAN aceptará su actualización, incluso si daña otros paquetes.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+equipo tidyverse
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Últimamente, el equipo de tidyverse está tratando de cumplir con los mantenedores de revdep a más de la mitad del camino en términos de lidiar con cambios importantes. Por ejemplo, en el problema de GitHub <a href="https://github.com/tidyverse/dplyr/issues/6262">tidyverse/dplyr#6262</a>, los mantenedores de dplyr rastrearon cientos de solicitudes de extracción en el período previo al lanzamiento de dplyr v1. .1.0. A medida que se crean los RP, también es útil agregar enlaces a ellos. A medida que los mantenedores de revdep fusionan los RP, se pueden marcar como resueltos. Si algunos RP todavía están en proceso cuando llega la fecha de envío anunciada, la situación se puede resumir en <code>cran-comments.md</code>, como fue el caso de <a href="https://github.%20com/tidyverse/dplyr/blob/c7e9cd72fd86309d72f2c522157cfac38f45453b/cran-comments.md">dplyr v1.1.0</a>.</p>
+</div>
+</div>
+</section></section><section id="sec-release-cran-comments" class="level2" data-number="22.6"><h2 data-number="22.6" class="anchored" data-anchor-id="sec-release-cran-comments">
+<span class="header-section-number">22.6</span> Actualizar comentarios para CRAN</h2>
+<ul class="task-list">
+<li>
+<input type="checkbox">Actualizar <code>cran-comments.md</code>
+</li>
+</ul>
+<p>Usamos el archivo <code>cran-comments.md</code> para registrar comentarios sobre un envío, principalmente solo los resultados de <code>R CMD check</code> y controles revdep. Si está realizando un cambio específico a solicitud de CRAN, posiblemente dentro de una fecha límite, también tendría sentido mencionarlo. Nos gusta realizar un seguimiento de este archivo en Git, para poder ver cómo cambia con el tiempo. También debería aparecer en <code>.Rbuildignore</code>, ya que no debería aparecer en su paquete. Cuando esté listo para enviar, <code><a href="https://devtools.r-lib.org/reference/submit_cran.html">devtools::submit_cran()</a></code> (<a href="#sec-release-process"><span>Sección&nbsp;22.7</span></a>) incorpora el contenido de <code>cran-comments.md</code> cuando carga su envío.</p>
+<p>El público objetivo de estos comentarios es el personal de CRAN, aunque no hay garantía de que lean los comentarios (o cuando en el proceso de envío los lean). Por ejemplo, si su paquete rompe otros paquetes, probablemente recibirá un correo electrónico automático al respecto, incluso si lo ha explicado en los comentarios. A veces, un humano de CRAN lee los comentarios, queda satisfecho y acepta su paquete de todos modos, sin ninguna otra acción por su parte. En otras ocasiones, su paquete puede quedarse atascado en la cola hasta que copie <code>cran-comments.md</code> y lo pegue en un intercambio de correo electrónico para avanzar. En cualquier caso, vale la pena mantener estos comentarios en su propio archivo controlado por versión.</p>
+<p>Aquí hay un <code>cran-comments.md</code> bastante típico de una versión reciente de forcats. Tenga en cuenta que los resultados de la <code>R CMD check</code> son limpios, es decir, no hay nada que deba explicarse o justificarse, y hay un resumen conciso del proceso revdep.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode md code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">## R CMD check results</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>0 errors | 0 warnings | 0 notes</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## revdepcheck results</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>We checked 231 reverse dependencies (228 from CRAN + 3 from Bioconductor), comparing R CMD check results across CRAN and dev versions of this package.</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>We saw 2 new problems:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>epikit</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>stevemisc</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>Both maintainers were notified on Jan 12 (~2 week ago) and supplied with patches.</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>We failed to check 3 packages</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>genekitr     (NA)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>OlinkAnalyze (NA)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>SCpubr       (NA)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Este diseño está diseñado para que sea fácil de leer y fácil de comparar con los resultados de la <code>R CMD check</code> vistos por los mantenedores de CRAN. Incluye dos secciones:</p>
+<ol type="1">
+<li>
+<p>Verificar resultados: Siempre afirmamos que no hubo errores ni advertencias (¡y nos aseguramos de que sea cierto!). Idealmente también podemos decir que no hubo notas. Pero si no, las <code>NOTES</code> se presentan en una lista con viñetas. Para cada <code>NOTA</code>, incluimos el mensaje de <code>R CMD check</code> y una breve descripción de por qué creemos que está bien.</p>
+<p>A continuación se explica cómo se explica una <code>NOTA</code> para el paquete de datos nycflights13:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode md code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">## R CMD check results</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>0 errors | 0 warnings | 1 note</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Checking installed package size:</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  installed size is  6.9Mb</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  sub-directories of 1Mb or more:</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    data   6.9Mb</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  This is a data package that will be rarely updated.</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</li>
+<li><p>Dependencias inversas: si hay revdeps, aquí es donde pegamos el contenido de <code>revdep/cran.md</code> (<a href="#sec-release-revdep-checks"><span>Sección&nbsp;22.5</span></a>). Si no hay revdeps, le recomendamos que mantenga esta sección, pero diga algo como: “Actualmente no hay dependencias posteriores para este paquete”.</p></li>
+</ol></section><section id="sec-release-process" class="level2" data-number="22.7"><h2 data-number="22.7" class="anchored" data-anchor-id="sec-release-process">
+<span class="header-section-number">22.7</span> El proceso de envío</h2>
+<ul class="task-list">
+<li>
+<input type="checkbox"><code>usethis::use_version('minor')</code> (o ‘patch’ o ‘major’)</li>
+<li>
+<input type="checkbox"><code><a href="https://devtools.r-lib.org/reference/submit_cran.html">devtools::submit_cran()</a></code>
+</li>
+<li>
+<input type="checkbox">Aprobar correo electrónico</li>
+</ul>
+<p>Cuando esté realmente listo para enviar, es hora de aumentar el número de versión en DESCRIPCIÓN. Este elemento de la lista de verificación reflejará el tipo de lanzamiento declarado al inicio de este proceso (parche, menor o mayor), en la llamada inicial a <code>use_release_issue()</code>.</p>
+<p>Le recomendamos que envíe su paquete a CRAN llamando a <code><a href="https://devtools.r-lib.org/reference/submit_cran.html">devtools::submit_cran()</a></code>. Esta función de conveniencia resume algunos pasos:</p>
+<ul>
+<li><p>Crea el paquete (<a href="structure.html#sec-bundled-package"><span>Sección&nbsp;3.3</span></a>) con <code>pkgbuild::build(manual = TRUE)</code>, que finalmente llama a <code>R CMD build</code>.</p></li>
+<li><p>Publica el archivo <code>*.tar.gz</code> resultante en el formulario de envío oficial de CRAN (<a href="https://cran.r-project.org/submit.html" class="uri">https://cran.r-project.org/submit.html</a>), completando su nombre y correo electrónico desde <code>DESCRIPCIÓN</code> y sus comentarios de envío. de <code>cran-comments.md</code>.</p></li>
+<li><p>Confirma que el envío fue exitoso y le recuerda que revise su correo electrónico para ver el enlace de confirmación.</p></li>
+<li><p>Escribe los detalles del envío en un archivo local <code>CRAN-SUBMISSION</code>, que registra la versión del paquete, SHA y la hora del envío. Esta información la utiliza más adelante <code><a href="https://usethis.r-lib.org/reference/use_github_release.html">usethis::use_github_release()</a></code> para crear una versión de GitHub una vez que su paquete haya sido aceptado. <code>CRAN-SUBMISSION</code> se agregará a <code>.Rbuildignore</code>. Generalmente no ignoramos este archivo, pero tampoco lo confirmamos. Es una nota efímera que existe durante el intervalo entre la presentación y (con suerte) la aceptación.</p></li>
+</ul>
+<p>Después de una carga exitosa, debería recibir un correo electrónico de CRAN en unos minutos. Este correo electrónico le notifica a usted, como mantenedor, del envío y proporciona un enlace de confirmación. Parte de lo que esto hace es confirmar que la dirección de correo electrónico del mantenedor es correcta. En el enlace de confirmación, deberá volver a confirmar que ha seguido las políticas de CRAN y que desea enviar el paquete. Si no completa este paso, ¡su paquete en realidad no se envía a CRAN!</p>
+<p>Una vez que su paquete ingresa al sistema de CRAN, se verifica automáticamente en Windows y Linux, probablemente con las versiones lanzadas y de desarrollo de R. Recibirá otro correo electrónico con enlaces a los resultados de estas comprobaciones, normalmente en cuestión de horas. Una presentación inicial (<a href="#sec-release-initial"><span>Sección&nbsp;22.2</span></a>) recibirá un escrutinio adicional por parte del personal de CRAN. El proceso está potencialmente completamente automatizado cuando se actualiza un paquete que ya está en CRAN. Si la actualización de un paquete pasa sus comprobaciones iniciales, CRAN ejecutará comprobaciones de dependencia inversa.</p>
+</section><section id="modos-de-fallo" class="level2" data-number="22.8"><h2 data-number="22.8" class="anchored" data-anchor-id="modos-de-fallo">
+<span class="header-section-number">22.8</span> Modos de fallo</h2>
+<p>Hay al menos tres formas de que falle el envío de CRAN:</p>
+<ul>
+<li><p>No pasa <code>R CMD check</code>. Este es un resultado automatizado.</p></li>
+<li><p>La revisión humana determina que el paquete infringe las políticas de CRAN. Esto se aplica principalmente a los envíos iniciales, pero a veces el personal de CRAN decide participar en una revisión <em>ad hoc</em> de actualizaciones de paquetes existentes que no superan las comprobaciones automáticas.</p></li>
+<li><p>Las comprobaciones de dependencia inversa sugieren que hay “cambios a peor”. Este es un resultado automatizado.</p></li>
+</ul>
+<p>Los fracasos son frustrantes y la retroalimentación puede ser cortante y francamente insultante. Siéntase cómodo sabiendo que esta es una experiencia ampliamente compartida en toda la comunidad R. Nos pasa habitualmente. No se apresure a responder, especialmente si se siente a la defensiva.</p>
+<p>Espere hasta que pueda centrar su atención en los problemas técnicos que se han planteado. Lea atentamente los resultados de las comprobaciones o los correos electrónicos e investigue los hallazgos. A menos que crea firmemente que se merece la discusión, no responda el correo electrónico. En cambio:</p>
+<ul>
+<li><p>Solucione los problemas identificados y realice los cambios recomendados. Vuelva a ejecutar <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code> en cualquier plataforma relevante para asegurarse de no introducir accidentalmente ningún problema nuevo.</p></li>
+<li><p>Aumente la versión de parche de su paquete. Sí, esto significa que puede haber lagunas en los números de versión publicada. Esto no es gran cosa.</p></li>
+<li>
+<p>Agregue una sección “Resubmission” en la parte superior de <code>cran-comments.md</code>. Esto debería identificar claramente que el paquete es un reenvío y enumerar los cambios que realizó.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode md code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">## Resubmission</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>This is a resubmission. In this version I have:</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Converted the DESCRIPTION title to title case.</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>More clearly identified the copyright holders in the DESCRIPTION</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  and LICENSE files.</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</li>
+<li><p>Si es necesario, actualice las secciones de resultados de verificación y revisión.</p></li>
+<li><p>Ejecute <code><a href="https://devtools.r-lib.org/reference/submit_cran.html">devtools::submit_cran()</a></code> para volver a enviar el paquete.</p></li>
+</ul>
+<p>Si su análisis indica que el error inicial fue un falso positivo, responda al correo electrónico de CRAN con una explicación concisa. Para nosotros, este escenario surge principalmente con respecto a los controles de revdep. Es extremadamente raro que veamos fallas en las ejecuciones iniciales de <code>R CMD check</code> de CRAN y, cuando sucede, a menudo es legítima. Por otro lado, para paquetes con una gran cantidad de revdeps, es inevitable que un subconjunto de estos paquetes tenga algunas pruebas inestables o ejemplos frágiles. Por lo tanto, es bastante común ver fallas de revdep que no tienen nada que ver con la actualización del paquete propuesta. En este caso, lo adecuado es enviar un correo electrónico de respuesta a CRAN explicando por qué cree que se trata de falsos positivos.</p>
+</section><section id="sec-release-post-acceptance" class="level2" data-number="22.9"><h2 data-number="22.9" class="anchored" data-anchor-id="sec-release-post-acceptance">
+<span class="header-section-number">22.9</span> Celebrando el éxito</h2>
+<p>Ahora pasamos a la sección más feliz de la lista de verificación.</p>
+<ul class="task-list">
+<li>
+<input type="checkbox">Aceptada 🎉</li>
+<li>
+<input type="checkbox"><code>git push</code>
+</li>
+<li>
+<input type="checkbox"><code><a href="https://usethis.r-lib.org/reference/use_github_release.html">usethis::use_github_release()</a></code>
+</li>
+<li>
+<input type="checkbox"><code><a href="https://usethis.r-lib.org/reference/use_version.html">usethis::use_dev_version()</a></code>
+</li>
+<li>
+<input type="checkbox"><code>git push</code>
+</li>
+<li>
+<input type="checkbox">Terminar la publicación del blog, compartir en las redes sociales, etc.</li>
+<li>
+<input type="checkbox">Agregar enlace a la publicación del blog en el menú de noticias de pkgdown</li>
+</ul>
+<p>CRAN le notificará por correo electrónico una vez que su paquete sea aceptado. Aquí es cuando enviamos por primera vez a GitHub con el nuevo número de versión, es decir, esperamos hasta que esté seguro de que esta versión realmente se lanzará en CRAN. A continuación, creamos una versión de GitHub correspondiente a esta versión de CRAN, usando <code><a href="https://usethis.r-lib.org/reference/use_github_release.html">usethis::use_github_release()</a></code>. Una versión de GitHub es básicamente una etiqueta de Git glorificada. El único aspecto de las versiones de GitHub que aprovechamos regularmente son las notas de la versión. <code><a href="https://usethis.r-lib.org/reference/use_github_release.html">usethis::use_github_release()</a></code> crea notas de la versión a partir de las viñetas <code>NEWS</code> relevantes para la versión actual. Tenga en cuenta que <code><a href="https://usethis.r-lib.org/reference/use_github_release.html">usethis::use_github_release()</a></code> depende crucialmente del archivo <code>CRAN-SUBMISSION</code> que fue escrito por <code><a href="https://devtools.r-lib.org/reference/submit_cran.html">devtools::submit_cran()</a></code>: así es como sabe qué SHA etiquetar. Después de la creación exitosa de la versión de GitHub, <code>use_github_release()</code> elimina este archivo temporal.</p>
+<p>Ahora nos preparamos para la próxima versión incrementando el número de versión una vez más, esta vez a una versión de desarrollo usando <code><a href="https://usethis.r-lib.org/reference/use_version.html">usethis::use_dev_version()</a></code>. Tiene sentido enviar inmediatamente este estado a GitHub para que, por ejemplo, cualquier rama nueva o solicitud de extracción tenga claramente una versión de desarrollo como base.</p>
+<p>Una vez que CRAN acepta el paquete, se crean archivos binarios para macOS y Windows. También se verificará en el panel de tipos de verificación CRAN. Estos procesos se desarrollan a lo largo de unos días, después de la aceptación, y a veces descubren errores que no fueron detectados por las comprobaciones entrantes menos exhaustivas. Es una buena idea visitar la página de inicio de CRAN de su paquete unos días después del lanzamiento y asegurarse de que todo parezca estar bien. <a href="#fig-cran-checks">Figura&nbsp;<span>22.1</span></a> resalta dónde están vinculados estos resultados desde una página de inicio de CRAN.</p>
+<!-- Extrapolating from a similar screenshot for ggplot2 in the DESCRIPTION chatper, I assume I should also include the unedited screenshot here as well. That blank screenshot is here as images/cran-checks-usethis-clean.png. -->
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-cran-checks" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/cran-checks-usethis.png" class="img-fluid figure-img" alt="Captura de pantalla de la página de inicio de CRAN para usar esto, con el enlace a los resultados de la verificación CRAN resaltados con un cuadro." width="792"></p>
+<figcaption class="figure-caption">Figura&nbsp;22.1: Enlace a los resultados de la verificación CRAN.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Si hay un problema, prepare una versión de parche para solucionarlo y envíelo utilizando el mismo proceso que antes. Si esto significa que va a realizar un segundo envío menos de una semana después del anterior, explique la situación en <code>cran-comments.md</code>. Lograr que un paquete se establezca en CRAN puede llevar un par de rondas, aunque la orientación de este capítulo tiene como objetivo maximizar las posibilidades de éxito en el primer intento. Las versiones futuras, iniciadas por usted, deben tener un intervalo de al menos uno o dos meses, de acuerdo con la política de CRAN.</p>
+<p>Una vez que los binarios de su paquete estén creados y hayan pasado las comprobaciones de los distintos tipos de CRAN, es hora de la parte divertida: dar a conocer su paquete. Esto adopta diferentes formas, según el tipo de liberación. Si este es su lanzamiento inicial (o, al menos, el primer lanzamiento para el que realmente desea atraer usuarios), es especialmente importante correr la voz. Nadie utilizará su nuevo y útil paquete si no sabe que existe. Hay varios lugares para anunciar su paquete, como Twitter, Mastodon, LinkedIn, comunidades de Slack, etc. Asegúrese de utilizar etiquetas relevantes, como el hashtag #rstats. Si tienes un blog, es una gran idea escribir una publicación sobre tu lanzamiento.</p>
+<p>Al presentar un paquete, la sensación debería ser bastante similar a escribir su <code>README</code> o una viñeta de “Introducción”. Asegúrese de describir lo que hace el paquete, para que las personas que no lo hayan usado antes puedan entender por qué debería importarles. Para los paquetes existentes, tendemos a escribir publicaciones de blog para versiones menores y principales, pero no para una versión de parche. En todos los casos, encontramos que estas publicaciones de blog son más efectivas cuando incluyen muchos ejemplos, es decir, “muestre, no cuente”. Para actualizaciones de paquetes, recuerde que la existencia de un archivo completo <code>NEWS</code> lo libera de la necesidad de enumerar hasta el último cambio en la publicación de su blog. En su lugar, puede centrarse en los cambios más importantes y vincular a las notas de la versión completas, para aquellos que quieran conocer los detalles sangrientos.</p>
+<p>Si escribe un blog sobre su paquete, es bueno capturarlo como otra documentación más en su sitio web de pkgdown. Un sitio típico de pkgdown tiene un elemento de “News” en la barra de navegación superior, que enlaza con un “Changelog” que se crea a partir de <code>NEWS.md</code>. Este menú desplegable es un lugar común para insertar enlaces a cualquier publicación de blog sobre el paquete. Puedes lograr esto teniendo YAML como este en tu archivo de configuración <code>_pkgdown.yml</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">news</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">releases</span><span class="kw">:</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> </span><span class="st">"Renaming the default branch (usethis &gt;= 2.1.2)"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">href</span><span class="kw">:</span><span class="at"> https://www.tidyverse.org/blog/2021/10/renaming-default-branch/</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> </span><span class="st">"usethis 2.0.0"</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">href</span><span class="kw">:</span><span class="at"> https://www.tidyverse.org/blog/2020/12/usethis-2-0-0/</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">text</span><span class="kw">:</span><span class="at"> </span><span class="st">"usethis 1.6.0"</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">href</span><span class="kw">:</span><span class="at"> https://www.tidyverse.org/blog/2020/04/usethis-1-6-0/</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>¡Felicidades! ¡Has lanzado tu primer paquete a CRAN y has llegado al final del libro!</p>
+
+
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>La publicación del blog de Fowler “FrequencyReducesDifficulty” es una excelente lectura sobre este tema, <a href="https://martinfowler.com/bliki/FrequencyReducesDifficulty.html" class="uri">https://martinfowler.com/bliki/FrequencyReducesDifficulty.html</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Durante muchos años, existió, en cambio, una <a href="https://twitter.com/CRANPolicyWatch">cuenta de Twitter de CRAN Policy Watch</a>. Pero gracias a los nuevos límites de acceso a la API para ese “cadáver podrido de una plataforma”, la cuenta de Twitter ya no puede funcionar.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./lifecycle.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Ciclo de vida</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+</body></html>

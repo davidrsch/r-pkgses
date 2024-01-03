@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - 13&nbsp; Conceptos básicos de pruebas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./testing-design.html" rel="next">
+<link href="./license.html" rel="prev">
+<link href="./images/cover-2e-small.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./testing-basics.html">Probar</a></li><li class="breadcrumb-item"><a href="./testing-basics.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">El paquete en el interior de su código</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Componentes de un paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Código R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Otros componentes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Metadatos del paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Probar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Designing your test suite</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Advanced testing techniques</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Function documentation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Vignettes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Other markdown files</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Website</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Maintenance and distribution</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Software development practices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Lifecycle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Releasing to CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li><a href="#por-qu%C3%A9-vale-la-pena-realizar-pruebas-formales" id="toc-por-qué-vale-la-pena-realizar-pruebas-formales" class="nav-link active" data-scroll-target="#por-qu%C3%A9-vale-la-pena-realizar-pruebas-formales"><span class="header-section-number">13.1</span> ¿Por qué vale la pena realizar pruebas formales?</a></li>
+  <li><a href="#presentamos-testthat" id="toc-presentamos-testthat" class="nav-link" data-scroll-target="#presentamos-testthat"><span class="header-section-number">13.2</span> Presentamos testthat</a></li>
+  <li>
+<a href="#sec-tests-mechanics-workflow" id="toc-sec-tests-mechanics-workflow" class="nav-link" data-scroll-target="#sec-tests-mechanics-workflow"><span class="header-section-number">13.3</span> Mecánica de prueba y flujo de trabajo</a>
+  <ul class="collapse">
+<li><a href="#configuraci%C3%B3n-inicial" id="toc-configuración-inicial" class="nav-link" data-scroll-target="#configuraci%C3%B3n-inicial"><span class="header-section-number">13.3.1</span> Configuración inicial</a></li>
+  <li><a href="#crear-una-prueba" id="toc-crear-una-prueba" class="nav-link" data-scroll-target="#crear-una-prueba"><span class="header-section-number">13.3.2</span> Crear una prueba</a></li>
+  <li><a href="#ejecutar-pruebas" id="toc-ejecutar-pruebas" class="nav-link" data-scroll-target="#ejecutar-pruebas"><span class="header-section-number">13.3.3</span> Ejecutar pruebas</a></li>
+  </ul>
+</li>
+  <li><a href="#organizaci%C3%B3n-de-pruebas" id="toc-organización-de-pruebas" class="nav-link" data-scroll-target="#organizaci%C3%B3n-de-pruebas"><span class="header-section-number">13.4</span> Organización de pruebas</a></li>
+  <li>
+<a href="#expectativas" id="toc-expectativas" class="nav-link" data-scroll-target="#expectativas"><span class="header-section-number">13.5</span> Expectativas</a>
+  <ul class="collapse">
+<li><a href="#pruebas-de-igualdad" id="toc-pruebas-de-igualdad" class="nav-link" data-scroll-target="#pruebas-de-igualdad"><span class="header-section-number">13.5.1</span> Pruebas de igualdad</a></li>
+  <li><a href="#prueba-de-errores" id="toc-prueba-de-errores" class="nav-link" data-scroll-target="#prueba-de-errores"><span class="header-section-number">13.5.2</span> Prueba de errores</a></li>
+  <li><a href="#sec-snapshot-tests" id="toc-sec-snapshot-tests" class="nav-link" data-scroll-target="#sec-snapshot-tests"><span class="header-section-number">13.5.3</span> Pruebas de instantáneas</a></li>
+  <li><a href="#atajos-para-otros-patrones-comunes" id="toc-atajos-para-otros-patrones-comunes" class="nav-link" data-scroll-target="#atajos-para-otros-patrones-comunes"><span class="header-section-number">13.5.4</span> Atajos para otros patrones comunes</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title"><span id="sec-testing-basics" class="quarto-section-identifier"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><p>Las pruebas son una parte vital del desarrollo de paquetes: garantizan que su código haga lo que desea. Sin embargo, las pruebas añaden un paso adicional a su flujo de trabajo. Para hacer esta tarea más fácil y efectiva, este capítulo le mostrará cómo realizar pruebas automatizadas formales utilizando el paquete testthat.</p>
+<p>La primera etapa de su viaje a las pruebas es convencerse de que las pruebas tienen suficientes beneficios para justificar el trabajo. Para algunos de nosotros, esto es fácil de aceptar. Otros deben aprender por las malas.</p>
+<p>Una vez que haya decidido adoptar las pruebas automatizadas, es hora de aprender algunas mecánicas y descubrir dónde encajan las pruebas en su flujo de trabajo de desarrollo.</p>
+<p>A medida que usted y sus paquetes R evolucionen, comenzará a encontrar situaciones de prueba en las que es fructífero utilizar técnicas que son algo específicas de las pruebas y que difieren de lo que hacemos a continuación en <code>R/</code>.</p>
+<section id="por-qué-vale-la-pena-realizar-pruebas-formales" class="level2" data-number="13.1"><h2 data-number="13.1" class="anchored" data-anchor-id="por-qué-vale-la-pena-realizar-pruebas-formales">
+<span class="header-section-number">13.1</span> ¿Por qué vale la pena realizar pruebas formales?</h2>
+<p>Hasta ahora, su flujo de trabajo probablemente se vea así:</p>
+<ol type="1">
+<li>Escribe una función.</li>
+<li>Cárguelo con <code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code>, tal vez mediante Ctrl/Cmd + Shift + L.</li>
+<li>Experimente con ello en la consola para ver si funciona.</li>
+<li>Enjuague y repita.</li>
+</ol>
+<p>Mientras <em>estás</em> probando tu código en este flujo de trabajo, solo lo haces de manera informal. El problema con este enfoque es que cuando vuelvas a este código dentro de 3 meses para agregar una nueva característica, probablemente hayas olvidado algunas de las pruebas informales que ejecutaste la primera vez. Esto hace que sea muy fácil descifrar el código que solía funcionar.</p>
+<p>Muchos de nosotros adoptamos las pruebas automatizadas cuando nos damos cuenta de que estamos corrigiendo un error por segunda o quinta vez. Mientras escribimos código o corregimos errores, podemos realizar algunas pruebas interactivas para asegurarnos de que el código en el que estamos trabajando haga lo que queremos. Pero es fácil olvidar todos los diferentes casos de uso que necesita verificar si no tiene un sistema para almacenar y volver a ejecutar las pruebas. Esta es una práctica común entre los programadores de R. El problema no es que no pruebes tu código, es que no automatizas tus pruebas.</p>
+<p>En este capítulo aprenderá cómo realizar la transición de pruebas informales <em>ad hoc</em>, realizadas de forma interactiva en la consola, a pruebas automatizadas (también conocidas como pruebas unitarias). Si bien convertir pruebas interactivas informales en pruebas formales requiere un poco más de trabajo inicial, vale la pena de cuatro maneras:</p>
+<ul>
+<li>
+<p>Menos errores. Debido a que es explícito acerca de cómo debe comportarse su código, tendrá menos errores. La razón es un poco parecida a la razón por la que funciona la contabilidad por partida doble: debido a que usted describe el comportamiento de su código en dos lugares, tanto en su código como en sus pruebas, puede comparar uno con el otro.</p>
+<p>Con las pruebas informales, resulta tentador simplemente explorar el uso típico y auténtico, similar a escribir ejemplos. Sin embargo, al escribir pruebas formales, es natural adoptar una mentalidad más conflictiva y anticipar cómo entradas inesperadas podrían romper su código.</p>
+<p>Si siempre introduce nuevas pruebas cuando agrega una nueva característica o función, evitará que se creen muchos errores en primer lugar, porque abordará proactivamente los molestos casos extremos. Las pruebas también evitan que (re) rompas una característica cuando estás modificando otra.</p>
+</li>
+<li><p>Mejor estructura de código. El código bien diseñado tiende a ser fácil de probar y usted puede aprovecharlo. Si tiene dificultades para escribir pruebas, considere si el problema es en realidad el diseño de su(s) función(es). El proceso de redacción de pruebas es una excelente manera de obtener comentarios gratuitos, privados y personalizados sobre qué tan bien factorizado está su código. Si integra las pruebas en su flujo de trabajo de desarrollo (en lugar de planificar realizar las pruebas “más tarde”), se verá sometido a una presión constante para dividir operaciones complicadas en funciones separadas que funcionan de forma aislada. Las funciones que son más fáciles de probar suelen ser más fáciles de entender y recombinar de nuevas formas.</p></li>
+<li><p>Llamada a la acción. Cuando comenzamos a corregir un error, primero nos gusta convertirlo en una prueba (fallida). Esto es maravillosamente eficaz para hacer que su objetivo sea muy concreto: hacer que esta prueba pase. Este es básicamente un caso especial de una metodología general conocida como desarrollo impulsado por pruebas.</p></li>
+<li><p>Código robusto. Si sabe que todas las funciones principales de su paquete están bien cubiertas por las pruebas, puede realizar grandes cambios con confianza sin preocuparse de romper algo accidentalmente. Esto proporciona una excelente verificación de la realidad cuando cree que ha descubierto una nueva y brillante forma de simplificar su paquete. A veces, estas “simplificaciones” no tienen en cuenta algún caso de uso importante y sus pruebas lo salvarán de usted mismo.</p></li>
+</ul></section><section id="presentamos-testthat" class="level2" data-number="13.2"><h2 data-number="13.2" class="anchored" data-anchor-id="presentamos-testthat">
+<span class="header-section-number">13.2</span> Presentamos testthat</h2>
+<p>Este capítulo describe cómo probar su paquete R usando el paquete testthat: <a href="https://testthat.r-lib.org" class="uri">https://testthat.r-lib.org</a></p>
+<p>Si está familiarizado con los marcos para pruebas unitarias en otros lenguajes, debe tener en cuenta que existen algunas diferencias fundamentales con testthat. Esto se debe a que R es, en esencia, más un lenguaje de programación funcional que un lenguaje de programación orientado a objetos. Por ejemplo, debido a que los principales sistemas orientados a objetos de R (S3 y S4) se basan en funciones genéricas (es decir, un método implementa una función genérica para una clase específica), los enfoques de prueba creados alrededor de objetos y métodos no tienen mucho sentido.</p>
+<p>testthat 3.0.0 (lanzado el 31 de octubre de 2020) introdujo la idea de una <strong>edición</strong> de testthat, específicamente la tercera edición de testthat, a la que nos referimos como testthat 3e. Una edición es un conjunto de comportamientos que usted debe elegir explícitamente utilizar, lo que nos permite realizar cambios que de otro modo serían incompatibles con versiones anteriores. Esto es particularmente importante para testthat, ya que tiene una gran cantidad de paquetes que lo utilizan (casi 5000 según el último recuento). Para utilizar testthat 3e, debe tener una versión de testthat &gt;= 3.0.0 <strong>y</strong> aceptar explícitamente los comportamientos de la tercera edición. Esto permite que testthat continúe evolucionando y mejorando sin romper los paquetes históricos que se encuentran en una fase de mantenimiento bastante pasiva. Puede obtener más información en el <a href="https://testthat.r-lib.org/articles/third-edition.html">artículo testthat 3e</a> y la publicación del blog <a href="https://www.%20tidyverse.org/blog/2022/02/upkeep-testthat-3/">Actualización a testthat edición 3</a>.</p>
+<p>Recomendamos testthat 3e para todos los paquetes nuevos y recomendamos actualizar los paquetes existentes que se mantienen activamente para usar testthat 3e. A menos que digamos lo contrario, este capítulo describe la prueba que 3e.</p>
+</section><section id="sec-tests-mechanics-workflow" class="level2" data-number="13.3"><h2 data-number="13.3" class="anchored" data-anchor-id="sec-tests-mechanics-workflow">
+<span class="header-section-number">13.3</span> Mecánica de prueba y flujo de trabajo</h2>
+<section id="configuración-inicial" class="level3" data-number="13.3.1"><h3 data-number="13.3.1" class="anchored" data-anchor-id="configuración-inicial">
+<span class="header-section-number">13.3.1</span> Configuración inicial</h3>
+<p>Para configurar su paquete para usar testthat, ejecute:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_testthat.html">use_testthat</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esto va a:</p>
+<ol type="1">
+<li><p>Crear un directorio <code>tests/testthat/</code>.</p></li>
+<li>
+<p>Agregar testthat al campo <code>Suggests</code> en <code>DESCRIPTION</code> y especificar testthat 3e en el campo <code>Config/testthat/edition</code>. Los campos <code>DESCRIPTION</code> afectados podrían verse así:</p>
+<pre><code>Suggests: testthat (&gt;= 3.0.0)
+Config/testthat/edition: 3</code></pre>
+</li>
+<li>
+<p>Crear un archivo <code>tests/testthat.R</code> que ejecuta todas sus pruebas cuando se ejecute <code>R CMD check</code> (<a href="workflow101.html#sec-workflow101-r-cmd-check"><span>Sección&nbsp;4.5</span></a>). Para un paquete llamado “pkg”, el contenido de este archivo será algo como:</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org">testthat</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_package.html">test_check</a></span><span class="op">(</span><span class="st">"pkg"</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</li>
+</ol>
+<p>Esta configuración inicial suele ser algo que se hace una vez por paquete. Sin embargo, incluso en un paquete que ya usa testthat, es seguro ejecutar <code>use_testthat(3)</code>, cuando esté listo para optar por testthat 3e.</p>
+<p>¡No edite <code>tests/testthat.R</code>! Se ejecuta durante <code>R CMD check</code> (y, por lo tanto, <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code>), pero no se usa en la mayoría de los otros escenarios de ejecución de pruebas (como <code><a href="https://devtools.r-lib.org/reference/test.html">devtools::test()</a></code> o <code>devtools: :test_active_file()</code>). Si desea hacer algo que afecte todas sus pruebas, casi siempre hay una mejor manera que modificar el script estándar <code>tests/testthat.R</code>. Este capítulo detalla muchas formas diferentes de hacer que los objetos y la lógica estén disponibles durante las pruebas.</p>
+</section><section id="crear-una-prueba" class="level3" data-number="13.3.2"><h3 data-number="13.3.2" class="anchored" data-anchor-id="crear-una-prueba">
+<span class="header-section-number">13.3.2</span> Crear una prueba</h3>
+<p>A medida que define funciones en su paquete, en los archivos debajo de <code>R/</code>, agrega las pruebas correspondientes a los archivos <code>.R</code> en <code>tests/testthat/</code>. Recomendamos encarecidamente que la organización de los archivos de prueba coincida con la organización de los archivos <code>R/</code>, discutidos en <a href="code.html#sec-code-organising"><span>Sección&nbsp;6.1</span></a>: La función <code>foofy()</code> (y sus amigos y ayudantes) debe definirse en <code>R/foofy.R</code> y sus pruebas deben vivir en <code>tests/testthat/test-foofy.R</code>.</p>
+<pre><code>R                                     tests/testthat
+└── foofy.R                           └── test-foofy.R
+    foofy &lt;- function(...) {...}          test_that("foofy does this", {...})
+                                          test_that("foofy does that", {...})</code></pre>
+<p>Incluso si tiene diferentes convenciones para la organización y el nombre de archivos, tenga en cuenta que las pruebas testthat <strong>deben</strong> residir en archivos debajo de <code>tests/testthat/</code> y estos nombres de archivos <strong>deben</strong> comenzar con <code>test</code>. El nombre del archivo de prueba se muestra en la salida de testthat, lo que proporciona un contexto útil<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<!-- Hadley thinks this is too much detail about use_r()/use_test(). I will likely agree when I revisit this later. Leaving it for now. -->
+<p>usethis ofrece un par de funciones útiles para crear o alternar entre archivos:</p>
+<ul>
+<li><code><a href="https://usethis.r-lib.org/reference/use_r.html">usethis::use_r()</a></code></li>
+<li><code><a href="https://usethis.r-lib.org/reference/use_r.html">usethis::use_test()</a></code></li>
+</ul>
+<p>Cualquiera de los dos puede ser llamado con un nombre de archivo (base), para crear un archivo <em>de novo</em> y abrirlo para editarlo:</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">use_r</span><span class="op">(</span><span class="st">"foofy"</span><span class="op">)</span>    <span class="co"># creates and opens R/foofy.R</span></span>
+<span><span class="fu">use_test</span><span class="op">(</span><span class="st">"blarg"</span><span class="op">)</span> <span class="co"># creates and opens tests/testthat/test-blarg.R</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>El dúo <code>use_r()</code> / <code>use_test()</code> tiene algunas características convenientes que los hacen “simplemente funcionar” en muchas situaciones comunes:</p>
+<ul>
+<li>Al determinar el archivo de destino, pueden tener en cuenta la presencia o ausencia de la extensión <code>.R</code> y el prefijo <code>test-</code>.
+<ul>
+<li>Equivalente: <code>use_r("foofy.R")</code>, <code>use_r("foofy")</code>
+</li>
+<li>Equivalente: <code>use_test("test-blarg.R")</code>, <code>use_test("blarg.R")</code>, <code>use_test("blarg")</code>
+</li>
+</ul>
+</li>
+<li>Si el archivo de destino ya existe, se abre para editarlo. De lo contrario, el objetivo se crea y luego se abre para editarlo.</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Si <code>R/foofy.R</code> es el archivo activo en su editor de código fuente, ¡incluso puede llamar a <code>use_test()</code> sin argumentos! El archivo de prueba de destino se puede inferir: si está editando <code>R/foofy.R</code>, probablemente desee trabajar en el archivo de prueba complementario, <code>tests/testthat/test-foofy.R</code>. Si aún no existe, se crea y, de cualquier manera, el archivo de prueba se abre para editarlo. Todo esto también funciona al revés. Si está editando <code>tests/testthat/test-foofy.R</code>, una llamada a <code>use_r()</code> (opcionalmente, crea y) abre <code>R/foofy.R</code>.</p>
+</div>
+</div>
+<p>En pocas palabras: <code>use_r()</code> / <code>use_test()</code> son útiles para crear inicialmente estos pares de archivos y, más tarde, para desviar su atención de uno a otro.</p>
+<p>Cuando <code>use_test()</code> crea un nuevo archivo de prueba, inserta una prueba de ejemplo:</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span><span class="op">(</span><span class="st">"multiplication works"</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Reemplazarás esto con tu propia descripción y lógica, pero es un buen recordatorio de la forma básica:</p>
+<ul>
+<li>Un archivo de prueba contiene una o más pruebas <code><a href="https://testthat.r-lib.org/reference/test_that.html">test_that()</a></code>.</li>
+<li>Cada prueba describe lo que está probando: por ejemplo, “la multiplicación funciona”.</li>
+<li>Cada prueba tiene una o más expectativas: por ejemplo, <code>expect_equal(2 * 2, 4)</code>.</li>
+</ul>
+<p>A continuación, entramos en muchos más detalles sobre cómo probar sus propias funciones.</p>
+</section><section id="ejecutar-pruebas" class="level3" data-number="13.3.3"><h3 data-number="13.3.3" class="anchored" data-anchor-id="ejecutar-pruebas">
+<span class="header-section-number">13.3.3</span> Ejecutar pruebas</h3>
+<p>Dependiendo de dónde se encuentre en el ciclo de desarrollo, ejecutará sus pruebas en varias escalas. Cuando itera rápidamente una función, puede trabajar a nivel de pruebas individuales. A medida que el código se asiente, ejecutará archivos de prueba completos y, finalmente, todo el conjunto de pruebas.</p>
+<p><strong>Microiteración</strong>: esta es la fase interactiva en la que inicia y perfecciona una función y sus pruebas en conjunto. Aquí ejecutará <code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code> con frecuencia y luego ejecutará expectativas individuales o pruebas completas de forma interactiva en la consola. Tenga en cuenta que <code>load_all()</code> adjunta testthat, por lo que lo coloca en la posición perfecta para probar sus funciones y ejecutar pruebas y expectativas individuales.</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># modifica la función foofy() y vuelve a cargarla</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html">load_all</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># explorar y perfeccionar interactivamente expectativas y pruebas</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fu">foofy</span><span class="op">(</span><span class="va">...</span><span class="op">)</span>, <span class="va">EXPECTED_FOOFY_OUTPUT</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span><span class="op">(</span><span class="st">"foofy does good things"</span>, <span class="op">{</span><span class="va">...</span><span class="op">}</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Mezzo-iteración</strong>: A medida que las funciones de un archivo y sus pruebas asociadas comienzan a tomar forma, querrás ejecutar el archivo completo de pruebas asociadas, tal vez con <code><a href="https://testthat.r-lib.org/reference/test_file.html">testthat::test_file()</a></code>:</p>
+<!-- `devtools::test_file()` exists, but is deprecated, because of the collision.
+
+Consider marking as defunct / removing before the book is published. -->
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_file.html">test_file</a></span><span class="op">(</span><span class="st">"tests/testthat/test-foofy.R"</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En RStudio, tiene un par de atajos para ejecutar un único archivo de prueba.</p>
+<p>Si el archivo de prueba de destino es el archivo activo, puede usar el botón “Ejecutar pruebas” en la esquina superior derecha del editor de origen.</p>
+<p>También hay una función útil, <code><a href="https://devtools.r-lib.org/reference/test.html">devtools::test_active_file()</a></code>. Infiere el archivo de prueba de destino a partir del archivo activo y, de manera similar a cómo funcionan <code>use_r()</code> y <code>use_test()</code>, funciona independientemente de si el archivo activo es un archivo de prueba o un <code>R/*.R</code> complementario. archivo. Puede invocar esto a través de “Ejecutar un archivo de prueba” en el menú Complementos. Sin embargo, para usuarios habituales (¡como nosotros!), recomendamos <a href="https://support.rstudio.com/hc/en-us/articles/206382178-Customizing-Keyboard-Shortcuts-in-%20el-RStudio-IDE">vincular esto a un método abreviado de teclado</a>; Usamos Ctrl/Cmd + T.</p>
+</div>
+</div>
+<p><strong>Macroiteración</strong>: a medida que se acerque a la finalización de una nueva función o corrección de errores, querrá ejecutar todo el conjunto de pruebas.</p>
+<p>Lo más frecuente es que hagas esto con <code><a href="https://devtools.r-lib.org/reference/test.html">devtools::test()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/test.html">test</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Luego, eventualmente, como parte de <code>R CMD check</code> con <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/check.html">check</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code><a href="https://devtools.r-lib.org/reference/test.html">devtools::test()</a></code> está asignado a Ctrl/Cmd + Shift + T. <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code> está asignado a Ctrl/Cmd + Shift + E.</p>
+</div>
+</div>
+<!-- We'll probably want to replace this example eventually, but it's a decent placeholder.
+The test failure is something highly artificial I created very quickly. 
+It would be better to use an example that actually makes sense, if someone elects to really read and think about it.-->
+<p>La salida de <code><a href="https://devtools.r-lib.org/reference/test.html">devtools::test()</a></code> se ve así:</p>
+<pre><code>devtools::test()
+ℹ Loading usethis
+ℹ Testing usethis
+✓ | F W S  OK | Context
+✓ |         1 | addin [0.1s]
+✓ |         6 | badge [0.5s]
+   ...
+✓ |        27 | github-actions [4.9s]
+   ...
+✓ |        44 | write [0.6s]
+
+══ Results ═════════════════════════════════════════════════════════════════
+Duration: 31.3 s
+
+── Skipped tests  ──────────────────────────────────────────────────────────
+• Not on GitHub Actions, Travis, or Appveyor (3)
+
+[ FAIL 1 | WARN 0 | SKIP 3 | PASS 728 ]</code></pre>
+<p>El error de la prueba se informa así:</p>
+<pre><code>Failure (test-release.R:108:3): get_release_data() works if no file found
+res$Version (`actual`) not equal to "0.0.0.9000" (`expected`).
+
+`actual`:   "0.0.0.1234"
+`expected`: "0.0.0.9000"</code></pre>
+<p>Cada error proporciona una descripción de la prueba (p.&nbsp;ej., “get_release_data() funciona si no se encuentra ningún archivo”), su ubicación (p.&nbsp;ej., “test-release.R:108:3”) y el motivo del error (p.&nbsp;ej., “res$Versión (<code>actual</code>) no es igual a”0.0.0.9000” (<code>esperado</code>)“).</p>
+<p>La idea es que modifiques tu código (ya sea las funciones definidas debajo de <code>R/</code> o las pruebas en <code>tests/testthat/</code>) hasta que todas las pruebas pasen.</p>
+</section></section><section id="organización-de-pruebas" class="level2" data-number="13.4"><h2 data-number="13.4" class="anchored" data-anchor-id="organización-de-pruebas">
+<span class="header-section-number">13.4</span> Organización de pruebas</h2>
+<p>Un archivo de prueba se encuentra en <code>tests/testthat/</code>. Su nombre debe comenzar con “prueba”. Inspeccionaremos y ejecutaremos un archivo de prueba del paquete stringr.</p>
+<!-- https://github.com/hadley/r-pkgs/issues/778 -->
+<p>Pero primero, a los efectos de reproducir este libro, debemos adjuntar stringr y probar eso. Tenga en cuenta que en situaciones de ejecución de pruebas de la vida real, las herramientas de desarrollo de paquetes se encargan de esto:</p>
+<ul>
+<li>Durante el desarrollo interactivo, <code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code> hace que testthat y el paquete en desarrollo estén disponibles (tanto sus funciones exportadas como no exportadas).</li>
+<li>Durante la ejecución de la prueba independiente, <code><a href="https://devtools.r-lib.org/reference/test.html">devtools::test_active_file()</a></code>, <code><a href="https://devtools.r-lib.org/reference/test.html">devtools::test()</a></code> y <code>tests/testthat.R</code> se encargan de esto.</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Sus archivos de prueba no deben incluir estas llamadas <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>. También solicitamos explícitamente testthat edición 3, pero en un paquete real esto se declarará en DESCRIPTION.</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://testthat.r-lib.org">testthat</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org">stringr</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/local_edition.html">local_edition</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<p>Aquí está el contenido de <code>tests/testthat/test-dup.r</code> de stringr:</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span><span class="op">(</span><span class="st">"basic duplication works"</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_dup.html">str_dup</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="fl">3</span><span class="op">)</span>, <span class="st">"aaa"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_dup.html">str_dup</a></span><span class="op">(</span><span class="st">"abc"</span>, <span class="fl">2</span><span class="op">)</span>, <span class="st">"abcabc"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_dup.html">str_dup</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"aa"</span>, <span class="st">"bb"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_dup.html">str_dup</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"aa"</span>, <span class="st">"bbb"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Test passed</span></span>
+<span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span><span class="op">(</span><span class="st">"0 duplicates equals empty string"</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_dup.html">str_dup</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="fl">0</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_dup.html">str_dup</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">""</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Test passed</span></span>
+<span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span><span class="op">(</span><span class="st">"uses tidyverse recycling rules"</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_error</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_dup.html">str_dup</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, class <span class="op">=</span> <span class="st">"vctrs_error_incompatible_size"</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Test passed</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Este archivo muestra una combinación típica de pruebas:</p>
+<ul>
+<li>“La duplicación básica funciona” prueba el uso típico de <code><a href="https://stringr.tidyverse.org/reference/str_dup.html">str_dup()</a></code>.</li>
+<li>“0 duplicados equivalen a una cadena vacía” investiga un caso extremo específico.</li>
+<li>“usa reglas de reciclaje de tidyverse” comprueba que la entrada con formato incorrecto produzca un tipo específico de error.</li>
+</ul>
+<p>Las pruebas están organizadas jerárquicamente: <strong>las expectativas</strong> se agrupan en <strong>pruebas</strong> que se organizan en <strong>archivos</strong>:</p>
+<ul>
+<li><p>Un <strong>archivo</strong> contiene múltiples pruebas relacionadas. En este ejemplo, el archivo <code>tests/testthat/test-dup.r</code> tiene todas las pruebas para el código en <code>R/dup.r</code>.</p></li>
+<li>
+<p>Una <strong>prueba</strong> agrupa múltiples expectativas para probar el resultado de una función simple, una variedad de posibilidades para un solo parámetro de una función más complicada o una funcionalidad estrechamente relacionada de múltiples funciones. Es por eso que a veces se les llama pruebas <strong>unitarias</strong>. Cada prueba debe cubrir una única unidad de funcionalidad. Se crea una prueba con <code>test_that(desc, code)</code>.</p>
+<p>Es común escribir la descripción (<code>desc</code>) para crear algo que se lea naturalmente, por ejemplo, <code>test_that("la duplicación básica funciona", {... })</code>. Un informe de falla de prueba incluye esta descripción, razón por la cual desea una declaración concisa del propósito de la prueba, por ejemplo, un comportamiento específico.</p>
+</li>
+<li><p>Una <strong>expectativa</strong> es el átomo de la prueba. Describe el resultado esperado de un cálculo: ¿Tiene el valor correcto y la clase correcta? ¿Produce un error cuando debería? Una expectativa automatiza la verificación visual de los resultados en la consola. Las expectativas son funciones que comienzan con <code>expect_</code>.</p></li>
+</ul>
+<p>Desea organizar las cosas de manera que, cuando una prueba falle, sepa qué está mal y en qué parte de su código buscar el problema. Esto motiva todas nuestras recomendaciones con respecto a la organización de archivos, el nombre de los archivos y la descripción de la prueba. Finalmente, trate de evitar poner demasiadas expectativas en una prueba; es mejor tener más pruebas más pequeñas que menos pruebas más grandes.</p>
+</section><section id="expectativas" class="level2" data-number="13.5"><h2 data-number="13.5" class="anchored" data-anchor-id="expectativas">
+<span class="header-section-number">13.5</span> Expectativas</h2>
+<p>Una expectativa es el mejor nivel de prueba. Hace una afirmación binaria sobre si un objeto tiene o no las propiedades esperadas. Este objeto suele ser el valor de retorno de una función en su paquete.</p>
+<p>Todas las expectativas tienen una estructura similar:</p>
+<ul>
+<li><p>Comienzan con <code>expect_</code>.</p></li>
+<li><p>Tienen dos argumentos principales: el primero es el resultado real, el segundo es lo que se espera.</p></li>
+<li><p>Si los resultados reales y esperados no coinciden, la prueba arroja un error.</p></li>
+<li><p>Algunas expectativas tienen argumentos adicionales que controlan los puntos más finos de comparar un resultado real y esperado.</p></li>
+</ul>
+<p>Si bien normalmente colocará las expectativas dentro de las pruebas dentro de los archivos, también puede ejecutarlas directamente. Esto facilita la exploración de las expectativas de forma interactiva. Hay más de 40 expectativas en el paquete testthat, que se pueden explorar en el <a href="https://testthat.r-lib.org/reference/index.html">índice de referencia de testthat</a>. Aquí sólo cubriremos las expectativas más importantes.</p>
+<section id="pruebas-de-igualdad" class="level3" data-number="13.5.1"><h3 data-number="13.5.1" class="anchored" data-anchor-id="pruebas-de-igualdad">
+<span class="header-section-number">13.5.1</span> Pruebas de igualdad</h3>
+<p><code><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal()</a></code> comprueba la igualdad, con una cantidad razonable de tolerancia numérica:</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10L</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span> <span class="op">+</span> <span class="fl">1e-7</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">11</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: 10 (`actual`) not equal to 11 (`expected`).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   `actual`: 10</span></span>
+<span><span class="co">#&gt; `expected`: 11</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Si desea probar la equivalencia exacta, utilice <code><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_identical()</a></code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span> <span class="op">+</span> <span class="fl">1e-7</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_identical</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span> <span class="op">+</span> <span class="fl">1e-7</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: 10 (`actual`) not identical to 10 + 1e-07 (`expected`).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   `actual`: 10.0000000</span></span>
+<span><span class="co">#&gt; `expected`: 10.0000001</span></span>
+<span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2L</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_identical</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2L</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: 2 (`actual`) not identical to 2L (`expected`).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; `actual` is a double vector (2)</span></span>
+<span><span class="co">#&gt; `expected` is an integer vector (2)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="prueba-de-errores" class="level3" data-number="13.5.2"><h3 data-number="13.5.2" class="anchored" data-anchor-id="prueba-de-errores">
+<span class="header-section-number">13.5.2</span> Prueba de errores</h3>
+<p>Utilice <code><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_error()</a></code> para comprobar si una expresión arroja un error. Es la expectativa más importante en un trío que también incluye <code><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_warning()</a></code> y <code><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_message()</a></code>. Aquí vamos a enfatizar los errores, pero la mayor parte de esto también se aplica a las advertencias y mensajes.</p>
+<p>Por lo general, le importan dos cosas cuando prueba un error:</p>
+<ul>
+<li>¿El código falla? Específicamente, ¿falla por el motivo correcto?</li>
+<li>¿Tiene sentido el mensaje que lo acompaña para el ser humano que necesita lidiar con el error?</li>
+</ul>
+<p>La solución básica es esperar un tipo específico de condición:</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fl">1</span> <span class="op">/</span> <span class="st">"a"</span></span>
+<span><span class="co">#&gt; Error in 1/"a": argumento no-numérico para operador binario</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_error</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="st">"a"</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in log(-1): Se han producido NaNs</span></span>
+<span><span class="co">#&gt; [1] NaN</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_warning</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Sin embargo, esto es un poco peligroso, especialmente cuando se prueba un error. ¡Hay muchas maneras en que el código falla! Considere la siguiente prueba:</p>
+<div class="cell">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_error</a></span><span class="op">(</span><span class="fu">str_duq</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esta expectativa tiene como objetivo probar el comportamiento de reciclaje de <code><a href="https://stringr.tidyverse.org/reference/str_dup.html">str_dup()</a></code>. Pero, debido a un error tipográfico, prueba el comportamiento de una función inexistente, <code>str_duq()</code>. El código arroja un error y, por lo tanto, la prueba anterior pasa, pero por el <em>motivo equivocado</em>. Debido al error tipográfico, el error real arrojado se debe a que no se puede encontrar la función <code>str_duq()</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">str_duq</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in str_duq(1:2, 1:3): no se pudo encontrar la función "str_duq"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Históricamente, la mejor defensa contra esto era afirmar que el mensaje de condición coincide con una determinada expresión regular, mediante el segundo argumento, <code>regexp</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_error</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="st">"a"</span>, <span class="st">"non-numeric argument"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in 1/"a": argumento no-numérico para operador binario</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_warning</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="st">"NaNs produced"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in log(-1): Se han producido NaNs</span></span>
+<span><span class="co">#&gt; Error: `log(-1)` did not throw the expected warning.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>De hecho, esto hace que nuestro problema de error tipográfico salga a la superficie:</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_error</a></span><span class="op">(</span><span class="fu">str_duq</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, <span class="st">"recycle"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in str_duq(1:2, 1:3): no se pudo encontrar la función "str_duq"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Los desarrollos recientes tanto en base R como en rlang hacen que sea cada vez más probable que las condiciones se señalen con una <em>clase</em>, lo que proporciona una mejor base para crear expectativas precisas. Eso es exactamente lo que ya has visto en este ejemplo de cadena. Para esto sirve el argumento <code>class</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># falla, el error tiene una clase incorrecta</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_error</a></span><span class="op">(</span><span class="fu">str_duq</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, class <span class="op">=</span> <span class="st">"vctrs_error_incompatible_size"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in str_duq(1:2, 1:3): no se pudo encontrar la función "str_duq"</span></span>
+<span></span>
+<span><span class="co"># pasa, el error tiene la clase esperada</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_error</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_dup.html">str_dup</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, class <span class="op">=</span> <span class="st">"vctrs_error_incompatible_size"</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<!-- This advice feels somewhat at odds with Hadley's ambivalence about classed errors.
+I.e. I think he recommends using a classed condition only when there's a specific reason to.
+Then again, maybe the desire to test it is a legitimate reason? -->
+<p>Si tiene la opción, exprese sus expectativas en términos de la clase de la condición, en lugar de su mensaje. A menudo esto está bajo su control, es decir, si su paquete indica la condición. Si la condición se origina en la base R u otro paquete, proceda con precaución. Esto suele ser un buen recordatorio para reconsiderar la conveniencia de probar una condición que, en primer lugar, no está completamente bajo su control.</p>
+<p>Para verificar la <em>ausencia</em> de un error, advertencia o mensaje, use <code><a href="https://testthat.r-lib.org/reference/expect_no_error.html">expect_no_error()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_no_error.html">expect_no_error</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Por supuesto, esto es funcionalmente equivalente a simplemente ejecutar <code>1/2</code> dentro de una prueba, pero algunos desarrolladores encuentran expresiva la expectativa explícita.</p>
+<p>Si realmente le importa el mensaje de la condición, las pruebas instantáneas de testthat 3e son el mejor enfoque, que describimos a continuación.</p>
+</section><section id="sec-snapshot-tests" class="level3" data-number="13.5.3"><h3 data-number="13.5.3" class="anchored" data-anchor-id="sec-snapshot-tests">
+<span class="header-section-number">13.5.3</span> Pruebas de instantáneas</h3>
+<p>A veces resulta difícil o incómodo describir un resultado esperado con código. Las pruebas instantáneas son una gran solución a este problema y esta es una de las principales innovaciones en testthat 3e. La idea básica es registrar el resultado esperado en un archivo separado y legible por humanos. En el futuro, prueba que le avisa cuando un resultado recién calculado difiere de la instantánea registrada anteriormente. Las pruebas de instantáneas son particularmente adecuadas para monitorear la interfaz de usuario de su paquete, como sus mensajes informativos y errores. Otros casos de uso incluyen probar imágenes u otros objetos complicados.</p>
+<p>Ilustraremos las pruebas de instantáneas utilizando el paquete waldo. Debajo del capó, testthat 3e usa waldo para hacer el trabajo pesado de comparaciones “reales versus esperadas”, por lo que es bueno que sepas un poco sobre waldo de todos modos. Uno de los principales objetivos de diseño de Waldo es presentar las diferencias de una manera clara y práctica, en lugar de una frustrante declaración de que “esto difiere de aquello y sé exactamente cómo, pero no te lo diré”. Por lo tanto, el formato de la salida de <code><a href="https://waldo.r-lib.org/reference/compare.html">waldo::compare()</a></code> es muy intencional y se adapta bien a una prueba de instantáneas. El resultado binario de <code>TRUE</code> (real == esperado) versus <code>FALSE</code> (real! = esperado) es bastante fácil de verificar y podría obtener su propia prueba. Aquí nos preocupa escribir una prueba para garantizar que las diferencias se informen al usuario de la forma prevista.</p>
+<p>Waldo utiliza algunos diseños diferentes para mostrar diferencias, dependiendo de diversas condiciones. Aquí restringimos deliberadamente el ancho para activar un diseño de lado a lado.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> (Hablaremos más sobre el paquete withr a continuación).</p>
+<div class="cell">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_options.html">with_options</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,</span>
+<span>  <span class="fu">waldo</span><span class="fu">::</span><span class="fu"><a href="https://waldo.r-lib.org/reference/compare.html">compare</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span>, <span class="va">letters</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">letters</span>, <span class="st">"X"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;     old | new    </span></span>
+<span><span class="co">#&gt; [1] "X" -        </span></span>
+<span><span class="co">#&gt; [2] "a" | "a" [1]</span></span>
+<span><span class="co">#&gt; [3] "b" | "b" [2]</span></span>
+<span><span class="co">#&gt; [4] "c" | "c" [3]</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      old | new     </span></span>
+<span><span class="co">#&gt; [25] "x" | "x" [24]</span></span>
+<span><span class="co">#&gt; [26] "y" | "y" [25]</span></span>
+<span><span class="co">#&gt; [27] "z" | "z" [26]</span></span>
+<span><span class="co">#&gt;          - "X" [27]</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Las dos entradas principales difieren en dos ubicaciones: una al principio y otra al final. Este diseño presenta ambos, con algún contexto circundante, que ayuda al lector a orientarse.</p>
+<p>Así es como se vería esto como una prueba instantánea:</p>
+<!-- Actually using snapshot test technology here is hard.
+I can sort of see how it might be done, by looking at the source of testthat's vignette about snapshotting.
+For the moment, I'm just faking it. -->
+<div class="cell">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_that.html">test_that</a></span><span class="op">(</span><span class="st">"side-by-side diffs work"</span>, <span class="op">{</span></span>
+<span>  <span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_options.html">local_options</a></span><span class="op">(</span>width <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://testthat.r-lib.org/reference/expect_snapshot.html">expect_snapshot</a></span><span class="op">(</span></span>
+<span>    <span class="fu">waldo</span><span class="fu">::</span><span class="fu"><a href="https://waldo.r-lib.org/reference/compare.html">compare</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X"</span>, <span class="va">letters</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">letters</span>, <span class="st">"X"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Si ejecuta <code><a href="https://testthat.r-lib.org/reference/expect_snapshot.html">expect_snapshot()</a></code> o una prueba que contiene <code><a href="https://testthat.r-lib.org/reference/expect_snapshot.html">expect_snapshot()</a></code> de forma interactiva, verá esto:</p>
+<pre><code>Can't compare snapshot to reference when testing interactively
+ℹ Run `devtools::test()` or `testthat::test_file()` to see changes</code></pre>
+<p>seguido de una vista previa de la salida de la instantánea.</p>
+<p>Esto le recuerda que las pruebas instantáneas solo funcionan cuando se ejecutan de forma no interactiva, es decir, mientras se ejecuta un archivo de prueba completo o todo el conjunto de pruebas. Esto se aplica tanto a la grabación de instantáneas como a su comprobación.</p>
+<p>La primera vez que se ejecuta esta prueba a través de <code><a href="https://devtools.r-lib.org/reference/test.html">devtools::test()</a></code> o similar, verá algo como esto (suponga que la prueba está en <code>tests/testthat/test-diff.R</code>):</p>
+<pre><code>── Warning (test-diff.R:63:3): side-by-side diffs work ─────────────────────
+Adding new snapshot:
+Code
+  waldo::compare(c(
+    "X", letters), c(
+    letters, "X"))
+Output
+      old | new    
+  [1] "X" -        
+  [2] "a" | "a" [1]
+  [3] "b" | "b" [2]
+  [4] "c" | "c" [3]
+  
+       old | new     
+  [25] "x" | "x" [24]
+  [26] "y" | "y" [25]
+  [27] "z" | "z" [26]
+           - "X" [27]</code></pre>
+<p>Siempre hay una advertencia al crear la instantánea inicial. La instantánea se agrega a <code>tests/testthat/_snaps/diff.md</code>, bajo el título “side-by-side diffs work”, que proviene de la descripción de la prueba. La instantánea se ve exactamente como lo que un usuario ve de forma interactiva en la consola, que es la experiencia que queremos comprobar. El archivo de instantánea <em>también</em> es muy legible, lo cual resulta agradable para el desarrollador del paquete. Esta legibilidad se extiende a los cambios de instantáneas, es decir, al examinar las diferencias de Git y revisar las solicitudes de extracción en GitHub, lo que le ayuda a controlar su interfaz de usuario. En el futuro, siempre que su paquete continúe recapitulando la instantánea esperada, esta prueba pasará.</p>
+<p>Si ha escrito muchas pruebas unitarias convencionales, podrá apreciar lo adecuadas que son las pruebas instantáneas para este caso de uso. Si nos viésemos obligados a incluir el resultado esperado en el archivo de prueba, habría una gran cantidad de citas, escapes y administración de nuevas líneas. Irónicamente, con las expectativas convencionales, el resultado que espera que vea su usuario tiende a quedar oscurecido por una pesada capa de ruido sintáctico.</p>
+<p>¿Qué pasa cuando falla una prueba instantánea? Imaginemos un cambio interno hipotético en el que las etiquetas predeterminadas cambian de “old” y “new” a “OLD” y “NEW”. Así es como reaccionaría esta prueba instantánea:</p>
+<pre><code>── Failure (test-diff.R:63:3): side-by-side diffs work──────────────────────────
+Snapshot of code has changed:
+old[3:15] vs new[3:15]
+  "    \"X\", letters), c("
+  "    letters, \"X\"))"
+  "Output"
+- "      old | new    "
++ "      OLD | NEW    "
+  "  [1] \"X\" -        "
+  "  [2] \"a\" | \"a\" [1]"
+  "  [3] \"b\" | \"b\" [2]"
+  "  [4] \"c\" | \"c\" [3]"
+  "  "
+- "       old | new     "
++ "       OLD | NEW     "
+and 3 more ...
+
+* Run `snapshot_accept('diff')` to accept the change
+* Run `snapshot_review('diff')` to interactively review the change</code></pre>
+<p>Esta diferencia se presenta de manera más efectiva en la mayoría de los usos del mundo real, por ejemplo, en la consola, mediante un cliente Git o mediante una aplicación Shiny (ver más abajo). Pero incluso esta versión en texto plano resalta los cambios con bastante claridad. Cada uno de los dos lugares de cambio se indica con un par de líneas marcadas con <code>-</code> y <code>+</code>, que muestran cómo ha cambiado la instantánea.</p>
+<p>Puedes llamar a <code>testthat::snapshot_review('diff')</code> para revisar los cambios localmente en una aplicación Shiny, lo que te permite omitir o aceptar instantáneas individuales. O, si todos los cambios son intencionales y esperados, puede ir directamente a <code>testthat::snapshot_accept('diff')</code>. Una vez que haya resincronizado su salida real y las instantáneas archivadas, sus pruebas pasarán una vez más. En la vida real, las pruebas instantáneas son una excelente manera de mantenerse informado sobre los cambios en la interfaz de usuario de su paquete, debido a sus propios cambios internos o a cambios en sus dependencias o incluso al propio R.</p>
+<p><code><a href="https://testthat.r-lib.org/reference/expect_snapshot.html">expect_snapshot()</a></code> tiene algunos argumentos que vale la pena conocer:</p>
+<ul>
+<li><p><code>cran = FALSE</code>: De forma predeterminada, las pruebas instantáneas se omiten si parece que se están ejecutando en los servidores de CRAN. Esto refleja la intención típica de las pruebas instantáneas, que es monitorear proactivamente la interfaz de usuario, pero no verificar su corrección, lo que presumiblemente es el trabajo de otras pruebas unitarias que no se omiten. En el uso típico, un cambio de instantánea es algo que el desarrollador querrá saber, pero no indica un defecto real.</p></li>
+<li>
+<p><code>error = FALSE</code>: De forma predeterminada, el código de instantánea <em>no</em> puede generar un error. Consulte <code><a href="https://testthat.r-lib.org/reference/expect_error.html">expect_error()</a></code>, descrito anteriormente, para conocer un enfoque para probar errores. Pero a veces quieres evaluar “¿Tiene sentido este mensaje de error para un humano?” y tenerlo presentado en contexto en una instantánea es una excelente manera de verlo con nuevos ojos. Especifique <code>error = TRUE</code> en este caso:</p>
+<div class="cell">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_snapshot.html">expect_snapshot</a></span><span class="op">(</span>error <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_dup.html">str_dup</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</li>
+<li><p><code>transform</code>: a veces una instantánea contiene elementos volátiles e insignificantes, como una ruta de archivo temporal o una marca de tiempo. El argumento <code>transform</code> acepta una función, presumiblemente escrita por usted, para eliminar o reemplazar dicho texto modificable. Otro uso de “transformar” es eliminar información confidencial de la instantánea.</p></li>
+<li><p><code>variante</code>: A veces las instantáneas reflejan las condiciones ambientales, como el sistema operativo o la versión de R o una de tus dependencias, y necesitas una instantánea diferente para cada variante. Esta es una característica experimental y algo avanzada, por lo que si puedes organizar las cosas para usar una sola instantánea, probablemente deberías hacerlo.</p></li>
+</ul>
+<p>En un uso típico, testthat se encargará de administrar los archivos de instantáneas debajo de <code>tests/testthat/_snaps/</code>. Esto sucede en el curso normal de la ejecución de las pruebas y, tal vez, al llamar a <code><a href="https://testthat.r-lib.org/reference/snapshot_accept.html">testthat::snapshot_accept()</a></code>.</p>
+</section><section id="atajos-para-otros-patrones-comunes" class="level3" data-number="13.5.4"><h3 data-number="13.5.4" class="anchored" data-anchor-id="atajos-para-otros-patrones-comunes">
+<span class="header-section-number">13.5.4</span> Atajos para otros patrones comunes</h3>
+<p>Concluimos esta sección con algunas expectativas más que surgen con frecuencia. Pero recuerde que la prueba tiene <a href="https://testthat.r-lib.org/reference/index.html">muchas más expectativas prediseñadas</a> de las que podemos demostrar aquí.</p>
+<p>Varias expectativas pueden describirse como “atajos”, es decir, simplifican un patrón que aparece con suficiente frecuencia como para merecer su propio envoltorio.</p>
+<ul>
+<li>
+<p><code>expect_match(object, regexp, ...)</code> es un atajo que envuelve <code>grepl(pattern = regexp, x = object, ...)</code>. Compara una entrada de vector de caracteres con una expresión regular <code>regexp</code>. El argumento opcional “todos” controla si todos los elementos o solo uno deben coincidir. Lea la documentación <code><a href="https://testthat.r-lib.org/reference/expect_match.html">expect_match()</a></code> para ver cómo argumentos adicionales, como <code>ignore.case = FALSE</code> o <code>fixed = TRUE</code>, se pueden pasar a <code><a href="https://rdrr.io/r/base/grep.html">grepl()</a></code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">string</span> <span class="op">&lt;-</span> <span class="st">"Testing is fun!"</span></span>
+<span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_match.html">expect_match</a></span><span class="op">(</span><span class="va">string</span>, <span class="st">"Testing"</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co">#  Falla, la coincidencia distingue entre mayúsculas y minúsculas</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_match.html">expect_match</a></span><span class="op">(</span><span class="va">string</span>, <span class="st">"testing"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: `string` does not match "testing".</span></span>
+<span><span class="co">#&gt; Actual value: "Testing is fun!"</span></span>
+<span></span>
+<span><span class="co">#  Pasa porque se pasan argumentos adicionales a grepl():</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/expect_match.html">expect_match</a></span><span class="op">(</span><span class="va">string</span>, <span class="st">"testing"</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</li>
+<li><p><code>expect_length(object, n)</code> es un atajo para <code>expect_equal(length(object), n)</code>.</p></li>
+<li><p><code>expect_setequal(x, y)</code> prueba que cada elemento de <code>x</code> ocurre en <code>y</code>, y que cada elemento de <code>y</code> ocurre en <code>x</code>. Pero no fallará si “x” e “y” tienen sus elementos en un orden diferente.</p></li>
+<li>
+<p><code><a href="https://testthat.r-lib.org/reference/inheritance-expectations.html">expect_s3_class()</a></code> y <code><a href="https://testthat.r-lib.org/reference/inheritance-expectations.html">expect_s4_class()</a></code> comprueban que un objeto <code>hereda()</code> de una clase especificada. <code><a href="https://testthat.r-lib.org/reference/inheritance-expectations.html">expect_type()</a></code>comprueba el <code><a href="https://rdrr.io/r/base/typeof.html">typeof()</a></code> de un objeto.</p>
+<div class="cell">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/inheritance-expectations.html">expect_s3_class</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"lm"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://testthat.r-lib.org/reference/inheritance-expectations.html">expect_s3_class</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">"glm"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: `model` inherits from 'lm' not 'glm'.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</li>
+</ul>
+<p><code><a href="https://testthat.r-lib.org/reference/logical-expectations.html">expect_true()</a></code> y <code><a href="https://testthat.r-lib.org/reference/logical-expectations.html">expect_false()</a></code> son complementos útiles si ninguna de las otras expectativas cumple con lo que necesitas.</p>
+
+
+</section></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>La función heredada <code><a href="https://testthat.r-lib.org/reference/context.html">testthat::context()</a></code> ahora se reemplaza y se desaconseja su uso en código nuevo o mantenido activamente. En la prueba 3e, <code><a href="https://testthat.r-lib.org/reference/context.html">context()</a></code> está formalmente obsoleto; simplemente deberías eliminarlo. Una vez que adopta un enfoque intencional y sincronizado para la organización de los archivos debajo de <code>R/</code> y <code>tests/testthat/</code>, la información contextual necesaria está ahí mismo en el nombre del archivo, lo que hace que el <code><a href="https://testthat.r-lib.org/reference/context.html">context()</a></code> heredado sea superfluo.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>La prueba de Waldo real que inspira este ejemplo apunta a una función auxiliar no exportada que produce el diseño deseado. Pero este ejemplo utiliza una función waldo exportada por simplicidad.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./license.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./testing-design.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Designing your test suite</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+</body></html>

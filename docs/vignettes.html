@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - 17&nbsp; Viñetas</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./other-markdown.html" rel="next">
+<link href="./man.html" rel="prev">
+<link href="./images/cover-2e-small.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./man.html">Documentación</a></li><li class="breadcrumb-item"><a href="./vignettes.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">El paquete en el interior de su código</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Componentes de un paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Código R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Otros componentes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Metadatos del paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Probar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Diseñar su conjunto de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Técnicas de prueba avanzadas</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentación</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Other markdown files</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Website</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Maintenance and distribution</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Software development practices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Lifecycle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Releasing to CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li><a href="#sec-vignettes-workflow-writing" id="toc-sec-vignettes-workflow-writing" class="nav-link active" data-scroll-target="#sec-vignettes-workflow-writing"><span class="header-section-number">17.1</span> Flujo de trabajo para escribir una viñeta</a></li>
+  <li><a href="#metadatos" id="toc-metadatos" class="nav-link" data-scroll-target="#metadatos"><span class="header-section-number">17.2</span> Metadatos</a></li>
+  <li>
+<a href="#consejos-para-escribir-vi%C3%B1etas" id="toc-consejos-para-escribir-viñetas" class="nav-link" data-scroll-target="#consejos-para-escribir-vi%C3%B1etas"><span class="header-section-number">17.3</span> Consejos para escribir viñetas</a>
+  <ul class="collapse">
+<li><a href="#diagramas" id="toc-diagramas" class="nav-link" data-scroll-target="#diagramas"><span class="header-section-number">17.3.1</span> Diagramas</a></li>
+  <li><a href="#enlaces" id="toc-enlaces" class="nav-link" data-scroll-target="#enlaces"><span class="header-section-number">17.3.2</span> Enlaces</a></li>
+  <li><a href="#rutas-de-archivos" id="toc-rutas-de-archivos" class="nav-link" data-scroll-target="#rutas-de-archivos"><span class="header-section-number">17.3.3</span> Rutas de archivos</a></li>
+  <li><a href="#cu%C3%A1ntas-vi%C3%B1etas" id="toc-cuántas-viñetas" class="nav-link" data-scroll-target="#cu%C3%A1ntas-vi%C3%B1etas"><span class="header-section-number">17.3.4</span> ¿Cuántas viñetas?</a></li>
+  <li><a href="#publicaci%C3%B3n-cient%C3%ADfica" id="toc-publicación-científica" class="nav-link" data-scroll-target="#publicaci%C3%B3n-cient%C3%ADfica"><span class="header-section-number">17.3.5</span> Publicación científica</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-vignettes-eval-option" id="toc-sec-vignettes-eval-option" class="nav-link" data-scroll-target="#sec-vignettes-eval-option"><span class="header-section-number">17.4</span> Consideraciones especiales para el código de viñeta</a>
+  <ul class="collapse">
+<li><a href="#sec-vignettes-article" id="toc-sec-vignettes-article" class="nav-link" data-scroll-target="#sec-vignettes-article"><span class="header-section-number">17.4.1</span> Artículo en lugar de viñeta</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-vignettes-how-built-checked" id="toc-sec-vignettes-how-built-checked" class="nav-link" data-scroll-target="#sec-vignettes-how-built-checked"><span class="header-section-number">17.5</span> Cómo se construyen y verifican las viñetas</a>
+  <ul class="collapse">
+<li><a href="#sec-vignettes-how-built" id="toc-sec-vignettes-how-built" class="nav-link" data-scroll-target="#sec-vignettes-how-built"><span class="header-section-number">17.5.1</span> <code>R CMD build</code> y viñetas</a></li>
+  <li><a href="#sec-vignettes-how-checked" id="toc-sec-vignettes-how-checked" class="nav-link" data-scroll-target="#sec-vignettes-how-checked"><span class="header-section-number">17.5.2</span> <code>R CMD check</code> y viñetas</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title"><span id="sec-vignettes" class="quarto-section-identifier"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><p>Una viñeta es una guía detallada de su paquete. La documentación de funciones es excelente si conoce el nombre de la función que necesita, pero de lo contrario es inútil. Por el contrario, una viñeta se puede enmarcar en torno a un problema objetivo que su paquete está diseñado para resolver. El formato de viñeta es perfecto para mostrar un flujo de trabajo que resuelve ese problema en particular, de principio a fin. Las viñetas le brindan diferentes oportunidades que los temas de ayuda: tiene mucho más control sobre la integración del código y la prosa y es una mejor configuración para mostrar cómo funcionan múltiples funciones juntas.</p>
+<p>Muchos paquetes existentes tienen viñetas y puede ver todas las viñetas asociadas con sus paquetes instalados con <code><a href="https://rdrr.io/r/utils/browseVignettes.html">browseVignettes()</a></code>. Para limitar eso a un paquete en particular, puede especificar el nombre del paquete así: <code>browseVignettes("tidyr")</code>. Puede leer una viñeta específica con la función <code><a href="https://rdrr.io/r/utils/vignette.html">vignette()</a></code>, por ejemplo, <code><a href="https://tidyr.tidyverse.org/articles/rectangle.html">vignette("rectangle", package = "tidyr")</a></code>. Para ver viñetas de un paquete que no ha instalado, consulte la lista “Viñetas” en su página CRAN, por ejemplo. <a href="https://cran.r-project.org/web/packages/tidyr/index.html" class="uri">https://cran.r-project.org/web/packages/tidyr/index.html</a>.</p>
+<p>Sin embargo, preferimos descubrir y leer viñetas del sitio web de un paquete, que es el tema de <a href="website.html"><span>Capítulo&nbsp;19</span></a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Compare lo anterior con lo que se siente al acceder a las viñetas de tidyr desde su sitio web: <a href="https://tidyr.tidyverse.org/articles/index.html" class="uri">https://tidyr.tidyverse.org/articles/index.html</a>. Tenga en cuenta que pkgdown utiliza el término “artículo”, que parece el vocabulario adecuado para los usuarios del paquete. La distinción técnica entre una viñeta (que se envía con un paquete) y un artículo (que solo está disponible en el sitio web; consulte <a href="#sec-vignettes-article"><span>Sección&nbsp;17.4.1</span></a>) es algo en lo que el desarrollador del paquete debe pensar. Un sitio web pkgdown presenta toda la documentación de un paquete de una manera coherente e interconectada que lo hace más navegable y útil. Aparentemente, este capítulo trata sobre viñetas, pero la forma en que hacemos las cosas está fuertemente influenciada por cómo esas viñetas encajan en un sitio web pkgdown.</p>
+<p>En este libro, usaremos R Markdown para escribir nuestras viñetas<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, tal como lo hicimos para la documentación de funciones en <a href="man.html#sec-man-key-md-features"><span>Sección&nbsp;16.1.3</span></a>. Si aún no está familiarizado con R Markdown, necesitará aprender los conceptos básicos en otro lugar; un buen lugar para empezar es <a href="https://rmarkdown.rstudio.com/" class="uri">https://rmarkdown.rstudio.com/</a>.</p>
+<p>En general, adoptamos un flujo de trabajo de viñeta algo circunscrito, es decir, hay muchas cosas que la base R permite, en las que simplemente no participamos. Por ejemplo, tratamos <code>inst/doc/</code><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> de la misma manera que <code>man/</code> y <code>NAMESPACE</code>, es decir, como algo semiopaco que se gestiona mediante herramientas automatizadas y que no modificamos. manualmente. El sistema de viñetas de Base R permite varias maniobras complicadas que simplemente intentamos evitar. En las viñetas, más que en cualquier otro lugar, la respuesta a “¿Pero cómo hago X?” suele ser “No hagas X”.</p>
+<section id="sec-vignettes-workflow-writing" class="level2" data-number="17.1"><h2 data-number="17.1" class="anchored" data-anchor-id="sec-vignettes-workflow-writing">
+<span class="header-section-number">17.1</span> Flujo de trabajo para escribir una viñeta</h2>
+<p>Para crear su primera viñeta, ejecute:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_vignette.html">use_vignette</a></span><span class="op">(</span><span class="st">"my-vignette"</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esto hace lo siguiente:</p>
+<ol type="1">
+<li><p>Crea un directorio <code>viñetas/</code>.</p></li>
+<li><p>Agrega las dependencias necesarias a <code>DESCRIPCIÓN</code>, es decir, agrega knitr al campo <code>VignetteBuilder</code> y agrega knitr y rmarkdown a <code>Suggests</code>.</p></li>
+<li><p>Redacta una viñeta, <code>vignettes/my-vignette.Rmd</code>.</p></li>
+<li><p>Agrega algunos patrones a <code>.gitignore</code> para garantizar que los archivos creados como efecto secundario de la vista previa de sus viñetas se mantengan fuera del control de fuente (diremos más sobre esto más adelante).</p></li>
+</ol>
+<p>Este borrador del documento tiene los elementos clave de una viñeta de R Markdown y le permite agregar su contenido. También llama a <code>use_vignette()</code> para crear su segunda viñeta y todas las siguientes; simplemente omitirá cualquier configuración que ya se haya realizado.</p>
+<p>Una vez que tenga el borrador de la viñeta, el flujo de trabajo es sencillo:</p>
+<ol type="1">
+<li><p>Comience a agregar prosa y fragmentos de código a la viñeta. Utilice <code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code> según sea necesario y utilice su flujo de trabajo interactivo habitual para desarrollar los fragmentos de código.</p></li>
+<li>
+<p>Renderice periódicamente la viñeta completa.</p>
+<p>Esto requiere cierta intención, porque a diferencia de las pruebas, de forma predeterminada, una viñeta se representa usando la versión actualmente instalada de su paquete, no con el paquete fuente actual, gracias a la llamada inicial a <code><a href="https://rdrr.io/r/base/library.html">library(supaquete)</a></code>.</p>
+<p>Una opción es instalar correctamente su paquete fuente actual con <code><a href="https://devtools.r-lib.org/reference/install.html">devtools::install()</a></code> o, en RStudio, Ctrl/Cmd + Shift + B. Luego use su flujo de trabajo habitual para renderizar un archivo <code>.Rmd</code>. Por ejemplo, presione Ctrl/Cmd + Shift + K o haga clic en <img src="images/knit.png" class="img-fluid" width="45">.</p>
+<p>O puede instalar correctamente su paquete y solicitar que se creen viñetas, con <code>install(build_vignettes = TRUE)</code>, luego usar <code><a href="https://rdrr.io/r/utils/browseVignettes.html">browseVignettes()</a></code>.</p>
+<p>Otra opción es usar <code>devtools::build_rmd("vignettes/my-vignette.Rmd")</code> para representar la viñeta. Esto construye su viñeta contra una versión de desarrollo (instalada temporalmente) de su paquete.</p>
+<p>Es muy fácil pasar por alto este problema y quedar desconcertado cuando la vista previa de su viñeta no parece reflejar los desarrollos recientes en el paquete. ¡Comprueba que estás compilando con la versión actual!</p>
+</li>
+<li><p>Enjuague y repita hasta que la viñeta luzca como desea.</p></li>
+</ol>
+<p>Si revisa periódicamente todo su paquete (<a href="workflow101.html#sec-workflow101-r-cmd-check"><span>Sección&nbsp;4.5</span></a>), lo cual recomendamos encarecidamente, esto ayudará a mantener sus viñetas en buen estado de funcionamiento. En particular, esto le alertará si una viñeta utiliza un paquete que no es una dependencia formal. Volveremos a estos problemas de flujo de trabajo a nivel de paquete a continuación en <a href="#sec-vignettes-how-built-checked"><span>Sección&nbsp;17.5</span></a>.</p>
+</section><section id="metadatos" class="level2" data-number="17.2"><h2 data-number="17.2" class="anchored" data-anchor-id="metadatos">
+<span class="header-section-number">17.2</span> Metadatos</h2>
+<p>Las primeras líneas de la viñeta contienen metadatos importantes. La plantilla predeterminada contiene la siguiente información:</p>
+<pre><code>---
+title: "Título de viñeta"
+output: rmarkdown::html_vignette
+vignette: &gt;
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---</code></pre>
+<p>Estos metadatos están escritos en <a href="https://yaml.org/">YAML</a>, un formato diseñado para ser legible tanto por humanos como por computadoras. El frontmatter YAML es una característica común de los archivos R Markdown. La sintaxis es muy parecida a la del archivo <code>DESCRIPTION</code>, donde cada línea consta de un nombre de campo, dos puntos y luego el valor del campo. La única característica especial de YAML que estamos usando aquí es <code>&gt;</code>. Indica que las siguientes líneas de texto son texto sin formato y no deben utilizar ninguna característica especial de YAML.</p>
+<p>La plantilla de viñeta predeterminada utiliza estos campos:</p>
+<ul>
+<li><p><code>title</code>: este es el título que aparece en la viñeta. Si lo cambia, asegúrese de realizar el mismo cambio en <code>VignetteIndexEntry{}</code>. Deberían ser iguales, pero lamentablemente eso no es automático.</p></li>
+<li><p><code>salida</code>: esto especifica el formato de salida. Hay muchas opciones que son útiles para informes regulares (incluidos html, pdf, presentaciones de diapositivas, etc.), pero <code><a href="https://pkgs.rstudio.com/rmarkdown/reference/html_vignette.html">rmarkdown::html_vignette</a></code> ha sido diseñado específicamente para este propósito exacto. Consulte <code><a href="https://pkgs.rstudio.com/rmarkdown/reference/html_vignette.html">?rmarkdown::html_vignette</a></code> para obtener más detalles.</p></li>
+<li><p><code>vignette</code>: este es un bloque de metadatos especiales que necesita R. Aquí puede ver el legado de las viñetas de LaTeX: los metadatos parecen comentarios de LaTeX. La única entrada que quizás necesite modificar es <code>\VignetteIndexEntry{}</code>. Así es como aparece la viñeta en el índice de viñetas y debe coincidir con el “título”. Deja las otras dos líneas en paz. Le dicen a R que use <code>knitr</code> para procesar el archivo y que el archivo esté codificado en UTF-8 (la única codificación que debería usar para una viñeta).</p></li>
+</ul>
+<p>Generalmente no usamos estos campos, pero los verá en otros paquetes:</p>
+<ul>
+<li><p><code>autor</code>: no usamos esto a menos que la viñeta esté escrita por alguien que aún no esté acreditado como autor del paquete.</p></li>
+<li><p><code>date</code>: creemos que esto suele hacer más daño que bien, ya que no está claro qué pretende transmitir la <code>date</code>. ¿Es la última vez que se actualizó la fuente de la viñeta? En ese caso, tendrás que administrarlo manualmente y es fácil olvidarte de actualizarlo. Si administra <code>date</code> programáticamente con <code>Sys.date()</code>, la fecha refleja cuándo se creó la viñeta, es decir, cuándo se creó el paquete, que no tiene nada que ver con cuándo se modificó por última vez la viñeta o el paquete. Hemos decidido que es mejor omitir la <code>date</code>.</p></li>
+</ul>
+<p>El borrador de la viñeta también incluye dos fragmentos de R. El primero configura nuestra forma preferida de mostrar la salida del código y tiene este aspecto:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>```{r, include = FALSE}</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>knitr::opts_chunk$set(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  collapse = TRUE,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  comment = "#&gt;"</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>El segundo fragmento simplemente adjunta el paquete al que pertenece la viñeta.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>```{r setup}</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>library(yourpackage)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Es posible que tenga la tentación de reemplazar (temporalmente) esta llamada <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> con <code>load_all()</code>, pero le recomendamos que no lo haga. En su lugar, utilice las técnicas proporcionadas en <a href="#sec-vignettes-workflow-writing"><span>Sección&nbsp;17.1</span></a> para ejercitar su código de viñeta con el paquete fuente actual.</p>
+</section><section id="consejos-para-escribir-viñetas" class="level2" data-number="17.3"><h2 data-number="17.3" class="anchored" data-anchor-id="consejos-para-escribir-viñetas">
+<span class="header-section-number">17.3</span> Consejos para escribir viñetas</h2>
+<blockquote class="blockquote">
+<p>Si estás pensando sin escribir, sólo piensas que estás pensando. — Leslie Lamport</p>
+</blockquote>
+<p>Al escribir una viñeta, le estás enseñando a alguien cómo usar tu paquete. Debe ponerse en el lugar del lector y adoptar una “mente de principiante”. Esto puede resultar difícil porque es difícil olvidar todo el conocimiento que ya ha interiorizado. Por este motivo, consideramos que la enseñanza presencial es una forma realmente útil de obtener retroalimentación. Inmediatamente te enfrentas a lo que has olvidado y que sólo tú sabes.</p>
+<p>Un efecto secundario útil de este enfoque es que le ayuda a mejorar su código. Te obliga a volver a ver el proceso de incorporación inicial y a apreciar las partes que son difíciles. Nuestra experiencia es que explicar cómo funciona el código a menudo revela algunos problemas que deben solucionarse.</p>
+<p>De hecho, una parte clave del proceso de lanzamiento del paquete tidyverse es escribir una publicación en el blog: ahora lo hacemos antes de enviarlo a CRAN, debido a la cantidad de veces que se revela algún problema sutil que requiere solución. También es justo decir que tidyverse y sus paquetes de soporte se beneficiarían de más guías prácticas, por lo que es un área en la que intentamos mejorar constantemente.</p>
+<p>Escribir una viñeta también supone un buen descanso de la codificación. La escritura parece utilizar una parte del cerebro diferente a la de la programación, así que si estás cansado de la programación, intenta escribir un poco.</p>
+<p>Aquí hay algunos recursos que hemos encontrado útiles:</p>
+<ul>
+<li><p>Literalmente cualquier cosa escrita por Kathy Sierra. No escribe activamente en este momento, pero su contenido es en su mayor parte atemporal y está lleno de consejos sobre programación, enseñanza y cómo crear herramientas valiosas. Vea su blog original, <a href="https://headrush.typepad.com/">Creando usuarios apasionados</a>, o el sitio posterior, <a href="https://web.archive.org/web/20230411010913/https%20://seriouspony.com/blog/">Serious Pony</a>.</p></li>
+<li><p>“Estilo: Lecciones de claridad y gracia” de Joseph M. Williams y Joseph Bizup. Este libro le ayuda a comprender la estructura de la escritura para que pueda reconocer y corregir mejor la mala escritura.</p></li>
+</ul>
+<section id="diagramas" class="level3" data-number="17.3.1"><h3 data-number="17.3.1" class="anchored" data-anchor-id="diagramas">
+<span class="header-section-number">17.3.1</span> Diagramas</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Envío a CRAN
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Tendrás que vigilar el tamaño del archivo. Si incluye muchos gráficos, es fácil crear un archivo muy grande. Esté atento a una “NOTA” que se queja de un directorio demasiado grande. Es posible que debas tomar medidas explícitas, como reducir la resolución, reducir el número de figuras o cambiar de una viñeta a un artículo (<a href="#sec-vignettes-article"><span>Sección&nbsp;17.4.1</span></a>).</p>
+</div>
+</div>
+</section><section id="enlaces" class="level3" data-number="17.3.2"><h3 data-number="17.3.2" class="anchored" data-anchor-id="enlaces">
+<span class="header-section-number">17.3.2</span> Enlaces</h3>
+<p>No existe una forma oficial de vincular temas de ayuda desde viñetas o <em>viceversa</em> o de una viñeta a otra.</p>
+<p>Este es un ejemplo concreto de por qué creemos que los sitios pkgdown son una excelente manera de presentar documentación de paquetes, porque pkgdown hace que sea fácil (literalmente sin esfuerzo, en muchos casos) obtener estas referencias cruzadas con hipervínculos. Esto está documentado en <code><a href="https://pkgdown.r-lib.org/articles/linking.html">vignette("linking", package = "pkgdown")</a></code>. Si estás leyendo este libro en línea, la llamada en línea a <code><a href="https://rdrr.io/r/utils/vignette.html">vignette()</a></code> en la oración anterior debe tener un hipervínculo a la viñeta correspondiente en pkgdown<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, usando la misma cadena de herramientas que creará enlaces automáticos en tu pkgdown. sitios web! Discutimos esta sintaxis anteriormente en <a href="man.html#sec-man-key-md-features"><span>Sección&nbsp;16.1.3</span></a>, en el contexto de la documentación de funciones.</p>
+<p>Se generan enlaces automáticos para funciones en el paquete host, funciones calificadas para espacios de nombres en otro paquete, viñetas y más. Estos son los dos ejemplos más importantes de texto vinculado automáticamente:</p>
+<ul>
+<li><p><code>`some_function()`</code>: Autoenlazado a la documentación de <code>some_function()</code>, dentro del sitio pkgdown de su paquete host. Tenga en cuenta el uso de comillas invertidas y paréntesis finales.</p></li>
+<li><p><code>`vignette("fascinating-topic")`</code>: Vinculado automáticamente al artículo “fascinating-topic” dentro del sitio pkgdown de su paquete host. Tenga en cuenta el uso de comillas invertidas.</p></li>
+</ul></section><section id="rutas-de-archivos" class="level3" data-number="17.3.3"><h3 data-number="17.3.3" class="anchored" data-anchor-id="rutas-de-archivos">
+<span class="header-section-number">17.3.3</span> Rutas de archivos</h3>
+<p>A veces es necesario hacer referencia a otro archivo de una viñeta. La mejor manera de hacerlo depende de la aplicación:</p>
+<ul>
+<li><p>Una figura creada por código evaluado en la viñeta: De forma predeterminada, en el flujo de trabajo <code>.Rmd</code> que recomendamos, esto se soluciona solo. Estas cifras se incrustan automáticamente en <code>.html</code> mediante URI de datos. No necesitas hacer nada. Ejemplo: <code><a href="https://ggplot2.tidyverse.org/articles/extending-ggplot2.html">vignette("extending-ggplot2", package = "ggplot2")</a></code> genera algunas cifras en fragmentos de código evaluados.</p></li>
+<li>
+<p>Un archivo externo que podría ser útil para los usuarios o en cualquier otra parte del paquete (no solo en viñetas): coloque dicho archivo en <code>inst/</code> (<a href="misc.html#sec-misc-inst"><span>Sección&nbsp;8.2</span></a>), tal vez en <code>inst/extdata/</code> (<a href="data.html#sec-data-extdata"><span>Sección&nbsp;7.3</span></a>), y consúltelo con <code><a href="https://rdrr.io/r/base/system.file.html">system.file()</a></code> o <code><a href="https://fs.r-lib.org/reference/path_package.html">fs::path_package()</a></code> (<a href="data.html#sec-data-system-file"><span>Sección&nbsp;7.3.1</span></a>). Ejemplo de <code><a href="https://r-spatial.github.io/sf/articles/sf2.html">vignette("sf2", package = "sf")</a></code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>````{r}</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>library(sf)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>fname &lt;- system.file("shape/nc.shp", package="sf")</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>fname</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>nc &lt;- st_read(fname)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</li>
+<li>
+<p>Un archivo externo cuya utilidad se limita a sus viñetas: colóquelo junto a los archivos fuente de las viñetas en <code>vignettes/</code> y consúltelo con una ruta de archivo relativa a <code>vignettes/</code>.</p>
+<p>Ejemplo: la fuente de <code><a href="https://tidyr.tidyverse.org/articles/tidy-data.html">vignette("tidy-data", package = "tidyr")</a></code> se encuentra en <code>vignettes/tidy-data.Rmd</code> e incluye un fragmento que lee un archivo ubicado en <code>vignettes/weather.csv</code>así:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>```{r}</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>weather &lt;- as_tibble(read.csv("weather.csv", stringsAsFactors = FALSE))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>weather</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</li>
+<li>
+<p>Un archivo de gráficos externo: colóquelo en <code>vignettes/</code>, consúltelo con una ruta de archivo relativa a <code>vignettes/</code> y use <code><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">knitr::include_graphics()</a></code> dentro de un fragmento de código. Ejemplo de <code><a href="https://readxl.tidyverse.org/articles/sheet-geometry.html">vignette("sheet-geometry", package = "readxl")</a></code>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>```{r out.width = '70%', echo = FALSE}</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>knitr::include_graphics("img/geometry.png")</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</li>
+</ul></section><section id="cuántas-viñetas" class="level3" data-number="17.3.4"><h3 data-number="17.3.4" class="anchored" data-anchor-id="cuántas-viñetas">
+<span class="header-section-number">17.3.4</span> ¿Cuántas viñetas?</h3>
+<p>Para paquetes más simples, una viñeta suele ser suficiente. Si su paquete se llama “algúnpaquete”, llame a esta viñeta <code>algúnpaquete.Rmd</code>. Esto aprovecha una convención pkgdown, donde la viñeta que lleva el nombre del paquete obtiene un enlace automático “Get started” en la barra de navegación superior.</p>
+<p>Los paquetes más complicados probablemente necesiten más de una viñeta. Puede resultar útil pensar en las viñetas como capítulos de un libro: deben ser independientes, pero aun así estar unidos formando un todo cohesivo.</p>
+</section><section id="publicación-científica" class="level3" data-number="17.3.5"><h3 data-number="17.3.5" class="anchored" data-anchor-id="publicación-científica">
+<span class="header-section-number">17.3.5</span> Publicación científica</h3>
+<p>Las viñetas también pueden resultar útiles si desea explicar los detalles de su paquete. Por ejemplo, si ha implementado un algoritmo estadístico complejo, es posible que desee describir todos los detalles en una viñeta para que los usuarios de su paquete puedan entender lo que sucede bajo el capó y estar seguros de que ha implementado el algoritmo correctamente. En este caso, también podría considerar enviar su viñeta al <a href="http://jstatsoft.org/">Journal of Statistical Software</a> o <a href="http://journal.r-project.org/">The R Journal</a>. Ambas revistas son únicamente electrónicas y están revisadas por pares. Los comentarios de los revisores pueden ser muy útiles para mejorar su paquete y viñeta.</p>
+<p>Si solo desea proporcionar algo muy liviano para que la gente pueda citar fácilmente su paquete, considere el <a href="https://joss.theoj.org">Journal of Open Source Software</a>. Esta revista tiene un proceso de envío y revisión particularmente rápido, y es donde publicamos “<a href="https://joss.theoj.org/papers/10.21105/joss.01686"><em>Welcome to the Tidyverse</em></a>”, un artículo que escribimos para que la gente pudiera tener un solo artículo para citar y todos los autores de tidyverse obtuvieran algún crédito académico.</p>
+</section></section><section id="sec-vignettes-eval-option" class="level2" data-number="17.4"><h2 data-number="17.4" class="anchored" data-anchor-id="sec-vignettes-eval-option">
+<span class="header-section-number">17.4</span> Consideraciones especiales para el código de viñeta</h2>
+<p>Un tema recurrente es que el código R dentro de un paquete debe escribirse de manera diferente al código en sus scripts e informes de análisis. Esto es cierto para sus funciones (<a href="code.html#sec-code-when-executed"><span>Sección&nbsp;6.4</span></a>), pruebas (<a href="testing-design.html#sec-testing-design-principles"><span>Sección&nbsp;14.2</span></a>) y ejemplos (<a href="man.html#sec-man-examples"><span>Sección&nbsp;16.5</span></a>), y también es cierto para las viñetas. En términos de lo que puedes y no puedes hacer, las viñetas son bastante similares a los ejemplos, aunque algunas de las mecánicas difieren.</p>
+<p>Cualquier paquete utilizado en una viñeta debe ser una dependencia formal, es decir, debe aparecer en <code>Imports</code> o <code>Suggests</code> en <code>DESCRIPTION</code>. De manera similar a nuestra postura en las pruebas (<a href="dependencies-in-practice.html#sec-dependencies-in-suggests-in-tests"><span>Sección&nbsp;11.5.2</span></a>), nuestra política es escribir viñetas bajo el supuesto de que los paquetes sugeridos se instalarán en cualquier contexto donde se esté creando la viñeta (<a href="dependencies-in-practice.html#sec-dependencies-in-suggests-in-examples-and-vignettes"><span>Sección&nbsp;11.5.3</span></a>). Generalmente utilizamos paquetes sugeridos incondicionalmente en viñetas. Pero, al igual que con las pruebas, si un paquete es particularmente difícil de instalar, podríamos hacer una excepción y tomar medidas adicionales para proteger su uso.</p>
+<p>Hay muchas otras razones por las que podría no ser posible evaluar todo el código en una viñeta en ciertos contextos, como en las máquinas de CRAN o en CI/CD. Estos incluyen todos los sospechosos habituales: falta de credenciales de autenticación, código de ejecución prolongada o código vulnerable a fallas intermitentes.</p>
+<p>El método principal para controlar la evaluación en un documento <code>.Rmd</code> es la opción de fragmento de código <code>eval</code>, que puede ser <code>TRUE</code> (el valor predeterminado) o <code>FALSE</code>. Es importante destacar que el valor de <code>eval</code> puede ser el resultado de evaluar una expresión. A continuación se muestran algunos ejemplos relevantes:</p>
+<ul>
+<li><code>eval = requireNamespace("algunadependencia")</code></li>
+<li><code>eval = !identical(Sys.getenv("ALGO_QUE_NECESITA"), "")</code></li>
+<li><code>eval = file.exists("credenciales-que-necesita")</code></li>
+</ul>
+<p>La opción <code>eval</code> se puede configurar para un fragmento individual, pero en una viñeta es probable que desees evaluar la mayoría o todos los fragmentos o prácticamente ninguno de ellos. En el último caso, querrás usar <code>knitr::opts_chunk$set(eval = FALSE)</code> en un fragmento inicial oculto para hacer que <code>eval = FALSE</code> sea el valor predeterminado para el resto de la viñeta. Aún puedes anular con <code>eval = TRUE</code> en fragmentos individuales.</p>
+<p>En viñetas, usamos la opción <code>eval</code> de manera similar a <code>@examplesIf</code> en los ejemplos (<a href="man.html#sec-man-examples-dependencies-conditional-execution"><span>Sección&nbsp;16.5.4</span></a>). Si el código solo se puede ejecutar bajo condiciones específicas, debe encontrar una manera de verificar esas condiciones previas mediante programación en tiempo de ejecución y usar el resultado para configurar la opción <code>eval</code>.</p>
+<p>Estos son los primeros fragmentos de una viñeta de googlesheets4, que engloba la API de Google Sheets. El código de viñeta solo se puede ejecutar si somos capaces de descifrar un token que nos permita autenticarnos con la API. Ese hecho se registra en <code>can_decrypt</code>, que luego se establece como el valor predeterminado de toda la viñeta para <code>eval</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>```{r setup, include = FALSE}</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>can_decrypt &lt;- gargle:::secret_can_decrypt("googlesheets4")</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>knitr::opts_chunk$set(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  collapse = TRUE,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  comment = "#&gt;",</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  error = TRUE,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  eval = can_decrypt</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>```{r eval = !can_decrypt, echo = FALSE, comment = NA}</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>message("No token available. Code chunks will not be evaluated.")</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>```{r index-auth, include = FALSE}</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>googlesheets4:::gs4_auth_docs()</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>```{r}</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>library(googlesheets4)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Observe que el segundo fragmento usa <code>eval = !can_decrypt</code>, que imprime un mensaje explicativo para cualquiera que cree la viñeta sin las credenciales necesarias.</p>
+<p>El ejemplo anterior muestra algunas opciones de fragmentos más útiles. Utilice <code>include = FALSE</code> para fragmentos que deben evaluarse pero no verse en la viñeta representada. La opción <code>echo</code> controla si se imprime el código, además de la salida. Finalmente, <code>error = TRUE</code> es lo que le permite ejecutar código intencionalmente que podría generar un error. El error aparecerá en la viñeta, tal como lo haría para su usuario, pero no impedirá la ejecución del resto del código de su viñeta, ni provocará que falle la <code>R CMD check</code>. Esto es algo que funciona mucho mejor en una viñeta que en un ejemplo.</p>
+<p>Muchas otras opciones se describen en <a href="https://yihui.name/knitr/options" class="uri">https://yihui.name/knitr/options</a>.</p>
+<section id="sec-vignettes-article" class="level3" data-number="17.4.1"><h3 data-number="17.4.1" class="anchored" data-anchor-id="sec-vignettes-article">
+<span class="header-section-number">17.4.1</span> Artículo en lugar de viñeta</h3>
+<p>Existe una última técnica, si no desea que ningún código se ejecute en CRAN. En lugar de una viñeta, puede crear un artículo, que es un término utilizado por pkgdown para un documento <code>.Rmd</code> similar a una viñeta que no se envía con el paquete, pero que aparece sólo en el sitio web. Un artículo será menos accesible que una viñeta para ciertos usuarios, como aquellos con acceso limitado a Internet, porque no está presente en la instalación local. Pero ese podría ser un compromiso aceptable, por ejemplo, para un paquete que incluye una API web.</p>
+<p>Puede redactar un nuevo artículo con <code><a href="https://usethis.r-lib.org/reference/use_vignette.html">usethis::use_article()</a></code>, lo que garantiza que el artículo será <code>.Rbuildignore</code>d. Una buena razón para utilizar un artículo en lugar de una viñeta es mostrar que su paquete funciona en conjunto con otros paquetes de los que no desea depender formalmente. Otro caso de uso atractivo es cuando un artículo realmente exige muchos gráficos. Esto es problemático para una viñeta, porque el gran tamaño del paquete causa problemas con <code>R CMD check</code> (y, por lo tanto, CRAN) y también es una carga para todos los que lo instalan, especialmente aquellos con Internet limitado.</p>
+</section></section><section id="sec-vignettes-how-built-checked" class="level2" data-number="17.5"><h2 data-number="17.5" class="anchored" data-anchor-id="sec-vignettes-how-built-checked">
+<span class="header-section-number">17.5</span> Cómo se construyen y verifican las viñetas</h2>
+<p>Cerramos este capítulo volviendo a algunos problemas de flujo de trabajo que no cubrimos en <a href="#sec-vignettes-workflow-writing"><span>Sección&nbsp;17.1</span></a>: ¿Cómo se convierten los archivos <code>.Rmd</code> en viñetas consumidas por los usuarios de un paquete instalado? ¿Qué hace <code>R CMD check</code> con las viñetas? ¿Cuáles son las implicaciones para mantener sus viñetas?</p>
+<p>Puede resultar útil apreciar la gran diferencia entre el flujo de trabajo para la documentación de funciones y las viñetas. La fuente de la documentación de la función se almacena en los comentarios de roxygen en archivos <code>.R</code> debajo de <code>R/</code>. Usamos <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code> para generar archivos <code>.Rd</code> debajo de <code>man/</code>. Estos archivos <code>man/*.Rd</code> son parte del paquete fuente. La maquinaria oficial de R se preocupa <em>sólo</em> por los archivos <code>.Rd</code>.</p>
+<p>Las viñetas son muy diferentes porque la fuente <code>.Rmd</code> se considera parte del paquete fuente y la maquinaria oficial (<code>R CMD build</code> y <code>check</code>) interactúa con la fuente de la viñeta y las viñetas construidas de muchas maneras. El resultado es que el flujo de trabajo de viñetas se siente más restringido, ya que las herramientas oficiales básicamente tratan las viñetas como pruebas, en lugar de documentación.</p>
+<section id="sec-vignettes-how-built" class="level3" data-number="17.5.1"><h3 data-number="17.5.1" class="anchored" data-anchor-id="sec-vignettes-how-built">
+<span class="header-section-number">17.5.1</span> <code>R CMD build</code> y viñetas</h3>
+<p>Primero, es importante darse cuenta de que los archivos fuente <code>vignettes/*.Rmd</code> existen solo cuando un paquete está en formato fuente (<a href="structure.html#sec-source-package"><span>Sección&nbsp;3.2</span></a>) o en formato empaquetado (<a href="structure.html#sec-bundled-package"><span>Sección&nbsp;3.3</span></a>). Las viñetas se representan cuando un paquete fuente se convierte en un paquete mediante <code>R CMD build</code> o un contenedor conveniente como <code><a href="https://devtools.r-lib.org/reference/build.html">devtools::build()</a></code>. Los productos renderizados (<code>.html</code>) se colocan en <code>inst/doc/</code>, junto con su fuente (<code>.Rmd</code>) y el código R extraído (<code>.R</code>; discutido en <a href="#sec-vignettes-how-checked"><span>Sección&nbsp;17.5.2</span></a>) . Finalmente, cuando se crea un paquete binario (<a href="structure.html#sec-structure-binary"><span>Sección&nbsp;3.4</span></a>), el directorio <code>inst/doc/</code> se promueve a un directorio <code>doc/</code> de nivel superior, como sucede con todo lo que está debajo de <code>inst/</code>.</p>
+<!--
+The issue of keeping pre-built vignettes around in inst/doc/ is a long-running discussion.
+
+https://github.com/r-lib/devtools/issues/2394
+
+https://github.com/r-lib/pkgbuild/issues/58
+-->
+<p>TLa conclusión clave de lo anterior es que resulta incómodo mantener viñetas renderizadas en un paquete fuente y esto tiene implicaciones para el flujo de trabajo de desarrollo de viñetas. Es tentador luchar contra esto (y muchos lo han intentado), pero basándose en años de experiencia y discusión, la filosofía de devtools es aceptar esta realidad.</p>
+<p>Suponiendo que no intenta mantener viñetas creadas de manera persistente en su paquete fuente, aquí están nuestras recomendaciones para varios escenarios:</p>
+<ul>
+<li><p>Trabajo activo e iterativo en sus viñetas: use su flujo de trabajo interactivo habitual <code>.Rmd</code> (como el botón <img src="images/knit.png" class="img-fluid" width="45">) o <code>devtools::build_rmd("vignettes /my-vignette.Rmd")</code> para representar una viñeta en <code>.html</code> en el directorio <code>vignettes/</code>. Considere el <code>.html</code> como una vista previa desechable. (Si inicia viñetas con <code>use_vignette()</code>, este <code>.html</code> ya será ignorado).</p></li>
+<li>
+<p>Poner a disposición del mundo el estado actual de las viñetas en una versión de desarrollo:</p>
+<ul>
+<li><p>Ofrecer un sitio web pkgdown, preferiblemente con “construcción e implementación” automatizada, como el uso de GitHub Actions para implementar en GitHub Pages. Aquí están las viñetas de tidyr en la versión de desarrollo (tenga en cuenta “dev” en la URL): <a href="https://tidyr.tidyverse.org/dev/articles/index.html" class="uri">https://tidyr.tidyverse.org/dev/articles/index.html</a>.</p></li>
+<li><p>Tenga en cuenta que cualquiera que instale directamente desde GitHub deberá solicitar viñetas explícitamente, por ejemplo, con <code>devtools::install_github(dependencies = TRUE, build_vignettes = TRUE)</code>.</p></li>
+</ul>
+</li>
+<li>
+<p>Hacer que el estado actual de las viñetas en una versión de desarrollo esté disponible localmente:</p>
+<ul>
+<li>Instale su paquete localmente y solicite que se creen e instalen viñetas, por ejemplo, con <code>devtools::install(dependencies = TRUE, build_vignettes = TRUE)</code>.</li>
+</ul>
+</li>
+<li><p>Prepare viñetas creadas para un envío CRAN: no intente hacerlo a mano o con anticipación. Permita que la (re)compilación de viñetas se realice como parte de <code><a href="https://devtools.r-lib.org/reference/submit_cran.html">devtools::submit_cran()</a></code> o <code><a href="https://devtools.r-lib.org/reference/release.html">devtools::release()</a></code>, los cuales compilan el paquete.</p></li>
+</ul>
+<!--
+https://github.com/r-lib/devtools/issues/2485
+--><p>Si realmente desea crear viñetas de manera oficial de forma <em>ad hoc</em>, <code><a href="https://devtools.r-lib.org/reference/build_vignettes.html">devtools::build_vignettes()</a></code> lo hará. Pero hemos visto que esto genera frustración en los desarrolladores, porque deja el paquete en una forma peculiar que es una mezcla de un paquete fuente y un paquete desempaquetado. Esta situación atípica puede generar aún más confusión. Por ejemplo, no está claro cómo se debe acceder a estas viñetas que no están realmente instaladas. La mayoría de los desarrolladores deberían evitar el uso de <code>build_vignettes()</code> y, en su lugar, elegir uno de los enfoques descritos anteriormente.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Viñetas prediseñadas (or other documentation)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Recomendamos encarecidamente tratar <code>inst/doc/</code> como un directorio estrictamente editable por máquina para viñetas. Le recomendamos que no aproveche el hecho de que puede colocar documentación prediseñada arbitraria en <code>inst/doc/</code>. Esta opinión impregna el ecosistema devtools que, de forma predeterminada, limpia <code>inst/doc/</code> durante diversas tareas de desarrollo, para combatir el problema de la documentación obsoleta.</p>
+<p>Sin embargo, reconocemos que existen excepciones a cada regla. En algunos dominios, puede resultar poco práctico reconstruir viñetas con tanta frecuencia como implica nuestro flujo de trabajo recomendado. Aquí hay algunos consejos:</p>
+<ul>
+<li><p>Puedes evitar la limpieza de <code>inst/doc/</code> con <code>pkgbuild::build(clean_doc =)</code>. Puede poner <code>Config/build/clean-inst-doc: FALSE</code> en <code>DESCRIPTION</code> para evitar que pkgbuild y rcmdcheck limpien <code>inst/doc/</code>.</p></li>
+<li><p>La nota técnica de rOpenSci <a href="https://ropensci.org/blog/2019/12/08/precompute-vignettes/">Cómo precalcular viñetas de paquetes o artículos pkgdown</a> describe una técnica inteligente y liviana para mantener una viñeta actualizada manualmente en <code>viñetas/</code>.</p></li>
+<li><p>El paquete <a href="https://henrikbengtsson.github.io/R.rsp/index.html">R.rsp</a> ofrece soporte explícito para viñetas estáticas.</p></li>
+</ul>
+</div>
+</div>
+</section><section id="sec-vignettes-how-checked" class="level3" data-number="17.5.2"><h3 data-number="17.5.2" class="anchored" data-anchor-id="sec-vignettes-how-checked">
+<span class="header-section-number">17.5.2</span> <code>R CMD check</code> y viñetas</h3>
+<p>Concluimos con una discusión sobre cómo las viñetas son tratadas por <code>R CMD check</code>. Este verificador oficial espera un paquete creado por <code>R CMD build</code>, como se describe anteriormente. En el flujo de trabajo de devtools, generalmente confiamos en <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code>, que realiza automáticamente este paso de compilación por nosotros, antes de verificar el paquete. <code>R CMD check</code> tiene varias opciones de línea de comando y también consulta muchas variables de entorno. Estamos adoptando un enfoque maximalista aquí, es decir, describimos todas las comprobaciones que <em>podrían</em> ocurrir.</p>
+<p><code>R CMD check</code> realiza un análisis estático del código de viñeta y examina la existencia, el tamaño y los tiempos de modificación de varios archivos relacionados con viñetas. Si sus viñetas usan paquetes que no aparecen en <code>DESCRIPTION</code>, eso se recoge aquí. Si los archivos que deberían existir no existen o <em>viceversa</em>, eso se recoge aquí. Esto no debería suceder si utiliza el flujo de trabajo de viñeta estándar descrito en este capítulo y generalmente es el resultado de algún experimento que haya realizado, intencionalmente o no.</p>
+<p>Luego, el código de viñeta se extrae en un archivo <code>.R</code>, utilizando la función <code>tangle</code> del motor de viñeta correspondiente (knitr, en nuestro caso), y se ejecuta. El código que se origina a partir de fragmentos marcados como <code>eval = FALSE</code> se comentará en este archivo y, por lo tanto, no se ejecutará. Luego, las viñetas se reconstruyen desde la fuente, utilizando la función <code>weave</code> del motor de viñetas (knitr, para nosotros). Esto ejecuta todo el código de viñeta una vez más, excepto los fragmentos marcados como <code>eval = FALSE</code>.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Envío a CRAN
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Las comprobaciones entrantes y en curso de CRAN utilizan <code>R CMD check</code> que, como se describe anteriormente, ejercita el código de viñeta hasta dos veces. Por lo tanto, es importante suprimir condicionalmente la ejecución de código condenado a fallar en CRAN.</p>
+<p>Sin embargo, es importante tener en cuenta que el paquete y los archivos binarios distribuidos por CRAN en realidad utilizan las viñetas integradas incluidas en su envío. Sí, CRAN intentará reconstruir sus viñetas periódicamente, pero esto es con fines de control de calidad. CRAN distribuye las viñetas que usted creó.</p>
+</div>
+</div>
+
+
+</section></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>Esto obviamente depende de la calidad de la conexión a Internet, por lo que nos esforzamos en recomendar comportamientos que sean compatibles con las herramientas de base R en torno a las viñetas instaladas.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Sweave es el sistema original utilizado para crear viñetas (los archivos Sweave generalmente tienen la extensión <code>.Rnw</code>). De manera similar a nuestro consejo sobre cómo crear documentación de funciones (<a href="man.html"><span>Capítulo&nbsp;16</span></a>), creemos que tiene más sentido usar una sintaxis basada en rebajas para viñetas que un formato único asociado a LaTeX. Esta elección también afecta la forma de las viñetas renderizadas: las viñetas Sweave se renderizan en PDF, mientras que las viñetas R Markdown se renderizan en HTML. Recomendamos convertir viñetas de Sweave a R Markdown.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>La carpeta <code>inst/doc/</code> es donde van las viñetas una vez creadas, cuando <code>R CMD build</code> crea el paquete.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Y, para cualquier otra persona, ejecutar este código en la consola R abrirá la viñeta, si el paquete host está instalado.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./man.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./other-markdown.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Other markdown files</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+</body></html>

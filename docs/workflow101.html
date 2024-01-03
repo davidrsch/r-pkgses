@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - 4&nbsp; Flujos de trabajo de desarrollo fundamentales</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./package-within.html" rel="next">
+<link href="./structure.html" rel="prev">
+<link href="./images/cover-2e-small.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./whole-game.html">Empezando</a></li><li class="breadcrumb-item"><a href="./workflow101.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">The package within</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Package components</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">R code</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Other components</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Package metadata</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencies: Mindset and Background</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencies: In Practice</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licensing</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Testing</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Testing basics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Designing your test suite</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Advanced testing techniques</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Function documentation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Vignettes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Other markdown files</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Website</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Maintenance and distribution</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Software development practices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Lifecycle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Releasing to CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li>
+<a href="#sec-workflow101-create-package" id="toc-sec-workflow101-create-package" class="nav-link active" data-scroll-target="#sec-workflow101-create-package"><span class="header-section-number">4.1</span> Crear un paquete</a>
+  <ul class="collapse">
+<li><a href="#examinar-el-paisaje-existente" id="toc-examinar-el-paisaje-existente" class="nav-link" data-scroll-target="#examinar-el-paisaje-existente"><span class="header-section-number">4.1.1</span> Examinar el paisaje existente</a></li>
+  <li><a href="#nombra-tu-paquete" id="toc-nombra-tu-paquete" class="nav-link" data-scroll-target="#nombra-tu-paquete"><span class="header-section-number">4.1.2</span> Nombra tu paquete</a></li>
+  <li><a href="#sec-creating" id="toc-sec-creating" class="nav-link" data-scroll-target="#sec-creating"><span class="header-section-number">4.1.3</span> Creación de paquetes</a></li>
+  <li><a href="#d%C3%B3nde-deber%C3%ADas-crear-el-paquete-create_package" id="toc-dónde-deberías-crear-el-paquete-create_package" class="nav-link" data-scroll-target="#d%C3%B3nde-deber%C3%ADas-crear-el-paquete-create_package"><span class="header-section-number">4.1.4</span> ¿Dónde deberías crear el paquete, <code>create_package()</code>?</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-workflow101-rstudio-projects" id="toc-sec-workflow101-rstudio-projects" class="nav-link" data-scroll-target="#sec-workflow101-rstudio-projects"><span class="header-section-number">4.2</span> Proyectos de RStudio</a>
+  <ul class="collapse">
+<li><a href="#beneficios-de-los-proyectos-de-rstudio" id="toc-beneficios-de-los-proyectos-de-rstudio" class="nav-link" data-scroll-target="#beneficios-de-los-proyectos-de-rstudio"><span class="header-section-number">4.2.1</span> Beneficios de los proyectos de RStudio</a></li>
+  <li><a href="#c%C3%B3mo-conseguir-un-proyecto-rstudio" id="toc-cómo-conseguir-un-proyecto-rstudio" class="nav-link" data-scroll-target="#c%C3%B3mo-conseguir-un-proyecto-rstudio"><span class="header-section-number">4.2.2</span> Cómo conseguir un proyecto RStudio</a></li>
+  <li><a href="#qu%C3%A9-caracteriza-a-un-proyecto-rstudio" id="toc-qué-caracteriza-a-un-proyecto-rstudio" class="nav-link" data-scroll-target="#qu%C3%A9-caracteriza-a-un-proyecto-rstudio"><span class="header-section-number">4.2.3</span> ¿Qué caracteriza a un proyecto RStudio?</a></li>
+  <li><a href="#c%C3%B3mo-lanzar-un-proyecto-rstudio" id="toc-cómo-lanzar-un-proyecto-rstudio" class="nav-link" data-scroll-target="#c%C3%B3mo-lanzar-un-proyecto-rstudio"><span class="header-section-number">4.2.4</span> Cómo lanzar un proyecto RStudio</a></li>
+  <li><a href="#sec-rstudio-project-vs-active-usethis-project" id="toc-sec-rstudio-project-vs-active-usethis-project" class="nav-link" data-scroll-target="#sec-rstudio-project-vs-active-usethis-project"><span class="header-section-number">4.2.5</span> Proyecto RStudio versus uso activo de este proyecto</a></li>
+  </ul>
+</li>
+  <li><a href="#directorio-de-trabajo-y-disciplina-de-ruta-de-archivo" id="toc-directorio-de-trabajo-y-disciplina-de-ruta-de-archivo" class="nav-link" data-scroll-target="#directorio-de-trabajo-y-disciplina-de-ruta-de-archivo"><span class="header-section-number">4.3</span> Directorio de trabajo y disciplina de ruta de archivo</a></li>
+  <li>
+<a href="#sec-workflow101-load-all" id="toc-sec-workflow101-load-all" class="nav-link" data-scroll-target="#sec-workflow101-load-all"><span class="header-section-number">4.4</span> Prueba de manejo con <code>load_all()</code></a>
+  <ul class="collapse">
+<li><a href="#beneficios-de-load_all" id="toc-beneficios-de-load_all" class="nav-link" data-scroll-target="#beneficios-de-load_all"><span class="header-section-number">4.4.1</span> Beneficios de <code>load_all()</code></a></li>
+  <li><a href="#otras-formas-de-llamar-load_all" id="toc-otras-formas-de-llamar-load_all" class="nav-link" data-scroll-target="#otras-formas-de-llamar-load_all"><span class="header-section-number">4.4.2</span> Otras formas de llamar <code>load_all()</code></a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-workflow101-r-cmd-check" id="toc-sec-workflow101-r-cmd-check" class="nav-link" data-scroll-target="#sec-workflow101-r-cmd-check"><span class="header-section-number">4.5</span> <code>check()</code> y <code>R CMD check</code></a>
+  <ul class="collapse">
+<li><a href="#sec-check-workflow" id="toc-sec-check-workflow" class="nav-link" data-scroll-target="#sec-check-workflow"><span class="header-section-number">4.5.1</span> Flujo de trabajo</a></li>
+  <li><a href="#antecedentes-sobre-r-cmd-check" id="toc-antecedentes-sobre-r-cmd-check" class="nav-link" data-scroll-target="#antecedentes-sobre-r-cmd-check"><span class="header-section-number">4.5.2</span> Antecedentes sobre <code>R CMD check</code></a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title"><span id="sec-workflow101" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><p>Habiendo echado un vistazo bajo el capó de los paquetes y bibliotecas de R en <a href="structure.html"><span>Capítulo&nbsp;3</span></a>, aquí proporcionamos los flujos de trabajo básicos para crear un paquete y moverlo a través de los diferentes estados que surgen durante el desarrollo.</p>
+<section id="sec-workflow101-create-package" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="sec-workflow101-create-package">
+<span class="header-section-number">4.1</span> Crear un paquete</h2>
+<section id="examinar-el-paisaje-existente" class="level3" data-number="4.1.1"><h3 data-number="4.1.1" class="anchored" data-anchor-id="examinar-el-paisaje-existente">
+<span class="header-section-number">4.1.1</span> Examinar el paisaje existente</h3>
+<p>Muchos paquetes nacen de la frustración de una persona por alguna tarea común que debería ser más fácil. ¿Cómo se debe decidir si algo es digno de ser empaquetado? No hay una respuesta definitiva, pero es útil apreciar al menos dos tipos de recompensa:</p>
+<ul>
+<li>Producto: tu vida será mejor cuando esta funcionalidad se implemente formalmente, en un paquete.</li>
+<li>Proceso: un mayor dominio de R te hará más eficaz en tu trabajo.</li>
+</ul>
+<p>Si lo único que le importa es la existencia de un producto, entonces su objetivo principal es navegar por el espacio de los paquetes existentes. Silge, Nash y Graves organizaron una encuesta y sesiones sobre este tema en useR! 2017 y su artículo para el R Journal <span class="citation" data-cites="silge-nash-graves">(<a href="references.html#ref-silge-nash-graves" role="doc-biblioref">Silge, Nash, y Graves 2018</a>)</span> proporciona un resumen completo de recursos.</p>
+<p>Si está buscando formas de aumentar su dominio de R, aún debe informarse sobre el panorama. Pero hay muchas buenas razones para crear su propio paquete, incluso si existe un trabajo previo relevante. La forma en que los expertos llegaron a ese camino es construyendo cosas, a menudo cosas muy básicas, y usted merece la misma oportunidad de aprender haciendo retoques. Si sólo se le permite trabajar en cosas que nunca se han tocado, es probable que esté enfrentando problemas que son muy oscuros o muy difíciles.</p>
+<p>También es válido evaluar la idoneidad de las herramientas existentes en función de la interfaz de usuario, los valores predeterminados y el comportamiento de los casos extremos. Técnicamente, un paquete puede hacer lo que necesita, pero quizás sea muy poco ergonómico para su caso de uso. En este caso, puede tener sentido que usted desarrolle su propia implementación o escriba funciones contenedoras que suavicen los bordes afilados.</p>
+<p>Si su trabajo pertenece a un dominio bien definido, infórmese sobre los paquetes R existentes, incluso si ha decidido crear su propio paquete. ¿Siguen patrones de diseño específicos? ¿Existen estructuras de datos específicas que sean comunes como entrada y salida principal? Por ejemplo, existe una comunidad R muy activa en torno al análisis de datos espaciales (<a href="https://www.r-spatial.org">r-spatial.org</a>) que se ha autoorganizado con éxito para promover una mayor coherencia entre paquetes con diferentes mantenedores. En el modelado, el <a href="https://hardhat.tidymodels.org">paquete de hardhat</a> proporciona una base para crear un paquete de modelado que funciona bien con el ecosistema <a href="https://www.tidymodels.org">tidymodels</a>. Su paquete se utilizará más y necesitará menos documentación si encaja bien en el entorno.</p>
+</section><section id="nombra-tu-paquete" class="level3" data-number="4.1.2"><h3 data-number="4.1.2" class="anchored" data-anchor-id="nombra-tu-paquete">
+<span class="header-section-number">4.1.2</span> Nombra tu paquete</h3>
+<blockquote class="blockquote">
+<p>“Sólo hay dos cosas difíciles en Ciencias de la Computación: invalidación de caché y nombrar cosas.”</p>
+<p>— Phil Karlton</p>
+</blockquote>
+<p>Antes de poder crear su paquete, debe darle un nombre. ¡Esta puede ser la parte más difícil de crear un paquete! (Sobre todo porque nadie puede automatizarlo por usted).</p>
+<section id="requisitos-formales" class="level4" data-number="4.1.2.1"><h4 data-number="4.1.2.1" class="anchored" data-anchor-id="requisitos-formales">
+<span class="header-section-number">4.1.2.1</span> Requisitos formales</h4>
+<p>Hay tres requisitos formales.:</p>
+<ol type="1">
+<li>El nombre sólo puede constar de letras, números y puntos, es decir, “.”.</li>
+<li>Debe comenzar con una letra.</li>
+<li>No puede terminar con un punto.</li>
+</ol>
+<p>Desafortunadamente, esto significa que no puede usar guiones ni guiones bajos, es decir, <code>-</code> o <code>_</code>, en el nombre de su paquete. Recomendamos no utilizar puntos en los nombres de los paquetes, debido a asociaciones confusas con extensiones de archivos y métodos S3.</p>
+</section><section id="cosas-para-considerar" class="level4" data-number="4.1.2.2"><h4 data-number="4.1.2.2" class="anchored" data-anchor-id="cosas-para-considerar">
+<span class="header-section-number">4.1.2.2</span> Cosas para considerar</h4>
+<p>Si planeas compartir tu paquete con otras personas, es importante encontrar un buen nombre. A continuación se ofrecen algunos consejos:</p>
+<ul>
+<li><p>Elija un nombre único que sea fácil de buscar en Google. Esto facilita que los usuarios potenciales encuentren su paquete (y los recursos asociados) y que usted vea quién lo está usando.</p></li>
+<li>
+<p>No elija un nombre que ya esté en uso en CRAN o Bioconductor. Es posible que también desees considerar otros tipos de colisión de nombres.:</p>
+<ul>
+<li>¿Hay algún paquete en desarrollo que esté madurando en, digamos, GitHub que ya tenga algo de historia y parezca estar encaminado hacia su lanzamiento?</li>
+<li>¿Este nombre ya se utiliza para otra pieza de software o para una biblioteca o marco en, por ejemplo, el ecosistema Python o JavaScript?</li>
+</ul>
+</li>
+<li><p>Evite el uso de letras mayúsculas y minúsculas: hacerlo hace que el nombre del paquete sea difícil de escribir y aún más difícil de recordar. Por ejemplo, es difícil recordar si es Rgtk2, RGTK2 o RGtk2.</p></li>
+<li><p>Dé preferencia a nombres que sean pronunciables, para que las personas se sientan cómodas hablando de su paquete y tengan una manera de escucharlo dentro de su cabeza.</p></li>
+<li>
+<p>Encuentre una palabra que evoque el problema y modifíquela para que sea única. Aquí hay unos ejemplos:</p>
+<ul>
+<li>lubridate hace el trabajo con fechas y horas más fácil.</li>
+<li>rvest “cosecha” (“harvests”, en inglés) el contenido de las páginas web.</li>
+<li>r2d3 proporciona utilidades para trabajar con visualizaciones D3.</li>
+<li>forcats es un anagrama de factores, que utilizamos para datos <strong>cat</strong>egóricos.</li>
+</ul>
+</li>
+<li>
+<p>Utilice abreviaturas, como las siguientes:</p>
+<ul>
+<li>Rcpp = R + C++ (más más)</li>
+<li>brms = Bayesian Regression Models using Stan (Modelos de regresión bayesiana usando Stan)</li>
+</ul>
+</li>
+<li>
+<p>Agregue una R adicional, por ejemplo:</p>
+<ul>
+<li>stringr proporciona herramientas de cadenas de caracteres (string en inglés).</li>
+<li>beepr reproduce sonidos de notificación.</li>
+<li>callr llama R, desde R.</li>
+</ul>
+</li>
+<li>
+<p>No hagas que te demanden.</p>
+<ul>
+<li>Si está creando un paquete que se dirige a un servicio comercial, consulte las pautas de marca. Por ejemplo, rDrop no se llama rDropbox porque Dropbox prohíbe que cualquier aplicación utilice el nombre completo de la marca registrada..</li>
+</ul>
+</li>
+</ul>
+<p>Nick Tierney presenta una tipología divertida de nombres de paquetes en su publicación de blog <a href="https://www.njtierney.com/post/2018/06/20/naming-things/">Naming Things</a>, que también incluye ejemplos más inspiradores. También tiene algo de experiencia cambiando el nombre de paquetes; la publicación <a href="https://www.njtierney.com/post/2017/10/27/change-pkg-name/">Entonces, has decidido cambiar el nombre de tu paquete r</a> es un buen recurso si no lo hace bien la primera vez.</p>
+</section><section id="utilice-el-paquete-available" class="level4" data-number="4.1.2.3"><h4 data-number="4.1.2.3" class="anchored" data-anchor-id="utilice-el-paquete-available">
+<span class="header-section-number">4.1.2.3</span> Utilice el paquete available</h4>
+<p>Es imposible cumplir con todas las sugerencias anteriores simultáneamente, por lo que deberá hacer algunas concesiones. El <a href="https://cran.r-project.org/package=available">paquete available</a> tiene una función llamada <code>available()</code> que le ayuda a evaluar el nombre de un paquete potencial desde muchos ángulos:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-lib/available">available</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">available</span><span class="op">(</span><span class="st">"doofus"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Urban Dictionary can contain potentially offensive results,</span></span>
+<span><span class="co">#&gt;   should they be included? [Y]es / [N]o:</span></span>
+<span><span class="co">#&gt; 1: 1</span></span>
+<span><span class="co">#&gt; ── doofus ──────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; Name valid: ✔</span></span>
+<span><span class="co">#&gt; Available on CRAN: ✔ </span></span>
+<span><span class="co">#&gt; Available on Bioconductor: ✔</span></span>
+<span><span class="co">#&gt; Available on GitHub:  ✔ </span></span>
+<span><span class="co">#&gt; Abbreviations: http://www.abbreviations.com/doofus</span></span>
+<span><span class="co">#&gt; Wikipedia: https://en.wikipedia.org/wiki/doofus</span></span>
+<span><span class="co">#&gt; Wiktionary: https://en.wiktionary.org/wiki/doofus</span></span>
+<span><span class="co">#&gt; Sentiment:???</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>available::available()</code> hace lo siguiente:</p>
+<ul>
+<li>Comprobaciones de validez.</li>
+<li>Verifica la disponibilidad en CRAN, Bioconductor y más.</li>
+<li>Busca en varios sitios web para ayudarle a descubrir significados no deseados. En una sesión interactiva, las URL que ve arriba se abren en las pestañas del navegador.</li>
+<li>Intenta informar si el nombre tiene un sentimiento positivo o negativo..</li>
+</ul>
+<p><code><a href="https://pak.r-lib.org/reference/pkg_name_check.html">pak::pkg_name_check()</a></code> es una función alternativa con un propósito similar. Dado que el paquete pak se encuentra en desarrollo más activo que el available, puede surgir como la mejor opción en el futuro.</p>
+</section></section><section id="sec-creating" class="level3" data-number="4.1.3"><h3 data-number="4.1.3" class="anchored" data-anchor-id="sec-creating">
+<span class="header-section-number">4.1.3</span> Creación de paquetes</h3>
+<p>Una vez que haya creado un nombre, hay dos formas de crear el paquete..</p>
+<ul>
+<li>Llamar <code><a href="https://usethis.r-lib.org/reference/create_package.html">usethis::create_package()</a></code>.</li>
+<li>En RStudio, haz <em>File &gt; New Project &gt; New Directory &gt; R Package</em>. Esto en última instancia llama <code><a href="https://usethis.r-lib.org/reference/create_package.html">usethis::create_package()</a></code>, así que realmente solo hay una manera.</li>
+</ul>
+<!-- *TODO: revisit when I tackle usethis + RStudio project templates <https://github.com/r-lib/usethis/issues/770>. In particular, contemplate whether to reinstate any screenshot-y coverage of RStudio workflows here.* --><p>Esto produce el paquete <em>funcional</em> más pequeño posible, con tres componentes:</p>
+<ol type="1">
+<li><p>Un directorio <code>R/</code>, sobre el cual aprenderá en <a href="code.html"><span>Capítulo&nbsp;6</span></a>.</p></li>
+<li><p>Un archivo básico <code>DESCRIPTION</code>, sobre el cual aprenderá en <a href="description.html"><span>Capítulo&nbsp;9</span></a>.</p></li>
+<li><p>Un archivo <code>NAMESPACE</code> básico, sobre el que aprenderá en <a href="dependencies-mindset-background.html#sec-dependencies-NAMESPACE-file"><span>Sección&nbsp;10.2.2</span></a>.</p></li>
+</ol>
+<p>También puede incluir un archivo de proyecto de RStudio, <code>pkgname.Rproj</code>, que hace que su paquete sea fácil de usar con RStudio, como se describe a continuación. Los archivos básicos <code>.Rbuildignore</code> y <code>.gitignore</code> también quedan atrás.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Advertencia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>No utilice <code><a href="https://rdrr.io/r/utils/package.skeleton.html">package.skeleton()</a></code> para crear un paquete. Debido a que esta función viene con R, es posible que tenga la tentación de usarla, pero crea un paquete que inmediatamente arroja errores con <code>R CMD build</code>. Anticipa un proceso de desarrollo diferente al que usamos aquí, por lo que reparar este estado inicial roto simplemente hace que el trabajo sea innecesario para las personas que usan devtools (y, especialmente, roxygen2). Use <code>create_package()</code>.</p>
+</div>
+</div>
+</section><section id="dónde-deberías-crear-el-paquete-create_package" class="level3" data-number="4.1.4"><h3 data-number="4.1.4" class="anchored" data-anchor-id="dónde-deberías-crear-el-paquete-create_package">
+<span class="header-section-number">4.1.4</span> ¿Dónde deberías crear el paquete, <code>create_package()</code>?</h3>
+<p>El argumento principal y único requerido para <code>create_package()</code> es la <code>ruta</code>, <code>path</code> donde vivirá su nuevo paquete:</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">create_package</span><span class="op">(</span><span class="st">"ruta/al/paquete/nombrepqt"</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Recuerde que aquí es donde reside su paquete en su forma <strong>fuente</strong> (<a href="structure.html#sec-source-package"><span>Sección&nbsp;3.2</span></a>), no en su forma <strong>instalada</strong> (<a href="structure.html#sec-installed-package"><span>Sección&nbsp;3.5</span></a>). Los paquetes instalados se encuentran en una <strong>biblioteca</strong> y analizamos las configuraciones convencionales para bibliotecas en <a href="structure.html#sec-library"><span>Sección&nbsp;3.7</span></a>.</p>
+<p>¿Dónde debería guardar los paquetes fuente? El principio fundamental es que esta ubicación debe ser distinta de donde se encuentran los paquetes instalados. En ausencia de consideraciones externas, un usuario típico debería designar un directorio dentro de su directorio de inicio para los paquetes R (fuente). Discutimos esto con colegas y la fuente de muchos paquetes de tidyverse se encuentra dentro de directorios como <code>~/rrr/</code>, <code>~/documents/tidyverse/</code>, <code>~/r/packages/</code> o <code>~/pkg/</code>. Algunos de nosotros usamos un directorio para esto, otros dividen los paquetes fuente entre unos pocos directorios según su función de desarrollo (colaborador o no), organización de GitHub (tidyverse o r-lib), etapa de desarrollo (activa o no), etc.</p>
+<p>Lo anterior probablemente refleja que somos principalmente constructores de herramientas. Un investigador académico podría organizar sus archivos en torno a publicaciones individuales, mientras que un científico de datos podría organizarlos en torno a productos e informes de datos. No existe ninguna razón técnica o tradicional particular para un enfoque específico. Siempre que mantenga una distinción clara entre los paquetes fuente e instalados, simplemente elija una estrategia que funcione dentro de su sistema general para la organización de archivos y úsela de manera consistente.</p>
+</section></section><section id="sec-workflow101-rstudio-projects" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="sec-workflow101-rstudio-projects">
+<span class="header-section-number">4.2</span> Proyectos de RStudio</h2>
+<p>devtools trabaja mano a mano con RStudio, que creemos que es el mejor entorno de desarrollo para la mayoría de los usuarios de R. Para ser claros, puedes usar devtools sin usar RStudio y puedes desarrollar paquetes en RStudio sin usar devtools. Pero existe una relación especial bidireccional que hace que sea muy gratificante utilizar devtools y RStudio juntos.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un <strong>Proyecto</strong> de RStudio, con una “P” mayúscula, es un directorio normal en su computadora que incluye alguna infraestructura de RStudio (en su mayoría oculta) para facilitar su trabajo en uno o más <strong>proyectos</strong>, con una “p” minúscula. “. Un proyecto puede ser un paquete R, un análisis de datos, una aplicación Shiny, un libro, un blog, etc.</p>
+</div>
+</div>
+<section id="beneficios-de-los-proyectos-de-rstudio" class="level3" data-number="4.2.1"><h3 data-number="4.2.1" class="anchored" data-anchor-id="beneficios-de-los-proyectos-de-rstudio">
+<span class="header-section-number">4.2.1</span> Beneficios de los proyectos de RStudio</h3>
+<p>Desde <a href="structure.html#sec-source-package"><span>Sección&nbsp;3.2</span></a>, ya sabes que un paquete fuente se encuentra en un directorio de tu computadora. Recomendamos encarecidamente que cada paquete fuente sea también un proyecto RStudio. Éstos son algunas de las ventajas:</p>
+<ul>
+<li><p>Los proyectos son muy “lanzables”. Es fácil iniciar una nueva instancia de RStudio en un proyecto, con el explorador de archivos y el directorio de trabajo configurados exactamente de la manera que necesita, listos para trabajar..</p></li>
+<li>
+<p>Cada Proyecto está aislado; El código ejecutado en un proyecto no afecta a ningún otro proyecto.</p>
+<ul>
+<li>Puede tener varios proyectos de RStudio abiertos a la vez y el código ejecutado en el proyecto A no tiene ningún efecto en la sesión de R ni en el espacio de trabajo del proyecto B.</li>
+</ul>
+</li>
+<li><p>Obtendrá útiles herramientas de navegación de código como <code>F2</code> para saltar a la definición de una función y <code>Ctrl +.</code> para buscar funciones o archivos por nombre.</p></li>
+<li>
+<p>Obtiene útiles atajos de teclado y una interfaz en la que se puede hacer clic para tareas comunes de desarrollo de paquetes, como generar documentación, ejecutar pruebas o verificar el paquete completo.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-keyboard-shortcuts" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/keyboard-shortcuts.png" class="img-fluid figure-img" alt="Captura de pantalla de una ventana de RStudio con un cuadro negro semitransparente que muestra atajos de teclado que se superponen a la mayor parte de la ventana." width="400"></p>
+<figcaption class="figure-caption">Figura&nbsp;4.1: Referencia rápida de métodos abreviados de teclado en RStudio.</figcaption></figure>
+</div>
+</div>
+</div>
+</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para ver los atajos de teclado más útiles, presione Alt + Shift + K o use <em>Help &gt; Keyboard Shortcuts Help</em>. Deberías ver algo como <a href="#fig-keyboard-shortcuts">Figura&nbsp;<span>4.1</span></a>.</p>
+<p>RStudio también proporciona la <a href="https://docs.posit.co/ide/user/ide/reference/shortcuts.html#command-palette"><em>Paleta de comandos</em></a> que brinda acceso rápido y con capacidad de búsqueda a todos los comandos del IDE – especialmente útil cuando no recuerdas un atajo de teclado en particular. Se invoca mediante Ctrl + Shift + P (Windows &amp; Linux) o Cmd + Shift + P (macOS).</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Siga @<a href="https://twitter.com/rstudiotips">rstudiotips</a> en Twitter para obtener una dosis regular de consejos y trucos de RStudio.</p>
+</div>
+</div>
+</section><section id="cómo-conseguir-un-proyecto-rstudio" class="level3" data-number="4.2.2"><h3 data-number="4.2.2" class="anchored" data-anchor-id="cómo-conseguir-un-proyecto-rstudio">
+<span class="header-section-number">4.2.2</span> Cómo conseguir un proyecto RStudio</h3>
+<p>Si sigue nuestra recomendación de crear nuevos paquetes con <code>create_package()</code>, cada paquete nuevo también será un proyecto RStudio, si está trabajando desde RStudio.</p>
+<p>Si necesita designar el directorio de un paquete fuente preexistente como un proyecto RStudio, elija una de estas opciones:</p>
+<ul>
+<li>En RStudio, haz <em>File &gt; New Project &gt; Existing Directory</em>.</li>
+<li>Llame a <code>create_package()</code> con la ruta al paquete fuente R preexistente.</li>
+<li>Llame a <code><a href="https://usethis.r-lib.org/reference/use_rstudio.html">usethis::use_rstudio()</a></code>, con el <a href="#sec-rstudio-project-vs-active-usethis-project">proyecto usethis activo</a> establecido en un paquete R existente. En la práctica, esto probablemente signifique que solo necesita asegurarse de que su directorio de trabajo esté dentro del directorio del paquete preexistente.</li>
+</ul></section><section id="qué-caracteriza-a-un-proyecto-rstudio" class="level3" data-number="4.2.3"><h3 data-number="4.2.3" class="anchored" data-anchor-id="qué-caracteriza-a-un-proyecto-rstudio">
+<span class="header-section-number">4.2.3</span> ¿Qué caracteriza a un proyecto RStudio?</h3>
+<p>Un directorio que sea un proyecto RStudio contendrá un archivo <code>.Rproj</code>. Normalmente, si el directorio se llama “foo”, el archivo del proyecto es <code>foo.Rproj</code>. Y si ese directorio también es un paquete R, entonces el nombre del paquete suele ser también “foo”. El camino de menor resistencia es hacer que todos estos nombres coincidan y NO anidar su paquete dentro de un subdirectorio dentro del Proyecto. Si opta por un flujo de trabajo diferente, sepa que puede sentir que está luchando con las herramientas.</p>
+<p>Un archivo <code>.Rproj</code> es solo un archivo de texto. Aquí hay un archivo de proyecto representativo que puede ver en un proyecto iniciado mediante usethis:</p>
+<pre><code>Version: 1.0
+
+RestoreWorkspace: No
+SaveWorkspace: No
+AlwaysSaveHistory: Default
+
+EnableCodeIndexing: Yes
+Encoding: UTF-8
+
+AutoAppendNewline: Yes
+StripTrailingWhitespace: Yes
+LineEndingConversion: Posix
+
+BuildType: Package
+PackageUseDevtools: Yes
+PackageInstallArgs: --no-multiarch --with-keep.source
+PackageRoxygenize: rd,collate,namespace</code></pre>
+<p>No es necesario modificar este archivo manualmente. En su lugar, utilice la interfaz disponible a través de <em>Tools &gt; Project Options</em> (<a href="#fig-project-options">Figura&nbsp;<span>4.2</span></a>) o <em>Project Options</em> en el menú Proyectos en la esquina superior derecha (<a href="#fig-projects-menu">Figura&nbsp;<span>4.3</span></a>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-project-options" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/project-options-2.png" class="img-fluid figure-img" alt="La página de preferencias Opciones del proyecto en RStudio IDE. En el lado izquierdo hay nueve categorías: General, Edición de código, R Markdown, Python, Sweave, Ortografía, Herramientas de compilación, Git/SVN y Entornos. Se selecciona la categoría General. En la parte principal de la ventana hay tres opciones con cuadros desplegables: 1. Restaure .RData en el espacio de trabajo al inicio; 2. Guarde el espacio de trabajo en .RData al salir; y 3. Guarde siempre el historial (incluso si no guarda .RData). Estas tres opciones están configuradas en predeterminado &quot;(Default)&quot;. Hay dos opciones con casillas de verificación.: 1. Deshabilitar la ejecución de .Rprofile en la sesión start/resume 2. Salir de los procesos secundarios al salir Ambos están sin marcar.. En la parte superior de la ventana está la declaración.: &quot;Utilice (Default) para heredar la configuración predeterminada global&quot;." width="599"></p>
+<figcaption class="figure-caption">Figura&nbsp;4.2: Opciones de proyecto en RStudio.</figcaption></figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-projects-menu" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/project-options-1.png" class="img-fluid figure-img" style="width:35.0%" alt="Imagen del menú desplegable Proyectos IDE de RStudio, con elementos: &quot;New Project...&quot;, &quot;Open Project...&quot;, &quot;Open Project in New Session...&quot;,  &quot;Close Project&quot;, luego una lista de proyectos que el usuario ha  tenido abiertos recientemente, &quot;Close Project&quot;, y &quot;Project Options...&quot;.  El elemento &quot;Project Options...&quot; está seleccionado."></p>
+<figcaption class="figure-caption">Figura&nbsp;4.3: Menú de proyectos en RStudio.</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="cómo-lanzar-un-proyecto-rstudio" class="level3" data-number="4.2.4"><h3 data-number="4.2.4" class="anchored" data-anchor-id="cómo-lanzar-un-proyecto-rstudio">
+<span class="header-section-number">4.2.4</span> Cómo lanzar un proyecto RStudio</h3>
+<p>Haga doble clic en el archivo <code>foo.Rproj</code> en el Finder de macOS o en el Explorador de Windows para iniciar el proyecto foo en RStudio.</p>
+<p>También puede iniciar proyectos desde RStudio a través de <em>File &gt; Open Project (in New Session)</em> o el menú Proyectos en la esquina superior derecha.</p>
+<p>Si utiliza una aplicación de productividad o de inicio, probablemente pueda configurarla para que haga algo agradable con los archivos <code>.Rproj</code>. Ambos usamos a Alfred para esto. <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, que es solo macOS, pero existen herramientas similares para Windows. De hecho, esta es una muy buena razón para utilizar una aplicación de productividad en primer lugar.</p>
+<p>Es muy normal – ¡y productivo! – tener varios proyectos abiertos a la vez.</p>
+</section><section id="sec-rstudio-project-vs-active-usethis-project" class="level3" data-number="4.2.5"><h3 data-number="4.2.5" class="anchored" data-anchor-id="sec-rstudio-project-vs-active-usethis-project">
+<span class="header-section-number">4.2.5</span> Proyecto RStudio versus uso activo de este proyecto</h3>
+<p>Notarás que la mayoría de las funciones de usethis no toman una ruta: operan en los archivos en el “proyecto de usethis activo”. El uso de este paquete supone que el 95% de las veces todos estos coinciden:</p>
+<ul>
+<li>El proyecto RStudio actual, si se utiliza RStudio.</li>
+<li>El uso activo de este proyecto.</li>
+<li>Directorio de trabajo actual para el proceso R.</li>
+</ul>
+<p>Si las cosas parecen raras, llame a <code>proj_sitrep()</code> para obtener un “informe de situación”. Éste identificará situaciones peculiares y propondrá formas de volver a un estado más feliz.</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Por lo general, estos deberían ser los mismos (o no estar configurados).</span></span>
+<span><span class="fu">proj_sitrep</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; *   directorio de trabajo: '/Users/jenny/rrr/readxl'</span></span>
+<span><span class="co">#&gt; * active_usethis_proj: '/Users/jenny/rrr/readxl'</span></span>
+<span><span class="co">#&gt; * active_rstudio_proj: '/Users/jenny/rrr/readxl'</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section><section id="directorio-de-trabajo-y-disciplina-de-ruta-de-archivo" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="directorio-de-trabajo-y-disciplina-de-ruta-de-archivo">
+<span class="header-section-number">4.3</span> Directorio de trabajo y disciplina de ruta de archivo</h2>
+<p>A medida que desarrolle su paquete, ejecutará código R. Esta será una combinación de llamadas de flujo de trabajo (por ejemplo, <code>document()</code> o <code>test()</code>) y llamadas <em>ad hoc</em> que le ayudarán a escribir sus funciones, ejemplos y pruebas. <em>Recomendamos encarecidamente</em> que mantenga el nivel superior de su paquete fuente como directorio de trabajo de su proceso R. Esto generalmente sucederá de forma predeterminada, por lo que esta es realmente una recomendación para evitar flujos de trabajo de desarrollo que requieran que juegue con el directorio de trabajo.</p>
+<p>Si es totalmente nuevo en el desarrollo de paquetes, no tiene muchas bases para apoyar o resistirse a esta propuesta. Pero aquellos con cierta experiencia pueden encontrar esta recomendación algo molesta. Quizás se pregunte cómo se supone que debe expresar las rutas cuando trabaja en subdirectorios, como <code>tests/</code>. A medida que sea relevante, le mostraremos cómo explotar los asistentes de creación de rutas, como <code><a href="https://testthat.r-lib.org/reference/test_path.html">testthat::test_path()</a></code>, que determinan las rutas en el momento de la ejecución.</p>
+<p>La idea básica es que al dejar el directorio de trabajo solo, se le recomienda escribir rutas que transmitan la intención explícitamente (“leer <code>foo.csv</code> del directorio de prueba”) en lugar de implícitamente (“leer <code>foo.csv</code> del directorio de trabajo actual , que <em>creo</em> será el directorio de prueba”). Una señal segura de dependencia de rutas implícitas es el jugueteo incesante con su directorio de trabajo, porque está utilizando <code><a href="https://rdrr.io/r/base/getwd.html">setwd()</a></code> para cumplir manualmente las suposiciones que están implícitas en sus rutas.</p>
+<p>El uso de rutas explícitas puede eliminar toda una clase de dolores de cabeza en las rutas y también hace que el desarrollo diario sea más placentero. Hay dos razones por las que es difícil acertar con los caminos implícitos:</p>
+<ul>
+<li>Recuerde las diferentes formas que puede adoptar un paquete durante el ciclo de desarrollo (<a href="structure.html"><span>Capítulo&nbsp;3</span></a>). Estos estados difieren entre sí en términos de qué archivos y carpetas existen y sus posiciones relativas dentro de la jerarquía. Es complicado escribir rutas relativas que funcionen en todos los estados del paquete.</li>
+<li>Con el tiempo, usted y potencialmente CRAN procesarán su paquete con herramientas integradas como <code>R CMD build</code>, <code>R CMD check</code> y <code>R CMD INSTALL</code>. Es difícil realizar un seguimiento de cuál será el directorio de trabajo en cada etapa de estos procesos.</li>
+</ul>
+<p>Los asistentes de ruta como <code><a href="https://testthat.r-lib.org/reference/test_path.html">testthat::test_path()</a></code>, <code><a href="https://fs.r-lib.org/reference/path_package.html">fs::path_package()</a></code> y el <a href="https://rprojroot.r-lib.org">paquete rprojroot</a> son extremadamente útiles para crear rutas resistentes que resistan en toda la gama de situaciones que surgen durante el desarrollo y el uso. Otra forma de eliminar rutas frágiles es ser riguroso en el uso de métodos adecuados para almacenar datos dentro de su paquete (<a href="data.html"><span>Capítulo&nbsp;7</span></a>) y apuntar al directorio temporal de la sesión cuando sea apropiado, como para artefactos de prueba efímeros. (<a href="testing-basics.html"><span>Capítulo&nbsp;13</span></a>).</p>
+</section><section id="sec-workflow101-load-all" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="sec-workflow101-load-all">
+<span class="header-section-number">4.4</span> Prueba de manejo con <code>load_all()</code>
+</h2>
+<p>La función <code>load_all()</code> es posiblemente la parte más importante del flujo de trabajo de devtools.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># con devtools adjuntado y</span></span>
+<span><span class="co"># el directorio de trabajo configurado en el nivel superior de su paquete fuente ...</span></span>
+<span></span>
+<span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ... ahora experimenta con las funciones de tu paquete.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>load_all()</code> es el paso clave en este ciclo de desarrollo de paquetes de “hacer espuma, enjuagar y repetir”:</p>
+<ol type="1">
+<li>Modificar la definición de una función.</li>
+<li><code>load_all()</code></li>
+<li>Pruebe el cambio ejecutando un pequeño ejemplo o algunas pruebas.</li>
+</ol>
+<p>Cuando eres nuevo en el desarrollo de paquetes o en devtools, es fácil pasar por alto la importancia de <code>load_all()</code> y caer en algunos hábitos incómodos en un flujo de trabajo de análisis de datos.</p>
+<section id="beneficios-de-load_all" class="level3" data-number="4.4.1"><h3 data-number="4.4.1" class="anchored" data-anchor-id="beneficios-de-load_all">
+<span class="header-section-number">4.4.1</span> Beneficios de <code>load_all()</code>
+</h3>
+<p>Cuando comienza a utilizar un entorno de desarrollo, como RStudio o VS Code, la mayor ventaja es la capacidad de enviar líneas de código desde un script <code>.R</code> para su ejecución en la consola R. La fluidez de esto es lo que hace que sea tolerable seguir la mejor práctica de considerar el código fuente como real <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> (en lugar de objetos en el espacio de trabajo) y guardar archivos <code>.R</code> (en lugar de guardar y volver a cargar <code>.Rdata</code>).</p>
+<p><code>load_all()</code> tiene el mismo significado para el desarrollo de paquetes e, irónicamente, requiere que NO pruebe el código del paquete de la misma manera que el código de script. <code>load_all()</code> <em>simula</em> el proceso completo para ver el efecto de un cambio en el código fuente, lo cual es bastante complicado <a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> que no querrás hacerlo muy a menudo. <a href="#fig-load-all">Figura&nbsp;<span>4.4</span></a> refuerza que la función <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> solo puede cargar un paquete que ha sido instalado, mientras que <code>load_all()</code> ofrece una simulación de alta fidelidad de esto, basada en la fuente del paquete actual.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-load-all" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="diagrams/loading.png" class="img-fluid figure-img" alt="Diagrama que enumera cinco estados del paquete: fuente, paquete, binario, instalado y en memoria. Se representan dos funciones para convertir un paquete de un estado a otro. Primero, se muestra `devtools::load_all()` para convertir un paquete fuente en uno que está en la memoria. En segundo lugar, se muestra que `library()` coloca un paquete instalado en la memoria." width="794"></p>
+<figcaption class="figure-caption">Figura&nbsp;4.4: devtools::load_all() vs.&nbsp;library().</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Los principales beneficios de <code>load_all()</code> incluyen:</p>
+<ul>
+<li>Puede iterar rápidamente, lo que fomenta la exploración y el progreso incremental.
+<ul>
+<li>Esta aceleración iterativa es especialmente notable en paquetes con código compilado.</li>
+</ul>
+</li>
+<li>Puedes desarrollar de forma interactiva bajo un régimen de espacio de nombres que imita con precisión cómo son las cosas cuando alguien usa tu paquete instalado, con las siguientes ventajas adicionales:
+<ul>
+<li>Puede llamar a sus propias funciones internas directamente, sin usar <code>:::</code> y sin caer en la tentación de definir temporalmente sus funciones en el espacio de trabajo global.</li>
+<li>También puede llamar funciones de otros paquetes que haya importado a su <code>NAMESPACE</code>, sin caer en la tentación de adjuntar estas dependencias a través de <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>.</li>
+</ul>
+</li>
+</ul>
+<p><code>load_all()</code> elimina la fricción del flujo de trabajo de desarrollo y elimina la tentación de utilizar soluciones alternativas que a menudo conducen a errores en torno a la gestión de espacios de nombres y dependencias.</p>
+</section><section id="otras-formas-de-llamar-load_all" class="level3" data-number="4.4.2"><h3 data-number="4.4.2" class="anchored" data-anchor-id="otras-formas-de-llamar-load_all">
+<span class="header-section-number">4.4.2</span> Otras formas de llamar <code>load_all()</code>
+</h3>
+<p>Cuando se trabaja en un proyecto que es un paquete, RStudio ofrece varias formas de llamar <code>load_all()</code>:</p>
+<ul>
+<li>Atajo de teclado: Cmd+Shift+L (macOS), Ctrl+Shift+L (Windows, Linux)</li>
+<li>Paneles de construcción menú <em>More …</em>
+</li>
+<li><em>Build &gt; Load All</em></li>
+</ul>
+<p><code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code> es una envoltura delgada alrededor de <code><a href="https://pkgload.r-lib.org/reference/load_all.html">pkgload::load_all()</a></code> que agrega un poco de facilidad de uso. Es poco probable que uses <code>load_all()</code> programáticamente o dentro de otro paquete, pero si lo haces, probablemente deberías usar <code><a href="https://pkgload.r-lib.org/reference/load_all.html">pkgload::load_all()</a></code> directamente.</p>
+</section></section><section id="sec-workflow101-r-cmd-check" class="level2" data-number="4.5"><h2 data-number="4.5" class="anchored" data-anchor-id="sec-workflow101-r-cmd-check">
+<span class="header-section-number">4.5</span> <code>check()</code> y <code>R CMD check</code>
+</h2>
+<p>Base R proporciona varias herramientas de línea de comandos y “R CMD check” es el método oficial para comprobar que un paquete R es válido. Es esencial pasar la verificación <code>R CMD check</code> si planea enviar su paquete a CRAN, pero <strong>recomendamos encarecidamente</strong> cumplir con este estándar incluso si no tiene intención de publicar su paquete en CRAN. <code>R CMD check</code> detecta muchos problemas comunes que de otro modo descubrirías por las malas.</p>
+<p>Nuestra forma recomendada de ejecutar <code>R CMD check</code> es en la consola R a través de devtools:</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/check.html">check</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Recomendamos esto porque le permite ejecutar <code>R CMD check</code> desde R, lo que reduce drásticamente la fricción y aumenta la probabilidad de que <code>check()</code> sea temprano y con frecuencia. Este énfasis en la fluidez y la retroalimentación rápida es exactamente la misma motivación que se da para <code>load_all()</code>. En el caso de <code>check()</code>, realmente está ejecutando <code>R CMD check</code> por usted. No se trata sólo de una simulación de alta fidelidad, como es el caso de <code>load_all()</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>RStudio expone <code>check()</code> en el menú <em>Build</em>, en el panel <em>Build</em> a través de <em>Check</em> y en los atajos de teclado Ctrl + Shift + E (Windows &amp; Linux) o Cmd + Shift + E (macOS).</p>
+</div>
+</div>
+<p>Un error de novato que vemos a menudo en los desarrolladores de nuevos paquetes es trabajar demasiado en su paquete antes de ejecutar “R CMD check”. Luego, cuando finalmente lo ejecutan, es típico descubrir muchos problemas, lo que puede resultar muy desmoralizador. Es contrario a la intuición, pero la clave para minimizar este dolor es ejecutar <code>R CMD check</code> con más frecuencia: cuanto antes encuentre un problema, más fácil será solucionarlo.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Modelamos este comportamiento muy intencionalmente en <a href="whole-game.html"><span>Capítulo&nbsp;1</span></a>.</p>
+<p>El límite superior de este enfoque es ejecutar <code>R CMD check</code> cada vez que realiza un cambio. No ejecutamos <code>check()</code> manualmente con tanta frecuencia, pero cuando estamos trabajando activamente en un paquete, es típico ejecutar <code>check()</code> varias veces al día. No juegue con su paquete durante días, semanas o meses, esperando algún hito especial para finalmente ejecutar <code>R CMD check</code>. Si usas GitHub (<a href="software-development-practices.html#sec-sw-dev-practices-git-github"><span>Sección&nbsp;20.1</span></a>), Le mostraremos cómo configurar las cosas para que <code>R CMD check</code> se ejecute automáticamente cada vez que realice un push (<a href="software-development-practices.html#sec-sw-dev-practices-gha"><span>Sección&nbsp;20.2.1</span></a>).</p>
+<section id="sec-check-workflow" class="level3" data-number="4.5.1"><h3 data-number="4.5.1" class="anchored" data-anchor-id="sec-check-workflow">
+<span class="header-section-number">4.5.1</span> Flujo de trabajo</h3>
+<p>Esto es lo que sucede dentro <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code>:</p>
+<ul>
+<li><p>Garantiza que la documentación esté actualizada ejecutando <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code>.</p></li>
+<li><p>Empaqueta el paquete antes de revisarlo (<a href="structure.html#sec-bundled-package"><span>Sección&nbsp;3.3</span></a>). Esta es la mejor práctica para verificar paquetes porque garantiza que la verificación comience desde cero: porque un paquete de paquetes no contiene ninguno de los archivos temporales que pueden acumularse en su paquete fuente, por ejemplo. artefactos como los archivos <code>.so</code> y <code>.o</code> que acompañan al código compilado, puede evitar las advertencias falsas que generarán dichos archivos.</p></li>
+<li><p>Establece la variable de entorno <code>NOT_CRAN</code> en <code>"true"</code>. Esto le permite omitir selectivamente pruebas en CRAN. Consulte <code><a href="https://testthat.r-lib.org/reference/skip.html">?testthat::skip_on_cran</a></code> y <a href="testing-advanced.html#sec-testing-advanced-skip-on-cran"><span>Sección&nbsp;15.4.1</span></a> para obtener más detalles.</p></li>
+</ul>
+<p>El flujo de trabajo para comprobar un paquete es sencillo, pero tedioso:</p>
+<ol type="1">
+<li><p>Ejecute <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code>, o presione Ctrl/Cmd + Shift + E.</p></li>
+<li><p>Arregle el primer problema.</p></li>
+<li><p>Repita hasta que no haya más problemas.</p></li>
+</ol>
+<p><code>R CMD check</code> devuelve tres tipos de mensajes:</p>
+<ul>
+<li><p><code>ERROR</code> (errores): Problemas graves que debes solucionar independientemente de si envías o no a CRAN.</p></li>
+<li><p><code>WARNING</code> (advertencias): Problemas probables que debes solucionar si planeas enviar a CRAN (y es una buena idea investigar incluso si no lo estás haciendo).</p></li>
+<li><p><code>NOTE</code> (notas): Problemas leves o, en algunos casos, simplemente una observación. Si realiza un envío a CRAN, debe esforzarse por eliminar todas las NOTAS, incluso si son falsos positivos. Si no tiene NOTAS, no se requiere intervención humana y el proceso de envío del paquete será más sencillo. Si no es posible eliminar una “NOTA”, deberá describir por qué está bien en los comentarios de envío, como se describe en <a href="release.html#sec-release-process"><span>Sección&nbsp;22.7</span></a>. Si no realiza el envío a CRAN, lea atentamente cada NOTA. Si es fácil eliminar las NOTAS, vale la pena, para que puedas seguir esforzándote por conseguir un resultado totalmente limpio. Pero si eliminar una NOTA tendrá un impacto negativo neto en su paquete, es razonable simplemente tolerarlo. Asegúrese de que eso no le lleve a ignorar otras cuestiones que realmente deberían abordarse.</p></li>
+</ul>
+<p><code>R CMD check</code> consta de docenas de controles individuales y sería abrumador enumerarlos aquí. Consulte nuestra <a href="https://r-pkgs.org/R-CMD-check.html">guía solo en línea para verificar `R CMD check</a> para más detalles.</p>
+</section><section id="antecedentes-sobre-r-cmd-check" class="level3" data-number="4.5.2"><h3 data-number="4.5.2" class="anchored" data-anchor-id="antecedentes-sobre-r-cmd-check">
+<span class="header-section-number">4.5.2</span> Antecedentes sobre <code>R CMD check</code>
+</h3>
+<p>A medida que acumula experiencia en el desarrollo de paquetes, es posible que desee acceder <code>R CMD check</code> directamente en algún momento. Recuerde que <code>R CMD check</code> es algo que debe ejecutar en la terminal, no en la consola R. Puedes ver su documentación así:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> CMD check <span class="at">--help</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>R CMD check</code> se puede ejecutar en un directorio que contiene un paquete R en formato fuente (<a href="structure.html#sec-source-package"><span>Sección&nbsp;3.2</span></a>) o, preferiblemente, en un empaquetado (<a href="structure.html#sec-bundled-package"><span>Sección&nbsp;3.3</span></a>):</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> CMD build somepackage</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> CMD check somepackage_0.0.0.9000.tar.gz  </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Para obtener más información, consulte la sección <a href="https://cran.r-project.org/doc/manuals/R-exts.html#Checking-packages">Comprobación de paquetes</a> de <a href="https://cran.r-project.org/doc/manuals/R-exts.html">Escribir extensiones R</a>.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-silge-nash-graves" class="csl-entry" role="listitem">
+Silge, Julia, John C. Nash, y Spencer Graves. 2018. <span>«<span>Navigating the R Package Universe</span>»</span>. <em><span>The R Journal</span></em> 10 (2): 558-63. <a href="https://doi.org/10.32614/RJ-2018-058">https://doi.org/10.32614/RJ-2018-058</a>.
+</div>
+</div>
+</section></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>Específicamente, configuramos Alfred para favorecer los archivos <code>.Rproj</code> en sus resultados de búsqueda cuando propone aplicaciones o archivos para abrir. Para registrar el tipo de archivo <code>.Rproj</code> con Alfred, vaya a <em>Preferences &gt; Features &gt; Default Results &gt; Advanced</em>. Arrastre cualquier archivo <code>.Rproj</code> a este espacio y luego ciérrelo.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Citando la filosofía de uso favorecida por <a href="https://ess.r-project.org/Manual/ess.html#Philosophies-for-using-ESS_0028R_0029">Emacs Speaks Statistics</a> (ESS).<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>El método de línea de comando es salir de R, ir al shell, hacer <code>R CMD build foo</code> en el directorio principal del paquete, luego <code>R CMD INSTALL foo_x.y.x.tar.gz</code>, reiniciar R y llamar <code>library(foo</code>).<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Una excelente publicación de blog que aboga por “si duele, hazlo más a menudo” es <a href="https://martinfowler.com/bliki/FrequencyReducesDifficulty.html">FrequencyReducesDifficulty</a> de Martin Fowler.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./structure.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./package-within.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">The package within</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+</body></html>

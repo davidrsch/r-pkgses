@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - 11&nbsp; Dependencias: en la práctica</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./license.html" rel="next">
+<link href="./dependencies-mindset-background.html" rel="prev">
+<link href="./images/cover-2e-small.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./description.html">Metadatos del paquete</a></li><li class="breadcrumb-item"><a href="./dependencies-in-practice.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">El paquete en el interior de su código</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Componentes de un paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Código R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Otros componentes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Metadatos del paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Probar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Diseñar su conjunto de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Técnicas de prueba avanzadas</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentación</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Other markdown files</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Website</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Maintenance and distribution</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Software development practices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Lifecycle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Releasing to CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li><a href="#confusi%C3%B3n-sobre-imports" id="toc-confusión-sobre-imports" class="nav-link active" data-scroll-target="#confusi%C3%B3n-sobre-imports"><span class="header-section-number">11.1</span> Confusión sobre <code>Imports</code></a></li>
+  <li><a href="#convenciones-para-este-cap%C3%ADtulo" id="toc-convenciones-para-este-capítulo" class="nav-link" data-scroll-target="#convenciones-para-este-cap%C3%ADtulo"><span class="header-section-number">11.2</span> Convenciones para este capítulo</a></li>
+  <li><a href="#sec-dependencies-NAMESPACE-workflow" id="toc-sec-dependencies-NAMESPACE-workflow" class="nav-link" data-scroll-target="#sec-dependencies-NAMESPACE-workflow"><span class="header-section-number">11.3</span> Flujo de trabajo de <code>NAMESPACE</code></a></li>
+  <li>
+<a href="#sec-dependencies-in-imports" id="toc-sec-dependencies-in-imports" class="nav-link" data-scroll-target="#sec-dependencies-in-imports"><span class="header-section-number">11.4</span> El paquete aparece en <code>Imports</code></a>
+  <ul class="collapse">
+<li><a href="#sec-dependencies-in-imports-r-code" id="toc-sec-dependencies-in-imports-r-code" class="nav-link" data-scroll-target="#sec-dependencies-in-imports-r-code"><span class="header-section-number">11.4.1</span> En el código debajo de R/</a></li>
+  <li><a href="#sec-dependencies-in-imports-in-tests" id="toc-sec-dependencies-in-imports-in-tests" class="nav-link" data-scroll-target="#sec-dependencies-in-imports-in-tests"><span class="header-section-number">11.4.2</span> En el código de prueba</a></li>
+  <li><a href="#en-ejemplos-y-vi%C3%B1etas" id="toc-en-ejemplos-y-viñetas" class="nav-link" data-scroll-target="#en-ejemplos-y-vi%C3%B1etas"><span class="header-section-number">11.4.3</span> En ejemplos y viñetas</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-dependencies-in-suggests" id="toc-sec-dependencies-in-suggests" class="nav-link" data-scroll-target="#sec-dependencies-in-suggests"><span class="header-section-number">11.5</span> El paquete aparece en <code>Suggests</code></a>
+  <ul class="collapse">
+<li><a href="#sec-dependencies-in-suggests-r-code" id="toc-sec-dependencies-in-suggests-r-code" class="nav-link" data-scroll-target="#sec-dependencies-in-suggests-r-code"><span class="header-section-number">11.5.1</span> En el código debajo de <code>R/</code></a></li>
+  <li><a href="#sec-dependencies-in-suggests-in-tests" id="toc-sec-dependencies-in-suggests-in-tests" class="nav-link" data-scroll-target="#sec-dependencies-in-suggests-in-tests"><span class="header-section-number">11.5.2</span> En el código de prueba</a></li>
+  <li><a href="#sec-dependencies-in-suggests-in-examples-and-vignettes" id="toc-sec-dependencies-in-suggests-in-examples-and-vignettes" class="nav-link" data-scroll-target="#sec-dependencies-in-suggests-in-examples-and-vignettes"><span class="header-section-number">11.5.3</span> En ejemplos y viñetas</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-dependencies-in-depends" id="toc-sec-dependencies-in-depends" class="nav-link" data-scroll-target="#sec-dependencies-in-depends"><span class="header-section-number">11.6</span> El paquete aparece en <code>Depends</code></a>
+  <ul class="collapse">
+<li><a href="#en-el-c%C3%B3digo-debajo-de-r-y-en-el-c%C3%B3digo-de-prueba" id="toc-en-el-código-debajo-de-r-y-en-el-código-de-prueba" class="nav-link" data-scroll-target="#en-el-c%C3%B3digo-debajo-de-r-y-en-el-c%C3%B3digo-de-prueba"><span class="header-section-number">11.6.1</span> En el código debajo de <code>R/</code> y en el código de prueba</a></li>
+  <li><a href="#en-ejemplos-y-vi%C3%B1etas-1" id="toc-en-ejemplos-y-viñetas-1" class="nav-link" data-scroll-target="#en-ejemplos-y-vi%C3%B1etas-1"><span class="header-section-number">11.6.2</span> En ejemplos y viñetas</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-dependencies-nonstandard" id="toc-sec-dependencies-nonstandard" class="nav-link" data-scroll-target="#sec-dependencies-nonstandard"><span class="header-section-number">11.7</span> El paquete es una dependencia no estándar</a>
+  <ul class="collapse">
+<li><a href="#dependiendo-de-la-versi%C3%B3n-de-desarrollo-de-un-paquete" id="toc-dependiendo-de-la-versión-de-desarrollo-de-un-paquete" class="nav-link" data-scroll-target="#dependiendo-de-la-versi%C3%B3n-de-desarrollo-de-un-paquete"><span class="header-section-number">11.7.1</span> Dependiendo de la versión de desarrollo de un paquete</a></li>
+  <li><a href="#sec-dependencies-nonstandard-config-needs" id="toc-sec-dependencies-nonstandard-config-needs" class="nav-link" data-scroll-target="#sec-dependencies-nonstandard-config-needs"><span class="header-section-number">11.7.2</span> El campo <code>Config/Needs/*</code></a></li>
+  </ul>
+</li>
+  <li>
+<a href="#exportaciones" id="toc-exportaciones" class="nav-link" data-scroll-target="#exportaciones"><span class="header-section-number">11.8</span> Exportaciones</a>
+  <ul class="collapse">
+<li><a href="#qu%C3%A9-exportar" id="toc-qué-exportar" class="nav-link" data-scroll-target="#qu%C3%A9-exportar"><span class="header-section-number">11.8.1</span> Qué exportar</a></li>
+  <li><a href="#reexportaci%C3%B3n" id="toc-reexportación" class="nav-link" data-scroll-target="#reexportaci%C3%B3n"><span class="header-section-number">11.8.2</span> Reexportación</a></li>
+  </ul>
+</li>
+  <li><a href="#importaciones-y-exportaciones-relacionadas-con-s3" id="toc-importaciones-y-exportaciones-relacionadas-con-s3" class="nav-link" data-scroll-target="#importaciones-y-exportaciones-relacionadas-con-s3"><span class="header-section-number">11.9</span> Importaciones y exportaciones relacionadas con S3</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title"><span id="sec-dependencies-in-practice" class="quarto-section-identifier"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><p>Este capítulo presenta los detalles prácticos de cómo trabajar con sus dependencias dentro de su paquete. Si necesita un repaso sobre cualquiera de los antecedentes:</p>
+<ul>
+<li><p><a href="description.html"><span>Capítulo&nbsp;9</span></a> cubre el archivo DESCRIPCIÓN. Listar una dependencia en ese archivo, como en “Importaciones”, es un primer paso necesario al tomar una dependencia.</p></li>
+<li><p><a href="dependencies-mindset-background.html#sec-dependencies-pros-cons"><span>Sección&nbsp;10.1</span></a> proporciona un marco de toma de decisiones para las dependencias.</p></li>
+<li><p>Los detalles técnicos de los espacios de nombres de los paquetes, la ruta de búsqueda y la conexión versus carga se presentan en <a href="dependencies-mindset-background.html#sec-dependencies-namespace"><span>Sección&nbsp;10.2</span></a>, <a href="dependencies-mindset-background.html#sec-dependencies-search"><span>Sección&nbsp;10.3</span></a> y <a href="dependencies-mindset-background.html#sec-dependencies-attach-vs-load"><span>Sección&nbsp;10.4</span></a>.</p></li>
+</ul>
+<p>Finalmente estamos listos para hablar sobre cómo usar diferentes tipos de dependencias dentro de las diferentes partes de su paquete:</p>
+<ul>
+<li>en tus funciones, debajo de <code>R/</code>
+</li>
+<li>en tus pruebas, debajo de <code>tests/testthat/</code>
+</li>
+<li>en sus ejemplos, en los temas de ayuda, debajo de <code>man/</code>
+</li>
+<li>en sus viñetas y artículos, debajo de <code>viñetas/</code>
+</li>
+</ul>
+<section id="confusión-sobre-imports" class="level2" data-number="11.1"><h2 data-number="11.1" class="anchored" data-anchor-id="confusión-sobre-imports">
+<span class="header-section-number">11.1</span> Confusión sobre <code>Imports</code>
+</h2>
+<p>Dejemos esto muy claro:</p>
+<blockquote class="blockquote">
+<p>Incluir un paquete en <code>Imports</code> en <code>DESCRIPTION</code> no “importa” ese paquete.</p>
+</blockquote>
+<p>Es natural suponer que enumerar un paquete en <code>Imports</code> en realidad “importa” el paquete, pero esto es sólo una elección desafortunada de nombre para el campo <code>Imports</code>. El campo <code>Imports</code> garantiza que los paquetes enumerados allí estén instalados cuando se instala su paquete. No pone esas funciones a su disposición, por ejemplo debajo de <code>R/</code>, ni a su usuario.</p>
+<p>No es automático ni necesariamente aconsejable que un paquete listado en <code>Imports</code> también aparezca en <code>NAMESPACE</code> a través de <code>imports()</code> o <code>importFrom()</code>. Es común que un paquete aparezca en <code>Imports</code> en <code>DESCRIPTION</code>, pero no en <code>NAMESPACE</code>. Lo contrario no es cierto. Cada paquete mencionado en <code>NAMESPACE</code> también debe estar presente en los campos <code>Imports</code> o <code>Depends</code>.</p>
+</section><section id="convenciones-para-este-capítulo" class="level2" data-number="11.2"><h2 data-number="11.2" class="anchored" data-anchor-id="convenciones-para-este-capítulo">
+<span class="header-section-number">11.2</span> Convenciones para este capítulo</h2>
+<p>A veces nuestros ejemplos pueden incluir funciones reales de paquetes reales. Pero si necesitamos hablar de un paquete o función genérica, estas son las convenciones que usamos a continuación:</p>
+<ul>
+<li><p>pkg: el nombre de su paquete hipotético</p></li>
+<li><p>aaapkg o bbbpkg: el nombre de un paquete hipotético del que depende su paquete</p></li>
+<li><p><code>aaa_fun()</code>: el nombre de una función exportada por aaapkg</p></li>
+</ul></section><section id="sec-dependencies-NAMESPACE-workflow" class="level2" data-number="11.3"><h2 data-number="11.3" class="anchored" data-anchor-id="sec-dependencies-NAMESPACE-workflow">
+<span class="header-section-number">11.3</span> Flujo de trabajo de <code>NAMESPACE</code>
+</h2>
+<p>En las secciones siguientes, brindamos instrucciones prácticas sobre cómo (y cuándo) importar funciones de otro paquete al suyo y cómo exportar funciones desde su paquete. El archivo que realiza un seguimiento de todo esto es el archivo <code>NAMESPACE</code> (más detalles en <a href="dependencies-mindset-background.html#sec-dependencies-NAMESPACE-file"><span>Sección&nbsp;10.2.2</span></a>).</p>
+<p>En el flujo de trabajo de devtools y en este libro, generamos el archivo <code>NAMESPACE</code> a partir de comentarios especiales en los archivos <code>R/*.R</code>. Dado que el paquete que finalmente hace este trabajo es roxygen2, estos se denominan “comentarios de roxygen”. Estos comentarios de roxygen también son la base de los temas de ayuda de su paquete, que se tratan en <a href="man.html#sec-man-workflow"><span>Sección&nbsp;16.1.1</span></a>.</p>
+<p>El archivo <code>NAMESPACE</code> comienza con una única línea comentada que explica la situación (y, con suerte, desaconseja cualquier edición manual):</p>
+<pre><code># Generated by roxygen2: do not edit by hand</code></pre>
+<p>A medida que incorpora etiquetas roxygen para exportar e importar funciones, necesita volver a generar el archivo <code>NAMESPACE</code> periódicamente. Este es el flujo de trabajo general para regenerar <code>NAMESPACE</code> (y su documentación):</p>
+<ol type="1">
+<li>
+<p>Agregue etiquetas relacionadas con el espacio de nombres a los comentarios de roxygen en sus archivos <code>R/*.R</code>. Este es un ejemplo artificial, pero te da la idea básica:</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @importFrom aaapkg aaa_fun</span></span>
+<span><span class="co">#' @import bbbpkg</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">foo</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</li>
+<li>
+<p>Ejecute <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code> (o presione Ctrl/Cmd + Shift + D en RStudio) para “documentar” su paquete. Por defecto, suceden dos cosas:</p>
+<ul>
+<li><p>Los temas de ayuda en los archivos <code>man/*.Rd</code> están actualizados (cubiertos en <a href="man.html"><span>Capítulo&nbsp;16</span></a>).</p></li>
+<li>
+<p>Se vuelve a generar el archivo <code>NAMESPACE</code>. En nuestro ejemplo, el archivo <code>NAMESPACE</code> se vería así:</p>
+<pre><code># Generated by roxygen2: do not edit by hand
+
+export(foo)
+import(bbbpkg)
+importFrom(aaapkg,aaa_fun)</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<p>Roxygen2 es bastante inteligente e insertará la directiva apropiada en <code>NAMESPACE</code>, es decir, generalmente puede determinar si usar <code>export()</code> o <code>S3method()</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Presione Ctrl/Cmd + Shift + D para generar el <code>NAMESPACE</code> de su paquete (y los archivos <code>man/*.Rd</code>). Esto también está disponible a través de <em>Document</em> en el menú y panel <em>Build</em>.</p>
+</div>
+</div>
+</section><section id="sec-dependencies-in-imports" class="level2" data-number="11.4"><h2 data-number="11.4" class="anchored" data-anchor-id="sec-dependencies-in-imports">
+<span class="header-section-number">11.4</span> El paquete aparece en <code>Imports</code>
+</h2>
+<p>Considere una dependencia que aparece en <code>DESCRIPTIO</code> en <code>Imports</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Imports</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">    aaapkg</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>El código dentro de su paquete puede asumir que aaapkg está instalado cada vez que se instala pkg.</p>
+<section id="sec-dependencies-in-imports-r-code" class="level3" data-number="11.4.1"><h3 data-number="11.4.1" class="anchored" data-anchor-id="sec-dependencies-in-imports-r-code">
+<span class="header-section-number">11.4.1</span> En el código debajo de R/</h3>
+<p>Nuestro valor predeterminado recomendado es llamar a funciones externas usando la sintaxis <code>paquete::función()</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">somefunction</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">...</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">aaapkg</span><span class="fu">::</span><span class="fu">aaa_fun</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Específicamente, le recomendamos que de forma predeterminada <em>no</em> importe nada desde aaapkg a su espacio de nombres. Esto hace que sea muy fácil identificar qué funciones se encuentran fuera de su paquete, lo cual es especialmente útil cuando lea su código en el futuro. Esto también elimina cualquier preocupación sobre conflictos de nombres entre aaapkg y su paquete.</p>
+<p>Por supuesto, hay razones para hacer excepciones a esta regla e importar algo de otro paquete al suyo:</p>
+<ul>
+<li><p>Un operador: No puedes llamar a un operador desde otro paquete vía <code>::</code>, por lo que debes importarlo. Ejemplos: el operador de fusión nula <code>%||%</code> de rlang o la canalización original <code>%&gt;%</code> de magrittr.</p></li>
+<li><p>Una función que usas <em>mucho</em>: si importar una función hace que tu código sea mucho más legible, esa es una buena razón para importarla. Esto literalmente reduce la cantidad de caracteres necesarios para llamar a la función externa. Esto puede ser especialmente útil al generar mensajes dirigidos al usuario, porque hace que sea más probable que las líneas del código fuente correspondan a las líneas de la salida.</p></li>
+<li><p>Una función que se llama en un bucle cerrado: hay una pequeña penalización de rendimiento asociada con <code>::</code>. Es del orden de 100 ns, por lo que solo importará si llamas a la función millones de veces.</p></li>
+</ul>
+<p>Una función útil para su flujo de trabajo interactivo es <code><a href="https://usethis.r-lib.org/reference/use_import_from.html">usethis::use_import_from()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_import_from.html">use_import_from</a></span><span class="op">(</span><span class="st">"glue"</span>, <span class="st">"glue_collapse"</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>La llamada anterior escribe esta etiqueta roxygen en el código fuente de su paquete:</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @importFrom glue glue_collapse</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>¿Dónde debería ir esta etiqueta de roxygen? Hay dos ubicaciones razonables:</p>
+<ul>
+<li><p>Lo más parecido posible al uso de la función externa. Con esta mentalidad, colocaría <code>@importFrom</code> en el comentario de roxygen encima de la función en su paquete donde usa la función externa. Si este es tu estilo, tendrás que hacerlo a mano. Descubrimos que esto parece natural al principio, pero comienza a fallar a medida que se utilizan más funciones externas en más lugares.</p></li>
+<li>
+<p>En una ubicación central. Este enfoque mantiene todas las etiquetas <code>@importFrom</code> juntas, en una sección dedicada del archivo de documentación a nivel de paquete (que se puede crear con <code><a href="https://usethis.r-lib.org/reference/use_package_doc.html">usethis::use_package_doc()</a></code>, <a href="man.html#sec-man-package-doc"><span>Sección&nbsp;16.7</span></a>). Esto es lo que implementa <code>use_import_from()</code>. Entonces, en <code>R/pkg-package.R</code>, terminarás con algo como esto:</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># El siguiente bloque es utilizado por usethis para administrar automáticamente</span></span>
+<span><span class="co"># etiquetas de espacio de nombres de roxygen. ¡Modifique con cuidado!</span></span>
+<span><span class="co">## usethis namespace: start</span></span>
+<span><span class="co">#' @importFrom glue glue_collapse</span></span>
+<span><span class="co">## usethis namespace: end</span></span>
+<span><span class="cn">NULL</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</li>
+</ul>
+<p>Recuerde que <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code> procesa sus comentarios de roxygen (<a href="#sec-dependencies-NAMESPACE-workflow"><span>Sección&nbsp;11.3</span></a>), que escribe temas de ayuda en <code>man/*.Rd</code> y, relevante para nuestro objetivo actual, genera el <code>NAMESPACE</code> archivo. Si usa <code>use_import_from()</code>, lo hace por usted y también llama a <code>load_all()</code>, haciendo que la función recién importada esté disponible en su sesión actual.</p>
+<p>La etiqueta roxygen anterior hace que esta directiva aparezca en el archivo <code>NAMESPACE</code>:</p>
+<pre><code>importFrom(glue, glue_collapse)</code></pre>
+<p>Ahora puedes usar la función importada directamente en tu código:</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">somefunction</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">...</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">glue_collapse</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A veces haces un uso tan intenso de tantas funciones de otro paquete que deseas importar su espacio de nombres completo. Esto debería ser relativamente raro. En tidyverse, el paquete que más comúnmente tratamos de esta manera es rlang, que funciona casi como un paquete base para nosotros.</p>
+<p>Aquí está la etiqueta roxygen que importa todo rlang. Esto debería aparecer en algún lugar de <code>R/*.R</code>, como el espacio dedicado descrito anteriormente para recopilar todas las etiquetas de importación de espacios de nombres.</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @import rlang</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Después de llamar a <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code>, esta etiqueta roxygen hace que esta directiva aparezca en el archivo <code>NAMESPACE</code>:</p>
+<pre><code>import(rlang)</code></pre>
+<p>Esta es la solución menos recomendada porque puede hacer que su código sea más difícil de leer (no puede saber de dónde proviene una función) y si <code>@importa</code> muchos paquetes, aumenta la posibilidad de que se produzcan conflictos con los nombres de las funciones. Guárdelo para situaciones muy especiales.</p>
+<section id="cómo-no-usar-un-paquete-en-importaciones" class="level4" data-number="11.4.1.1"><h4 data-number="11.4.1.1" class="anchored" data-anchor-id="cómo-no-usar-un-paquete-en-importaciones">
+<span class="header-section-number">11.4.1.1</span> Cómo <em>no</em> usar un paquete en Importaciones</h4>
+<p>A veces tienes un paquete listado en <code>Imports</code>, pero en realidad no lo usas dentro de tu paquete o, al menos, R no cree que lo uses. Eso lleva a una <code>NOTE</code> de <code>R CMD check</code>:</p>
+<pre><code>* checking dependencies in R code ... NOTE
+Namespace in Imports field not imported from: ‘aaapkg’
+  All declared Imports should be used.</code></pre>
+<p>Esto puede suceder si necesita enumerar una dependencia indirecta en “Importaciones”, tal vez para indicar una versión mínima para ella. El metapaquete tidyverse tiene este problema a gran escala, ya que existe principalmente para instalar un conjunto de paquetes en versiones específicas. Otro escenario es cuando su paquete usa una dependencia de tal manera que requiere otro paquete que solo es sugerido por la dependencia directa<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Hay varias situaciones en las que no es obvio que su paquete realmente necesite todos los paquetes enumerados en “Importaciones”, pero de hecho es así.</p>
+<p>¿Cómo puede deshacerse de esta “NOTA”?</p>
+<p>Nuestra recomendación es colocar una referencia calificada de espacio de nombres (no una llamada) a un objeto en aaapkg en algún archivo debajo de <code>R/</code>, como un archivo <code>.R</code> asociado con la configuración de todo el paquete:</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ignore_unused_imports</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">aaapkg</span><span class="fu">::</span><span class="va">aaa_fun</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>No es necesario llamar a <code>ignore_unused_imports()</code> en ningún lado. No deberías exportarlo. En realidad, no es necesario ejercitar <code>aaapkg::aaa_fun()</code>. Lo importante es acceder a algo en el espacio de nombres de aaapkg con <code>::</code>.</p>
+<p>Un método alternativo que podría verse tentado a utilizar es importar <code>aaapkg::aaa_fun()</code> al espacio de nombres de su paquete, probablemente con la etiqueta roxygen <code>@importFrom aaapkg aaa_fun</code>. Esto suprime la “NOTA”, pero también hace más. Esto hace que aaapkg se cargue cada vez que se carga su paquete. Por el contrario, si utiliza el método que recomendamos, el aaapkg sólo se cargará si su usuario hace algo que realmente lo requiera. Esto rara vez importa en la práctica, pero siempre es bueno minimizar o retrasar la carga de paquetes adicionales.</p>
+</section></section><section id="sec-dependencies-in-imports-in-tests" class="level3" data-number="11.4.2"><h3 data-number="11.4.2" class="anchored" data-anchor-id="sec-dependencies-in-imports-in-tests">
+<span class="header-section-number">11.4.2</span> En el código de prueba</h3>
+<p>Consulte las funciones externas en sus pruebas tal como las hace en el código debajo de <code>R/</code>. Generalmente esto significa que debes usar <code>aaapkg::aaa_fun()</code>. Pero si ha importado una función particular, ya sea específicamente o como parte de un espacio de nombres completo, puede llamarla directamente en su código de prueba.</p>
+<p>Generalmente es una mala idea usar <code><a href="https://rdrr.io/r/base/library.html">library(aaapkg)</a></code> para adjuntar una de sus dependencias en algún lugar de sus pruebas, porque hace que la ruta de búsqueda en sus pruebas sea diferente de cómo funciona realmente su paquete. Esto se trata con más detalle en <a href="testing-design.html#sec-testing-design-tension"><span>Sección&nbsp;14.2.5</span></a>.</p>
+</section><section id="en-ejemplos-y-viñetas" class="level3" data-number="11.4.3"><h3 data-number="11.4.3" class="anchored" data-anchor-id="en-ejemplos-y-viñetas">
+<span class="header-section-number">11.4.3</span> En ejemplos y viñetas</h3>
+<p>Si usa un paquete que aparece en <code>Imports</code> en uno de sus ejemplos o viñetas, deberá adjuntar el paquete con <code><a href="https://rdrr.io/r/base/library.html">library(aaapkg)</a></code> o usar una llamada de estilo <code>aaapkg::aaa_fun()</code>. Puedes asumir que aaapkg está disponible, porque eso es lo que garantiza <code>Imports</code>. Lea más en <a href="man.html#sec-man-examples-dependencies-conditional-execution"><span>Sección&nbsp;16.5.4</span></a> y <a href="vignettes.html#sec-vignettes-eval-option"><span>Sección&nbsp;17.4</span></a>.</p>
+</section></section><section id="sec-dependencies-in-suggests" class="level2" data-number="11.5"><h2 data-number="11.5" class="anchored" data-anchor-id="sec-dependencies-in-suggests">
+<span class="header-section-number">11.5</span> El paquete aparece en <code>Suggests</code>
+</h2>
+<p>Considere una dependencia que aparece en <code>DESCRIPTION</code> en <code>Suggests</code>:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Suggests</span><span class="kw">:</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="at">    aaapkg</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>NO puede asumir que todos los usuarios han instalado aaapkg (pero puede asumir que un desarrollador sí lo ha hecho). Que un usuario tenga aaapkg dependerá de cómo instaló su paquete. La mayoría de las funciones que se utilizan para instalar paquetes admiten un argumento de “dependencias” que controla si se instalan solo las dependencias físicas o se adopta un enfoque más amplio, que incluye paquetes sugeridos:</p>
+<div class="cell">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span>dependencies <span class="op">=</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span>dependencies <span class="op">=</span><span class="op">)</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_install.html">pkg_install</a></span><span class="op">(</span>dependencies <span class="op">=</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En términos generales, lo predeterminado es no instalar paquetes en <code>Suggests</code>.</p>
+<section id="sec-dependencies-in-suggests-r-code" class="level3" data-number="11.5.1"><h3 data-number="11.5.1" class="anchored" data-anchor-id="sec-dependencies-in-suggests-r-code">
+<span class="header-section-number">11.5.1</span> En el código debajo de <code>R/</code>
+</h3>
+<p>Dentro de una función en su propio paquete, verifique la disponibilidad de un paquete sugerido con <code><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace("aaapkg", quietly = TRUE)</a></code>. Hay dos escenarios básicos: la dependencia es absolutamente necesaria o su paquete ofrece algún tipo de comportamiento alternativo.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># el paquete sugerido es obligatorio </span></span>
+<span><span class="va">my_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"aaapkg"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span></span>
+<span>      <span class="st">"Package \"aaapkg\" must be installed to use this function."</span>,</span>
+<span>      call. <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="co"># código que incluye llamadas como aaapkg::aaa_fun()</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># el paquete sugerido es opcional; hay un método alternativo disponible</span></span>
+<span><span class="va">my_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"aaapkg"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">aaapkg</span><span class="fu">::</span><span class="fu">aaa_fun</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="fu">g</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>El paquete rlang tiene algunas funciones útiles para comprobar la disponibilidad del paquete: <code><a href="https://rlang.r-lib.org/reference/is_installed.html">rlang::check_installed()</a></code> y <code><a href="https://rlang.r-lib.org/reference/is_installed.html">rlang::is_installed()</a></code>. Así es como podrían verse las comprobaciones de un paquete sugerido si usas rlang:</p>
+<div class="cell">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># el paquete sugerido es obligatorio</span></span>
+<span><span class="va">my_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/is_installed.html">check_installed</a></span><span class="op">(</span><span class="st">"aaapkg"</span>, reason <span class="op">=</span> <span class="st">"to use `aaa_fun()`"</span><span class="op">)</span></span>
+<span>  <span class="co"># código que incluye llamadas como aaapkg::aaa_fun()</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># el paquete sugerido es opcional; hay un método alternativo disponible</span></span>
+<span><span class="va">my_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/is_installed.html">is_installed</a></span><span class="op">(</span><span class="st">"aaapkg"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">aaapkg</span><span class="fu">::</span><span class="fu">aaa_fun</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="fu">g</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Estas funciones de rlang tienen características útiles para la programación, como vectorización sobre <code>pkg</code>, errores clasificados con una carga útil de datos y, para <code>check_installed()</code>, una oferta para instalar el paquete necesario en una sesión interactiva.</p>
+</section><section id="sec-dependencies-in-suggests-in-tests" class="level3" data-number="11.5.2"><h3 data-number="11.5.2" class="anchored" data-anchor-id="sec-dependencies-in-suggests-in-tests">
+<span class="header-section-number">11.5.2</span> En el código de prueba</h3>
+<p>El equipo de tidyverse generalmente escribe pruebas como si todos los paquetes sugeridos estuvieran disponibles. Es decir, los utilizamos incondicionalmente en las pruebas.</p>
+<p>La motivación para esta postura es la autoconsistencia y el pragmatismo. El paquete clave necesario para ejecutar pruebas es testthat y aparece en <code>Suggests</code>, no en <code>Imports</code> o <code>Depends</code>. Por lo tanto, si las pruebas realmente se están ejecutando, eso implica que se ha aplicado una noción amplia de dependencias de paquetes.</p>
+<p>Además, empíricamente, en cada escenario importante de ejecución de <code>R CMD check</code>, se instalan los paquetes sugeridos. Esto es generalmente cierto para CRAN y nos aseguramos de que así sea en nuestras propias comprobaciones automatizadas. Sin embargo, es importante tener en cuenta que otros mantenedores de paquetes adoptan una postura diferente y optan por proteger todo uso de los paquetes sugeridos en sus pruebas y viñetas.</p>
+<p>A veces incluso hacemos una excepción y protegemos el uso de un paquete sugerido en una prueba. Aquí hay una prueba de ggplot2, que usa <code><a href="https://testthat.r-lib.org/reference/skip.html">testthat::skip_if_not_installed()</a></code> para omitir la ejecución si el paquete sf sugerido no está disponible.</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">test_that</span><span class="op">(</span><span class="st">"basic plot builds without error"</span>, <span class="op">{</span></span>
+<span>  <span class="fu">skip_if_not_installed</span><span class="op">(</span><span class="st">"sf"</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">nc_tiny_coords</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">81.473</span>, <span class="op">-</span><span class="fl">81.741</span>, <span class="op">-</span><span class="fl">81.67</span>, <span class="op">-</span><span class="fl">81.345</span>, <span class="op">-</span><span class="fl">81.266</span>, <span class="op">-</span><span class="fl">81.24</span>, <span class="op">-</span><span class="fl">81.473</span>,</span>
+<span>      <span class="fl">36.234</span>, <span class="fl">36.392</span>, <span class="fl">36.59</span>, <span class="fl">36.573</span>, <span class="fl">36.437</span>, <span class="fl">36.365</span>, <span class="fl">36.234</span><span class="op">)</span>,</span>
+<span>    ncol <span class="op">=</span> <span class="fl">2</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">nc</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span></span>
+<span>    <span class="fu">data_frame</span><span class="op">(</span></span>
+<span>      NAME <span class="op">=</span> <span class="st">"ashe"</span>,</span>
+<span>      geometry <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html">st_sfc</a></span><span class="op">(</span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">nc_tiny_coords</span><span class="op">)</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu">expect_doppelganger</span><span class="op">(</span><span class="st">"sf-polygons"</span>, <span class="fu">ggplot</span><span class="op">(</span><span class="va">nc</span><span class="op">)</span> <span class="op">+</span> <span class="fu">geom_sf</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">coord_sf</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>¿Qué podría justificar el uso de <code>skip_if_not_installed()</code>? En este caso, la instalación del paquete sf puede no ser fácil y es posible que un colaborador quiera ejecutar las pruebas restantes, incluso si sf no está disponible.</p>
+<p>Finalmente, tenga en cuenta que <code>testthat::skip_if_not_installed(pkg, minimal_version = "xyz")</code> se puede usar para omitir condicionalmente una prueba según la versión del otro paquete.</p>
+</section><section id="sec-dependencies-in-suggests-in-examples-and-vignettes" class="level3" data-number="11.5.3"><h3 data-number="11.5.3" class="anchored" data-anchor-id="sec-dependencies-in-suggests-in-examples-and-vignettes">
+<span class="header-section-number">11.5.3</span> En ejemplos y viñetas</h3>
+<p>Otro lugar común para usar un paquete sugerido es en un ejemplo y aquí a menudo lo protegemos con <code><a href="https://rdrr.io/r/base/library.html">require()</a></code> o <code><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace()</a></code>. Este ejemplo es de <code><a href="https://ggplot2.tidyverse.org/reference/coord_map.html">ggplot2::coord_map()</a></code>. ggplot2 enumera el paquete de mapas en <code>Suggests</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @examples</span></span>
+<span><span class="co">#' if (require("maps")) {</span></span>
+<span><span class="co">#'   nz &lt;- map_data("nz")</span></span>
+<span><span class="co">#'   # Prepara un mapa de Nueva Zelanda</span></span>
+<span><span class="co">#'   nzmap &lt;- ggplot(nz, aes(x = long, y = lat, group = group)) +</span></span>
+<span><span class="co">#'     geom_polygon(fill = "white", colour = "black")</span></span>
+<span><span class="co">#'  </span></span>
+<span><span class="co">#'   # Grafica en cordenadas cartesianas</span></span>
+<span><span class="co">#'   nzmap</span></span>
+<span><span class="co">#' }</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Un ejemplo es básicamente el único lugar donde usaríamos <code><a href="https://rdrr.io/r/base/library.html">require()</a></code> dentro de un paquete. Lea más en <a href="dependencies-mindset-background.html#sec-dependencies-attach-vs-load"><span>Sección&nbsp;10.4</span></a>.</p>
+<p>Nuestra postura con respecto al uso de paquetes sugeridos en viñetas es similar a la de las pruebas. Los paquetes clave necesarios para crear viñetas (rmarkdown y knitr) se enumeran en <code>Suggests</code>. Por lo tanto, si se están creando las viñetas, es razonable suponer que todos los paquetes sugeridos están disponibles. Normalmente utilizamos paquetes sugeridos incondicionalmente dentro de viñetas.</p>
+<p>Pero si elige utilizar paquetes sugeridos de forma condicional en sus viñetas, la opción knitr chunk <code>eval</code> es muy útil para lograrlo. Consulte <a href="vignettes.html#sec-vignettes-eval-option"><span>Sección&nbsp;17.4</span></a> para obtener más información.</p>
+</section></section><section id="sec-dependencies-in-depends" class="level2" data-number="11.6"><h2 data-number="11.6" class="anchored" data-anchor-id="sec-dependencies-in-depends">
+<span class="header-section-number">11.6</span> El paquete aparece en <code>Depends</code>
+</h2>
+<p>Considere una dependencia que aparece en <code>DESCRIPTION</code> en <code>Depends</code>:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Depends</span><span class="kw">:</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="at">    aaapkg</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Esta situación tiene mucho en común con un paquete listado en <code>Imports</code>. El código dentro de su paquete puede asumir que aaapkg está instalado en el sistema. La única diferencia es que aaapkg se adjuntará cada vez que se envíe su paquete.</p>
+<section id="en-el-código-debajo-de-r-y-en-el-código-de-prueba" class="level3" data-number="11.6.1"><h3 data-number="11.6.1" class="anchored" data-anchor-id="en-el-código-debajo-de-r-y-en-el-código-de-prueba">
+<span class="header-section-number">11.6.1</span> En el código debajo de <code>R/</code> y en el código de prueba</h3>
+<p>Sus opciones son exactamente las mismas que usar funciones de un paquete enumerado en <code>Imports</code>:</p>
+<ul>
+<li><p>Utilice la sintaxis <code>aaapkg::aaa_fun()</code>.</p></li>
+<li><p>Importe una función individual con la etiqueta roxygen <code>@importFrom aaapkg aaa_fun</code> y llame a <code>aaa_fun()</code> directamente.</p></li>
+<li><p>Importe todo el espacio de nombres aaapkg con la etiqueta roxygen <code>@import aaapkg</code> y llame a cualquier función directamente.</p></li>
+</ul>
+<p>La principal diferencia entre esta situación y una dependencia enumerada en <code>Imports</code> es que es mucho más común importar el espacio de nombres completo de un paquete enumerado en <code>Depends</code>. Esto a menudo tiene sentido, debido a la relación de dependencia especial que motivó su inclusión en <code>Depends</code> en primer lugar.</p>
+</section><section id="en-ejemplos-y-viñetas-1" class="level3" data-number="11.6.2"><h3 data-number="11.6.2" class="anchored" data-anchor-id="en-ejemplos-y-viñetas-1">
+<span class="header-section-number">11.6.2</span> En ejemplos y viñetas</h3>
+<p>Esta es la diferencia más obvia entre una dependencia en <code>Depends</code> versus <code>Imports</code>. Dado que su paquete se adjunta cuando se ejecutan sus ejemplos, también se adjunta el paquete que figura en <code>Depends</code>. No es necesario adjuntarlo explícitamente con <code><a href="https://rdrr.io/r/base/library.html">library(aaapkg)</a></code>.</p>
+<p>El paquete ggforce depende de ggplot2 y los ejemplos de <code><a href="https://ggforce.data-imaginist.com/reference/geom_mark_rect.html">ggforce::geom_mark_rect()</a></code> usan funciones como <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot2::ggplot()</a></code> y <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">ggplot2::geom_point()</a></code> sin ninguna llamada explícita a <code><a href="https://ggplot2.tidyverse.org">library(ggplot2)</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">iris</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">Petal.Length</span>, <span class="va">Petal.Width</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_mark_rect</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="va">Species</span>, filter <span class="op">=</span> <span class="va">Species</span> <span class="op">!=</span> <span class="st">'versicolor'</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># el código ejemplo continua ...</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>La primera línea de código ejecutada en una de sus viñetas es probablemente <code><a href="https://rdrr.io/r/base/library.html">library(pkg)</a></code>, que adjunta su paquete y, como efecto secundario, adjunta cualquier dependencia enumerada en <code>Depends</code>. No es necesario adjuntar explícitamente la dependencia antes de usarla. El paquete censored depende del paquete de suvirval y el código en <code><a href="https://censored.tidymodels.org/articles/examples.html">vignette("examples", package = "censored")</a></code> comienza así:</p>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/censored">censored</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: survival</span></span>
+<span></span>
+<span><span class="co"># código de viñeta continua ...</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section></section><section id="sec-dependencies-nonstandard" class="level2" data-number="11.7"><h2 data-number="11.7" class="anchored" data-anchor-id="sec-dependencies-nonstandard">
+<span class="header-section-number">11.7</span> El paquete es una dependencia no estándar</h2>
+<p>En los paquetes desarrollados con devtools, es posible que vea archivos <code>DESCRIPTION</code> que utilizan un par de campos no estándar para dependencias de paquetes específicas para tareas de desarrollo.</p>
+<section id="dependiendo-de-la-versión-de-desarrollo-de-un-paquete" class="level3" data-number="11.7.1"><h3 data-number="11.7.1" class="anchored" data-anchor-id="dependiendo-de-la-versión-de-desarrollo-de-un-paquete">
+<span class="header-section-number">11.7.1</span> Dependiendo de la versión de desarrollo de un paquete</h3>
+<p>El campo <code>Remotes</code> se puede utilizar cuando necesita instalar una dependencia desde un lugar no estándar, es decir, desde algún lugar además de CRAN o Bioconductor. Un ejemplo común de esto es cuando estás desarrollando contra una versión de desarrollo de una de tus dependencias. Durante este tiempo, querrás instalar la dependencia desde su repositorio de desarrollo, que suele ser GitHub. La forma de especificar varias fuentes remotas se describe en una <a href="https://devtools.r-lib.org/articles/dependencies.html">viñeta de devtools</a> y en un <a href="https://pak.r%20-lib.org/reference/pak_package_sources.html">tema de ayuda del paquete</a>.</p>
+<p>La dependencia y cualquier requisito de versión mínima aún deben declararse de la forma habitual en, por ejemplo, <code>Imports</code>. <code><a href="https://usethis.r-lib.org/reference/use_package.html">usethis::use_dev_package()</a></code> ayuda a realizar los cambios necesarios en <code>DESCRIPTION</code>. Si su paquete depende temporalmente de una versión de desarrollo de aaapkg, los campos <code>DESCRIPTION</code> afectados podrían evolucionar de esta manera:</p>
+<!-- This is unlovely, but I just wanted to get the content down "on paper". It's easier to convey with a concrete example. -->
+<pre><code>Estable --&gt;              Desarrollo --&gt;               Estable de nuevo
+----------------------   ---------------------------   ----------------------
+Package: pkg             Package: pkg                  Package: pkg
+Version: 1.0.0           Version: 1.0.0.9000           Version: 1.1.0
+Imports:                 Imports:                      Imports: 
+    aaapkg (&gt;= 2.1.3)       aaapkg (&gt;= 2.1.3.9000)       aaapkg (&gt;= 2.2.0)
+                         Remotes:   
+                             jane/aaapkg </code></pre>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+CRAN
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Es importante tener en cuenta que no debe enviar su paquete a CRAN en el estado intermedio, es decir, con un campo <code>Remotes</code> y con una dependencia requerida en una versión que no está disponible en CRAN o Bioconductor. Para los paquetes CRAN, esto solo puede ser un estado de desarrollo temporal, que eventualmente se resuelve cuando la dependencia se actualiza en CRAN y usted puede aumentar su versión mínima en consecuencia.</p>
+</div>
+</div>
+</section><section id="sec-dependencies-nonstandard-config-needs" class="level3" data-number="11.7.2"><h3 data-number="11.7.2" class="anchored" data-anchor-id="sec-dependencies-nonstandard-config-needs">
+<span class="header-section-number">11.7.2</span> El campo <code>Config/Needs/*</code>
+</h3>
+<p>También puede ver paquetes desarrollados por devtools con paquetes enumerados en los campos <code>DESCRIPTION</code> en el formato <code>Config/Needs/*</code>, que describimos en <a href="description.html#sec-description-custom-fields"><span>Sección&nbsp;9.8</span></a>.</p>
+<!--
+https://github.com/wch/r-source/blob/de49776d9fe54cb4580fbbd04906b40fe2f6117e/src/library/tools/R/QC.R#L7133
+https://github.com/wch/r-source/blob/efacf56dcf2f880b9db8eafa28d49a08d56e861e/src/library/tools/R/utils.R#L1316-L1389
+-->
+<p>El uso de <code>Config/Needs/*</code> no está directamente relacionado con devtools. Es más exacto decir que está asociado con flujos de trabajo de integración continua puestos a disposición de la comunidad en <a href="https://github.com/r-lib/actions/" class="uri">https://github.com/r-lib/actions/</a> y expuesto a través de funciones como <code><a href="https://usethis.r-lib.org/reference/use_github_actions.html">usethis::use_github_actions()</a></code>. Un campo <code>Config/Needs/*</code> le indica a la acción de GitHub <a href="https://github.com/r-lib/actions/tree/HEAD/setup-r-dependencies#readme"><code>setup-r-dependencies</code></a> acerca de paquetes adicionales que deben instalarse.</p>
+<p><code>Config/Needs/website</code> es el más común y proporciona un lugar para especificar paquetes que no son una dependencia formal, pero que deben estar presentes para construir el sitio web del paquete (<a href="website.html"><span>Capítulo&nbsp;19</span></a>). El paquete readxl es un buen ejemplo. Tiene un <a href="https://readxl.tidyverse.org/articles/readxl-workflows.html">artículo sin viñeta sobre flujos de trabajo</a> que muestra a readxl trabajando en conjunto con otros paquetes de tidyverse, como readr y purrr. ¡Pero no tiene sentido que readxl tenga una dependencia formal de readr o purrr o (peor aún) tidyverse!</p>
+<p>A la izquierda está lo que readxl tiene en el campo <code>Configuración/Necesidades/sitio web</code> de <code>DESCRIPCIÓN</code> para indicar que se necesita tidyverse para construir el sitio web, que también está formateado con un estilo que se encuentra en <code>tidyverse/template</code> Repositorio de GitHub. A la derecha está el extracto correspondiente de la configuración del flujo de trabajo que crea e implementa el sitio web.</p>
+<pre><code>en DESCRIPTION                  en .github/workflows/pkgdown.yaml
+--------------------------      ---------------------------------
+Config/Needs/website:           - uses: r-lib/actions/setup-r-dependencies@v2
+    tidyverse,                    with:
+    tidyverse/tidytemplate          extra-packages: pkgdown
+                                    needs: website</code></pre>
+<p>Los sitios web de paquetes y la integración continua se analizan con más detalle en <a href="website.html"><span>Capítulo&nbsp;19</span></a> y <a href="software-development-practices.html#sec-sw-dev-practices-ci"><span>Sección&nbsp;20.2</span></a>, respectivamente.</p>
+<p>La convención <code>Config/Needs/*</code> es útil porque permite a un desarrollador usar <code>DESCRIPTION</code> como su registro definitivo de dependencias de paquetes, manteniendo al mismo tiempo una distinción clara entre las verdaderas dependencias de tiempo de ejecución y aquellas que solo son necesarias para tareas de desarrollo especializadas.</p>
+</section></section><section id="exportaciones" class="level2" data-number="11.8"><h2 data-number="11.8" class="anchored" data-anchor-id="exportaciones">
+<span class="header-section-number">11.8</span> Exportaciones</h2>
+<p>Para que una función se pueda utilizar fuera de su paquete, debe <strong>exportarla</strong>. Cuando crea un nuevo paquete con <code><a href="https://usethis.r-lib.org/reference/create_package.html">usethis::create_package()</a></code>, al principio no se exporta nada, ni siquiera una vez que agrega algunas funciones. Aún puedes experimentar interactivamente con <code>load_all()</code>, ya que carga todas las funciones, no solo las que se exportan. Pero si instala y adjunta el paquete con <code><a href="https://rdrr.io/r/base/library.html">library(pkg)</a></code> en una nueva sesión de R, notará que no hay funciones disponibles.</p>
+<section id="qué-exportar" class="level3" data-number="11.8.1"><h3 data-number="11.8.1" class="anchored" data-anchor-id="qué-exportar">
+<span class="header-section-number">11.8.1</span> Qué exportar</h3>
+<p>Exporta funciones que quieras que utilicen otras personas. Las funciones exportadas deben estar documentadas y debe tener cuidado al cambiar su interfaz: ¡otras personas las están usando! Generalmente es mejor exportar muy poco que demasiado. Es fácil empezar a exportar algo que antes no hacía; Es difícil dejar de exportar una función porque podría romper el código existente. Siempre opte por el lado de la precaución y la simplicidad. Es más fácil darle a las personas más funcionalidades que quitarles cosas a las que están acostumbradas.</p>
+<p>Creemos que los paquetes que tienen una amplia audiencia deben esforzarse por hacer una cosa y hacerlo bien. Todas las funciones de un paquete deben estar relacionadas con un único problema (o un conjunto de problemas estrechamente relacionados). Cualquier función que no esté relacionada con ese propósito no debe exportarse. Por ejemplo, la mayoría de nuestros paquetes tienen un archivo <code>utils.R</code> (<a href="code.html#sec-code-organising"><span>Sección&nbsp;6.1</span></a>) que contiene pequeñas funciones de utilidad que son útiles internamente, pero que no forman parte del propósito principal de esos paquetes. No exportamos tales funciones. Hay al menos dos razones para esto:</p>
+<ul>
+<li><p>Libertad para ser menos robusto y menos general. Una utilidad para uso interno no tiene por qué implementarse de la misma manera que una función utilizada por otros. Sólo necesita cubrir su propio caso de uso.</p></li>
+<li><p>Dependencias inversas lamentables. No desea que las personas dependan de su paquete para obtener funcionalidades y funciones que no están relacionadas con su propósito principal.</p></li>
+</ul>
+<p>Dicho esto, si estás creando un paquete para ti mismo, es mucho menos importante ser tan disciplinado. Como sabe lo que hay en su paquete, está bien tener un paquete “misceláneo” local que contenga una mezcolanza de funciones que le resulten útiles. Pero probablemente no sea una buena idea lanzar un paquete de este tipo para un uso más amplio.</p>
+<p>A veces su paquete tiene una función que podría ser de interés para otros desarrolladores que amplíen su paquete, pero no para los usuarios típicos. En este caso, se desea exportar la función, pero también darle un perfil muy bajo en términos de documentación pública. Esto se puede lograr combinando las etiquetas roxygen <code>@export</code> y <code>@keywords internal</code>. La palabra clave <code>internal</code> evita que la función aparezca en el índice del paquete, pero el tema de ayuda asociado todavía existe y la función sigue apareciendo entre las exportadas en el archivo <code>NAMESPACE</code>.</p>
+</section><section id="reexportación" class="level3" data-number="11.8.2"><h3 data-number="11.8.2" class="anchored" data-anchor-id="reexportación">
+<span class="header-section-number">11.8.2</span> Reexportación</h3>
+<p>A veces desea que algo esté disponible para los usuarios de su paquete y que en realidad lo proporciona una de sus dependencias. Cuando devtools se dividió en varios paquetes más pequeños (<a href="setup.html#sec-setup-usage"><span>Sección&nbsp;2.2</span></a>), muchas de las funciones orientadas al usuario se trasladaron a otra parte. Para usar esto, la solución elegida fue incluirlo en <code>Depends</code> (<a href="dependencies-mindset-background.html#sec-dependencies-imports-vs-depends"><span>Sección&nbsp;10.4.1</span></a>), pero esa no es una buena solución general. En cambio, devtools ahora reexporta ciertas funciones que en realidad se encuentran en un paquete diferente.</p>
+<p>Aquí hay un modelo para reexportar un objeto de otro paquete, usando la función <code>session_info()</code> como nuestro ejemplo:</p>
+<ol type="1">
+<li>
+<p>Enumere el paquete que aloja el objeto reexportado en <code>Imports</code> en <code>DESCRIPCIÓN</code>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> En este caso, la función <code>session_info()</code> se exporta mediante el paquete sessioninfo.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Imports</span><span class="kw">:</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="at">    sessioninfo</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</li>
+<li>
+<p>En uno de sus archivos <code>R/*.R</code>, tenga una referencia a la función de destino, precedida por etiquetas roxygen tanto para importar como para exportar.</p>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @export</span></span>
+<span><span class="co">#' @importFrom sessioninfo session_info</span></span>
+<span><span class="fu">sessioninfo</span><span class="fu">::</span><span class="va"><a href="https://r-lib.github.io/sessioninfo/reference/session_info.html">session_info</a></span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</li>
+</ol>
+<p>¡Eso es todo! La próxima vez que vuelva a generar NAMESPACE, estas dos líneas estarán allí (normalmente intercaladas con otras exportaciones e importaciones):</p>
+<pre><code>...
+export(session_info)
+...
+importFrom(sessioninfo,session_info)
+...</code></pre>
+<p>Y esto explica cómo <code><a href="https://devtools.r-lib.org/">library(devtools)</a></code> hace que <code>session_info()</code> esté disponible en la sesión actual. Esto también conducirá a la creación del archivo <code>man/reexports.Rd</code>, que perfecciona el requisito de que su paquete debe documentar todas sus funciones exportadas. Este tema de ayuda enumera todos los objetos reexportados y enlaces a su documentación principal.</p>
+</section></section><section id="importaciones-y-exportaciones-relacionadas-con-s3" class="level2" data-number="11.9"><h2 data-number="11.9" class="anchored" data-anchor-id="importaciones-y-exportaciones-relacionadas-con-s3">
+<span class="header-section-number">11.9</span> Importaciones y exportaciones relacionadas con S3</h2>
+<p>R tiene múltiples sistemas de programación orientada a objetos (OOP):</p>
+<ul>
+<li><p>S3 es actualmente el más importante para nosotros y es lo que se aborda en este libro. El <a href="https://adv-r.hadley.nz/s3.html">capítulo S3 de Advanced R</a> es un buen lugar para aprender más sobre S3 conceptualmente y el <a href="https://vctrs.r-%20lib.org">paquete vctrs</a> vale la pena estudiarlo para obtener conocimientos prácticos.</p></li>
+<li><p>S4 es muy importante dentro de ciertas comunidades R, sobre todo dentro del proyecto Bioconductor. Solo usamos S4 cuando es necesario por compatibilidad con otros paquetes. Si desea obtener más información, el <a href="https://adv-r.hadley.nz/s4.html">capítulo S4 de Advanced R</a> es un buen punto de partida y tiene recomendaciones de recursos adicionales.</p></li>
+<li><p>R6 se utiliza en muchos paquetes de tidyverse (definido en sentido amplio), pero está fuera del alcance de este libro. Algunos buenos lugares para obtener más información incluyen el <a href="https://r6.r-lib.org">sitio web del paquete R6</a>, el <a href="https://adv-r.hadley.nz/r6.html">capítulo R6 de Advanced R</a> y la <a href="https://roxygen2.r-lib.org/articles/rd-other.html#r6">documentación de roxygen2 relacionada con R6</a>.</p></li>
+</ul>
+<p>En términos de problemas de espacio de nombres en torno a las clases de S3, lo principal a considerar son las funciones genéricas y sus implementaciones específicas de clase conocidas como métodos. Si su paquete “posee” una clase S3, tiene sentido exportar una función constructora fácil de usar. A menudo, esto es sólo una función normal y no existe un ángulo S3 especial.</p>
+<p>Si su paquete “posee” un genérico S3 y desea que otros puedan usarlo, debe exportar el genérico. Por ejemplo, el paquete dplyr exporta la función genérica <code><a href="https://dplyr.tidyverse.org/reference/count.html">dplyr::count()</a></code> y también implementa y exporta un método específico, <code>count.data.frame()</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' ... toda la documentación habitual para count()...</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">count</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, <span class="va">wt</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">sort</span> <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">name</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/UseMethod.html">UseMethod</a></span><span class="op">(</span><span class="st">"count"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">count.data.frame</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  <span class="va">wt</span> <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">sort</span> <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">name</span> <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">.drop</span> <span class="op">=</span> <span class="fu">group_by_drop_default</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span> <span class="va">...</span> <span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Las líneas correspondientes en el archivo <code>NAMESPACE</code> de dplyr se ven así:</p>
+<pre><code>...
+S3method(count,data.frame)
+...
+export(count)
+...</code></pre>
+<p>Ahora imagina que tu paquete implementa un método para <code>count()</code> para una clase de tu “propiedad” (no <code>data.frame</code>). Un buen ejemplo es el paquete dbplyr, que implementa <code>count()</code> para la clase <code>tbl_lazy</code>. Un paquete complementario que implemente un genérico S3 para una nueva clase debe enumerar el paquete proveedor de genéricos en <code>Imports</code>, importar el genérico a su espacio de nombres y exportar su método S3. Aquí hay parte del archivo <code>DESCRIPTION</code> de dbplyr:</p>
+<pre><code>Imports: 
+    ...,
+    dplyr,
+    ...</code></pre>
+<p>En <code>dbplyr/R/verb-count.R</code>, tenemos:</p>
+<div class="cell">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @importFrom dplyr count</span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">count.tbl_lazy</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, <span class="va">wt</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">sort</span> <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">name</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span> <span class="va">...</span> <span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En <code>NAMESPACE</code>, tenemos:</p>
+<pre><code>S3method(count,tbl_lazy)
+...
+importFrom(dplyr,count)</code></pre>
+<p>Dbplyr también proporciona métodos para varios genéricos proporcionados por el paquete base, como <code><a href="https://rdrr.io/r/base/dim.html">dim()</a></code> y <code><a href="https://rdrr.io/r/base/names.html">names()</a></code>. En este caso, no es necesario importar esos genéricos, pero sí es necesario exportar los métodos. En <code>dbplyr/R/tbl_lazy.R</code>, tenemos:</p>
+<div class="cell">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @export</span></span>
+<span><span class="va">dim.tbl_lazy</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu">op_vars</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">lazy_query</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">#' @export</span></span>
+<span><span class="va">names.tbl_lazy</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En <code>NAMESPACE</code>, esto produce:</p>
+<pre><code>S3method(dim,tbl_lazy)
+...
+S3method(names,tbl_lazy)</code></pre>
+<p>El último caso y el más complicado es cuando su paquete ofrece un método genérico “propiedad” de un paquete que ha enumerado en <code>Suggests</code>. La idea básica es que desea registrar la disponibilidad de su método S3 de forma condicional, cuando se carga su paquete. Si el paquete sugerido está presente, su método S3 debería estar registrado, pero en caso contrario no debería estar registrado.</p>
+<p>Ilustraremos esto con un ejemplo. Dentro de tidyverse, el paquete glue se administra como un paquete de bajo nivel que debe tener dependencias mínimas (<a href="dependencies-mindset-background.html#sec-dependencies-tidyverse"><span>Sección&nbsp;10.1.3</span></a>). Las funciones de glue generalmente devuelven un vector de caracteres que también tiene la clase S3 <code>"glue"</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidyverse/glue">glue</a></span><span class="op">)</span></span>
+<span><span class="va">name</span> <span class="op">&lt;-</span> <span class="st">"Betty"</span></span>
+<span><span class="op">(</span><span class="va">ret</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">'My name is {name}.'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; My name is Betty.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">ret</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "glue"      "character"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>La motivación para esto es que permite que glue ofrezca métodos especiales para <code><a href="https://rdrr.io/r/base/print.html">print()</a></code>, el operador <code>+</code> y subconjuntos mediante <code>[</code> y <code>[[</code>. Sin embargo, una desventaja es que este atributo de clase complica las comparaciones de cadenas:</p>
+<div class="cell">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="va">ret</span>, <span class="st">"My name is Betty."</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span><span class="op">(</span><span class="va">ret</span>, <span class="st">"My name is Betty."</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Attributes: &lt; Modes: list, NULL &gt;"                   </span></span>
+<span><span class="co">#&gt; [2] "Attributes: &lt; Lengths: 1, 0 &gt;"                       </span></span>
+<span><span class="co">#&gt; [3] "Attributes: &lt; names for target but not for current &gt;"</span></span>
+<span><span class="co">#&gt; [4] "Attributes: &lt; current is not list-like &gt;"            </span></span>
+<span><span class="co">#&gt; [5] "target is glue, current is character"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Por lo tanto, para las pruebas, es útil si glue ofrece un método para <code><a href="https://testthat.r-lib.org/reference/compare.html">testthat::compare()</a></code>, que explica por qué esta expectativa tiene éxito:</p>
+<div class="cell">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="va">ret</span>, <span class="st">"My name is Betty."</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>¡Pero glue no puede incluir la prueba en <code>Imports</code>! Debe ir en <code>Suggests</code>. La solución es registrar el método de forma condicional cuando se carga glue. Aquí hay una versión redactada de la función <code>.onLoad()</code> de glue, donde verá que también registra condicionalmente algunos otros métodos:</p>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">.onLoad</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">s3_register</span><span class="op">(</span><span class="st">"testthat::compare"</span>, <span class="st">"glue"</span><span class="op">)</span></span>
+<span>  <span class="fu">s3_register</span><span class="op">(</span><span class="st">"waldo::compare_proxy"</span>, <span class="st">"glue"</span><span class="op">)</span></span>
+<span>  <span class="fu">s3_register</span><span class="op">(</span><span class="st">"vctrs::vec_ptype2"</span>, <span class="st">"glue.glue"</span><span class="op">)</span></span>
+<span>  <span class="va">...</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>La función <code>s3_register()</code> proviene del paquete vctrs. Si no tiene una necesidad orgánica de depender de vctrs, es común (y recomendable) simplemente insertar <a href="https://github.com/r-lib/vctrs/blob/%20main/R/register-s3.R">la fuente <code>s3_register()</code></a> en su propio paquete. No siempre puedes copiar el código de los paquetes de otras personas y pegarlo en el tuyo, pero en este caso puedes hacerlo. Este uso está específicamente permitido por la licencia del código fuente de <code>s3_register()</code>. Esto proporciona una gran transición hacia <a href="license.html"><span>Capítulo&nbsp;12</span></a>, que tiene que ver con las licencias.</p>
+
+
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>Por ejemplo, si su paquete necesita llamar a <code><a href="https://ggplot2.tidyverse.org/reference/geom_hex.html">ggplot2::geom_hex()</a></code>, puede optar por incluir hexbin en <code>Imports</code>, ya que ggplot2 solo lo incluye en <code>Suggests</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Recuerde que <code><a href="https://usethis.r-lib.org/reference/use_package.html">usethis::use_package()</a></code> es útil para agregar dependencias a <code>DESCRIPTION</code>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./dependencies-mindset-background.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./license.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+</body></html>
