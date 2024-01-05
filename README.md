@@ -2,7 +2,7 @@
 
 ## Paquetes de R
 
-<a href="https://a.co/d/0kQeXbl"><img src="logo.png" alt="Cover image" width="285" height="285" align="right" style="margin: 0 1em 0 1em"/></a> Este repositorio contiene el código fuente del libro **"Paquetes de R"** de Hadley Wickham & Jenny Bryan.
+<a href="https://a.co/d/0kQeXbl"><img src="logo.png" alt="Cover image" width="285" align="right" style="margin: 0 1em 0 1em"/></a> Este repositorio contiene el código fuente del libro **"Paquetes de R"** de Hadley Wickham & Jenny Bryan.
 El libro está construido usando [Quarto](https://quarto.org/).
 En este libro aprenderá cómo convertir su código en paquetes que otros puedan descargar y usar fácilmente.
 Los paquetes son las unidades fundamentales del código R reproducible.

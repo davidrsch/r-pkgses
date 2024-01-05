@@ -13,7 +13,7 @@ Si desea una copia física del libro, puede solicitarla en [Amazon](https://www.
 
 ## Sobre La Traducción
 
-<a href="https://a.co/d/0kQeXbl"><img src="logo.png" alt="Cover image" width="285" height="285" align="right" style="margin: 0 1em 0 1em"/></a> Esta traducción de "Paquetes de R" es un proyecto personal de [David Díaz Rodríguez](https://github.com/davidrsch) con el objetivo de facilitar el estudio de construcción de paquetes de R, tanto al propio traductor como a todas aquellas personas de habla hispana que deseen aprender sobre este tema.
+<a href="https://a.co/d/0kQeXbl"><img src="logo.png" alt="Cover image" width="285" align="right" style="margin: 0 1em 0 1em"/></a> Esta traducción de "Paquetes de R" es un proyecto personal de [David Díaz Rodríguez](https://github.com/davidrsch) con el objetivo de facilitar el estudio de construcción de paquetes de R, tanto al propio traductor como a todas aquellas personas de habla hispana que deseen aprender sobre este tema.
 
 Señalar que esta es una traducción textual del libro por lo que cuando los autores se refieren así mismo en primera persona, serán Hadley Wickham & Jenny Bryan no el traductor.
 
