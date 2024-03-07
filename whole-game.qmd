@@ -729,7 +729,7 @@ RStudio expone `test()` en el menú *Build*, en el panel *Build* via *More \> Te
 Sus pruebas también se ejecutan cada vez que `check()` el paquete.
 De esta manera, básicamente aumentas los controles estándar con algunos propios, que son específicos de tu paquete.
 Es una buena idea utilizar el [paquete covr](https://covr.r-lib.org) para realizar un seguimiento de qué proporción del código fuente de su paquete se ejerce mediante las pruebas.
-Se pueden encontrar más detalles en @sec-testing-basics.
+Se pueden encontrar más detalles en @sec-testing-design-coverage.
 
 ## `use_package()`
 
