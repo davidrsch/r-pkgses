@@ -20,7 +20,7 @@ book:
     right: |
       Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.
   cover-image: images/cover-2e-small.png
-  favicon: images/cover-2e-small.png
+  favicon: logo.png
   
   author:
     - name: HADLEY WICKHAM
