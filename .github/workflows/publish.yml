@@ -17,6 +17,10 @@ jobs:
       - name: Insatall OS packages
         run: |
           sudo apt-get install libudunits2-dev
+          sudo apt-get install libgdal-dev 
+          sudo apt-get install libgeos-dev 
+          sudo apt-get install libproj-dev 
+          sudo apt-get install libsqlite0-dev
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
