@@ -1,0 +1,156 @@
+[[sec-setup]]
+= Configuración del sistema
+:description: Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.
+:lang: es
+
+[[sec-setup-prep]]
+== Prepare su sistema
+
+Para comenzar, asegúrese de tener la última versión de R (al menos 4.4.0, que es la versión que se utiliza para generar este libro), luego ejecute el siguiente código para obtener los paquetes que necesitará:
+
+[source,r,cell-code]
+----
+install.packages(c("devtools", "roxygen2", "testthat", "knitr"))
+----
+
+Asegúrese de tener una versión reciente del entorno de desarrollo integrado (IDE) de RStudio. Se lanzan nuevas versiones periódicamente, por lo que recomendamos actualizarlas con frecuencia para obtener acceso a las funciones más recientes y mejores.
+
+Descargue la versión actual de RStudio Desktop aquí: https://posit.co/download/rstudio-desktop/. La mayoría de los lectores pueden utilizar la versión gratuita y de código abierto de RStudio Desktop.
+
+[[sec-setup-usage]]
+== devtools, usethis, y usted
+
+____
+"`Soy grande, contengo multitudes.`"
+
+— Walt Whitman, Song of Myself
+____
+
+Como se menciona en <<sec-intro-phil>>, devtools es un '`metapaquete`' que abarca y expone la funcionalidad mantenida en varios paquetes más pequeñosfootnote:[Al momento en el que se escribió este libro, devtools expone la funcionalidad de https://remotes.r-lib.org/[remotes], https://pkgbuild.r-lib.org/[pkgbuild], https://pkgload.r-lib.org/[pkgload], https://rcmdcheck.r-lib.org/[rcmdcheck], https://revdepcheck.r-lib.org/[revdepcheck], https://sessioninfo.r-lib.org/[sessioninfo], https://usethis.r-lib.org/[usethis], https://testthat.r-lib.org[testthat], y https://roxygen2.r-lib.org[roxygen2]]. Por ejemplo, devtools podría proporcionar una función contenedora para establecer valores predeterminados fáciles de usar, introducir un comportamiento interactivo útil o combinar funcionalidades de múltiples subpaquetes. En algunos casos, simplemente reexporta una función de otro paquete para que esté fácilmente disponible cuando se adjunta devtools.
+
+¿Cuál es nuestro enfoque recomendado para usar devtools y sus paquetes constituyentes? Varía, dependiendo de tu intención:
+
+* Si está utilizando las funciones de forma interactiva para ayudarle a desarrollar su paquete, debe pensar en devtools como el proveedor de sus funciones favoritas para el desarrollo de paquetes. En este caso, debe adjuntar devtools con `+library(devtools)+` y llamar a las funciones sin calificación (por ejemplo, `+load_all()+`).
+* Si está utilizando funciones de devtools y amigos dentro del código del paquete que está escribiendo, NO debe depender de devtools, sino que debe acceder a las funciones a través del paquete que es su hogar principal.
+** devtools rara vez debería aparecer en el rol de `+pkg+` en una llamada calificada del formato `+pkg::fcn()+`. En cambio, `+pkg+` debería ser el paquete donde se define `+fcn()+`. Por ejemplo, si está creando una función en su paquete en la que necesita consultar el estado de la sesión R del usuario, use `+sessioninfo::session_info()+` en su paquete en lugar de `+devtools::session_info()+`.
+* Si encuentra errores, intente informarlos en el paquete que es el hogar principal de una función. La ayuda para `+devtools::fcn()+` generalmente indica cuándo devtools está reexportando una función de otro paquete.
+
+El paquete usethis es el único paquete constituyente que más personas pueden conocer y que pueden utilizar directamente. Contiene las funciones que actúan sobre los archivos y carpetas de un proyecto de R, especialmente para cualquier proyecto que también sea un paquete de R. devtools facilita el acceso a las funciones usethis de forma interactiva, ya que cuando llama a `+library(devtools)+`, usethis también se adjunta. Luego puede usar cualquier función en usethis sin calificación, por ejemplo, simplemente llame a `+use_testthat()+`. Si elige especificar el espacio de nombres, como cuando trabaja con un estilo más programático, asegúrese de calificar la llamada con usethis, por ejemplo, `+usethis::use_testthat()+`.
+
+=== Configuración de inicio personal
+
+Puede adjuntar herramientas de desarrollo así:
+
+[source,r,cell-code]
+----
+library(devtools)
+----
+
+Pero pronto se vuelve irritante adjuntar repetidamente devtools en cada sesión de R. Por lo tanto, recomendamos encarecidamente adjuntarfootnote:[Este es uno de los pocos casos en los que recomendamos usar `+require()+` en lugar de `+library()+`. `+library()+` fallará con un error si no puede adjuntar el paquete y, por lo tanto, abortará la ejecución de su `+.Rprofile+`. Si `+require()+` no puede adjuntar el paquete, emitirá una advertencia pero permitirá que se ejecute el resto de su `+.Rprofile+`. Esto se analiza más a fondo en <<sec-dependencies-attach-vs-load>>.] devtools en su archivo de inicio `+.Rprofile+`, así:
+
+[source,r,cell-code]
+----
+if (interactive()) {
+  suppressMessages(require(devtools))
+}
+----
+
+Para mayor comodidad, la función `+use_devtools()+` crea `+.Rprofile+`, si es necesario, lo abre para editarlo y coloca las líneas de código necesarias en el portapapeles y en la pantalla.
+
+[WARNING]
+====
+En general, es una mala idea adjuntar paquetes en `+.Rprofile+`, ya que te invita a crear scripts R que no reflejan todas sus dependencias mediante llamadas explícitas a `+library(foo)+`. Pero devtools es un paquete de flujo de trabajo que simplifica el proceso de desarrollo de paquetes y, por lo tanto, es poco probable que se incluya en algún script de análisis. Tenga en cuenta que todavía nos preocupamos de adjuntar únicamente en sesiones interactivas.
+====
+
+usethis consulta ciertas opciones al, por ejemplo, crear paquetes R _de novo_. Esto le permite especificar valores predeterminados personales para usted como mantenedor de paquetes o para su licencia preferida. A continuación se muestra un ejemplo de un fragmento de código que podría incluirse `+.Rprofile+`:
+
+[source,r,cell-code]
+----
+options(
+  "Authors@R" = utils::person(
+    "Jane", "Doe",
+    email = "jane@example.com",
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0000-1111-2222-3333")
+  ),
+  License = "MIT + file LICENSE"
+)
+----
+
+El siguiente código muestra cómo instalar las versiones de desarrollo de devtools y utilizarlas. En ocasiones, este libro puede describir nuevas funciones que se encuentran en la versión de desarrollo de devtools y paquetes relacionados, pero que aún no se han publicado.
+
+[source,r,cell-code]
+----
+devtools::install_github("r-lib/devtools")
+devtools::install_github("r-lib/usethis")
+
+# or, alternatively
+pak::pak("r-lib/devtools")
+pak::pak("r-lib/usethis")
+----
+
+[[sec-setup-tools]]
+== Cadena de herramientas de construcción de R
+
+Para ser totalmente capaz de crear paquetes R desde el código fuente, también necesitará un compilador y algunas otras herramientas de línea de comandos. Es posible que esto no sea estrictamente necesario hasta que desee crear paquetes que contengan código C o C++. Especialmente si estás usando RStudio, puedes dejar esto a un lado por ahora. El IDE le alertará y le brindará soporte una vez que intente hacer algo que requiera que configure su entorno de desarrollo. Siga leyendo para obtener consejos sobre cómo hacerlo usted mismo.
+
+=== Windows
+
+En Windows, la colección de herramientas necesarias para crear paquetes desde el código fuente se llama Rtools.
+
+Rtools NO es un paquete R. NO se instala con `+install.packages()+`. En su lugar, descárguelo desde https://cran.r-project.org/bin/windows/Rtools/ y ejecute el instalador.
+
+Durante la instalación de Rtools, es posible que vea una ventana que le pide que "`Seleccione tareas adicionales`".
+
+* _No_ seleccione la casilla "`Edit the system PATH`". devtools y RStudio deberían colocar Rtools en el `+PATH+` automáticamente cuando sea necesario.
+* Seleccione la casilla "`Save version information to registry`". Debe estar seleccionado de forma predeterminada.
+
+=== macOS
+
+Debe instalar las herramientas de línea de comandos de Xcode, lo que requiere que https://developer.apple.com/programs/enroll/[se registre como desarrollador de Apple]. No se preocupe, esto es gratuito para una persona que sólo desea instalar aplicaciones, como las herramientas de línea de comandos de Xcode. La inscripción en el programa de desarrollador pago solo es necesaria para aquellos que desean distribuir aplicaciones, acceder a software beta e integrarse con capacidades como Siri, Apple Pay e iCloud.
+
+Luego, en el shell, haz:
+
+[source,shell]
+----
+xcode-select --install
+----
+
+Alternativamente, puede instalar la versión actual completa de https://itunes.apple.com/ca/app/xcode/id497799835?mt=12[Xcode desde Mac App Store]. Esto incluye muchas cosas que no necesita, pero ofrece la ventaja de la comodidad de la App Store.
+
+=== Linux
+
+Asegúrese de haber instalado no solo R, sino también las herramientas de desarrollo de R. Por ejemplo, en Ubuntu (y Debian) necesitas instalar el paquete `+r-base-dev+` con:
+
+....
+sudo apt install r-base-dev
+....
+
+En Fedora y RedHat, las herramientas de desarrollo (llamadas `+R-core-devel+`) se instalarán automáticamente cuando instales con R con `+sudo dnf install R+`.
+
+== Verificar la preparación del sistema
+
+Puede solicitar un "`informe de situación de desarrollo (paquete)`" con `+devtools::dev_sitrep()+`:
+
+[source,r,cell-code]
+----
+devtools::dev_sitrep()
+#> ── R ───────────────────────────────────────────────────────────────────────
+#> • version: 4.1.2
+#> • path: '/Library/Frameworks/R.framework/Versions/4.1/Resources/'
+#> ── RStudio ─────────────────────────────────────────────────────────────────
+#> • version: 2022.2.0.443
+#> ── devtools ────────────────────────────────────────────────────────────────
+#> • version: 2.4.3.9000
+#> • devtools or its dependencies out of date:
+#>   'gitcreds', 'gh'
+#>   Update them with `devtools::update_packages("devtools")`
+#> ── dev package ─────────────────────────────────────────────────────────────
+#> • package: 'rpkgs'
+#> • path: '/Users/jenny/rrr/r-pkgs/'
+#> • rpkgs dependencies out of date:
+#>   'gitcreds', 'generics', 'tidyselect', 'dplyr', 'tidyr', 'broom', 'gh'
+#>  Update them with `devtools::install_dev_deps()`
+----
+
+Si esto revela que ciertas herramientas o paquetes faltan o están desactualizados, le recomendamos que los actualice.

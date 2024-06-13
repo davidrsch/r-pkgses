@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - 3&nbsp; Estructura y estado del paquete</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./workflow101.html" rel="next">
+<link href="./setup.html" rel="prev">
+<link href="./logo.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./whole-game.html">Empezando</a></li><li class="breadcrumb-item"><a href="./structure.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">El paquete en el interior de su código</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Componentes de un paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Código R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Otros componentes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Metadatos del paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Probar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Diseñar su conjunto de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Técnicas de prueba avanzadas</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentación</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Otros archivos markdown</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Sitio web</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Mantenimiento y distribución</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Prácticas de desarrollo de software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Ciclo de vida</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li><a href="#sec-package-states" id="toc-sec-package-states" class="nav-link active" data-scroll-target="#sec-package-states"><span class="header-section-number">3.1</span> Estados del paquete</a></li>
+  <li><a href="#sec-source-package" id="toc-sec-source-package" class="nav-link" data-scroll-target="#sec-source-package"><span class="header-section-number">3.2</span> Paquete fuente</a></li>
+  <li>
+<a href="#sec-bundled-package" id="toc-sec-bundled-package" class="nav-link" data-scroll-target="#sec-bundled-package"><span class="header-section-number">3.3</span> Paquete empaquetado</a>
+  <ul class="collapse">
+<li><a href="#sec-rbuildignore" id="toc-sec-rbuildignore" class="nav-link" data-scroll-target="#sec-rbuildignore"><span class="header-section-number">3.3.1</span> <code>.Rbuildignore</code></a></li>
+  </ul>
+</li>
+  <li><a href="#sec-structure-binary" id="toc-sec-structure-binary" class="nav-link" data-scroll-target="#sec-structure-binary"><span class="header-section-number">3.4</span> Paquete binario</a></li>
+  <li><a href="#sec-installed-package" id="toc-sec-installed-package" class="nav-link" data-scroll-target="#sec-installed-package"><span class="header-section-number">3.5</span> Paquete instalado</a></li>
+  <li><a href="#paquete-en-memoria" id="toc-paquete-en-memoria" class="nav-link" data-scroll-target="#paquete-en-memoria"><span class="header-section-number">3.6</span> Paquete en memoria</a></li>
+  <li><a href="#sec-library" id="toc-sec-library" class="nav-link" data-scroll-target="#sec-library"><span class="header-section-number">3.7</span> Bibliotecas de paquetes</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./whole-game.html">Empezando</a></li><li class="breadcrumb-item"><a href="./structure.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-package-structure-state" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>Este capítulo lo iniciará en el camino hacia el desarrollo de paquetes al convertir el conocimiento implícito que ha obtenido al <em>usar</em> paquetes R en el conocimiento explícito necesario para <em>crearlos y modificarlos</em>. Aprenderá sobre los distintos estados en los que puede encontrarse un paquete y la diferencia entre un paquete y una biblioteca (y por qué debería importarle).</p>
+<section id="sec-package-states" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="sec-package-states">
+<span class="header-section-number">3.1</span> Estados del paquete</h2>
+<p>Cuando crea o modifica un paquete, trabaja en su “código fuente” o “archivos fuente”. Interactúa con el paquete en desarrollo en su formato <strong>fuente</strong>. Este NO es el formato de paquete con el que está más familiarizado con el uso diario. Los flujos de trabajo de desarrollo de paquetes tienen mucho más sentido si comprende los cinco estados en los que puede encontrarse un paquete R:</p>
+<ul>
+<li>fuente</li>
+<li>empaquetado</li>
+<li>binario</li>
+<li>instalado</li>
+<li>en memoria</li>
+</ul>
+<p>Ya conoces algunas de las funciones que ponen paquetes en estos estados. Por ejemplo, <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> puede mover un paquete desde el estado fuente, empaquetado o binario al estado instalado. <code><a href="https://remotes.r-lib.org/reference/install_github.html">devtools::install_github()</a></code> toma un paquete fuente en GitHub y lo mueve al estado instalado. La función <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> carga un paquete instalado en la memoria, haciéndolo disponible para uso inmediato y directo.</p>
+</section><section id="sec-source-package" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="sec-source-package">
+<span class="header-section-number">3.2</span> Paquete fuente</h2>
+<p>Un paquete <strong>fuente</strong> es solo un directorio de archivos con una estructura específica. Incluye componentes particulares, como un archivo <code>DESCRIPTION</code>, un directorio <code>R/</code> que contiene archivos <code>.R</code>, etc. La mayoría de los capítulos restantes de este libro están dedicados a detallar estos componentes.</p>
+<p>Si es nuevo en el desarrollo de paquetes, es posible que nunca haya visto un paquete en formato fuente. Es posible que ni siquiera tengas ningún paquete fuente en tu computadora. La forma más sencilla de ver un paquete en su formato fuente de inmediato es explorar su código en la web.</p>
+<p>Muchos paquetes de R se desarrollan abiertamente en GitHub (o GitLab o similar). El mejor de los casos es que visite la página de inicio de CRAN del paquete, por ejemplo:</p>
+<ul>
+<li>forcats: <a href="https://cran.r-project.org/package=forcats" class="uri">https://cran.r-project.org/package=forcats</a>
+</li>
+<li>readxl: <a href="https://cran.r-project.org/package=readxl" class="uri">https://cran.r-project.org/package=readxl</a>
+</li>
+</ul>
+<p>y una de sus URL enlaza a un repositorio en un servicio de alojamiento público, por ejemplo:</p>
+<ul>
+<li>forcats: <a href="https://github.com/tidyverse/forcats" class="uri">https://github.com/tidyverse/forcats</a>
+</li>
+<li>readxl: <a href="https://github.com/tidyverse/readxl" class="uri">https://github.com/tidyverse/readxl</a>
+</li>
+</ul>
+<p>Algunos mantenedores olvidan incluir esta URL, aunque el paquete se desarrolle en un repositorio público, pero aún así es posible que puedas descubrirlo mediante la búsqueda.</p>
+<p>Incluso si un paquete no está desarrollado en una plataforma pública, puede visitar su fuente en el <a href="https://docs.r-hub.io/#cranatgh">Espejo no oficial de solo lectura mantenido por R-hub</a>. Ejemplos:</p>
+<ul>
+<li>MASS: <a href="https://github.com/cran/MASS" class="uri">https://github.com/cran/MASS</a>
+</li>
+<li>car: <a href="https://github.com/cran/car" class="uri">https://github.com/cran/car</a>
+</li>
+</ul>
+<p>Tenga en cuenta que explorar la fuente y el historial de un paquete dentro de la organización GitHub <code>cran</code> no es lo mismo que explorar el verdadero lugar de desarrollo del paquete, porque esta fuente y su evolución simplemente son ingeniería inversa de las versiones CRAN del paquete. Esto presenta una vista redactada del paquete y su historia, pero, por definición, incluye todo lo que es esencial.</p>
+</section><section id="sec-bundled-package" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="sec-bundled-package">
+<span class="header-section-number">3.3</span> Paquete empaquetado</h2>
+<p>Un paquete <strong>empaquetado</strong> es un paquete que se ha comprimido en un solo archivo. Por convención (de Linux), los paquetes de paquetes en R usan la extensión <code>.tar.gz</code> y, a veces, se denominan “tarballs de origen”. Esto significa que varios archivos se han reducido a un solo archivo (<code>.tar</code>) y luego se han comprimido usando gzip (<code>.gz</code>). Si bien un paquete empaquetado no es tan útil por sí solo, es un intermediario independiente de la plataforma y fácil de transportar entre un paquete fuente y un paquete instalado.</p>
+<p>En el raro caso de que necesites crear un paquete empaquetado a partir de un paquete que estás desarrollando localmente, usa <code><a href="https://devtools.r-lib.org/reference/build.html">devtools::build()</a></code>. En el fondo, esto llama a <code><a href="https://pkgbuild.r-lib.org/reference/build.html">pkgbuild::build()</a></code> y, en última instancia, a <code>R CMD build</code>, que se describe con más detalle en la sección <a href="https://cran.r-project.org/doc/manuals/R-exts.html#Building-package-tarballs">Creación de paquetes empaquetados</a> de <a href="https://cran.r-project.org/doc/manuals/R-exts.html">Escribir extensiones de R</a>.</p>
+<p>Esto debería indicarle que un paquete de paquetes o “tarball fuente” no es simplemente el resultado de crear un archivo tar de los archivos fuente y luego comprimirlos con gzip. Por convención, en el mundo R, se llevan a cabo algunas operaciones más al crear el archivo <code>.tar.gz</code> y es por eso que hemos elegido referirnos a esta forma como un paquete <strong>empaquetado</strong>, en este libro.</p>
+<p>Cada paquete CRAN está disponible en forma de empaquetada, a través del campo “Fuente del paquete” de su página de inicio. Continuando con nuestros ejemplos anteriores, puede descargar los empaquetados <code>forcats_0.4.0.tar.gz</code> y <code>readxl_1.3.1.tar.gz</code> (o cualesquiera que sean las versiones actuales). Podrías descomprimir dicho empaquetado en el shell (no en la consola R) de esta manera:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> xvf forcats_0.4.0.tar.gz</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Si descomprimes un empaquetado, verás que se ve casi igual que un paquete fuente. <a href="#fig-package-files" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> muestra los archivos presentes en las formas fuente, empaquetada y binaria de un paquete ficticio llamado zzzpackage. Hemos elaborado deliberadamente este ejemplo para incluir la mayoría de las partes del paquete que se tratan en este libro. No todos los paquetes incluirán todos los archivos que se ven aquí, ni este diagrama incluye todos los archivos posibles que puedan aparecer en un paquete.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-package-files" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Comparación en paralelo del paquete fuente, empaquetado y binario. Se muestra el flujo de archivos (ubicación y formato) desde el origen del paquete hasta su estado empaquetado y binario. Esto se describe en detalle en las secciones de este capítulo con los nombres apropiados.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-package-files-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/package-files.png" class="img-fluid figure-img" alt="Comparación en paralelo del paquete fuente, empaquetado y binario. Se muestra el flujo de archivos (ubicación y formato) desde el origen del paquete hasta su estado empaquetado y binario. Esto se describe en detalle en las secciones de este capítulo con los nombres apropiados.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-package-files-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;3.1: Formas de paquete: fuente versus empaquetado versus binario.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Las principales diferencias entre un paquete fuente y un paquete sin comprimir son:</p>
+<ul>
+<li><p>Se han creado viñetas, por lo que los resultados renderizados, como HTML, aparecen debajo de <code>inst/doc/</code> y aparece un índice de viñetas en el directorio <code>build/</code>.</p></li>
+<li><p>Un paquete fuente local puede contener archivos temporales utilizados para ahorrar tiempo durante el desarrollo, como artefactos de compilación en <code>src/</code>. Estos nunca se encuentran en un empaquetado.</p></li>
+<li><p>Todos los archivos enumerados en <code>.Rbuildignore</code> no están incluidos en el empaquetado. Suelen ser archivos que facilitan el proceso de desarrollo, pero que deben excluirse del producto distribuido.</p></li>
+</ul>
+<section id="sec-rbuildignore" class="level3" data-number="3.3.1"><h3 data-number="3.3.1" class="anchored" data-anchor-id="sec-rbuildignore">
+<span class="header-section-number">3.3.1</span> <code>.Rbuildignore</code>
+</h3>
+<p>No necesitará contemplar la estructura exacta de los archivos del paquete <code>.tar.gz</code> con mucha frecuencia, pero sí necesitará comprender el archivo <code>.Rbuildignore</code>. Controla qué archivos del paquete fuente llegan a las formas posteriores.</p>
+<p>Cada línea de <code>.Rbuildignore</code> es una expresión regular compatible con Perl que coincide, sin importar mayúsculas y minúsculas, con la ruta a cada archivo en el paquete fuente<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Si la expresión regular coincide, ese archivo o directorio se excluye. Tenga en cuenta que existen algunas exclusiones predeterminadas implementadas por el propio R, en su mayoría relacionadas con editores y sistemas de control de versiones clásicos, como SVN, Git y Emacs.</p>
+<p>Generalmente modificamos <code>.Rbuildignore</code> con la función <code><a href="https://usethis.r-lib.org/reference/use_build_ignore.html">usethis::use_build_ignore()</a></code>, que se encarga de detalles fáciles de olvidar, como el anclaje y el escape de expresiones regulares. Para excluir un archivo o directorio específico (el caso de uso más común), <strong>DEBE</strong> anclar la expresión regular. Por ejemplo, para excluir un directorio llamado “notas”, la entrada <code>.Rbuildignore</code> debe ser <code>^notas$</code>, mientras que la expresión regular no anclada <code>notas</code> coincidirá con cualquier nombre de archivo que contenga “notas”, p. <code>R/notas.R</code>, <code>man/important-notas.R</code>, <code>data/notasfinales.Rdata</code>, etc. Descubrimos que <code><a href="https://usethis.r-lib.org/reference/use_build_ignore.html">use_build_ignore()</a></code> nos ayuda a obtener más entradas de <code>.Rbuildignore</code> correctamente la primera vez.</p>
+<p><code>.Rbuildignore</code> es una forma de resolver parte de la tensión entre las prácticas que respaldan su proceso de desarrollo y los requisitos de CRAN para el envío y la distribución (<a href="release.html" class="quarto-xref"><span>Capítulo 22</span></a>). Incluso si no planea publicar en CRAN, seguir estas convenciones le permitirá hacer el mejor uso de las herramientas integradas de R para la verificación e instalación de paquetes. Los archivos que debe <code>.Rbuildignore</code> se dividen en dos clases amplias y semisuperpuestas:</p>
+<ul>
+<li>Archivos que le ayudan a generar contenidos de paquetes mediante programación. Ejemplos:
+<ul>
+<li>Usando <code>README.Rmd</code> para generar un archivo informativo y actual <code>README.md</code> (<a href="other-markdown.html#sec-readme" class="quarto-xref"><span>Sección 18.1</span></a>).</li>
+<li>Almacenamiento de scripts <code>.R</code> para crear y actualizar datos internos o exportados (<a href="data.html#sec-data-data-raw" class="quarto-xref"><span>Sección 7.1.1</span></a>).</li>
+</ul>
+</li>
+<li>Archivos que impulsan el desarrollo, la verificación y la documentación de paquetes, fuera del ámbito de CRAN. Ejemplos:
+<ul>
+<li>Archivos relacionados con el IDE de RStudio (<a href="workflow101.html#sec-workflow101-rstudio-projects" class="quarto-xref"><span>Sección 4.2</span></a>).</li>
+<li>Usar el paquete <a href="https://pkgdown.r-lib.org">pkgdown</a> para generar un sitio web (<a href="website.html" class="quarto-xref"><span>Capítulo 19</span></a>).</li>
+<li>Archivos de configuración relacionados con la integración/implementación continua (<a href="software-development-practices.html#sec-sw-dev-practices-ci" class="quarto-xref"><span>Sección 20.2</span></a>).</li>
+</ul>
+</li>
+</ul>
+<p>Aquí hay una lista no exhaustiva de entradas típicas en el archivo <code>.Rbuildignore</code> para un paquete en tidyverse.:</p>
+<pre><code>^.*\.Rproj$         # Designa el directorio como un proyecto RStudio
+^\.Rproj\.user$     # Utilizado por RStudio para archivos temporales
+^README\.Rmd$       # Un archivo Rmd utilizado para generar README.md
+^LICENSE\.md$       # Texto completo de la licencia.
+^cran-comments\.md$ # Comentarios para el envío de CRAN
+^data-raw$          # Código utilizado para crear datos incluidos en el paquete.
+^pkgdown$           # Recursos utilizados para el sitio web del paquete.
+^_pkgdown\.yml$     # Información de configuración para el sitio web del paquete.
+^\.github$          # Flujos de trabajo de acciones de GitHub</code></pre>
+<p>Tenga en cuenta que los comentarios anteriores no deben aparecer en un archivo <code>.Rbuildignore</code> real; se incluyen aquí sólo para exposición.</p>
+<p>Mencionaremos cuándo necesita agregar archivos a <code>.Rbuildignore</code> siempre que sea importante. Recuerde que <code><a href="https://usethis.r-lib.org/reference/use_build_ignore.html">usethis::use_build_ignore()</a></code> es una forma atractiva de administrar este archivo. Además, muchas funciones de usethis que agregan un archivo que debería aparecer en <code>.Rbuildignore</code> se encargan de esto automáticamente. Por ejemplo, <code><a href="https://usethis.r-lib.org/reference/use_readme_rmd.html">use_readme_rmd()</a></code> añade “^README\.Rmd$” a <code>.Rbuildignore</code>.</p>
+</section></section><section id="sec-structure-binary" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="sec-structure-binary">
+<span class="header-section-number">3.4</span> Paquete binario</h2>
+<p>Si desea distribuir su paquete a un usuario de R que no tiene herramientas de desarrollo de paquetes, deberá proporcionar un paquete <strong>binario</strong>. El principal fabricante y distribuidor de paquetes binarios es CRAN, no los mantenedores individuales. Pero incluso si delega la responsabilidad de distribuir su paquete a CRAN, sigue siendo importante que el mantenedor comprenda la naturaleza de un paquete binario.</p>
+<p>Al igual que un paquete empaquetado, un paquete binario es un único archivo. A diferencia de un paquete empaquetado, un paquete binario es específico de la plataforma y hay dos versiones básicas: Windows y macOS. (Los usuarios de Linux generalmente deben tener las herramientas necesarias para instalar desde archivos <code>.tar.gz</code>, aunque la aparición de recursos como <a href="https://packagemanager.posit.co/">Posit Public Package Manager</a> está brindando a los usuarios de Linux el mismo acceso a paquetes binarios que sus colegas en Windows y macOS).</p>
+<p>Los paquetes binarios para macOS se almacenan como <code>.tgz</code>, mientras que los paquetes binarios de Windows terminan en <code>.zip</code>. Si necesita crear un paquete binario, utilice <code>devtools::build(binary = TRUE)</code> en el sistema operativo correspondiente. En el fondo, esto llama a <code>pkgbuild::build(binary = TRUE)</code> y, en última instancia, a <code>R CMD INSTALL --build</code>, que se describe con más detalle en <a href="https://cran.r-%20project.org/doc/manuals/R-exts.html#Building-binary-packages">Creación de paquetes binarios</a> sección de [Escribir extensiones de R] (https://cran.r-project.org/doc/manuals/R-exts.html) . Si elige publicar su paquete en CRAN (<a href="release.html" class="quarto-xref"><span>Capítulo 22</span></a>), envía su paquete en forma de paquete, luego CRAN crea y distribuye los archivos binarios del paquete.</p>
+<p>Los paquetes CRAN suelen estar disponibles en formato binario, tanto para macOS como para Windows, para las versiones actual, anterior y (posiblemente) de desarrollo de R. Continuando con nuestros ejemplos anteriores, puede descargar paquetes binarios como:</p>
+<ul>
+<li>forcats para macOS: <code>forcats_0.4.0.tgz</code>
+</li>
+<li>readxl para Windows: <code>readxl_1.3.1.zip</code>
+</li>
+</ul>
+<p>y esto es, de hecho, parte de lo que normalmente sucede detrás de escena cuando llamas <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code>.</p>
+<p>Si descomprime un paquete binario, verá que la estructura interna es bastante diferente de la de un paquete fuente o empaquetado. <a href="#fig-package-files" class="quarto-xref">Figura&nbsp;<span>3.1</span></a> incluye esta comparación, por lo que es un buen momento para revisar ese diagrama. Estas son algunas de las diferencias más notables:</p>
+<ul>
+<li><p>No hay archivos <code>.R</code> en el directorio <code>R/</code>; en su lugar, hay tres archivos que almacenan las funciones analizadas en un formato de archivo eficiente. Este es básicamente el resultado de cargar todo el código R y luego guardar las funciones con <code><a href="https://rdrr.io/r/base/save.html">save()</a></code>. (En el proceso, esto agrega algunos metadatos adicionales para hacer las cosas lo más rápido posible).</p></li>
+<li><p>Un directorio <code>Meta/</code> contiene varios archivos <code>.rds</code>. Estos archivos contienen metadatos almacenados en caché sobre el paquete, como los temas que cubren los archivos de ayuda y una versión analizada del archivo <code>DESCRIPTION</code>. (Puede usar <code><a href="https://rdrr.io/r/base/readRDS.html">readRDS()</a></code> para ver exactamente qué hay en esos archivos). Estos archivos aceleran la carga de paquetes al almacenar en caché cálculos costosos.</p></li>
+<li><p>El contenido de la ayuda real aparece en <code>help/</code> y <code>html/</code> (ya no en <code>man/</code>).</p></li>
+<li><p>Si tenía algún código en el directorio <code>src/</code>, ahora habrá un directorio <code>libs/</code> que contiene los resultados de la compilación del código.</p></li>
+<li><p>Si tenía algún objeto en <code>data/</code>, ahora se ha convertido a una forma más eficiente.</p></li>
+<li><p>El contenido de <code>inst/</code> se mueve al directorio de nivel superior. Por ejemplo, los archivos de viñeta ahora están en <code>doc/</code>.</p></li>
+<li><p>Algunos archivos y carpetas se han eliminado, como <code>README.md</code>, <code>build/</code>, <code>tests/</code>, y <code>vignettes/</code>.</p></li>
+</ul></section><section id="sec-installed-package" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="sec-installed-package">
+<span class="header-section-number">3.5</span> Paquete instalado</h2>
+<p>Un paquete <strong>instalado</strong> es un paquete binario que se ha descomprimido en una biblioteca de paquetes (descrita en <a href="#sec-library" class="quarto-xref"><span>Sección 3.7</span></a>). <a href="#fig-installation" class="quarto-xref">Figura&nbsp;<span>3.2</span></a> ilustra las muchas formas en que se puede instalar un paquete, junto con algunas otras funciones para convertir un paquete de un estado a otro. ¡Este diagrama es complicado! En un mundo ideal, instalar un paquete implicaría encadenar un conjunto de pasos simples: fuente -&gt; empaquetado, empaquetado -&gt; binario, binario -&gt; instalado. En el mundo real, no es tan simple porque a menudo hay atajos (más rápidos) disponibles.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-installation" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Un gráfico que muestra diferentes formas de pasar de un estado de paquete a otro: 1. library() pone un paquete instalado en la memoria. 2. Funciones como install.packages(),    devtools::install_github(), y devtools::install()    pueden instalar un paquete comenzando de diversas formas:    fuente, empaquetado, o binario. 3. devtools::build() puede crear un empapaquetado o un binario. 4. devtools::load_all() pone un paquete fuente en la memoria.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-installation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/install-load.png" class="img-fluid figure-img" alt="Un gráfico que muestra diferentes formas de pasar de un estado de paquete a otro: 1. library() pone un paquete instalado en la memoria. 2. Funciones como install.packages(),    devtools::install_github(), y devtools::install()    pueden instalar un paquete comenzando de diversas formas:    fuente, empaquetado, o binario. 3. devtools::build() puede crear un empapaquetado o un binario. 4. devtools::load_all() pone un paquete fuente en la memoria.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-installation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;3.2: Muchos métodos para convertir entre estados de paquetes.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>La herramienta de línea de comando incorporada <code>R CMD INSTALL</code> impulsa la instalación de todos los paquetes. Puede instalar un paquete a partir de archivos fuente, un paquete (también conocido como tarball fuente) o un paquete binario. Los detalles están disponibles en la <a href="https://cran.r-project.org/doc/manuals/R-admin.html#Installing-packages">sección Instalación de paquetes</a> de <a href="https://cran%20.r-project.org/doc/manuals/R-admin.html">Instalación y administración de R</a>. Al igual que con <code><a href="https://devtools.r-lib.org/reference/build.html">devtools::build()</a></code>, devtools proporciona una función contenedora, <code><a href="https://devtools.r-lib.org/reference/install.html">devtools::install()</a></code>, que hace que esta herramienta esté disponible desde una sesión de R.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+RStudio
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>RStudio también puede ayudarle a instalar su paquete en desarrollo a través de los menús desplegables <em>Install</em> y <em>More</em> en el panel <em>Build</em> y con <em>Install Package</em> en el menú <em>Build</em>.</p>
+</div>
+</div>
+<p>Es comprensible que a la mayoría de los usuarios les guste instalar paquetes desde la comodidad de una sesión de R y directamente desde CRAN. La función incorporada <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> satisface esta necesidad. Puede descargar el paquete, en varias formas, instalarlo y, opcionalmente, atender la instalación de dependencias.</p>
+<p>Sin embargo, la conveniencia de instalar paquetes R desde una sesión R tiene un precio. Como es de esperar, puede resultar un poco complicado reinstalar un paquete que ya está en uso en la sesión actual. En realidad, esto funciona la mayor parte del tiempo, pero a veces no, especialmente cuando se instala un paquete R con código compilado en Windows. Debido a la forma en que los identificadores de archivos están bloqueados en Windows, un intento de instalar una nueva versión de un paquete que está en uso puede resultar en una instalación corrupta donde el código R del paquete se actualizó, pero su código compilado no. Al solucionar problemas, los usuarios de Windows deben esforzarse por instalar los paquetes en una sesión R limpia, con la menor cantidad de paquetes cargados posible.</p>
+<p>El paquete pak (<a href="https://pak.r-lib.org/" class="uri">https://pak.r-lib.org/</a>) es relativamente nuevo (en el momento de escribir este capítulo) y proporciona una alternativa prometedora a <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code>, así como a otras funciones más especializadas como <code><a href="https://remotes.r-lib.org/reference/install_github.html">devtools::install_github()</a></code>. Es demasiado pronto para hacer una recomendación general sobre el uso de pak para todas sus necesidades de instalación de paquetes, pero ciertamente lo estamos usando cada vez más en nuestros flujos de trabajo personales. Una de las características emblemáticas de pak es que resuelve muy bien el problema de la “DLL bloqueada” descrito anteriormente, es decir, actualizar un paquete con código compilado en Windows. A medida que profundice en el desarrollo de paquetes, se encontrará realizando un conjunto completamente nuevo de tareas, como instalar una dependencia desde una rama en desarrollo o examinar los árboles de dependencia de paquetes. pak proporciona un completo conjunto de herramientas para esta y muchas otras tareas relacionadas. Predecimos que pak pronto se convertirá en nuestra recomendación oficial sobre cómo instalar paquetes (y más).</p>
+<p>Sin embargo, mientras tanto, describimos el <em>status quo</em>. devtools ha ofrecido durante mucho tiempo una familia de funciones <code>install_*()</code> para abordar algunas necesidades más allá del alcance de <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> o para facilitar el acceso a las capacidades existentes. En realidad, estas funciones se mantienen en el [paquete de controles remotos] (https://remotes.r-lib.org) y devtools las reexporta. (Teniendo en cuenta lo que dijimos anteriormente, es probable que los controles remotos sean esencialmente reemplazados a favor del pak, pero aún no hemos llegado a ese punto).</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org">remotes</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">funs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/ls_str.html">lsf.str</a></span><span class="op">(</span><span class="st">"package:remotes"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"^install_.+"</span>, <span class="va">funs</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "install_bioc"      "install_bitbucket" "install_cran"     </span></span>
+<span><span class="co">#&gt;  [4] "install_deps"      "install_dev"       "install_git"      </span></span>
+<span><span class="co">#&gt;  [7] "install_github"    "install_gitlab"    "install_local"    </span></span>
+<span><span class="co">#&gt; [10] "install_remote"    "install_svn"       "install_url"      </span></span>
+<span><span class="co">#&gt; [13] "install_version"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code><a href="https://remotes.r-lib.org/reference/install_github.html">install_github()</a></code> es la más útil de estas funciones y también aparece en <a href="#fig-installation" class="quarto-xref">Figura&nbsp;<span>3.2</span></a>. Es el ejemplo emblemático de una familia de funciones que pueden descargar un paquete desde una ubicación remota que no sea CRAN y hacer lo que sea necesario para instalarlo y sus dependencias. El resto de las funciones de devtools/remotes <code>install_*()</code> están destinadas a hacer que las cosas que son técnicamente posibles con herramientas básicas sean un poco más fáciles o explícitas, como <code><a href="https://remotes.r-lib.org/reference/install_version.html">install_version()</a></code> que instala una versión específica de un paquete CRAN.</p>
+<p>De manera análoga a <code>.Rbuildignore</code>, descrito en la sección <a href="#sec-rbuildignore" class="quarto-xref"><span>Sección 3.3.1</span></a>, <code>.Rinstignore</code> le permite mantener los archivos presentes en un paquete fuera del paquete instalado. Sin embargo, a diferencia de <code>.Rbuildignore</code>, esto es bastante oscuro y rara vez es necesario.</p>
+</section><section id="paquete-en-memoria" class="level2" data-number="3.6"><h2 data-number="3.6" class="anchored" data-anchor-id="paquete-en-memoria">
+<span class="header-section-number">3.6</span> Paquete en memoria</h2>
+<p>Finalmente llegamos a un comando familiar para todos los que usan R:</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://usethis.r-lib.org">usethis</a></span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Suponiendo que usethis esté instalado, esta llamada hace que sus funciones estén disponibles para su uso, es decir, ahora podemos hacer:</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="st">"/path/to/my/coolpackage"</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>El paquete usethis se ha cargado en la memoria y, de hecho, también se ha adjuntado a la ruta de búsqueda. La distinción entre cargar y adjuntar paquetes no es importante cuando escribes scripts, pero es muy importante cuando escribes paquetes. Aprenderá más sobre la diferencia y por qué es importante en <a href="dependencies-mindset-background.html#sec-dependencies-attach-vs-load" class="quarto-xref"><span>Sección 10.4</span></a>.</p>
+<p><code><a href="https://rdrr.io/r/base/library.html">library()</a></code> no es una buena manera de modificar y probar iterativamente un paquete que está desarrollando, porque solo funciona para un paquete instalado. En <a href="workflow101.html#sec-workflow101-load-all" class="quarto-xref"><span>Sección 4.4</span></a>, aprenderá cómo <code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code> acelera el desarrollo al permitirle cargar un paquete fuente directamente en la memoria.</p>
+</section><section id="sec-library" class="level2" data-number="3.7"><h2 data-number="3.7" class="anchored" data-anchor-id="sec-library">
+<span class="header-section-number">3.7</span> Bibliotecas de paquetes</h2>
+<p>Acabamos de hablar de la función <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>, cuyo nombre está inspirado en lo que hace. Cuando llamas a <code><a href="https://rdrr.io/r/base/library.html">library(algúnpaquete)</a></code>, R busca en las <strong>bibliotecas</strong> actuales un paquete instalado llamado “algún paquete” y, si tiene éxito, hace que algún paquete esté disponible para su uso.</p>
+<p>En R, una <strong>biblioteca</strong> es un directorio que contiene paquetes instalados, algo así como una biblioteca de libros. Desafortunadamente, en el mundo R, frecuentemente encontrará un uso confuso de las palabras “biblioteca” y “paquete”. Es común que alguien se refiera a dplyr, por ejemplo, como una biblioteca cuando en realidad es un paquete. Hay algunas razones para la confusión. Primero, podría decirse que la terminología de R va en contra de convenciones de programación más amplias, donde el significado habitual de “biblioteca” se acerca más a lo que queremos decir con “paquete”. El nombre de la función <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> probablemente refuerza las asociaciones incorrectas. Finalmente, este error de vocabulario suele ser inofensivo, por lo que es fácil que los usuarios de R caigan en el hábito equivocado y que las personas que señalan este error parezcan pedantes insoportables. Pero aquí está la conclusión:</p>
+<blockquote class="blockquote">
+<p>Nosotros usamos la función <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> para cargar <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> un <strong>paquete</strong>.</p>
+</blockquote>
+<p>La distinción entre los dos es importante y útil a medida que participa en el desarrollo de paquetes.</p>
+<p>Puede tener varias bibliotecas en su computadora. De hecho, muchos de ustedes ya lo hacen, especialmente si están en Windows. Puede usar <code><a href="https://rdrr.io/r/base/libPaths.html">.libPaths()</a></code> para ver qué bibliotecas están actualmente activas. Así es como podría verse esto en Windows:</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># en Windows</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html">.libPaths</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "C:/Users/jenny/AppData/Local/R/win-library/4.2"</span></span>
+<span><span class="co">#&gt; [2] "C:/Program Files/R/R-4.2.2/library"</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html">.libPaths</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">list.dirs</span>, recursive <span class="op">=</span> <span class="cn">FALSE</span>, full.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt;   [1] "abc"           "anytime"       "askpass"       "assertthat"   </span></span>
+<span><span class="co">#&gt;  ...</span></span>
+<span><span class="co">#&gt; [145] "zeallot"      </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt;  [1] "base"         "boot"         "class"        "cluster"     </span></span>
+<span><span class="co">#&gt;  [5] "codetools"    "compiler"     "datasets"     "foreign"     </span></span>
+<span><span class="co">#&gt;  [9] "graphics"     "grDevices"    "grid"         "KernSmooth"  </span></span>
+<span><span class="co">#&gt; [13] "lattice"      "MASS"         "Matrix"       "methods"     </span></span>
+<span><span class="co">#&gt; [17] "mgcv"         "nlme"         "nnet"         "parallel"    </span></span>
+<span><span class="co">#&gt; [21] "rpart"        "spatial"      "splines"      "stats"       </span></span>
+<span><span class="co">#&gt; [25] "stats4"       "survival"     "tcltk"        "tools"       </span></span>
+<span><span class="co">#&gt; [29] "translations" "utils"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Aquí hay un aspecto similar en macOS (pero los resultados pueden variar):</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># en macOS</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html">.libPaths</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "/Users/jenny/Library/R/arm64/4.2/library"</span></span>
+<span><span class="co">#&gt; [2] "/Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library"</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html">.libPaths</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">list.dirs</span>, recursive <span class="op">=</span> <span class="cn">FALSE</span>, full.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt;    [1] "abc"                  "abc.data"             "abind"                </span></span>
+<span><span class="co">#&gt;  ...</span></span>
+<span><span class="co">#&gt; [1033] "Zelig"                "zip"                  "zoo"                 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt;  [1] "base"         "boot"         "class"        "cluster"     </span></span>
+<span><span class="co">#&gt;  [5] "codetools"    "compiler"     "datasets"     "foreign"     </span></span>
+<span><span class="co">#&gt;  [9] "graphics"     "grDevices"    "grid"         "KernSmooth"  </span></span>
+<span><span class="co">#&gt; [13] "lattice"      "MASS"         "Matrix"       "methods"     </span></span>
+<span><span class="co">#&gt; [17] "mgcv"         "nlme"         "nnet"         "parallel"    </span></span>
+<span><span class="co">#&gt; [21] "rpart"        "spatial"      "splines"      "stats"       </span></span>
+<span><span class="co">#&gt; [25] "stats4"       "survival"     "tcltk"        "tools"       </span></span>
+<span><span class="co">#&gt; [29] "translations" "utils"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En ambos casos vemos dos bibliotecas activas, consultadas en este orden:</p>
+<ol type="1">
+<li>Una biblioteca de usuario</li>
+<li>Una biblioteca global o a nivel de sistema</li>
+</ol>
+<p>Esta configuración es típica en Windows, pero normalmente es necesario habilitarla en macOS y Linux<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Con esta configuración, los paquetes complementarios instalados desde CRAN (o desde otro lugar) o en desarrollo local se mantienen en la biblioteca del usuario. Arriba, el sistema macOS se usa como máquina de desarrollo principal y tiene muchos paquetes aquí (~1000), mientras que el sistema Windows solo se usa ocasionalmente y es mucho más espartano. El conjunto principal de paquetes básicos y recomendados que se incluyen con R se encuentran en la biblioteca a nivel de sistema y son los mismos en todos los sistemas operativos. Esta separación atrae a muchos desarrolladores y facilita, por ejemplo, limpiar los paquetes complementarios sin alterar la instalación básica de R.</p>
+<p>Si estás en macOS o Linux y solo ves una biblioteca, no hay necesidad urgente de cambiar nada. Pero la próxima vez que actualice R, considere crear una biblioteca a nivel de usuario. De forma predeterminada, R busca una biblioteca de usuario que se encuentra en la ruta almacenada en la variable de entorno <code>R_LIBS_USER</code>, que por defecto es <code>~/Library/R/m/x.y/library</code> en macOS y <code>~/R/m -library/x.y</code> en Linux (donde <code>m</code> es una descripción concisa de la arquitectura de su CPU y <code>x.y</code> es la versión R). Puede ver esta ruta con <code>Sys.getenv("R_LIBS_USER")</code>. Estos directorios no existen de forma predeterminada y su uso debe habilitarse creando el directorio. Cuando instale una nueva versión de R, y antes de instalar cualquier paquete complementario, use <code>dir.create(Sys.getenv("R_LIBS_USER"), recursive = TRUE)</code> para crear una biblioteca de usuario en la ubicación predeterminada. Ahora tendrá la configuración de la biblioteca que se ve arriba. Alternativamente, puede configurar una biblioteca de usuario en otro lugar e informarle a R al respecto configurando la variable de entorno <code>R_LIBS_USER</code> en <code>.Renviron</code>. La forma más sencilla de editar su archivo <code>.Renviron</code> es con <code><a href="https://usethis.r-lib.org/reference/edit.html">usethis::edit_r_environ()</a></code>, que creará el archivo si no existe y lo abrirá para editarlo.</p>
+<p>Las rutas de archivo de estas bibliotecas también dejan en claro que están asociadas con una versión específica de R (4.2.x en el momento de escribir este capítulo), lo cual también es típico. Esto refleja y refuerza el hecho de que necesita reinstalar sus paquetes complementarios cuando actualiza R de, digamos, 4.1 a 4.2, lo cual es un cambio en la versión <strong>menor</strong>. Por lo general, no es necesario volver a instalar los paquetes complementarios para una versión de <strong>parche</strong>, por ejemplo, al pasar de R 4.2.1 a 4.2.2.</p>
+<p>A medida que el uso de R se vuelve más sofisticado, es común comenzar a administrar bibliotecas de paquetes con más intención. Por ejemplo, herramientas como <a href="https://rstudio.github.io/renv/">renv</a> (y su predecesor <a href="https://rstudio.github.io/packrat/">packrat</a>) automatizan el proceso de gestión de bibliotecas específicas del proyecto. Esto puede ser importante para hacer que los productos de datos sean reproducibles, portátiles y aislados unos de otros. Un desarrollador de paquetes podría anteponer la ruta de búsqueda de la biblioteca con una biblioteca temporal que contenga un conjunto de paquetes en versiones específicas, para explorar problemas de compatibilidad hacia atrás y hacia adelante, sin afectar el resto del trabajo diario. Las comprobaciones de dependencia inversa son otro ejemplo en el que gestionamos explícitamente la ruta de búsqueda de la biblioteca.</p>
+<p>Estas son las principales palancas que controlan qué bibliotecas están activas, en orden de alcance y persistencia:</p>
+<ul>
+<li>Variables de entorno, como <code>R_LIBS</code> y <code>R_LIBS_USER</code>, que se consultan al inicio.</li>
+<li>Llamar a <code><a href="https://rdrr.io/r/base/libPaths.html">.libPaths()</a></code> con una o más rutas de archivo.</li>
+<li>Ejecutar pequeños fragmentos de código con una ruta de búsqueda de biblioteca temporalmente alterada a través de <code><a href="https://withr.r-lib.org/reference/with_libpaths.html">withr::with_libpaths()</a></code>.</li>
+<li>Argumentos para funciones individuales, como <code>install.packages(lib =)</code> y <code><a href="https://rdrr.io/r/base/library.html">library(lib.loc =)</a></code>.</li>
+</ul>
+<p>Finalmente, es importante tener en cuenta que <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> NUNCA debe usarse <em>dentro de un paquete</em>. Los paquetes y scripts se basan en diferentes mecanismos para declarar sus dependencias y este es uno de los ajustes más importantes que debe realizar en su modelo mental y sus hábitos. Exploramos este tema a fondo en <a href="description.html#sec-description-imports-suggests" class="quarto-xref"><span>Sección 9.6</span></a> y <a href="dependencies-in-practice.html" class="quarto-xref"><span>Capítulo 11</span></a>.</p>
+
+
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>Para ver el conjunto de rutas de archivos que deberían estar en su radar, ejecute <code>dir(full.names = TRUE, recursive = TRUE, include.dirs = TRUE, all.files = TRUE)</code> en el directorio de nivel superior del paquete.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Bueno, en realidad, <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> carga y adjunta un paquete, pero ese es un tema para <a href="dependencies-mindset-background.html#sec-dependencies-attach-vs-load" class="quarto-xref"><span>Sección 10.4</span></a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Para obtener más detalles, consulte la sección <a href="https://whattheyforgot.org/maintaining-r.html#how-to-transfer-your-library-when-updating-r">Mantenimiento de R</a> en <em>Lo que olvidaron enseñarte sobre R</em>, <a href="https://rstudio.github.io/r-manuals/r-admin/Add-on-packages.html#managing-libraries">Gestión de bibliotecas</a> en <em>Instalación y administración de R</em> y los archivos de ayuda de R para <code><a href="https://rdrr.io/r/base/Startup.html">?Startup</a></code> y <code><a href="https://rdrr.io/r/base/libPaths.html">?.libPaths</a></code>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./setup.html" class="pagination-link" aria-label="Configuración del sistema">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./workflow101.html" class="pagination-link" aria-label="Flujos de trabajo de desarrollo fundamentales">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+</body></html>

@@ -1,0 +1,192 @@
+[[sec-other-markdown]]
+= Otros archivos markdown
+:description: Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.
+:lang: es
+
+En este capítulo destacamos dos archivos que se utilizan convencionalmente para proporcionar documentación a nivel de paquete. Estos dos son importantes porque aparecen tanto en la página de inicio de CRAN como en el sitio de pkgdown de un paquete:
+
+* `+README.md+`, que describe lo que hace el paquete (<<sec-readme>>). El `+README+` juega un papel especialmente importante en GitHub o plataformas similares.
+* `+NEWS.md+`, que describe cómo ha cambiado el paquete con el tiempo (<<sec-news>>).
+
+Incluso si su paquete está destinado a una audiencia muy limitada y es posible que nunca se publique en CRAN, estos archivos pueden resultar muy útiles. Estos dos archivos no tienen que estar escritos en Markdown, pero pueden estarlo. De acuerdo con nuestras prácticas para temas de ayuda y viñetas, es nuestra fuerte recomendación y es lo que describimos aquí.
+
+[[sec-readme]]
+== `+README+`
+
+Primero, hablaremos sobre la función del archivo `+README+` y dejaremos de lado la extensión del archivo, hasta que estemos listos para hablar sobre la mecánica.
+
+El objetivo del `+README+` es responder las siguientes preguntas sobre su paquete:
+
+* ¿Por qué debería usarlo?
+* ¿Como lo uso?
+* ¿Como lo consigo?
+
+El archivo `+README+` es una convención de software establecida desde hace décadas. Parte de su contenido tradicional se encuentra en otra parte de un paquete R; por ejemplo, usamos el archivo `+DESCRIPTION+` para documentar la autoría y la licencia.
+
+Cuando escriba su `+README+`, intente ponerse en el lugar de alguien que se encontró con su paquete y está tratando de descubrir si resuelve un problema que tiene. Si deciden que su paquete parece prometedor, el `+README+` también debería mostrarles cómo instalarlo y cómo realizar una o dos tareas básicas. Aquí hay una buena plantilla para `+README+`:
+
+[arabic]
+. Un párrafo que describa el propósito de alto nivel del paquete.
+. Un ejemplo que muestra cómo utilizar el paquete para resolver un problema sencillo.
+. Instrucciones de instalación, con código que se puede copiar y pegar en R.
+. Una descripción general que describe los componentes principales del paquete. Para paquetes más complejos, esto apuntará a viñetas para obtener más detalles. Este también es un buen lugar para describir cómo encaja su paquete en el ecosistema de su dominio de destino.
+
+=== `+README.Rmd+` y `+README.md+`
+
+Como se mencionó anteriormente, preferimos escribir `+README+` en Markdown, es decir, tener `+README.md+`. Esto se representará como HTML y se mostrará en varios contextos importantes:
+
+* La página de inicio del repositorio, si mantiene su paquete en GitHub (o un host similar).
+** https://github.com/tidyverse/dplyr#readme[https://github.com/tidyverse/dplyr]
+* En CRAN, si libera su paquete allí.
+** https://cran.r-project.org/web/packages/dplyr/index.html
++
+Observe el hipervínculo "`README`" en "`Materials`".
+* Como página de inicio de su sitio pkgdown, si tiene uno.
+** https://dplyr.tidyverse.org
+
+Dado que es mejor incluir un par de ejemplos en `+README.md+`, lo ideal sería generarlo con R Markdown. Es decir, funciona bien tener `+README.Rmd+` como archivo fuente principal, que luego se representa en `+README.md+`.
+
+La forma más sencilla de empezar es utilizar `+usethis::use_readme_rmd()+`.footnote:[Si realmente no tiene sentido incluir fragmentos de código ejecutable, `+usethis::use_readme_md()+` es similar, excepto que le proporciona un archivo `+README.md+` básico.] Esto crea una plantilla `+README.Rmd+` y la agrega a `+.Rbuildignore+`, ya que solo se debe incluir `+README.md+` en el paquete. La plantilla se ve así:
+
+[source,markdown]
+----
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# algunpaquete
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+El objetivo de algún paquete es...
+
+## Instalación
+
+Puedes instalar la versión de desarrollo de algún paquete desde [GitHub](https://github.com/) con:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("jane/algunpaquete")
+```
+
+## Ejemplo
+
+Este es un ejemplo básico que muestra cómo resolver un problema común:
+
+```{r example}
+library(somepackage)
+## código de ejemplo básico
+```
+
+¿Qué tiene de especial usar `README.Rmd` en lugar de simplemente `README.md`?
+Puedes incluir fragmentos de R así:
+
+```{r cars}
+summary(cars)
+```
+
+Aún necesitarás renderizar `README.Rmd` regularmente para mantener `README.md` actualizado.
+`devtools::build_readme()` es útil para esto.
+
+También puedes incrustar gráficos, por ejemplo:
+
+```{r pressure, echo = FALSE}
+plot(pressure)
+```
+
+En ese caso, no olvide confirmar y enviar los archivos de figuras resultantes para que se muestren en GitHub y CRAN.
+----
+
+Algunas cosas a tener en cuenta sobre este iniciador `+README.Rmd+`:
+
+* Se representa en [GitHub Flavored Markdown] (https://github.github.com/gfm/).
+* Incluye un comentario para recordarle que debe editar `+README.Rmd+`, no `+README.md+`.
+* Configura nuestras opciones de knitr recomendadas, incluido guardar imágenes en `+man/figures/README-+`, lo que garantiza que estén incluidas en su paquete creado. Esto es importante para que su `+README+` funcione cuando CRAN lo muestre.
+* Crea un lugar para futuras insignias, como los resultados de las comprobaciones automáticas de integración continua (<<sec-sw-dev-practices-ci>>). Ejemplos de funciones que insertan insignias de desarrollo:
+** `+usethis::use_cran_badge()+` informa la versión actual de su paquete en CRAN.
+** `+usethis::use_coverage()+` informa la cobertura de la prueba.
+** `+use_github_actions()+` y amigos informan el estado de `+R CMD check+` de su paquete de desarrollo.
+* Incluye marcadores de posición donde debes proporcionar código para la instalación del paquete y para algunos usos básicos.
+* Le recuerda datos clave sobre el mantenimiento de su `+README+`.
+
+Deberá recordar volver a renderizar `+README.Rmd+` periódicamente y, sobre todo, antes del lanzamiento. La mejor función para usar para esto es `+devtools::build_readme()+`, porque se garantiza que renderizará `+README.Rmd+` con el código fuente actual de su paquete.
+
+El ecosistema devtools intenta ayudarle a mantener actualizado `+README.Rmd+` de dos maneras:
+
+* Si su paquete también es un repositorio de Git, `+use_readme_rmd()+` agrega automáticamente el siguiente gancho de confirmación previa:
++
+[source,bash]
+----
+#!/bin/bash
+if [[ README.Rmd -nt README.md ]]; then
+  echo "README.md is out of date; please re-knit README.Rmd"
+  exit 1
+fi 
+----
++
+Esto evita un `+git commit+` si `+README.Rmd+` se modificó más recientemente que `+README.md+`. Si el gancho impide una confirmación que realmente desea realizar, puede anularla con `+git commit --no-verify+`. Tenga en cuenta que los enlaces de confirmación de Git no se almacenan en el repositorio, por lo que este enlace debe agregarse a cualquier clon nuevo. Por ejemplo, podría volver a ejecutar `+usethis::use_readme_rmd()+` y descartar los cambios en `+README.Rmd+`.
+* La lista de verificación de lanzamiento colocada por `+usethis::use_release_issue()+` incluye un recordatorio para llamar a `+devtools::build_readme()+`.
+
+[[sec-news]]
+== `+NEWS+`
+
+El archivo "`README`" está dirigido a nuevos usuarios, mientras que el archivo "`NEWS`" está dirigido a usuarios existentes: debe enumerar todos los cambios en cada versión que un usuario podría notar o sobre los que desearía obtener más información. Al igual que con `+README+`, es una convención bien establecida para que el software de código abierto tenga un archivo `+NEWS+`, que a veces también se denomina registro de cambios.
+
+Al igual que con `+README+`, las herramientas base R no _requieren_ que NEWS sea un archivo Markdown, pero sí lo permite y es nuestra fuerte preferencia. Es agradable leer un archivo `+NEWS.md+` en GitHub, en su sitio pkgdown, y se puede acceder a él desde la página de inicio de CRAN de su paquete. Demostramos esto nuevamente con dplyr:
+
+* `+NEWS.md+` en el repositorio de GitHub de dplyr:
+** https://github.com/tidyverse/dplyr/blob/main/NEWS.md
+* En CRAN, si libera su paquete allí.
+** https://cran.r-project.org/web/packages/dplyr/index.html
++
+Observe el hipervínculo "`NOTICIAS`" en "`Materiales`".
+* En el sitio de su paquete, disponible como "`Registro de cambios`" en el menú desplegable "`Noticias`" en la barra de navegación principal:
+** https://dplyr.tidyverse.org/news/index.html
+
+Puede utilizar `+usethis::use_news_md()+` para iniciar el archivo `+NEWS.md+`; Muchas otras funciones relacionadas con el ciclo de vida y el lanzamiento en el ecosistema devtools realizarán los cambios apropiados en `+NEWS.md+` a medida que su paquete evolucione.
+
+Aquí hay un archivo hipotético `+NEWS.md+`:Puede utilizar `+usethis::use_news_md()+` para iniciar el archivo `+NEWS.md+`; Muchas otras funciones relacionadas con el ciclo de vida y el lanzamiento en el ecosistema devtools realizarán los cambios apropiados en `+NEWS.md+` a medida que su paquete evolucione.
+
+Aquí hay un archivo hipotético `+NEWS.md+`:
+
+[source,markdown]
+----
+# foofy (versión de desarrollo)
+
+* Mejor mensaje de error al ranurar un grobble no válido (#206).
+
+# foofy 1.0.0
+
+## Cambios principales
+
+* ¡Ahora puede funcionar con todos los grobbles ranurables!
+
+## Mejoras menores y correcciones de errores
+
+*  La impresión de scrobbles ya no produce errores (@githubusername, #100).
+
+*  Los Wibbles ahora son un 55 % menos jibbly (#200).
+----
+
+El ejemplo anterior demuestra algunos principios de organización para `+NEWS.md+`:
+
+* Utilice un encabezado de nivel superior para cada versión: por ejemplo, `+# algún paquete 1.0.0+`. La versión más reciente debería ir en la parte superior. Normalmente, la entrada superior en `+NEWS.md+` de su paquete fuente dirá `+# algún paquete (versión de desarrollo)+`.footnote:[pkgdown admite algunas otras opciones de redacción para estos títulos; consulte más información en https://pkgdown.r-lib.org/reference/build_news.html.]
+* Cada cambio debe formar parte de una lista con viñetas. Si tiene muchos cambios, es posible que desee dividirlos usando subtítulos, `+## Cambios importantes+`, `+## Corrección de errores+`, etc.
++
+Por lo general, nos atenemos a una lista simple hasta que nos acercamos al lanzamiento, momento en el que nos organizamos en secciones y refinamos el texto. Es difícil saber de antemano exactamente qué secciones necesitará. La lista de verificación de lanzamiento colocada por `+usethis::use_release_issue()+` incluye un recordatorio para pulir el archivo `+NEWS.md+`. En esa fase, puede ser útil recordar que `+NEWS.md+` es un registro de cambios de cara al usuario, a diferencia de, por ejemplo, los mensajes de confirmación, que están de cara al desarrollador.
+* Si un elemento está relacionado con un problema en GitHub, incluya el número del problema entre paréntesis, por ejemplo, `+(#​10)+`. Si un elemento está relacionado con una solicitud de extracción, incluya el número de la solicitud de extracción y el autor, por ejemplo, `+(#​101, @hadley)+`. Esto ayuda a un lector interesado a encontrar contexto relevante en GitHub y, en su sitio pkgdown, estos números de problemas y solicitudes de extracción y nombres de usuario serán hipervínculos. Generalmente omitimos el nombre de usuario si el colaborador ya está registrado en `+DESCRIPTION+`.
+
+El principal desafío con `+NEWS.md+` es adquirir el hábito de notar cualquier cambio visible para el usuario cuando lo realiza. Es especialmente fácil olvidar esto al aceptar contribuciones externas. Antes del lanzamiento, puede resultar útil utilizar las herramientas de control de versiones para comparar el origen de la versión candidata con la versión anterior. Esto a menudo muestra elementos de `+NEWS+` que faltan.

@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - 21&nbsp; Ciclo de vida</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./release.html" rel="next">
+<link href="./software-development-practices.html" rel="prev">
+<link href="./logo.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software-development-practices.html">Mantenimiento y distribución</a></li><li class="breadcrumb-item"><a href="./lifecycle.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Ciclo de vida</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">El paquete en el interior de su código</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Componentes de un paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Código R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Otros componentes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Metadatos del paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Probar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Diseñar su conjunto de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Técnicas de prueba avanzadas</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentación</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Otros archivos markdown</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Sitio web</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Mantenimiento y distribución</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Prácticas de desarrollo de software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Ciclo de vida</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li><a href="#sec-lifecycle-evolution" id="toc-sec-lifecycle-evolution" class="nav-link active" data-scroll-target="#sec-lifecycle-evolution"><span class="header-section-number">21.1</span> Evolución del paquete</a></li>
+  <li><a href="#sec-lifecycle-version-number" id="toc-sec-lifecycle-version-number" class="nav-link" data-scroll-target="#sec-lifecycle-version-number"><span class="header-section-number">21.2</span> Número de versión del paquete</a></li>
+  <li><a href="#sec-lifecycle-version-number-tidyverse" id="toc-sec-lifecycle-version-number-tidyverse" class="nav-link" data-scroll-target="#sec-lifecycle-version-number-tidyverse"><span class="header-section-number">21.3</span> Convenciones de versión del paquete Tidyverse</a></li>
+  <li><a href="#sec-lifecycle-breaking-change-definition" id="toc-sec-lifecycle-breaking-change-definition" class="nav-link" data-scroll-target="#sec-lifecycle-breaking-change-definition"><span class="header-section-number">21.4</span> Compatibilidad con versiones anteriores y cambios importantes</a></li>
+  <li>
+<a href="#sec-lifecycle-release-type" id="toc-sec-lifecycle-release-type" class="nav-link" data-scroll-target="#sec-lifecycle-release-type"><span class="header-section-number">21.5</span> Lanzamiento mayor, menor o parche</a>
+  <ul class="collapse">
+<li><a href="#mec%C3%A1nica-de-la-versi%C3%B3n-del-paquete" id="toc-mecánica-de-la-versión-del-paquete" class="nav-link" data-scroll-target="#mec%C3%A1nica-de-la-versi%C3%B3n-del-paquete"><span class="header-section-number">21.5.1</span> Mecánica de la versión del paquete</a></li>
+  </ul>
+</li>
+  <li><a href="#sec-lifecycle-breaking-change-pros-cons" id="toc-sec-lifecycle-breaking-change-pros-cons" class="nav-link" data-scroll-target="#sec-lifecycle-breaking-change-pros-cons"><span class="header-section-number">21.6</span> Pros y contras del cambio radical</a></li>
+  <li>
+<a href="#sec-lifecycle-stages-and-package" id="toc-sec-lifecycle-stages-and-package" class="nav-link" data-scroll-target="#sec-lifecycle-stages-and-package"><span class="header-section-number">21.7</span> Etapas del ciclo de vida y herramientas de soporte</a>
+  <ul class="collapse">
+<li><a href="#etapas-del-ciclo-de-vida-e-insignias" id="toc-etapas-del-ciclo-de-vida-e-insignias" class="nav-link" data-scroll-target="#etapas-del-ciclo-de-vida-e-insignias"><span class="header-section-number">21.7.1</span> Etapas del ciclo de vida e insignias</a></li>
+  <li><a href="#desuso-de-una-funci%C3%B3n" id="toc-desuso-de-una-función" class="nav-link" data-scroll-target="#desuso-de-una-funci%C3%B3n"><span class="header-section-number">21.7.2</span> Desuso de una función</a></li>
+  <li><a href="#desuso-de-un-argumento" id="toc-desuso-de-un-argumento" class="nav-link" data-scroll-target="#desuso-de-un-argumento"><span class="header-section-number">21.7.3</span> Desuso de un argumento</a></li>
+  <li><a href="#ayudantes-de-desuso" id="toc-ayudantes-de-desuso" class="nav-link" data-scroll-target="#ayudantes-de-desuso"><span class="header-section-number">21.7.4</span> Ayudantes de desuso</a></li>
+  <li><a href="#c%C3%B3mo-afrontar-el-cambio-en-una-dependencia" id="toc-cómo-afrontar-el-cambio-en-una-dependencia" class="nav-link" data-scroll-target="#c%C3%B3mo-afrontar-el-cambio-en-una-dependencia"><span class="header-section-number">21.7.5</span> Cómo afrontar el cambio en una dependencia</a></li>
+  <li><a href="#reemplazar-una-funci%C3%B3n" id="toc-reemplazar-una-función" class="nav-link" data-scroll-target="#reemplazar-una-funci%C3%B3n"><span class="header-section-number">21.7.6</span> Reemplazar una función</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software-development-practices.html">Mantenimiento y distribución</a></li><li class="breadcrumb-item"><a href="./lifecycle.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Ciclo de vida</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-lifecycle" class="quarto-section-identifier"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Ciclo de vida</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>Este capítulo trata sobre la gestión de la evolución de su paquete. La parte más complicada de gestionar el cambio es equilibrar los intereses de varias partes interesadas:</p>
+<ul>
+<li><p>El mantenedor(es), que lo incluye a usted y posiblemente a otros, especialmente en el futuro.</p></li>
+<li><p>Los usuarios existentes, que podrían ser solo usted o un pequeño grupo de colegas o podrían ser decenas o cientos de miles de personas.</p></li>
+<li><p>Los usuarios futuros, que se espera que incluyan a los usuarios existentes, pero que potencialmente podrían incluir a muchas más personas.</p></li>
+</ul>
+<p>Es imposible optimizar para todas estas personas, todo el tiempo y al mismo tiempo. Así que describiremos cómo pensamos acerca de varias compensaciones. Incluso si tus prioridades difieren de las del equipo de tidyverse, este capítulo debería ayudarte a identificar los problemas que deseas considerar.</p>
+<p>Muy pocos usuarios se quejan cuando un paquete gana funciones o se corrige un error. En cambio, hablaremos principalmente de los llamados cambios importantes, como eliminar una función o reducir las entradas aceptables para una función. En <a href="#sec-lifecycle-breaking-change-definition" class="quarto-xref"><span>Sección 21.4</span></a>, exploramos cómo determinar si algo es un cambio importante o, de manera más realista, medir dónde se encuentra en un espectro de “ruptura”. Aunque puede ser doloroso, a veces un cambio importante es beneficioso para la salud a largo plazo de un paquete (<a href="#sec-lifecycle-breaking-change-pros-cons" class="quarto-xref"><span>Sección 21.6</span></a>).</p>
+<p>Dado que el cambio es inevitable, lo mejor que puede hacer por sus usuarios es comunicarse con claridad y ayudarlos a adaptarse al cambio. Varias prácticas trabajan juntas para lograr esto:</p>
+<ul>
+<li><p>Número de versión del paquete: la forma principal de cambio de cara al usuario es el lanzamiento del paquete (<a href="#sec-lifecycle-evolution" class="quarto-xref"><span>Sección 21.1</span></a>). Sea intencional sobre qué tipo de cambios se incluyen en, por ejemplo, una versión de parche versus una versión principal (<a href="#sec-lifecycle-version-number" class="quarto-xref"><span>Sección 21.2</span></a>, <a href="#sec-lifecycle-release-type" class="quarto-xref"><span>Sección 21.5</span></a>).</p></li>
+<li><p>Etapa del ciclo de vida: sea explícito cuando una función o argumento se considere experimental, reemplazado o obsoleto, en contraposición a estable (el valor predeterminado asumido) (<a href="#sec-lifecycle-stages-and-package" class="quarto-xref"><span>Sección 21.7</span></a>).</p></li>
+<li><p>Proceso de desaprobación: implemente el cambio de forma gradual, lo que facilita a los usuarios ajustar su código (<a href="#sec-lifecycle-stages-and-package" class="quarto-xref"><span>Sección 21.7</span></a>).</p></li>
+</ul>
+<section id="sec-lifecycle-evolution" class="level2" data-number="21.1"><h2 data-number="21.1" class="anchored" data-anchor-id="sec-lifecycle-evolution">
+<span class="header-section-number">21.1</span> Evolución del paquete</h2>
+<p>Primero debemos establecer una definición funcional de lo que significa que su paquete cambie. Técnicamente, se podría decir que el paquete ha cambiado cada vez que cambia cualquier archivo en su fuente. Sin embargo, este nivel de pedantería no es muy útil. El incremento más pequeño de cambio que sea significativo probablemente sea una confirmación de Git. Esto representa un estado específico del paquete fuente del que se puede hablar, instalar, comparar, someter a <code>R CMD check</code>, revertir, etc. En realidad, este nivel de granularidad sólo interesa a los desarrolladores. Pero los estados del paquete accesibles a través del historial de Git son realmente útiles para el mantenedor, por lo que si necesita algún estímulo para ser más intencional con sus confirmaciones, que sea así.</p>
+<p>La señal principal de un cambio significativo es incrementar el número de versión del paquete y publicarlo, para alguna definición de lanzamiento, como publicar en CRAN (<a href="release.html" class="quarto-xref"><span>Capítulo 22</span></a>). Recuerde que esta importante pieza de metadatos se encuentra en el campo <code>Version</code> del archivo <code>DESCRIPTION</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Package</span><span class="kw">:</span><span class="at"> usethis</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Title</span><span class="kw">:</span><span class="at"> Automate Package and Project Setup</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Version</span><span class="kw">:</span><span class="at"> </span><span class="fl">2.1.6</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">...</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Si visita la página de inicio de CRAN para usar esto, puede acceder a su historial a través de <em>Downloads &gt; Old sources &gt; [use este archivo] (https://cran.r-project.org/src/contrib/Archive/usethis/) </em>. Eso enlaza a una carpeta de paquetes (<a href="structure.html#sec-bundled-package" class="quarto-xref"><span>Sección 3.3</span></a>), que refleja la fuente de usethis para cada versión lanzada en CRAN, presentada en <a href="#tbl-usethis-versions" class="quarto-xref">Tabla&nbsp;<span>21.1</span></a>:</p>
+<div class="cell">
+<div id="tbl-usethis-versions" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-usethis-versions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;21.1: Versiones del paquete usethis.
+</figcaption><div aria-describedby="tbl-usethis-versions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead><tr class="header">
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Date</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1.0.0</td>
+<td style="text-align: left;">2017-10-22 17:36:29 UTC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1.1.0</td>
+<td style="text-align: left;">2017-11-17 22:52:07 UTC</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1.2.0</td>
+<td style="text-align: left;">2018-01-19 18:23:54 UTC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1.3.0</td>
+<td style="text-align: left;">2018-02-24 21:53:51 UTC</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1.4.0</td>
+<td style="text-align: left;">2018-08-14 12:10:02 UTC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1.5.0</td>
+<td style="text-align: left;">2019-04-07 10:50:44 UTC</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1.5.1</td>
+<td style="text-align: left;">2019-07-04 11:00:05 UTC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1.6.0</td>
+<td style="text-align: left;">2020-04-09 04:50:02 UTC</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1.6.1</td>
+<td style="text-align: left;">2020-04-29 05:50:02 UTC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1.6.3</td>
+<td style="text-align: left;">2020-09-17 17:00:03 UTC</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2.0.0</td>
+<td style="text-align: left;">2020-12-10 09:00:02 UTC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2.0.1</td>
+<td style="text-align: left;">2021-02-10 10:40:06 UTC</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2.1.0</td>
+<td style="text-align: left;">2021-10-16 23:30:02 UTC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2.1.2</td>
+<td style="text-align: left;">2021-10-25 07:30:02 UTC</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2.1.3</td>
+<td style="text-align: left;">2021-10-27 15:00:02 UTC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2.1.5</td>
+<td style="text-align: left;">2021-12-09 23:00:02 UTC</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2.1.6</td>
+<td style="text-align: left;">2022-05-25 20:50:02 UTC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2.2.0</td>
+<td style="text-align: left;">2023-06-06 09:30:02 UTC</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2.2.1</td>
+<td style="text-align: left;">2023-06-23 23:50:02 UTC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2.2.2</td>
+<td style="text-align: left;">2023-07-06 00:20:02 UTC</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2.2.3</td>
+<td style="text-align: left;">2024-02-19 16:00:02 UTC</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Este es el tipo de evolución de paquetes que abordaremos en este capítulo. En <a href="#sec-lifecycle-version-number" class="quarto-xref"><span>Sección 21.2</span></a>, profundizaremos en el mundo de los números de versión de software, que es un tema más rico de lo que cabría esperar. R también tiene algunas reglas y herramientas específicas sobre los números de versión de los paquetes. Finalmente, explicaremos las convenciones que usamos para los números de versión de los paquetes tidyverse (<a href="#sec-lifecycle-version-number-tidyverse" class="quarto-xref"><span>Sección 21.3</span></a>).</p>
+<p>Pero primero, este es un buen momento para revisar un recurso que señalamos por primera vez en <a href="structure.html#sec-source-package" class="quarto-xref"><span>Sección 3.2</span></a>, al presentar los diferentes estados de un paquete R. Recuerde que la organización (no oficial) “cran” en GitHub proporciona un historial de solo lectura de todos los paquetes CRAN. Por ejemplo, puede obtener una vista diferente de las versiones publicadas de usethis en <a href="https://github.com/cran/usethis/" class="uri">https://github.com/cran/usethis/</a>.</p>
+<p>El archivo proporcionado por CRAN le permite descargar versiones anteriores de usethis como archivos <code>.tar.gz</code>, lo cual es útil si realmente desea tener en sus manos el código fuente de una versión anterior. Sin embargo, si solo desea verificar algo rápidamente sobre una versión o comparar dos versiones de usethis, el espejo de solo lectura de GitHub es mucho más útil. Cada confirmación en el historial de este repositorio representa una versión de CRAN, lo que facilita ver exactamente qué cambió: <a href="https://github.com/cran/usethis/commits/HEAD" class="uri">https://github.com/cran/usethis/commits/HEAD</a>. Además, puede explorar el estado de todos los archivos fuente del paquete en cualquier versión específica, como <a href="https://github.com/cran/usethis/tree/1.0.0">use la versión inicial de este en la versión 1.0.0</a>[ ^ciclo de vida-1].</p>
+<p>Esta información está técnicamente disponible en el repositorio donde realmente se desarrolla usethis (<a href="https://github.com/r-lib/usethis" class="uri">https://github.com/r-lib/usethis</a>). BPero hay que trabajar mucho más para acercarse al nivel de las versiones de CRAN, en medio del desorden de los pequeños pasos incrementales en los que realmente se desarrolla el desarrollo. Estas tres vistas diferentes de la evolución de usethis son útiles para diferentes propósitos:</p>
+<ul>
+<li><p><a href="https://cran.r-project.org/src/contrib/Archive/usethis/" class="uri">https://cran.r-project.org/src/contrib/Archive/usethis/</a>: los paquetes empaquetados oficiales de CRAN.</p></li>
+<li><p><a href="https://github.com/cran/usethis/commits/HEAD" class="uri">https://github.com/cran/usethis/commits/HEAD</a>: el espejo CRAN no oficial de solo lectura, que se obtiene al desempaquetar los empaquetados de CRAN.</p></li>
+<li><p><a href="https://github.com/r-lib/usethis/commits/HEAD" class="uri">https://github.com/r-lib/usethis/commits/HEAD</a>: el sitio de desarrollo oficial para usethis.</p></li>
+</ul></section><section id="sec-lifecycle-version-number" class="level2" data-number="21.2"><h2 data-number="21.2" class="anchored" data-anchor-id="sec-lifecycle-version-number">
+<span class="header-section-number">21.2</span> Número de versión del paquete</h2>
+<p>Formalmente, una versión de un paquete R es una secuencia de al menos dos números enteros separados por <code>.</code> o <code>-</code>. Por ejemplo, “1.0” y “0.9.1-10” son versiones válidas, pero “1” y “1.0-devel” no lo son. Base R ofrece la función <code>utils::package_version()</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> para analizar una cadena de versión de paquete en una clase S3 adecuada con el mismo nombre. Esta clase facilita hacer cosas como comparar versiones.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1.0"</span>, <span class="st">"0.9.1-10"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] '1.0'      '0.9.1.10'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="st">"1.0"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "package_version" "numeric_version"</span></span>
+<span></span>
+<span><span class="co"># estas versiones no están permitidas para un paquete R</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="st">"1"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: invalid version specification '1'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="st">"1.0-devel"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error: invalid version specification '1.0-devel'</span></span>
+<span></span>
+<span><span class="co"># comparando versiones de paquetes</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="st">"1.9"</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="st">"1.9.0"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="st">"1.9"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="st">"1.9.2"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1.9"</span>, <span class="st">"1.9.2"</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="st">"1.10"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE TRUE</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Los últimos ejemplos anteriores dejan en claro que R considera que la versión “1.9” es igual a “1.9.0” y menor que “1.9.2”. Y tanto “1.9” como “1.9.2” son menores que “1.10”, que debería considerar como la versión “uno punto diez”, no “un punto uno cero”.</p>
+<p>Si no estás seguro de que la clase <code>package_version</code> sea realmente necesaria, consulta este ejemplo:</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="st">"2.0"</span> <span class="op">&gt;</span> <span class="st">"10.0"</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="st">"2.0"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="st">"10.0"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>La cadena <code>2.0</code> se considera mayor que la cadena <code>10.0</code>, porque el carácter <code>2</code> viene después del carácter <code>1</code>. Al analizar las cadenas de versión en objetos <code>package_version</code> adecuados, obtenemos la comparación correcta, es decir, que la versión <code>2.0</code> es menor que la versión <code>10.0</code>.</p>
+<p>R ofrece este soporte para trabajar con versiones de paquetes, porque es necesario, por ejemplo, determinar si se cumplen las dependencias del paquete (<a href="description.html#sec-description-imports-suggests-minium-version" class="quarto-xref"><span>Sección 9.6.1</span></a>). Debajo del capó, esta herramienta se utiliza para hacer cumplir las versiones mínimas registradas así en <code>DESCRIPTION</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Imports</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">    dplyr (&gt;= 1.0.0),</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">    tidyr (&gt;= 1.1.0)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>En su propio código, si necesita determinar qué versión de un paquete está instalada, use <code><a href="https://rdrr.io/r/utils/packageDescription.html">utils::packageVersion()</a></code><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"usethis"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] '2.2.3'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"usethis"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Classes 'package_version', 'numeric_version'  hidden list of 1</span></span>
+<span><span class="co">#&gt;  $ : int [1:3] 2 2 3</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"usethis"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="st">"10.0"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"usethis"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="st">"10.0"</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>El valor de retorno de <code><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion()</a></code> tiene la clase <code>package_version</code> y, por lo tanto, está listo para compararse con otros números de versión. Tenga en cuenta el último ejemplo en el que parece que estamos comparando un número de versión con una cadena. ¿Cómo podemos obtener el resultado correcto sin convertir explícitamente <code>10.0</code> a una versión de paquete? Resulta que esta conversión es automática siempre que uno de los comparadores tenga la clase <code>package_version</code>.</p>
+</section><section id="sec-lifecycle-version-number-tidyverse" class="level2" data-number="21.3"><h2 data-number="21.3" class="anchored" data-anchor-id="sec-lifecycle-version-number-tidyverse">
+<span class="header-section-number">21.3</span> Convenciones de versión del paquete Tidyverse</h2>
+<p>R considera que <code>0.9.1-10</code> es una versión válida del paquete, pero nunca verás un número de versión como ese para un paquete tidyverse. Aquí está nuestro marco recomendado para administrar el número de versión del paquete:</p>
+<ul>
+<li><p>Utilice siempre <code>.</code> como separador, nunca <code>-</code>.</p></li>
+<li><p>Un número de versión publicada consta de tres números, <code>&lt;principal&gt;.&lt;menor&gt;.&lt;parche&gt;</code>. Para el número de versión “1.9.2”, “1” es el número principal, “9” es el número menor y “2” es el número de parche. Nunca utilice versiones como <code>1.0</code>. Explique siempre los tres componentes, “1.0.0”.</p></li>
+<li>
+<p>Un paquete en desarrollo tiene un cuarto componente: la versión de desarrollo. Esto debería comenzar en 9000. El número 9000 es arbitrario, pero proporciona una señal clara de que hay algo diferente en este número de versión. Hay dos razones para esta práctica: primero, la presencia de un cuarto componente hace que sea fácil saber si se trata de una versión publicada o en desarrollo. Además, el uso del cuarto lugar significa que no estás limitado a cuál será la próxima versión lanzada. <code>0.0.1</code>, <code>0.1.0</code> y <code>1.0.0</code> son todos mayores que <code>0.0.0.9000</code>.</p>
+<p>Incrementar la versión de desarrollo, p.e. de <code>9000</code> a <code>9001</code>, si ha agregado una característica importante y usted (u otros) necesita poder detectar o requerir la presencia de esta característica. Por ejemplo, esto puede suceder cuando dos paquetes se desarrollan en conjunto. Generalmente esta es la única razón por la que nos molestamos en incrementar la versión de desarrollo. Esto hace que las versiones en desarrollo sean especiales y, en cierto sentido, degeneradas. Dado que no incrementamos el componente de desarrollo con cada confirmación de Git, el mismo número de versión del paquete se asocia con muchos estados diferentes del origen del paquete, entre versiones.</p>
+</li>
+</ul>
+<p>El consejo anterior está inspirado en parte en <a href="https://semver.org">Semantic Versioning</a> y en <a href="https://www.x.org/releases/X11R7.7/doc/xorg-%20docs/Versions.html">X.Org</a> esquemas de control de versiones. Léalos si desea comprender más sobre los estándares de control de versiones utilizados por muchos proyectos de código abierto. Pero debemos subrayar que nuestras prácticas están inspiradas en estos esquemas y están algo menos reglamentadas. Finalmente, sepa que otros mantenedores siguen diferentes filosofías sobre cómo administrar el número de versión del paquete.</p>
+</section><section id="sec-lifecycle-breaking-change-definition" class="level2" data-number="21.4"><h2 data-number="21.4" class="anchored" data-anchor-id="sec-lifecycle-breaking-change-definition">
+<span class="header-section-number">21.4</span> Compatibilidad con versiones anteriores y cambios importantes</h2>
+<p>El número de versión de su paquete siempre aumenta, pero es más que un simple contador incremental: la forma en que el número cambia con cada versión puede transmitir información sobre la naturaleza de los cambios. La transición de 0.3.1 a 0.3.2, que es una versión de parche, tiene una vibra muy diferente de la transición de 0.3.2 a 1.0.0, que es una versión importante. Un número de versión de paquete también puede transmitir información sobre dónde se encuentra el paquete en su ciclo de vida. Por ejemplo, la versión 1.0.0 a menudo indica que la interfaz pública de un paquete se considera estable.</p>
+<p>¿Cómo se decide qué tipo de lanzamiento realizar, es decir, qué componente(s) de la versión debería incrementar? Un concepto clave es si los cambios asociados son compatibles con versiones anteriores, lo que significa que el código preexistente seguirá “funcionando” con la nueva versión. Ponemos “trabajo” entre comillas, porque esta designación está abierta a cierta interpretación. Un intransigente podría entender que esto significa “el código funciona exactamente de la misma manera, en todos los contextos, para todas las entradas”. Una interpretación más pragmática es que “el código todavía funciona, pero podría producir un resultado diferente en algunos casos extremos”. Un cambio que no es compatible con versiones anteriores a menudo se describe como un cambio <em>importante</em>. Aquí vamos a hablar sobre cómo evaluar si un cambio se está rompiendo. En <a href="#sec-lifecycle-breaking-change-pros-cons" class="quarto-xref"><span>Sección 21.6</span></a> hablaremos sobre cómo decidir si un cambio importante vale la pena.</p>
+<p>En la práctica, la compatibilidad con versiones anteriores no es una distinción clara. Es típico evaluar el impacto de un cambio desde varios ángulos:</p>
+<ul>
+<li><p>Grado de cambio en el comportamiento. El más extremo es convertir algo que solía ser posible en un error, es decir, imposible.</p></li>
+<li><p>Cómo encajan los cambios en el diseño del paquete. Un cambio en una infraestructura de bajo nivel, como una utilidad a la que se llama en todas las funciones de cara al usuario, es más complicado que un cambio que sólo afecta a un parámetro de una única función.</p></li>
+<li><p>Cuánto se ve afectado el uso existente. Esta es una combinación de cuántos de sus usuarios percibirán el cambio y cuántos usuarios existentes hay para empezar.</p></li>
+</ul>
+<p>A continuación se muestran algunos ejemplos concretos de cambios radicales:</p>
+<ul>
+<li><p>Eliminar una función</p></li>
+<li><p>Eliminar un argumento</p></li>
+<li><p>Reducir el conjunto de entradas válidas a una función</p></li>
+</ul>
+<p>Por el contrario, normalmente no se consideran rotos:</p>
+<ul>
+<li><p>Agregar una función. Advertencia: existe una pequeña posibilidad de que esto introduzca un conflicto en el código de usuario.</p></li>
+<li><p>Agregar un argumento. Advertencia: esto podría fallar por algún uso, p.&nbsp;si un usuario confía en la coincidencia de argumentos basada en la posición. Esto también requiere cierto cuidado en una función que acepta “…”.</p></li>
+<li><p>Incrementar el conjunto de entradas válidas.</p></li>
+<li><p>Cambiar el texto de un método de impresión o error. Advertencia: esto puede resultar problemático si otros paquetes dependen del suyo de manera frágil, como la creación de lógica o una prueba que se basa en un mensaje de error de su paquete.</p></li>
+<li><p>Arreglando un error. Advertencia: Realmente puede suceder que los usuarios escriban código que “depende” de un error. A veces, dicho código tenía fallas desde el principio, pero el problema no se detectaba hasta que se solucionaba el error. Otras veces esto muestra código que usa su paquete de una manera inesperada, es decir, no es necesariamente <em>incorrecto</em>, pero tampoco es <em>correcto</em>.</p></li>
+</ul>
+<p>Si el razonamiento sobre el código fuera una forma confiable de evaluar cómo funcionará en la vida real, el mundo no tendría tanto software con errores. La mejor manera de evaluar las consecuencias de un cambio en su paquete es probarlo y ver qué sucede. Además de ejecutar sus propias pruebas, también puede ejecutar las pruebas de sus dependencias inversas y ver si el cambio propuesto rompe algo. El equipo de tidyverse tiene un conjunto bastante extenso de herramientas para ejecutar las llamadas comprobaciones de dependencia inversa (<a href="release.html#sec-release-revdep-checks" class="quarto-xref"><span>Sección 22.5</span></a>), donde ejecutamos <code>R CMD check</code> en todos los paquetes que dependen del nuestro. A veces utilizamos esta infraestructura para estudiar el impacto de un cambio potencial, es decir, las comprobaciones de dependencia inversa se pueden utilizar para guiar el desarrollo, no solo como una comprobación previa al lanzamiento de último minuto. Esto lleva a otra definición, profundamente pragmática, de un cambio radical:</p>
+<blockquote class="blockquote">
+<p>Un cambio se interrumpe si hace que un paquete CRAN que anteriormente pasaba la “verificación R CMD” ahora falle Y el uso y comportamiento originales del paquete son correctos.</p>
+</blockquote>
+<p>Obviamente, esta es una definición estrecha e incompleta de cambio radical, pero al menos es relativamente fácil obtener datos sólidos.</p>
+<p>Esperemos que hayamos dejado claro que la compatibilidad con versiones anteriores no siempre es una distinción clara. Pero es de esperar que también hayamos proporcionado muchos criterios concretos a considerar al pensar si un cambio podría alterar el código de otra persona.</p>
+</section><section id="sec-lifecycle-release-type" class="level2" data-number="21.5"><h2 data-number="21.5" class="anchored" data-anchor-id="sec-lifecycle-release-type">
+<span class="header-section-number">21.5</span> Lanzamiento mayor, menor o parche</h2>
+<p>Recuerde que un número de versión tendrá una de estas formas, si sigue las convenciones descritas en <a href="#sec-lifecycle-version-number-tidyverse" class="quarto-xref"><span>Sección 21.3</span></a>:</p>
+<pre class="text"><code>&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;        # released version
+&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;.&lt;dev&gt;  # in-development version</code></pre>
+<p>Si la versión actual del paquete es <code>0.8.1.9000</code>, estos son nuestros consejos sobre cómo elegir el número de versión para la próxima versión:</p>
+<ul>
+<li><p>Incrementar <code>parche</code>, p.e. <code>0.8.2</code> para una <strong>versión de parche</strong>: ha corregido errores, pero no ha agregado ninguna característica nueva significativa y no hay cambios importantes. Por ejemplo, si descubrimos un error que detiene el espectáculo poco después de un lanzamiento, realizaríamos un lanzamiento rápido de parche con la solución. La mayoría de las versiones tendrán un número de parche 0.</p></li>
+<li><p>Incremento <code>menor</code>, p.e. <code>0.9.0</code>, para una <strong>versión menor</strong>. Una versión menor puede incluir correcciones de errores, nuevas funciones y cambios que sean compatibles con versiones anteriores<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Este es el tipo de liberación más común. Está perfectamente bien tener tantas versiones menores que necesites usar dos (¡o incluso tres!) dígitos, p.&nbsp;<code>1.17.0</code>.</p></li>
+<li><p>Incremento <code>mayor</code>, p.e. <code>1.0.0</code>, para una <strong>versión principal</strong>. Este es el momento más adecuado para realizar cambios que no sean compatibles con versiones anteriores y que probablemente afecten a muchos usuarios. La versión <code>1.0.0</code> tiene un significado especial y generalmente indica que su paquete tiene funciones completas con una API estable.</p></li>
+</ul>
+<p>La decisión más complicada que probablemente enfrentará es si un cambio está lo suficientemente “roto” como para merecer una versión importante. Por ejemplo, si realiza un cambio incompatible con API en una parte de su código que rara vez se usa, puede que no tenga sentido aumentar el número principal. Pero si corrige un error del que dependen muchas personas (¡sucede!), esas personas lo sentirán como un cambio radical. Es posible que una corrección de errores de este tipo merezca una versión importante.</p>
+<p>Nos centramos principalmente en los cambios importantes, pero no olvidemos que a veces también agregas funciones nuevas e interesantes a tu paquete. Desde una perspectiva de marketing, probablemente desee guardarlos para un lanzamiento importante, porque es más probable que sus usuarios conozcan las novedades al leer una publicación de blog o “NOTICIAS”.</p>
+<p>A continuación se muestran algunas publicaciones del blog de tidyverse que han acompañado a diferentes tipos de lanzamientos de paquetes:</p>
+<ul>
+<li><p>Lanzamiento importante: <a href="https://www.tidyverse.org/blog/2020/06/dplyr-1-0-0/">dplyr 1.0.0</a>, <a href="https://www.tidyverse.org/blog/2022/12/purrr-1-0-0/">purrr 1.0.0</a>, <a href="https://www.tidyverse.org/blog/2021/12/pkgdown-2-0-0/">pkgdown 2.0.0</a>, <a href="https://www.tidyverse.org/blog/2021/07/readr-2-0-0/">readr 2.0.0</a></p></li>
+<li><p>Lanzamiento menor: <a href="https://www.tidyverse.org/blog/2022/12/stringr-1-5-0/">stringr 1.5.0</a>, <a href="https://www.tidyverse.org/blog/2022/11/ggplot2-3-4-0/">ggplot2 3.4.0</a></p></li>
+<li><p>Lanzamiento del parche: These are usually not considered worthy of a blog post.</p></li>
+</ul>
+<section id="mecánica-de-la-versión-del-paquete" class="level3" data-number="21.5.1"><h3 data-number="21.5.1" class="anchored" data-anchor-id="mecánica-de-la-versión-del-paquete">
+<span class="header-section-number">21.5.1</span> Mecánica de la versión del paquete</h3>
+<p>Su paquete debería comenzar con el número de versión <code>0.0.0.9000</code>. <code><a href="https://usethis.r-lib.org/reference/create_package.html">usethis::create_package()</a></code> comienza con esta versión, de forma predeterminada.</p>
+<p>A partir de ese momento, puede usar <code><a href="https://usethis.r-lib.org/reference/use_version.html">usethis::use_version()</a></code> para incrementar la versión del paquete. Cuando se llama de forma interactiva, sin argumentos, presenta un menú útil:</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_version.html">use_version</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Current version is 0.1.</span></span>
+<span><span class="co">#&gt; What should the new version be? (0 to exit) </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1: major --&gt; 1.0</span></span>
+<span><span class="co">#&gt; 2: minor --&gt; 0.2</span></span>
+<span><span class="co">#&gt; 3: patch --&gt; 0.1.1</span></span>
+<span><span class="co">#&gt; 4:   dev --&gt; 0.1.0.9000</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Selection: </span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Además de incrementar <code>Version</code> en <code>DESCRIPTION</code> (<a href="description.html" class="quarto-xref"><span>Capítulo 9</span></a>), <code>use_version()</code> también agrega un nuevo encabezado en <code>NEWS.md</code> (<a href="other-markdown.html#sec-news" class="quarto-xref"><span>Sección 18.2</span></a>).</p>
+</section></section><section id="sec-lifecycle-breaking-change-pros-cons" class="level2" data-number="21.6"><h2 data-number="21.6" class="anchored" data-anchor-id="sec-lifecycle-breaking-change-pros-cons">
+<span class="header-section-number">21.6</span> Pros y contras del cambio radical</h2>
+<p>La gran diferencia entre las versiones principales y menores es si el código es compatible con versiones anteriores o no. En el mundo del software en general, la idea es que una versión importante indique a los usuarios que puede contener cambios importantes y que solo deben actualizar cuando tengan la capacidad de abordar cualquier problema que surja.</p>
+<p>La realidad es un poco diferente en la comunidad R, debido a la forma en que la mayoría de los usuarios gestionan la instalación de paquetes. Si somos honestos, la mayoría de los usuarios de R no administran las versiones de los paquetes de una manera muy intencional. Dada la forma en que funcionan <code><a href="https://rdrr.io/r/utils/update.packages.html">update.packages()</a></code> e <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code>, es bastante fácil actualizar un paquete a una nueva versión principal sin quererlo, especialmente para las dependencias del paquete de destino. Esto, a su vez, puede provocar una exposición inesperada a cambios importantes en el código que anteriormente funcionaba. Este malestar tiene implicaciones tanto para los usuarios como para los mantenedores.</p>
+<p>Si es importante proteger un producto de datos contra cambios en las dependencias de su paquete R, recomendamos el uso de una biblioteca de paquetes específica del proyecto. En particular, nos gusta implementar este enfoque utilizando el <a href="https://rstudio.github.io/renv/">paquete renv</a>. Esto respalda un estilo de vida en el que la biblioteca de paquetes predeterminada de un usuario se administra de la forma habitual, algo desordenada. Pero cualquier proyecto que tenga un requisito específico y más alto de reproducibilidad se gestiona con renv. Esto evita que las actualizaciones de paquetes activadas por el trabajo en el proyecto A rompan el código del proyecto B y también ayuda con la colaboración y la implementación.</p>
+<p>Sospechamos que las bibliotecas y herramientas específicas de paquetes como renv están actualmente infrautilizadas en el mundo R. Es decir, muchos usuarios de R todavía usan una sola biblioteca de paquetes. Por lo tanto, los mantenedores de paquetes aún deben tener mucha precaución y cuidado cuando introducen cambios importantes, independientemente de lo que esté sucediendo con el número de versión. En <a href="#sec-lifecycle-stages-and-package" class="quarto-xref"><span>Sección 21.7</span></a>, describimos cómo los paquetes tidyverse abordan esto, respaldados por herramientas en el paquete de ciclo de vida.</p>
+<p>Al igual que con las dependencias (<a href="dependencies-mindset-background.html#sec-dependencies-pros-cons" class="quarto-xref"><span>Sección 10.1</span></a>), encontramos que el extremismo no es una postura muy productiva. La resistencia extrema a los cambios radicales supone un obstáculo importante para el desarrollo y el mantenimiento continuos. El código compatible con versiones anteriores tiende a ser más difícil de trabajar debido a la necesidad de mantener múltiples rutas para admitir la funcionalidad de versiones anteriores. Cuanto más se esfuerce por mantener la compatibilidad con versiones anteriores, más difícil será desarrollar nuevas funciones o corregir viejos errores. Esto, a su vez, puede desalentar la adopción por parte de nuevos usuarios y dificultar la contratación de nuevos contribuyentes. Por otro lado, si realiza cambios importantes constantemente, los usuarios se sentirán muy frustrados con su paquete y decidirán que están mejor sin él. Encuentra un punto medio feliz. Preocúpate por la compatibilidad con versiones anteriores, pero no dejes que eso te paralice.</p>
+<p>La importancia de la compatibilidad con versiones anteriores es directamente proporcional a la cantidad de personas que utilizan su paquete: está intercambiando su tiempo y dolor por el de sus usuarios. Hay buenas razones para realizar cambios incompatibles con versiones anteriores. Una vez que haya decidido que es necesario, su principal prioridad es utilizar un proceso humano que respete a sus usuarios.</p>
+</section><section id="sec-lifecycle-stages-and-package" class="level2" data-number="21.7"><h2 data-number="21.7" class="anchored" data-anchor-id="sec-lifecycle-stages-and-package">
+<span class="header-section-number">21.7</span> Etapas del ciclo de vida y herramientas de soporte</h2>
+<p>El enfoque del equipo de tidyverse para la evolución de paquetes se ha vuelto más estructurado y deliberado a lo largo de los años. Las herramientas y la documentación asociadas se encuentran en el paquete del ciclo de vida (<a href="https://lifecycle.r-lib.org/index.html">lifecycle.r-lib.org</a>). El enfoque se basa en dos componentes principales:</p>
+<ul>
+<li><p>Etapas del ciclo de vida, que se pueden aplicar en diferentes niveles, es decir, a un argumento o función individual o a un paquete completo.</p></li>
+<li><p>Convenciones y funciones a utilizar al realizar la transición de una función de una etapa del ciclo de vida a otra. El proceso de desaprobación es el que exige mayor cuidado.</p></li>
+</ul>
+<p>No duplicaremos demasiada documentación del ciclo de vida aquí. En lugar de ello, destacamos los principios generales de la gestión del ciclo de vida y presentamos ejemplos específicos de “movimientos” exitosos del ciclo de vida.</p>
+<section id="etapas-del-ciclo-de-vida-e-insignias" class="level3" data-number="21.7.1"><h3 data-number="21.7.1" class="anchored" data-anchor-id="etapas-del-ciclo-de-vida-e-insignias">
+<span class="header-section-number">21.7.1</span> Etapas del ciclo de vida e insignias</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-lifecycle-stages" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Un diagrama que muestra las transiciones entre las cuatro etapas principales: lo experimental puede volverse estable y lo estable puede quedar obsoleto o reemplazado.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-lifecycle-stages-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/lifecycle.svg" class="img-fluid figure-img" style="width:75.0%" alt="Un diagrama que muestra las transiciones entre las cuatro etapas principales: lo experimental puede volverse estable y lo estable puede quedar obsoleto o reemplazado.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lifecycle-stages-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;21.1: Las cuatro etapas principales del ciclo de vida de tidyverse: estable, obsoleta, reemplazada y experimental.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Las cuatro etapas del ciclo de vida son:</p>
+<ul>
+<li><p>Estable. Esta es la etapa predeterminada e indica que los usuarios deben sentirse cómodos confiando en una función o paquete. Los cambios importantes deberían ser poco frecuentes y deberían ocurrir gradualmente, dando a los usuarios suficiente tiempo y orientación para adaptar su uso.</p></li>
+<li><p>Experimentales. Esto es apropiado cuando se introduce una función por primera vez y el mantenedor se reserva el derecho de cambiarla sin mucho proceso de desaprobación. Esta es la etapa implícita para cualquier paquete con una versión principal de “0”, es decir, que aún no ha tenido una versión “1.0.0”.</p></li>
+<li><p>Obsoleto. Esto se aplica a la funcionalidad cuya eliminación está prevista. Inicialmente, todavía funciona, pero activa una advertencia de desactivación con información sobre las alternativas preferidas. Después de un período de tiempo adecuado y con un cambio de versión adecuado, estas funciones normalmente se eliminan.</p></li>
+<li><p>Reemplazado. Esta es una versión más suave de obsoleta, donde la funcionalidad heredada se conserva como en una cápsula del tiempo. Las funciones reemplazadas reciben solo un mantenimiento mínimo, como correcciones de errores críticos.</p></li>
+</ul>
+<p>Puedes obtener mucho más detalle en <code><a href="https://lifecycle.r-lib.org/articles/stages.html">vignette("stages", package = "lifecycle")</a></code>.</p>
+<p>La etapa del ciclo de vida suele comunicarse mediante una insignia. Si desea utilizar insignias de ciclo de vida, llame a <code><a href="https://usethis.r-lib.org/reference/use_lifecycle.html">usethis::use_lifecycle()</a></code> para realizar una configuración única:</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_lifecycle.html">use_lifecycle</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ✔ Adding 'lifecycle' to Imports field in DESCRIPTION</span></span>
+<span><span class="co">#&gt; • Refer to functions with `lifecycle::fun()`</span></span>
+<span><span class="co">#&gt; ✔ Adding '@importFrom lifecycle deprecated' to 'R/somepackage-package.R'</span></span>
+<span><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></span>
+<span><span class="co">#&gt; ✔ Creating 'man/figures/'</span></span>
+<span><span class="co">#&gt; ✔ Copied SVG badges to 'man/figures/'</span></span>
+<span><span class="co">#&gt; • Add badges in documentation topics by inserting one of:</span></span>
+<span><span class="co">#&gt;   #' `r lifecycle::badge('experimental')`</span></span>
+<span><span class="co">#&gt;   #' `r lifecycle::badge('superseded')`</span></span>
+<span><span class="co">#&gt;   #' `r lifecycle::badge('deprecated')`</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esto le permite utilizar insignias de ciclo de vida en temas de ayuda y funciones de ciclo de vida, como se describe en el resto de esta sección.</p>
+<p>Para una función, incluya la insignia en su bloque <code>@description</code>. Así es como indicamos que <code><a href="https://dplyr.tidyverse.org/reference/top_n.html">dplyr::top_n()</a></code> está reemplazado:</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' Select top (or bottom) n rows (by value)</span></span>
+<span><span class="co">#'</span></span>
+<span><span class="co">#' @description</span></span>
+<span><span class="co">#' `r lifecycle::badge("superseded")`</span></span>
+<span><span class="co">#' `top_n()` has been superseded in favour of ...</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Para un argumento de función, incluya la insignia en la etiqueta <code>@param</code>. Así es como se documenta la obsolescencia de <code>readr::write_file(path =)</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @param path `r lifecycle::badge("deprecated")` Utilice el argumento `archivo`</span></span>
+<span><span class="co">#'   instead.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Llame a <code><a href="https://usethis.r-lib.org/reference/badges.html">usethis::use_lifecycle_badge()</a></code> si desea utilizar una insignia en <code>README</code> para indicar el ciclo de vida de un paquete completo (<a href="other-markdown.html#sec-readme" class="quarto-xref"><span>Sección 18.1</span></a>).</p>
+<p>Si el ciclo de vida de un paquete es estable, no es realmente necesario utilizar una insignia, ya que se supone que esa es la etapa predeterminada. De manera similar, normalmente solo usamos una insignia para una función si su etapa difiere de la del paquete asociado y de la misma manera para un argumento y la función asociada.</p>
+</section><section id="desuso-de-una-función" class="level3" data-number="21.7.2"><h3 data-number="21.7.2" class="anchored" data-anchor-id="desuso-de-una-función">
+<span class="header-section-number">21.7.2</span> Desuso de una función</h3>
+<p>Si va a eliminar o realizar cambios importantes en una función, normalmente es mejor hacerlo en fases. Desuso es un término general para la situación en la que algo se desaconseja explícitamente, pero aún no se ha eliminado. Se exploran varios escenarios de desaprobación en <code><a href="https://lifecycle.r-lib.org/articles/communicate.html">vignette("communicate", package = "lifecycle")</a></code>; Aquí solo vamos a cubrir la idea principal.</p>
+<p>La función <code><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html">lifecycle::deprecate_warn()</a></code> se puede usar dentro de una función para informar al usuario que está usando una característica obsoleta e, idealmente, para informarle sobre la alternativa preferida. En este ejemplo, la función <code>plus3()</code> está siendo reemplazada por <code>add3()</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># función nueva</span></span>
+<span><span class="va">add3</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">x</span> <span class="op">+</span> <span class="va">y</span> <span class="op">+</span> <span class="va">z</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># función vieja</span></span>
+<span><span class="va">plus3</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html">deprecate_warn</a></span><span class="op">(</span><span class="st">"1.0.0"</span>, <span class="st">"plus3()"</span>, <span class="st">"add3()"</span><span class="op">)</span></span>
+<span>  <span class="fu">add3</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">plus3</span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `plus3()` was deprecated in somepackage 1.0.0.</span></span>
+<span><span class="co">#&gt; ℹ Please use `add3()` instead.</span></span>
+<span><span class="co">#&gt; [1] 6</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En este punto, un usuario que llama a <code>plus3()</code> ve una advertencia que explica que la función tiene un nuevo nombre, pero seguimos adelante y llamamos a <code>add3()</code> con sus entradas. El código preexistente todavía “funciona”. En alguna versión importante futura, <code>plus3()</code> podría eliminarse por completo.</p>
+<p><code><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html">lifecycle::deprecate_warn()</a></code> y sus amigos tienen algunas características que vale la pena destacar:</p>
+<ul>
+<li><p>El mensaje de advertencia se crea a partir de entradas como “cuándo”, “qué”, “con” y “detalles”, lo que proporciona a las advertencias de obsolescencia una forma predecible en diferentes funciones, paquetes y tiempos. La intención es reducir la carga cognitiva de los usuarios que ya pueden estar algo estresados.</p></li>
+<li><p>De forma predeterminada, solo se emite una advertencia específica una vez cada 8 horas, en un esfuerzo por causar la cantidad justa de molestia. El objetivo es ser lo suficientemente molesto como para motivar al usuario a actualizar su código antes de que la función o el argumento desaparezca, pero no tan molesto como para arrojar su computadora al mar. Cerca del final del proceso de desaprobación, el argumento “siempre” se puede establecer en “VERDADERO” para advertir en cada llamada.</p></li>
+<li><p>Si usa <code><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html">lifecycle::deprecate_soft()</a></code> (en lugar de <code>deprecate_warn()</code>), solo se emite una advertencia si la persona que lo lee es la que realmente puede hacer algo al respecto, es decir, actualizar el código infractor. Si un usuario llama indirectamente a una función obsoleta, es decir, porque está usando un paquete que usa una función obsoleta, de forma predeterminada ese usuario no recibe una advertencia. (Pero el mantenedor del paquete culpable verá estas advertencias en los resultados de sus pruebas).</p></li>
+</ul>
+<p>Aquí hay un cronograma hipotético para eliminar una función <code>fun()</code>:</p>
+<ul>
+<li><p>Versión del paquete <code>1.5.0</code>: <code>fun()</code> existe. La etapa del ciclo de vida del paquete es estable, como lo indica su número de versión posterior a <code>1.0.0</code> y, tal vez, una insignia a nivel de paquete. La etapa del ciclo de vida de <code>fun()</code> también es estable, por extensión, ya que no ha sido marcada específicamente como experimental.</p></li>
+<li>
+<p>Versión del paquete <code>1.6.0</code>: Comienza el proceso de desuso de <code>fun()</code>. Insertamos una insignia en su tema de ayuda:</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @description</span></span>
+<span><span class="co">#' `r lifecycle::badge("deprecated")`</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En el cuerpo de <code>fun()</code>, agregamos una llamada a <code><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html">lifecycle::deprecate_warn()</a></code> para informar a los usuarios sobre la situación. De lo contrario, <code>fun()</code> sigue funcionando como siempre.</p>
+</li>
+<li><p>Versión del paquete <code>1.7.0</code> o <code>2.0.0</code>: <code>fun()</code> se elimina. Si esto sucede en una versión menor o mayor dependerá del contexto, es decir, qué tan ampliamente se usa este paquete y función.</p></li>
+</ul>
+<p>Si está utilizando base R únicamente, las funciones <code><a href="https://rdrr.io/r/base/Deprecated.html">.Deprecated()</a></code> y <code><a href="https://rdrr.io/r/base/Defunct.html">.Defunct()</a></code> son los sustitutos más cercanos de <code><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html">lifecycle::deprecate_warn()</a></code> y sus amigas.</p>
+</section><section id="desuso-de-un-argumento" class="level3" data-number="21.7.3"><h3 data-number="21.7.3" class="anchored" data-anchor-id="desuso-de-un-argumento">
+<span class="header-section-number">21.7.3</span> Desuso de un argumento</h3>
+<p><code><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html">lifecycle::deprecate_warn()</a></code> también es útil cuando se desaprueba un argumento. En este caso, también es útil utilizar <code><a href="https://lifecycle.r-lib.org/reference/deprecated.html">lifecycle::deprecated()</a></code> como valor predeterminado para el argumento obsoleto. Aquí continuamos con un ejemplo anterior, es decir, el cambio de <code>ruta</code> a <code>archivo</code> en <code><a href="https://readr.tidyverse.org/reference/read_file.html">readr::write_file()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">write_file</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>,</span>
+<span>                       <span class="va">file</span>,</span>
+<span>                       <span class="va">append</span> <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                       <span class="va">path</span> <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu">is_present</span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html">deprecate_warn</a></span><span class="op">(</span><span class="st">"1.4.0"</span>, <span class="st">"write_file(path)"</span>, <span class="st">"write_file(file)"</span><span class="op">)</span></span>
+<span>    <span class="va">file</span> <span class="op">&lt;-</span> <span class="va">path</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esto es lo que ve un usuario si usa el argumento obsoleto:</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_file.html">write_file</a></span><span class="op">(</span><span class="st">"hi"</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span><span class="st">"lifecycle-demo-"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: The `path` argument of `write_file()` is deprecated as of readr</span></span>
+<span><span class="co">#&gt; 1.4.0.</span></span>
+<span><span class="co">#&gt; ℹ Please use the `file` argument instead.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>El uso de <code>deprecated()</code> como predeterminado logra dos cosas. Primero, si el usuario lee la documentación, esto es una fuerte señal de que un argumento está obsoleto. Pero <code>deprecated()</code> también tiene beneficios para el mantenedor del paquete. Dentro de la función afectada, puede usar <code><a href="https://lifecycle.r-lib.org/reference/deprecated.html">lifecycle::is_present()</a></code> para determinar si el usuario ha especificado el argumento obsoleto y proceder en consecuencia, como se muestra arriba.</p>
+<p>Si está utilizando base R únicamente, la función <code><a href="https://rdrr.io/r/base/missing.html">missing()</a></code> tiene una superposición sustancial con <code><a href="https://lifecycle.r-lib.org/reference/deprecated.html">lifecycle::is_present()</a></code>, aunque puede ser más complicado solucionar problemas relacionados con los valores predeterminados.</p>
+</section><section id="ayudantes-de-desuso" class="level3" data-number="21.7.4"><h3 data-number="21.7.4" class="anchored" data-anchor-id="ayudantes-de-desuso">
+<span class="header-section-number">21.7.4</span> Ayudantes de desuso</h3>
+<p>A veces, una desaprobación afecta el código en varios lugares y es complicado incorporar la lógica completa en todas partes. En este caso, puede crear un asistente interno para centralizar la lógica de desaprobación.</p>
+<p>Esto sucedió en GoogleDrive, cuando cambiamos la forma de controlar la detalle del paquete. El diseño original permitía al usuario especificar esto en cada función, mediante el argumento <code>verbose = TRUE/FALSE</code>. Más tarde, decidimos que tenía más sentido utilizar una opción global para controlar la verbosidad a nivel de paquete. Este es un caso en el que (eventualmente) se elimina un argumento, pero afecta prácticamente a todas las funciones del paquete. Así es como se ve una función típica después de iniciar el proceso de desusar:</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">drive_publish</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">file</span>, <span class="va">...</span>, <span class="va">verbose</span> <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">warn_for_verbose</span><span class="op">(</span><span class="va">verbose</span><span class="op">)</span></span>
+<span>  <span class="co"># rest of the function ...</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Tenga en cuenta el uso de <code>verbose = obsoleto()</code>. Aquí hay una versión ligeramente simplificada de <code>warn_for_verbose()</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">warn_for_verbose</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">verbose</span> <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                             <span class="va">env</span> <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html">caller_env</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>                             <span class="va">user_env</span> <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html">caller_env</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># This function is not meant to be called directly, so don't worry about its</span></span>
+<span>  <span class="co"># default of `verbose = TRUE`.</span></span>
+<span>  <span class="co"># In authentic, indirect usage of this helper, this picks up on whether</span></span>
+<span>  <span class="co"># `verbose` was present in the **user's** call to the calling function.</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html">is_present</a></span><span class="op">(</span><span class="va">verbose</span><span class="op">)</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/Logic.html">isTRUE</a></span><span class="op">(</span><span class="va">verbose</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span>  <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html">deprecate_warn</a></span><span class="op">(</span></span>
+<span>    when <span class="op">=</span> <span class="st">"2.0.0"</span>,</span>
+<span>    what <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html">I</a></span><span class="op">(</span><span class="st">"The `verbose` argument"</span><span class="op">)</span>,</span>
+<span>    details <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"Set `options(googledrive_quiet = TRUE)` to suppress all googledrive messages."</span>,</span>
+<span>      <span class="st">"For finer control, use `local_drive_quiet()` or `with_drive_quiet()`."</span>,</span>
+<span>      <span class="st">"googledrive's `verbose` argument will be removed in the future."</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    user_env <span class="op">=</span> <span class="va">user_env</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="co"># only set the option during authentic, indirect usage</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="va">env</span>, <span class="fu">global_env</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">local_drive_quiet</span><span class="op">(</span>env <span class="op">=</span> <span class="va">env</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>El usuario llama a una función, como <code>drive_publish()</code>, que luego llama a <code>warn_for_verbose()</code>. Si el usuario deja <code>verbose</code> sin especificar o si solicita <code>detallado = TRUE</code> (comportamiento predeterminado), <code>warn_for_verbose()</code> no hace nada. Pero si solicitan explícitamente <code>verbose = FALSE</code>, lanzamos una advertencia con consejos sobre la forma preferida de suprimir los mensajes de Googledrive. También seguimos adelante y honramos sus deseos por el momento, a través de la llamada a <code><a href="https://googledrive.tidyverse.org/reference/googledrive-configuration.html">googledrive::local_drive_quiet()</a></code>. En la próxima versión principal, el argumento “detallado” se puede eliminar en todas partes y este asistente se puede eliminar.</p>
+</section><section id="cómo-afrontar-el-cambio-en-una-dependencia" class="level3" data-number="21.7.5"><h3 data-number="21.7.5" class="anchored" data-anchor-id="cómo-afrontar-el-cambio-en-una-dependencia">
+<span class="header-section-number">21.7.5</span> Cómo afrontar el cambio en una dependencia</h3>
+<p>¿Qué sucede si desea utilizar la funcionalidad en una nueva versión de otro paquete? O la versión menos feliz: ¿qué pasa si los cambios en otro paquete van a romper el suyo? Hay algunos escenarios posibles, dependiendo de si se lanzó el otro paquete y de la experiencia que desea para sus usuarios. Comenzaremos con el caso simple y feliz de usar funciones recientemente disponibles en una dependencia.</p>
+<p>Si el otro paquete ya se lanzó, puede aumentar la versión mínima que declara en <code>DESCRIPTION</code> y usar la nueva funcionalidad incondicionalmente. Esto también significa que los usuarios que actualicen su paquete se verán obligados a actualizar el otro paquete, lo cual al menos debería considerar. Tenga en cuenta también que esto solo funciona para una dependencia en “Importaciones”. Si bien es una buena idea registrar una versión mínima para un paquete sugerido, generalmente no se aplica de la misma manera que para las “Importaciones”.</p>
+<p>Si no desea exigir a sus usuarios que actualicen este otro paquete, puede hacer que su paquete funcione tanto con versiones nuevas como antiguas. Esto significa que comprobará su versión en tiempo de ejecución y procederá en consecuencia. Aquí hay un bosquejo de cómo podría verse eso en el contexto de una función nueva o existente:</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">your_existing_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span>, <span class="va">cool_new_feature</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html">isTRUE</a></span><span class="op">(</span><span class="va">cool_new_feature</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"otherpkg"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.0.0"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/message.html">message</a></span><span class="op">(</span><span class="st">"otherpkg &gt;= 1.0.0 is needed for cool_new_feature"</span><span class="op">)</span></span>
+<span>    <span class="va">cool_new_feature</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="co"># the rest of the function</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">your_new_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"otherpkg"</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"1.0.0"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"otherpkg &gt;= 1.0.0 needed for this function."</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="co"># the rest of the function</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Alternativamente, este también sería un excelente lugar para usar <code><a href="https://rlang.r-lib.org/reference/is_installed.html">rlang::is_installed()</a></code> y <code><a href="https://rlang.r-lib.org/reference/is_installed.html">rlang::check_installed()</a></code> con el argumento <code>version</code> (ver ejemplos de uso en <a href="dependencies-in-practice.html#sec-dependencies-in-suggests-r-code" class="quarto-xref"><span>Sección 11.5.1</span></a>).</p>
+<p>Este enfoque también se puede adaptar si está respondiendo a cambios aún no publicados que llegarán pronto en una de sus dependencias. Es útil tener una versión de su paquete que funcione antes y después del cambio. Esto le permite liberar su paquete en cualquier momento, incluso antes que el otro paquete. A veces puedes refactorizar tu código para que funcione con cualquiera de las versiones del otro paquete, en cuyo caso no necesitas condicionar en absoluto la versión del otro paquete. Pero a veces es posible que necesites un código diferente para las dos versiones. Considere este ejemplo:</p>
+<div class="cell">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">your_function</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"otherpkg"</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="st">"1.3.9000"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">otherpkg</span><span class="fu">::</span><span class="fu">their_new_function</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="fu">otherpkg</span><span class="fu">::</span><span class="fu">their_old_function</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="co"># the rest of the function</span></span>
+<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>La versión mínima hipotética de <code>1.3.9000</code> sugiere un caso en el que la versión de desarrollo de otherpkg ya tiene el cambio al que estás respondiendo, que es una función nueva en este caso. Suponiendo que <code>their_new_function()</code> no existe en la última versión de otherpkg, recibirá una nota de <code>R CMD check</code> indicando que <code>ir_new_function()</code> no existe en el espacio de nombres de otherpkg. Si envía una versión de este tipo a CRAN, puede explicar que lo hace por motivos de compatibilidad hacia atrás y hacia adelante con otros paquetes y es probable que queden satisfechos.</p>
+</section><section id="reemplazar-una-función" class="level3" data-number="21.7.6"><h3 data-number="21.7.6" class="anchored" data-anchor-id="reemplazar-una-función">
+<span class="header-section-number">21.7.6</span> Reemplazar una función</h3>
+<p>Se reemplaza la última etapa del ciclo de vida de la que hablaremos. Esto es apropiado cuando siente que una función ya no es la solución preferida a un problema, pero tiene suficiente uso e historial como para no querer iniciar el proceso de eliminarla. Buenos ejemplos de esto son <code><a href="https://tidyr.tidyverse.org/reference/spread.html">tidyr::spread()</a></code> y <code><a href="https://tidyr.tidyverse.org/reference/gather.html">tidyr::gather()</a></code>. Esas funciones han sido reemplazadas por <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">tidyr::pivot_wider()</a></code> y <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">tidyr::pivot_longer()</a></code>. Pero algunos usuarios todavía prefieren las funciones más antiguas y es probable que se hayan utilizado mucho en proyectos que no están en desarrollo activo. Por lo tanto, <code>spread()</code> y <code>gather()</code> están marcados como reemplazados, no reciben ninguna innovación nueva, pero no corren riesgo de ser eliminados.</p>
+<p>Un fenómeno relacionado es cuando desea cambiar algún aspecto de un paquete, pero también desea brindarles a los usuarios existentes una forma de optar por el comportamiento heredado. La idea es proporcionar a los usuarios una curita que puedan aplicar para que el código antiguo funcione rápidamente, hasta que tengan el ancho de banda para realizar una actualización más exhaustiva (lo que, en algunos casos, es posible que nunca suceda). A continuación se muestran algunos ejemplos en los que se conservó el comportamiento heredado para los usuarios que optaron por participar:</p>
+<ul>
+<li><p>En tidyr 1.0.0, la interfaz de <code><a href="https://tidyr.tidyverse.org/reference/nest.html">tidyr::nest()</a></code> y <code><a href="https://tidyr.tidyverse.org/reference/unnest.html">tidyr::unnest()</a></code> cambió. El uso más auténtico se puede traducir a la nueva sintaxis, lo que tidyr hace automáticamente, además de transmitir la sintaxis moderna preferida mediante una advertencia. Pero la antigua interfaz sigue estando disponible a través de <code><a href="https://tidyr.tidyverse.org/reference/nest_legacy.html">tidyr::nest_legacy()</a></code> y <code><a href="https://tidyr.tidyverse.org/reference/nest_legacy.html">tidyr::unnest_legacy()</a></code>, que se marcaron como reemplazadas en el momento de su creación.</p></li>
+<li><p>dplyr 1.1.0 aprovecha un algoritmo mucho más rápido para grupos informáticos. Pero este método más rápido también ordena los grupos con respecto a la configuración regional C, mientras que anteriormente se usaba la configuración regional del sistema. La opción global <code>dplyr.legacy_locale</code> permite a un usuario solicitar explícitamente el comportamiento heredado.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p></li>
+<li><p>Los paquetes tidyverse se han estandarizado en un enfoque común para la reparación de nombres, que se implementa en <code><a href="https://vctrs.r-lib.org/reference/vec_as_names.html">vctrs::vec_as_names()</a></code>. El paquete vctrs también ofrece <code><a href="https://vctrs.r-lib.org/reference/vec_as_names_legacy.html">vctrs::vec_as_names_legacy()</a></code>, lo que facilita la reparación de nombres con estrategias más antiguas utilizadas anteriormente en paquetes como tibble, tidyr y readxl.</p></li>
+<li><p>readr 2.0.0 introdujo la llamada segunda edición, que marca el cambio a un backend proporcionado por el paquete vroom. Funciones como <code>readr::with_edition(1, ...)</code> y <code>readr::local_edition(1)</code> facilitan que un usuario solicite el comportamiento de la primera edición para un fragmento de código específico o para un script específico.</p></li>
+</ul>
+
+
+</section></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>Podemos llamar a <code><a href="https://rdrr.io/r/base/numeric_version.html">package_version()</a></code> directamente aquí, pero en el código del paquete, debes usar el formulario <code>utils::package_version()</code> y enumerar el paquete de utilidades en <code>Imports</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Al igual que con <code><a href="https://rdrr.io/r/base/numeric_version.html">package_version()</a></code>, en el código del paquete, debes usar el formulario <code><a href="https://rdrr.io/r/utils/packageDescription.html">utils::packageVersion()</a></code> y enumerar el paquete de utilidades en <code>Imports</code>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Para obtener una definición adecuadamente pragmática de “compatible con versiones anteriores”.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>puede obtener más información sobre el análisis que condujo a este cambio en <a href="https://github.com/tidyverse/tidyups/blob/main/006-dplyr-group-by-ordering.md" class="uri">https://github.com/tidyverse/tidyups/blob/main/006-dplyr-group-by-ordering.md</a>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./software-development-practices.html" class="pagination-link" aria-label="Prácticas de desarrollo de software">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Prácticas de desarrollo de software</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./release.html" class="pagination-link" aria-label="Liberando a CRAN">
+        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+</body></html>

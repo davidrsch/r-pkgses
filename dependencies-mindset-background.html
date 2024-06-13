@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - 10&nbsp; Dependencias: mentalidad y antecedentes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./dependencies-in-practice.html" rel="next">
+<link href="./description.html" rel="prev">
+<link href="./logo.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./description.html">Metadatos del paquete</a></li><li class="breadcrumb-item"><a href="./dependencies-mindset-background.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">El paquete en el interior de su código</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Componentes de un paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Código R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Otros componentes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Metadatos del paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Probar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Diseñar su conjunto de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Técnicas de prueba avanzadas</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentación</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Otros archivos markdown</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Sitio web</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Mantenimiento y distribución</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Prácticas de desarrollo de software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Ciclo de vida</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li>
+<a href="#sec-dependencies-pros-cons" id="toc-sec-dependencies-pros-cons" class="nav-link active" data-scroll-target="#sec-dependencies-pros-cons"><span class="header-section-number">10.1</span> ¿Cuándo deberías tomar una dependencia?</a>
+  <ul class="collapse">
+<li><a href="#las-dependencias-no-son-iguales" id="toc-las-dependencias-no-son-iguales" class="nav-link" data-scroll-target="#las-dependencias-no-son-iguales"><span class="header-section-number">10.1.1</span> Las dependencias no son iguales</a></li>
+  <li><a href="#prefiere-un-enfoque-hol%C3%ADstico-equilibrado-y-cuantitativo" id="toc-prefiere-un-enfoque-holístico-equilibrado-y-cuantitativo" class="nav-link" data-scroll-target="#prefiere-un-enfoque-hol%C3%ADstico-equilibrado-y-cuantitativo"><span class="header-section-number">10.1.2</span> Prefiere un enfoque holístico, equilibrado y cuantitativo</a></li>
+  <li><a href="#sec-dependencies-tidyverse" id="toc-sec-dependencies-tidyverse" class="nav-link" data-scroll-target="#sec-dependencies-tidyverse"><span class="header-section-number">10.1.3</span> Pensamientos de dependencia específicos del tidyverse</a></li>
+  <li><a href="#sec-dependencies-imports-vs-suggests" id="toc-sec-dependencies-imports-vs-suggests" class="nav-link" data-scroll-target="#sec-dependencies-imports-vs-suggests"><span class="header-section-number">10.1.4</span> Ya sea para importar o sugerir</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-dependencies-namespace" id="toc-sec-dependencies-namespace" class="nav-link" data-scroll-target="#sec-dependencies-namespace"><span class="header-section-number">10.2</span> Espacio de nombres</a>
+  <ul class="collapse">
+<li><a href="#sec-dependencies-namespace-motivation" id="toc-sec-dependencies-namespace-motivation" class="nav-link" data-scroll-target="#sec-dependencies-namespace-motivation"><span class="header-section-number">10.2.1</span> Motivación</a></li>
+  <li><a href="#sec-dependencies-NAMESPACE-file" id="toc-sec-dependencies-NAMESPACE-file" class="nav-link" data-scroll-target="#sec-dependencies-NAMESPACE-file"><span class="header-section-number">10.2.2</span> El archivo <code>NAMESPACE</code></a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-dependencies-search" id="toc-sec-dependencies-search" class="nav-link" data-scroll-target="#sec-dependencies-search"><span class="header-section-number">10.3</span> Ruta de búsqueda</a>
+  <ul class="collapse">
+<li><a href="#sec-dependencies-search-path-user" id="toc-sec-dependencies-search-path-user" class="nav-link" data-scroll-target="#sec-dependencies-search-path-user"><span class="header-section-number">10.3.1</span> Búsqueda de funciones para el código de usuario</a></li>
+  <li><a href="#b%C3%BAsqueda-de-funciones-dentro-de-un-paquete" id="toc-búsqueda-de-funciones-dentro-de-un-paquete" class="nav-link" data-scroll-target="#b%C3%BAsqueda-de-funciones-dentro-de-un-paquete"><span class="header-section-number">10.3.2</span> Búsqueda de funciones dentro de un paquete</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#sec-dependencies-attach-vs-load" id="toc-sec-dependencies-attach-vs-load" class="nav-link" data-scroll-target="#sec-dependencies-attach-vs-load"><span class="header-section-number">10.4</span> Adjuntar versus cargar</a>
+  <ul class="collapse">
+<li><a href="#sec-dependencies-imports-vs-depends" id="toc-sec-dependencies-imports-vs-depends" class="nav-link" data-scroll-target="#sec-dependencies-imports-vs-depends"><span class="header-section-number">10.4.1</span> Ya sea para importar o depender</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./description.html">Metadatos del paquete</a></li><li class="breadcrumb-item"><a href="./dependencies-mindset-background.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-dependencies-mindset-background" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>Toma una dependencia cuando su paquete usa la funcionalidad de otro paquete (u otra herramienta externa). En <a href="description.html#sec-description-imports-suggests" class="quarto-xref"><span>Sección 9.6</span></a>, explicamos cómo declarar una dependencia en otro paquete incluyéndolo en <code>DESCRIPTION</code>, generalmente en <code>Imports</code> o <code>Suggests</code>. Pero eso todavía te deja muchas cuestiones en las que pensar:</p>
+<ul>
+<li><p>¿Cuándo se debe tomar una dependencia? ¿Cuáles son los riesgos y las recompensas? En <a href="#sec-dependencies-pros-cons" class="quarto-xref"><span>Sección 10.1</span></a> proporcionamos un marco para decidir si una dependencia vale la pena. Este capítulo también incluye secciones específicas para decidir entre <code>Imports</code> y <code>Suggests</code> (<a href="#sec-dependencies-imports-vs-suggests" class="quarto-xref"><span>Sección 10.1.4</span></a>) y entre <code>Imports</code> y <code>Depends</code> (<a href="#sec-dependencies-imports-vs-depends" class="quarto-xref"><span>Sección 10.4.1</span></a>).</p></li>
+<li><p>¿Cómo deberías utilizar diferentes tipos de dependencias en diferentes contextos? Es decir, paquetes importados versus paquetes sugeridos, usados dentro de sus funciones versus pruebas versus documentación. Tenemos que posponer esto para el próximo capítulo (<a href="dependencies-in-practice.html" class="quarto-xref"><span>Capítulo 11</span></a>), porque la justificación de esas recomendaciones se basa en algunos antecedentes técnicos adicionales que desarrollamos aquí.</p></li>
+</ul>
+<p>Un concepto clave para comprender cómo deben funcionar juntos los paquetes es el de un espacio de nombres (<a href="#sec-dependencies-namespace" class="quarto-xref"><span>Sección 10.2</span></a>). Aunque puede resultar un poco confuso, el sistema de espacio de nombres de R es vital para el ecosistema de paquetes. Es lo que garantiza que otros paquetes no interfieran con su código, que su código no interfiera con otros paquetes y que su paquete funcione independientemente del entorno en el que se ejecute. Mostraremos cómo funciona el sistema de espacio de nombres junto con la ruta de búsqueda del usuario (<a href="#sec-dependencies-search" class="quarto-xref"><span>Sección 10.3</span></a>) y en conjunto con ella.</p>
+<p>Este capítulo contiene material que podrías omitir (o pasar por alto) al hacer tu primer paquete, cuando probablemente estés contento con hacer un paquete que funcione. Pero querrás revisar el material de este capítulo a medida que tus paquetes se vuelvan más ambiciosos y sofisticados.</p>
+<section id="sec-dependencies-pros-cons" class="level2" data-number="10.1"><h2 data-number="10.1" class="anchored" data-anchor-id="sec-dependencies-pros-cons">
+<span class="header-section-number">10.1</span> ¿Cuándo deberías tomar una dependencia?</h2>
+<p><em>Esta sección está adaptada de “It Depende” <a href="https://www.tidyverse.org/blog/2019/05/itdepends/">publicación de blog</a> y <a href="https://www.rstudio.com/%20resources/rstudioconf-2019/it-depends-a-dialog-about-dependencies/">discusión</a> escrito por Jim Hester.</em></p>
+<p>Las dependencias de software son un arma de doble filo. Por un lado, le permiten aprovechar el trabajo de otros, dándole a su software nuevas capacidades y haciendo que su comportamiento e interfaz sean más consistentes con otros paquetes. Al utilizar una solución preexistente, evita volver a implementar la funcionalidad, lo que elimina muchas oportunidades de introducir errores. Por otro lado, es probable que sus dependencias cambien con el tiempo, lo que podría requerir que realice cambios en su paquete, lo que podría aumentar su carga de mantenimiento. Sus dependencias también pueden aumentar el tiempo y el espacio en disco necesarios cuando los usuarios instalan su paquete. Estas desventajas han llevado a algunos a sugerir una mentalidad de “dependencia cero”. Creemos que este es un mal consejo para la mayoría de los proyectos y es probable que conduzca a una menor funcionalidad, un mayor mantenimiento y nuevos errores.</p>
+<section id="las-dependencias-no-son-iguales" class="level3" data-number="10.1.1"><h3 data-number="10.1.1" class="anchored" data-anchor-id="las-dependencias-no-son-iguales">
+<span class="header-section-number">10.1.1</span> Las dependencias no son iguales</h3>
+<p>Un problema de simplemente minimizar el número absoluto de dependencias es que trata todas las dependencias como equivalentes, como si todas tuvieran los mismos costos y beneficios (o incluso costos infinitos y ningún beneficio). Sin embargo, en realidad, esto está lejos de la verdad. Hay muchos ejes en los que pueden diferir las dependencias, pero algunos de los más importantes incluyen:</p>
+<ul>
+<li><p>El tipo de dependencia. Algunas dependencias vienen incluidas con el propio R (por ejemplo, base, utilidades, estadísticas) o son uno de los paquetes “recomendados” (por ejemplo, Matrix, supervivencia). Depender de estos paquetes tiene un costo muy bajo, ya que se instalan (casi) universalmente en los sistemas de todos los usuarios y, en su mayoría, cambian solo con las nuevas versiones de R. Por el contrario, existe un costo más alto para una dependencia que proviene, por ejemplo, de un repositorio que no es CRAN, lo que requiere que los usuarios configuren repositorios adicionales antes de la instalación.</p></li>
+<li><p>El número de dependencias ascendentes, es decir, dependencias recursivas. Por ejemplo, el paquete <a href="https://rlang.r-lib.org">rlang</a> se administra intencionalmente como un paquete de bajo nivel y no tiene dependencias ascendentes aparte del propio R. En el otro extremo, hay paquetes en CRAN con ~250 dependencias recursivas.</p></li>
+<li><p>Dependencias ya cumplidas. Si su paquete depende de dplyr, entonces depender de tibble no cambia la huella de dependencia, ya que dplyr ya depende de tibble. Además, algunos de los paquetes más populares (por ejemplo, ggplot2) ya estarán instalados en la mayoría de las máquinas de los usuarios. Por lo tanto, es poco probable que agregar una dependencia de ggplot2 genere costos de instalación adicionales en la mayoría de los casos.</p></li>
+<li>
+<p>La carga de instalar el paquete. Varios factores hacen que un paquete sea más costoso de instalar, en términos de tiempo, espacio y molestias humanas:</p>
+<ul>
+<li><p>Tiempo de compilación: los paquetes que contienen C/C++ pueden tardar muy diferentes en instalarse dependiendo de la complejidad del código. Por ejemplo, el paquete <a href="https://glue.tidyverse.org">glue</a> tarda ~5 segundos en compilarse en las máquinas de compilación de CRAN, mientras que el paquete <a href="https://readr.tidyverse.org">readr</a> tarda &nbsp;~100 segundos para instalar en las mismas máquinas.</p></li>
+<li><p>Tamaño del paquete binario: los usuarios que instalan paquetes binarios deben descargarlos, por lo que el tamaño del binario es relevante, especialmente para aquellos con conexiones a Internet lentas. Esto también varía mucho entre paquetes. Los paquetes más pequeños en CRAN tienen un tamaño de alrededor de 1 Kb, mientras que el paquete <a href="https://cran.r-project.org/package=h2o">h2o</a> tiene un tamaño de 170 Mb, ¡y hay archivos binarios de Bioconductor que pesan más de 4 Gb!</p></li>
+<li><p>Requisitos del sistema: algunos paquetes requieren dependencias adicionales del sistema para poder usarse. Por ejemplo, el paquete <a href="https://cran.r-project.org/package=rjags">rjags</a> requiere una instalación correspondiente de la biblioteca JAGS. Otro ejemplo es <a href="https://cran.r-project.org/package=rJava">rJava</a> que requiere un SDK de Java y también tiene pasos adicionales necesarios para configurar R para la instalación adecuada de Java, lo que ha causado <a href="https://stackoverflow.com/questions/tagged/rjava">problemas de instalación para mucha gente</a>.</p></li>
+</ul>
+</li>
+<li><p>Capacidad de mantenimiento. Es razonable tener mayor confianza en un paquete que está bien establecido y que es mantenido por desarrolladores o equipos con una larga trayectoria y que mantienen muchos otros paquetes. Esto aumenta la probabilidad de que el paquete permanezca en CRAN sin interrupciones y que el mantenedor tenga un enfoque intencional para el ciclo de vida del software (<a href="lifecycle.html" class="quarto-xref"><span>Capítulo 21</span></a>).</p></li>
+<li><p>Funcionalidad. Algunos paquetes implementan una funcionalidad crítica que se utiliza en muchos paquetes. En el tidyverse, ampliamente definido, los paquetes rlang, tidyselect, vctrs y tibble son ejemplos de esto. Al utilizar estos paquetes para tareas complicadas como evaluación no estándar o manipulación de vectores y marcos de datos, los autores de paquetes pueden evitar volver a implementar la funcionalidad básica. Es fácil pensar “¿qué tan difícil puede ser escribir mi propia X?” cuando estás enfocado en el Camino Feliz<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Pero una gran parte del valor que aportan paquetes como vctrs o tibble es permitir que otra persona se preocupe por los casos extremos y el manejo de errores<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> . También es valioso tener un comportamiento compartido con otros paquetes, por ejemplo, las reglas de tidyverse para <a href="https://vctrs.r-lib.org/reference/vec_as_names.html">reparación de nombres</a> o <a href="https://vctrs%20.r-lib.org/reference/vector_recycling_rules.html">reciclaje</a>.</p></li>
+</ul>
+<p>Es de esperar que los detalles anteriores dejen en claro que las dependencias de los paquetes no son iguales.</p>
+</section><section id="prefiere-un-enfoque-holístico-equilibrado-y-cuantitativo" class="level3" data-number="10.1.2"><h3 data-number="10.1.2" class="anchored" data-anchor-id="prefiere-un-enfoque-holístico-equilibrado-y-cuantitativo">
+<span class="header-section-number">10.1.2</span> Prefiere un enfoque holístico, equilibrado y cuantitativo</h3>
+<p>En lugar de esforzarse por lograr un número mínimo de dependencias, recomendamos un enfoque más holístico, equilibrado y cuantitativo.</p>
+<p>Un enfoque holístico analiza el proyecto como un todo y pregunta “¿quién es el público principal?”. Si la audiencia son otros autores de paquetes, entonces un paquete más sencillo con menos dependencias puede ser más apropiado. Si, en cambio, el usuario objetivo es un científico de datos o un estadístico, probablemente ya tendrá instaladas muchas dependencias populares y se beneficiaría de un paquete con más funciones.</p>
+<p>Un enfoque equilibrado comprende que agregar (o eliminar) dependencias conlleva compensaciones. Agregar una dependencia le brinda funciones adicionales, correcciones de errores y pruebas en el mundo real, a costa de un mayor tiempo de instalación, espacio en disco y mantenimiento, si la dependencia tiene cambios importantes. En algunos casos, tiene sentido <em>aumentar</em> las dependencias de un paquete, incluso si ya existe una implementación. Por ejemplo, base R tiene varias implementaciones diferentes de evaluación no estándar con diferentes semánticas entre sus funciones. Lo mismo solía ocurrir con los paquetes tidyverse, pero ahora todos dependen de las implementaciones en <a href="https://tidyselect.r-lib.org">tidyselect</a> y <a href="https://rlang.r%20-lib.org">rlang</a> paquetes. Los usuarios se benefician de la coherencia mejorada de esta característica y los desarrolladores de paquetes individuales pueden dejar que los mantenedores de tidyselect y rlang se preocupen por los detalles técnicos.</p>
+<p>Por el contrario, eliminar una dependencia reduce el tiempo de instalación, el espacio en disco y evita posibles cambios importantes. Sin embargo, significa que su paquete tendrá menos funciones o que deberá volver a implementarlas usted mismo. Esto, a su vez, requiere tiempo de desarrollo e introduce nuevos errores. Una ventaja de utilizar una solución existente es que obtendrá el beneficio de todos los errores que ya se han descubierto y solucionado. Especialmente si muchos otros paquetes dependen de la dependencia, este es un regalo que sigue dando.</p>
+<p>De manera similar a la optimización del rendimiento, si le preocupa la carga de las dependencias, tiene sentido abordar esas preocupaciones de una manera específica y cuantitativa. El paquete experimental <a href="https://github.com/r-lib/itdepends">itdepends</a> fue creado para la <a href="https://www.rstudio.com/resources/rstudioconf-2019/it-depends-a%20-dialog-about-dependencies/">charla</a> y <a href="https://www.tidyverse.org/blog/2019/05/itdepends/">publicación de blog</a> en los que se basa esta sección. Sigue siendo una fuente útil de ideas concretas (y código) para analizar qué tan pesada es una dependencia. El paquete <a href="https://pak.r-lib.org/">pak</a> también tiene varias funciones que son útiles para el análisis de dependencias:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_deps_tree.html">pkg_deps_tree</a></span><span class="op">(</span><span class="st">"tibble"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; tibble 3.1.8 ✨</span></span>
+<span><span class="co">#&gt; ├─fansi 1.0.3 ✨</span></span>
+<span><span class="co">#&gt; ├─lifecycle 1.0.3 ✨</span></span>
+<span><span class="co">#&gt; │ ├─cli 3.4.1 ✨ ⬇ (1.28 MB)</span></span>
+<span><span class="co">#&gt; │ ├─glue 1.6.2 ✨</span></span>
+<span><span class="co">#&gt; │ └─rlang 1.0.6 ✨ ⬇ (1.81 MB)</span></span>
+<span><span class="co">#&gt; ├─magrittr 2.0.3 ✨</span></span>
+<span><span class="co">#&gt; ├─pillar 1.8.1 ✨ ⬇ (673.95 kB)</span></span>
+<span><span class="co">#&gt; │ ├─cli</span></span>
+<span><span class="co">#&gt; │ ├─fansi</span></span>
+<span><span class="co">#&gt; │ ├─glue</span></span>
+<span><span class="co">#&gt; │ ├─lifecycle</span></span>
+<span><span class="co">#&gt; │ ├─rlang</span></span>
+<span><span class="co">#&gt; │ ├─utf8 1.2.2 ✨</span></span>
+<span><span class="co">#&gt; │ └─vctrs 0.5.1 ✨ ⬇ (1.82 MB)</span></span>
+<span><span class="co">#&gt; │   ├─cli</span></span>
+<span><span class="co">#&gt; │   ├─glue</span></span>
+<span><span class="co">#&gt; │   ├─lifecycle</span></span>
+<span><span class="co">#&gt; │   └─rlang</span></span>
+<span><span class="co">#&gt; ├─pkgconfig 2.0.3 ✨</span></span>
+<span><span class="co">#&gt; ├─rlang</span></span>
+<span><span class="co">#&gt; └─vctrs</span></span>
+<span><span class="co">#&gt;</span></span>
+<span><span class="co">#&gt; Key:  ✨ new |  ⬇ download</span></span>
+<span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pkg_deps_explain.html">pkg_deps_explain</a></span><span class="op">(</span><span class="st">"tibble"</span>, <span class="st">"rlang"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; tibble -&gt; lifecycle -&gt; rlang</span></span>
+<span><span class="co">#&gt; tibble -&gt; pillar -&gt; lifecycle -&gt; rlang</span></span>
+<span><span class="co">#&gt; tibble -&gt; pillar -&gt; rlang</span></span>
+<span><span class="co">#&gt; tibble -&gt; pillar -&gt; vctrs -&gt; lifecycle -&gt; rlang</span></span>
+<span><span class="co">#&gt; tibble -&gt; pillar -&gt; vctrs -&gt; rlang</span></span>
+<span><span class="co">#&gt; tibble -&gt; rlang</span></span>
+<span><span class="co">#&gt; tibble -&gt; vctrs -&gt; lifecycle -&gt; rlang</span></span>
+<span><span class="co">#&gt; tibble -&gt; vctrs -&gt; rlang</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="sec-dependencies-tidyverse" class="level3" data-number="10.1.3"><h3 data-number="10.1.3" class="anchored" data-anchor-id="sec-dependencies-tidyverse">
+<span class="header-section-number">10.1.3</span> Pensamientos de dependencia específicos del tidyverse</h3>
+<p>Los paquetes mantenidos por el equipo de tidyverse desempeñan diferentes funciones en el ecosistema y se gestionan en consecuencia. Por ejemplo, los paquetes tidyverse y devtools son esencialmente metapaquetes que existen para comodidad del usuario final. En consecuencia, se recomienda que otros paquetes <strong>no dependan</strong> de tidyverse<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> o devtools (<a href="setup.html#sec-setup-usage" class="quarto-xref"><span>Sección 2.2</span></a>), es decir, estos dos paquetes casi nunca deberían aparecer en <code>Imports</code> . En cambio, un mantenedor de paquetes debe identificar y depender del paquete específico que realmente implementa la funcionalidad deseada.</p>
+<p>En la sección anterior hablamos de diferentes formas de medir el peso de una dependencia. Tanto tidyverse como devtools pueden considerarse pesados ​​debido al gran número de dependencias recursivas:</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">n_hard_deps</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">deps</span> <span class="op">&lt;-</span> <span class="fu">tools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/tools/package_dependencies.html">package_dependencies</a></span><span class="op">(</span><span class="va">pkg</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">deps</span>, <span class="va">length</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">n_hard_deps</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tidyverse"</span>, <span class="st">"devtools"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: unable to access index for repository http://cran.us.r-project.org /src/contrib:</span></span>
+<span><span class="co">#&gt;   cannot open URL 'http://cran.us.r-project.org /src/contrib/PACKAGES'</span></span>
+<span><span class="co">#&gt; tidyverse  devtools </span></span>
+<span><span class="co">#&gt;         0         0</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Por el contrario, varios paquetes están concebidos específicamente como paquetes de bajo nivel que implementan características que deberían funcionar y sentirse igual en todo el ecosistema. Al momento de escribir este artículo, esto incluye:</p>
+<ul>
+<li>rlang, para soportar la evaluación ordenada y arrojar errores</li>
+<li>cli y pegamento, para crear una interfaz de usuario rica (que incluye errores)</li>
+<li>withr, para gestionar el estado de manera responsable</li>
+<li>ciclo de vida, para gestionar el ciclo de vida de funciones y argumentos</li>
+</ul>
+<p>Básicamente, se consideran dependencias gratuitas y se pueden agregar a <code>DESCRIPTION</code> mediante <code><a href="https://usethis.r-lib.org/reference/tidyverse.html">usethis::use_tidy_dependencies()</a></code> (que también hace algunas cosas más). No debería sorprender que estos paquetes tengan una huella de dependencia muy pequeña.</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">tools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/tools/package_dependencies.html">package_dependencies</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"rlang"</span>, <span class="st">"cli"</span>, <span class="st">"glue"</span>, <span class="st">"withr"</span>, <span class="st">"lifecycle"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: unable to access index for repository http://cran.us.r-project.org /src/contrib:</span></span>
+<span><span class="co">#&gt;   cannot open URL 'http://cran.us.r-project.org /src/contrib/PACKAGES'</span></span>
+<span><span class="co">#&gt; $rlang</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $cli</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $glue</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $withr</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $lifecycle</span></span>
+<span><span class="co">#&gt; NULL</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Envío a CRAN
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Bajo ciertas configuraciones, incluidas aquellas utilizadas para envíos CRAN entrantes, <code>R CMD check</code> emite una nota si hay 20 o más paquetes “no predeterminados” en <code>Imports</code>:</p>
+<pre><code>N  checking package dependencies (1.5s)
+   Imports includes 29 non-default packages.
+   Importing from so many packages makes the package vulnerable to any of
+   them becoming unavailable.  Move as many as possible to Suggests and
+   use conditionally.</code></pre>
+<p>Nuestro mejor consejo es esforzarse por cumplirlo, ya que debería ser bastante raro necesitar tantas dependencias y es mejor eliminar cualquier nota que pueda. Por supuesto, hay excepciones a cada regla, y quizás su paquete sea una de ellas. En ese caso, es posible que deba defender su caso. Es cierto que muchos paquetes CRAN violan este umbral.</p>
+</div>
+</div>
+</section><section id="sec-dependencies-imports-vs-suggests" class="level3" data-number="10.1.4"><h3 data-number="10.1.4" class="anchored" data-anchor-id="sec-dependencies-imports-vs-suggests">
+<span class="header-section-number">10.1.4</span> Ya sea para importar o sugerir</h3>
+<p>El <a href="https://withr.r-lib.org">paquete withr</a> es un buen caso de estudio para decidir si incluir una dependencia en <code>Imports</code> o <code>Suggests</code>. withr es muy útil para escribir pruebas que se limpian por sí solas. Dicho uso es compatible con incluir withr en <code>Suggests</code>, ya que los usuarios habituales no necesitan ejecutar las pruebas. Pero a veces un paquete también puede usar withr en sus propias funciones, tal vez para ofrecer sus propias funciones <code>with_*()</code> y <code>local_*()</code>. En ese caso, withr debería aparecer en <code>Imports</code>.</p>
+<p>Las “Importaciones” y las “Sugerencias” difieren en la intensidad y naturaleza de la dependencia:</p>
+<ul>
+<li>
+<p><code>Imports</code>: los paquetes enumerados aquí <em>deben</em> estar presentes para que su paquete funcione. Cada vez que se instala su paquete, esos paquetes también se instalarán, si aún no están presentes. <code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code> también verifica que todos los paquetes en <code>Imports</code> estén instalados.</p>
+<p>Vale la pena señalar que agregar un paquete a <code>Imports</code> garantiza que se instalará y <strong>eso es todo</strong>. No tiene nada que ver con importar funciones de ese paquete. Consulte <a href="dependencies-in-practice.html#sec-dependencies-in-imports" class="quarto-xref"><span>Sección 11.4</span></a> para obtener más información sobre cómo usar un paquete en <code>Imports</code>.</p>
+</li>
+<li>
+<p><code>Suggests</code>: su paquete puede usar estos paquetes, pero no los requiere. Puede utilizar paquetes sugeridos, por ejemplo, conjuntos de datos, para ejecutar pruebas, crear viñetas o tal vez solo haya una función que necesite el paquete.</p>
+<p>Los paquetes enumerados en <code>Suggests</code> no se instalan automáticamente junto con su paquete. Esto significa que no puede asumir que sus usuarios han instalado todos los paquetes sugeridos, pero sí puede asumir que los desarrolladores sí. Consulte <a href="dependencies-in-practice.html#sec-dependencies-in-suggests" class="quarto-xref"><span>Sección 11.5</span></a> para saber cómo comprobar si un paquete sugerido está instalado.</p>
+</li>
+</ul>
+<p>Las “sugerencias” no son muy relevantes para paquetes donde la base de usuarios es aproximadamente igual al equipo de desarrollo o para paquetes que se utilizan en un contexto muy predecible. En ese caso, es razonable usar “Importaciones” para todo. El uso de “Sugerencias” es principalmente una cortesía para los usuarios externos o para adaptarse a instalaciones muy sencillas. Puede liberar a los usuarios de la descarga de paquetes que rara vez necesitan (especialmente aquellos que son difíciles de instalar) y les permite comenzar con su paquete lo más rápido posible.</p>
+</section></section><section id="sec-dependencies-namespace" class="level2" data-number="10.2"><h2 data-number="10.2" class="anchored" data-anchor-id="sec-dependencies-namespace">
+<span class="header-section-number">10.2</span> Espacio de nombres</h2>
+<p>Hasta ahora, hemos explicado la mecánica de declarar una dependencia en <code>DESCRIPTION</code> (<a href="description.html#sec-description-imports-suggests" class="quarto-xref"><span>Sección 9.6</span></a>) y cómo analizar los costos y beneficios de las dependencias (<a href="#sec-dependencies-pros-cons" class="quarto-xref"><span>Sección 10.1</span></a>). Antes de explicar cómo usar sus dependencias en varias partes de su paquete en <a href="dependencies-in-practice.html" class="quarto-xref"><span>Capítulo 11</span></a>, necesitamos establecer los conceptos de un espacio de nombres de paquete y la ruta de búsqueda.</p>
+<section id="sec-dependencies-namespace-motivation" class="level3" data-number="10.2.1"><h3 data-number="10.2.1" class="anchored" data-anchor-id="sec-dependencies-namespace-motivation">
+<span class="header-section-number">10.2.1</span> Motivación</h3>
+<p>Como sugiere el nombre, los espacios de nombres proporcionan “espacios” para “nombres”. Proporcionan un contexto para buscar el valor de un objeto asociado con un nombre.</p>
+<p>Sin saberlo, probablemente ya hayas utilizado espacios de nombres. ¿Ha utilizado alguna vez el operador <code>::</code>? Elimina la ambigüedad de funciones con el mismo nombre. Por ejemplo, los paquetes lubridate y here proporcionan una función <code>here()</code>. Si adjunta lubridate primero, entonces aquí, <code>here()</code> se referirá a la versión de here, porque gana el último paquete adjunto. Pero si adjunta los paquetes en el orden opuesto, <code>here()</code> se referirá a la versión lubridate.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span>    <span class="op">|</span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://here.r-lib.org/">here</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://here.r-lib.org/">here</a></span><span class="op">)</span>         <span class="op">|</span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">here</span><span class="op">(</span><span class="op">)</span> <span class="co"># here::here() |  here() # lubridate::here()</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esto puede resultar confuso. En su lugar, puede calificar la llamada a la función con un espacio de nombres específico: <code>lubridate::here()</code> y <code>here::here()</code>. Entonces el orden en el que se adjuntan los paquetes no importará<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu">here</span><span class="op">(</span><span class="op">)</span> <span class="co"># always gets lubridate::here()</span></span>
+<span><span class="fu">here</span><span class="fu">::</span><span class="fu">here</span><span class="op">(</span><span class="op">)</span>      <span class="co"># always gets here::here()</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Como verá en <a href="dependencies-in-practice.html#sec-dependencies-in-imports" class="quarto-xref"><span>Sección 11.4</span></a>, el estilo de llamada <code>package::function()</code> también es nuestra recomendación predeterminada sobre cómo usar sus dependencias en el código debajo de <code>R/</code>, porque elimina toda ambigüedad. .</p>
+<p>Pero, en el contexto del código del paquete, el uso de <code>::</code> no es realmente nuestra principal línea de defensa contra la confusión vista en el ejemplo anterior. En los paquetes, confiamos en los espacios de nombres para garantizar que todos los paquetes funcionen de la misma manera independientemente de qué paquetes adjunte el usuario.</p>
+<p>Considere la función <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code> del paquete de estadísticas que forma parte de la base R:</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sd</span></span>
+<span><span class="co">#&gt; function (x, na.rm = FALSE) </span></span>
+<span><span class="co">#&gt; sqrt(var(if (is.vector(x) || is.factor(x)) x else as.double(x), </span></span>
+<span><span class="co">#&gt;     na.rm = na.rm))</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55dd4870d7b0&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: namespace:stats&gt;</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Se define en términos de otra función, <code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code>, también del paquete de estadísticas. Entonces, ¿qué sucede si anulamos <code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code> con nuestra propia definición? ¿Se rompe <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code>?</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">var</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span><span class="fl">5</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] -5</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1.58</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>¡Sorprendentemente no es así! Esto se debe a que cuando <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code> busca un objeto llamado <code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code>, busca primero en el espacio de nombres del paquete de estadísticas, por lo que encuentra <code><a href="https://rdrr.io/r/stats/cor.html">stats::var()</a></code>, no el <code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code> que creamos en el entorno mundial. Sería un caos si funciones como <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code> pudieran ser interrumpidas por un usuario redefiniendo <code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code> o adjuntando un paquete que anule <code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code>. El sistema de espacio de nombres del paquete es lo que nos salva de este destino.</p>
+</section><section id="sec-dependencies-NAMESPACE-file" class="level3" data-number="10.2.2"><h3 data-number="10.2.2" class="anchored" data-anchor-id="sec-dependencies-NAMESPACE-file">
+<span class="header-section-number">10.2.2</span> El archivo <code>NAMESPACE</code>
+</h3>
+<p>El archivo <code>NAMESPACE</code> juega un papel clave en la definición del espacio de nombres de su paquete. Aquí hay líneas seleccionadas del archivo <code>NAMESPACE</code> en el paquete testthat:</p>
+<pre><code># Generado por roxygen2: no editar a mano
+
+S3method(compare,character)
+S3method(print,testthat_results)
+export(compare)
+export(expect_equal)
+import(rlang)
+importFrom(brio,readLines)
+useDynLib(testthat, .registration = TRUE)</code></pre>
+<p>La primera línea anuncia que este archivo no está escrito a mano, sino que lo genera el paquete roxygen2. Volveremos a este tema pronto, después de discutir las líneas restantes.</p>
+<p>Puede ver que el archivo <code>NAMESPACE</code> se parece un poco al código R (pero no lo es). Cada línea contiene una <strong>directiva</strong>: <code>S3method()</code>, <code>export()</code>, <code>importFrom()</code>, etc. Cada directiva describe un objeto R e indica si se exporta desde este paquete para ser utilizado por otros o si se importa desde otro paquete para ser utilizado internamente.</p>
+<p>Estas directivas son las más importantes en nuestro enfoque de desarrollo, en orden de frecuencia:</p>
+<ul>
+<li>
+<code>export()</code>: exporta una función (incluidos los genéricos S3 y S4).</li>
+<li>
+<code>S3method()</code>: exporta un método S3.</li>
+<li>
+<code>importFrom()</code>: importa el objeto seleccionado desde otro espacio de nombres (incluidos los genéricos de S4).</li>
+<li>
+<code>import()</code>: importa todos los objetos del espacio de nombres de otro paquete.</li>
+<li>
+<code>useDynLib()</code>: registra rutinas desde una DLL (esto es específico de paquetes con código compilado).</li>
+</ul>
+<p>Hay otras directivas que no cubriremos aquí porque se desaconsejan explícitamente o simplemente rara vez aparecen en nuestro trabajo de desarrollo.</p>
+<ul>
+<li>
+<code>exportPattern()</code>: exporta todas las funciones que coinciden con un patrón. Creemos que es más seguro utilizar siempre exportaciones explícitas y evitamos el uso de esta directiva.</li>
+<li>
+<code>exportClasses()</code>, <code>exportMethods()</code>, <code>importClassesFrom()</code>, <code>importMethodsFrom()</code>: exporta e importa clases y métodos S4. Sólo trabajamos en el sistema S4 cuando es necesario por compatibilidad con otro paquete, es decir, generalmente no implementamos métodos o clases que poseemos con S4. Por lo tanto, la cobertura de S4 en este libro es mínima.</li>
+</ul>
+<p>En el flujo de trabajo de devtools, el archivo <code>NAMESPACE</code> no está escrito a mano. En su lugar, preferimos generar <code>NAMESPACE</code> con el paquete roxygen2, usando etiquetas específicas ubicadas en un comentario de roxygen encima de la definición de cada función en los archivos <code>R/*.R</code> (<a href="dependencies-in-practice.html#sec-dependencies-NAMESPACE-workflow" class="quarto-xref"><span>Sección 11.3</span></a>). Tendremos mucho más que decir sobre los comentarios de roxygen y el paquete roxygen2 cuando analicemos la documentación del paquete en <a href="man.html" class="quarto-xref"><span>Capítulo 16</span></a>. Por ahora, solo exponemos las razones por las que preferimos este método de generar el archivo <code>NAMESPACE</code>:</p>
+<ul>
+<li><p>Las etiquetas de espacio de nombres están integradas en el código fuente, por lo que cuando lees el código es más fácil ver qué se exporta e importa y por qué.</p></li>
+<li><p>Roxygen2 abstrae algunos de los detalles de <code>NAMESPACE</code>. Solo necesita aprender una etiqueta, <code>@export</code>, y roxygen2 determinará qué directiva específica usar, en función de si el objeto asociado es una función normal, un método S3, un método S4 o una clase S4.</p></li>
+<li><p>Roxygen2 mantiene ordenado <code>NAMESPACE</code>. No importa cuántas veces aparezca <code>@importFrom foo bar</code> en tus comentarios de roxygen, solo obtendrás un <code>importFrom(foo, bar)</code> en tu <code>NAMESPACE</code>. Roxygen2 también mantiene NAMESPACE organizado en un orden de principio, ordenándolo primero por tipo de directiva y luego alfabéticamente. Roxygen2 elimina la carga de escribir NAMESPACE y al mismo tiempo intenta mantener el archivo lo más legible posible. Esta organización también hace que las diferencias de Git sean mucho más informativas.</p></li>
+</ul>
+<p>Tenga en cuenta que puede optar por utilizar roxygen2 para generar solo <code>NAMESPACE</code>, solo <code>man/*.Rd</code> (<a href="man.html" class="quarto-xref"><span>Capítulo 16</span></a>), o ambos (como es nuestra práctica). Si no utiliza ninguna etiqueta relacionada con el espacio de nombres, roxygen2 no tocará <code>NAMESPACE</code>. Si no utiliza ninguna etiqueta relacionada con la documentación, roxygen2 no tocará <code>man/</code>.</p>
+</section></section><section id="sec-dependencies-search" class="level2" data-number="10.3"><h2 data-number="10.3" class="anchored" data-anchor-id="sec-dependencies-search">
+<span class="header-section-number">10.3</span> Ruta de búsqueda</h2>
+<p>Para comprender por qué los espacios de nombres son importantes, necesita un conocimiento sólido de las rutas de búsqueda. Para llamar a una función, R primero tiene que encontrarla. Esta búsqueda se desarrolla de manera diferente para el código de usuario que para el código de paquete y eso se debe al sistema de espacio de nombres.</p>
+<section id="sec-dependencies-search-path-user" class="level3" data-number="10.3.1"><h3 data-number="10.3.1" class="anchored" data-anchor-id="sec-dependencies-search-path-user">
+<span class="header-section-number">10.3.1</span> Búsqueda de funciones para el código de usuario</h3>
+<p>El primer lugar donde R busca un objeto es el entorno global. Si R no lo encuentra allí, busca en la ruta de búsqueda, la lista de todos los paquetes que ha <strong>adjuntado</strong>. Puede ver esta lista ejecutando <code><a href="https://rdrr.io/r/base/search.html">search()</a></code>. Por ejemplo, aquí está la ruta de búsqueda del código de este libro:</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/search.html">search</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] ".GlobalEnv"        "package:stats"     "package:graphics" </span></span>
+<span><span class="co">#&gt;  [4] "package:grDevices" "package:datasets"  "renv:shims"       </span></span>
+<span><span class="co">#&gt;  [7] "package:utils"     "package:methods"   "Autoloads"        </span></span>
+<span><span class="co">#&gt; [10] "package:base"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esto tiene una forma específica (ver <a href="#fig-search-path-baseline" class="quarto-xref">Figura&nbsp;<span>10.1</span></a>):</p>
+<ol type="1">
+<li>El medio ambiente global.</li>
+<li>Los paquetes que se han adjuntado, por ejemplo, mediante <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>, desde el más reciente hasta el menos adjunto.</li>
+<li>
+<code>Autocargas</code>, un entorno especial que utiliza enlaces retrasados ​​para ahorrar memoria cargando solo objetos de paquete (como grandes conjuntos de datos) cuando sea necesario.</li>
+<li>El entorno base, por lo que nos referimos al entorno del paquete base.</li>
+</ol>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-search-path-baseline" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Una cadena de entornos etiquetados. Cada entorno tiene una flecha que apunta a su entorno padre.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-search-path-baseline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/search-path/search-path.png" class="img-fluid figure-img" style="width:50.0%" alt="Una cadena de entornos etiquetados. Cada entorno tiene una flecha que apunta a su entorno padre.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-search-path-baseline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.1: Estado típico de la ruta de búsqueda.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Cada elemento en la ruta de búsqueda tiene el siguiente elemento como padre, es decir, se trata de una cadena de entornos que se buscan en orden. En el diagrama, esta relación se muestra como un pequeño círculo azul con una flecha que apunta al padre. El primer entorno (el entorno global) y los dos últimos (<code>Autoloads</code> y el entorno base) son especiales y mantienen su posición.</p>
+<p>Pero la sección intermedia de paquetes adjuntos es más dinámica. Cuando se adjunta un nuevo paquete, se inserta inmediatamente después y se convierte en el padre del entorno global. Cuando adjuntas otro paquete con <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>, cambia la ruta de búsqueda, como se muestra en <a href="#fig-search-path-insertion" class="quarto-xref">Figura&nbsp;<span>10.2</span></a>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-search-path-insertion" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Una cadena de entornos etiquetados, con un paquete recién adjunto insertado como padre del entorno global.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-search-path-insertion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/search-path/search-path-insertion.png" class="img-fluid figure-img" style="width:50.0%" alt="Una cadena de entornos etiquetados, con un paquete recién adjunto insertado como padre del entorno global.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-search-path-insertion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.2: Se inserta un paquete recién adjunto en la ruta de búsqueda.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>El problema principal sobre cómo funciona la ruta de búsqueda del usuario es el escenario que exploramos en <a href="#sec-dependencies-namespace-motivation" class="quarto-xref"><span>Sección 10.2.1</span></a>, donde dos paquetes (lubridate y aquí) ofrecen funciones competitivas con el mismo nombre (<code>here()</code>). Ahora debería quedar muy claro por qué la llamada de un usuario a <code>here()</code> puede producir un resultado diferente, dependiendo del orden en el que adjuntó los dos paquetes.</p>
+<p>Este tipo de confusión sería aún más perjudicial si se aplicara al código del paquete, pero afortunadamente no es así. Ahora podemos explicar cómo el sistema de espacio de nombres elimina este problema.</p>
+</section><section id="búsqueda-de-funciones-dentro-de-un-paquete" class="level3" data-number="10.3.2"><h3 data-number="10.3.2" class="anchored" data-anchor-id="búsqueda-de-funciones-dentro-de-un-paquete">
+<span class="header-section-number">10.3.2</span> Búsqueda de funciones dentro de un paquete</h3>
+<p>En <a href="#sec-dependencies-namespace-motivation" class="quarto-xref"><span>Sección 10.2.1</span></a>, demostramos que la definición de un usuario de una función llamada <code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code> <em>no</em> rompe <code><a href="https://rdrr.io/r/stats/sd.html">stats::sd()</a></code>. De alguna manera, para nuestro inmenso alivio, <code><a href="https://rdrr.io/r/stats/sd.html">stats::sd()</a></code> encuentra <code><a href="https://rdrr.io/r/stats/cor.html">stats::var()</a></code> cuando debería. ¿Cómo funciona?</p>
+<p>Esta sección es algo técnica y es absolutamente posible desarrollar un paquete con un espacio de nombres con buen comportamiento sin comprender completamente estos detalles. Considera esta lectura opcional que puedes consultar cuando y si estás interesado. Puedes aprender aún más en <a href="https://adv-r.hadley.nz">Advanced R</a>, especialmente en el capítulo sobre entornos, del cual hemos adaptado parte de este material.</p>
+<p>Cada función en un paquete está asociada con un par de entornos: el entorno del paquete, que es lo que aparece en la ruta de búsqueda del usuario, y el entorno <strong>espacio de nombres</strong>.</p>
+<ul>
+<li><p>El entorno del paquete es la interfaz externa del paquete. Así es como un usuario normal de R encuentra una función en un paquete adjunto o con <code>::</code>. Su padre está determinado por la ruta de búsqueda, es decir, el orden en el que se han adjuntado los paquetes. El entorno del paquete solo expone objetos exportados.</p></li>
+<li><p>El entorno del espacio de nombres es la interfaz interna del paquete. Incluye todos los objetos del paquete, tanto exportados como no exportados. Esto garantiza que cada función pueda encontrar todas las demás funciones en el paquete. Cada enlace en el entorno del paquete también existe en el entorno del espacio de nombres, pero no <em>viceversa</em>.</p></li>
+</ul>
+<p><a href="#fig-function-environment" class="quarto-xref">Figura&nbsp;<span>10.3</span></a> representa la función <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code> como un rectángulo con un extremo redondeado. Las flechas de <code>paquete:stats</code> y <code>namespace:stats</code> muestran que <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code> está vinculado en ambos. Pero la relación no es simétrica. El círculo negro con una flecha que apunta hacia <code>namespace:stats</code> indica dónde <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code> buscará los objetos que necesita: en el entorno del espacio de nombres, no en el entorno del paquete.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-function-environment" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Una función que está vinculada al nombre `sd()` por dos entornos, el el entorno del paquete y el entorno del espacio de nombres, indicados por dos flechas. Pero la función en sí sólo vincula el entorno del espacio de nombres, indicado una sola flecha.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-function-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/namespace/namespace-bind.png" class="img-fluid figure-img" style="width:60.0%" alt="Una función que está vinculada al nombre `sd()` por dos entornos, el el entorno del paquete y el entorno del espacio de nombres, indicados por dos flechas. Pero la función en sí sólo vincula el entorno del espacio de nombres, indicado una sola flecha.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-function-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.3: Una función exportada está vinculada en el entorno del paquete y en el espacio de nombres, pero solo vincula el espacio de nombres.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>El entorno del paquete controla cómo los usuarios encuentran la función; el espacio de nombres controla cómo la función encuentra sus variables.</p>
+</blockquote>
+<p>Cada entorno de espacio de nombres tiene el mismo conjunto de ancestros, como se muestra en <a href="#fig-namespace-environment" class="quarto-xref">Figura&nbsp;<span>10.4</span></a>:</p>
+<ul>
+<li><p>Cada espacio de nombres tiene un entorno <strong>importaciones</strong> que puede contener enlaces a funciones utilizadas por el paquete que están definidas en otro paquete. El entorno de importaciones lo controla el desarrollador del paquete con el archivo <code>NAMESPACE</code>. Específicamente, directivas como <code>importFrom()</code> e <code>imports()</code> pueblan este entorno.</p></li>
+<li><p>Importar explícitamente cada función base sería tedioso, por lo que el padre del entorno de importaciones es el <strong>espacio de nombres</strong> base. El espacio de nombres base contiene los mismos enlaces que el entorno base, pero tiene un padre diferente.</p></li>
+<li><p>El padre del espacio de nombres base es el entorno global. Esto significa que si un enlace no está definido en el entorno de importaciones, el paquete lo buscará de la forma habitual. Esto suele ser una mala idea (porque hace que el código dependa de otros paquetes cargados), por lo que <code>R CMD check</code> advierte automáticamente sobre dicho código. Es necesario principalmente por razones históricas, particularmente debido a cómo funciona el envío del método S3.</p></li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-namespace-environment" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Una cadena de entornos etiquetados. Cada entorno tiene una flecha que apunta a su entorno padre.">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-namespace-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/namespace/namespace-env.png" class="img-fluid figure-img" style="width:100.0%" alt="Una cadena de entornos etiquetados. Cada entorno tiene una flecha que apunta a su entorno padre.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-namespace-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.4: El entorno del espacio de nombres tiene el entorno imports como padre, que hereda del entorno de espacio de nombres del paquete base y, en última instancia, el medio ambiente global.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Finalmente, podemos juntarlo todo en este último diagrama, <a href="#fig-search-path-and-namespace" class="quarto-xref">Figura&nbsp;<span>10.5</span></a>. Esto muestra la ruta de búsqueda del usuario, en la parte inferior, y la ruta de búsqueda de estadísticas internas, en la parte superior.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-search-path-and-namespace" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Dos cadenas de entornos etiquetados, uno es la ruta de búsqueda del usuario y el el otro es el espacio de nombres del paquete (y sus padres).">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-search-path-and-namespace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="diagrams/namespace/namespace.png" class="img-fluid figure-img" style="width:100.0%" alt="Dos cadenas de entornos etiquetados, uno es la ruta de búsqueda del usuario y el el otro es el espacio de nombres del paquete (y sus padres).">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-search-path-and-namespace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.5: Para el código de usuario, los objetos se encuentran utilizando la ruta de búsqueda, mientras que el paquete El código utiliza el espacio de nombres.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Un usuario (o algún paquete que esté usando) es libre de definir una función llamada <code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code>. Pero cuando ese usuario llama a <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code>, siempre llamará a <code><a href="https://rdrr.io/r/stats/cor.html">stats::var()</a></code> porque <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code> busca en una secuencia de entornos determinados por el paquete de estadísticas, no por el usuario. Así es como el sistema de espacio de nombres garantiza que el código del paquete siempre funcione de la misma manera, independientemente de lo que se haya definido en el entorno global o de lo que se haya adjuntado.</p>
+</section></section><section id="sec-dependencies-attach-vs-load" class="level2" data-number="10.4"><h2 data-number="10.4" class="anchored" data-anchor-id="sec-dependencies-attach-vs-load">
+<span class="header-section-number">10.4</span> Adjuntar versus cargar</h2>
+<p>Es común escuchar algo como “usamos <code><a href="https://rdrr.io/r/base/library.html">library(algúnpaquete)</a></code> para cargar algún paquete”. Pero técnicamente <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> <em>adjunta</em> un paquete a la ruta de búsqueda. Este abuso casual de la terminología suele ser inofensivo e incluso puede resultar beneficioso en algunos entornos. Pero a veces es importante ser preciso y pedante y éste es uno de esos momentos. Los desarrolladores de paquetes necesitan saber la diferencia entre adjuntar y cargar un paquete y cuándo preocuparse por esta diferencia.</p>
+<p>Si hay un paquete instalado,</p>
+<ul>
+<li><p><strong>Cargar</strong> cargará código, datos y cualquier archivo DLL; registrar los métodos S3 y S4; y ejecute la función <code>.onLoad()</code>. Después de cargarlo, el paquete está disponible en la memoria, pero como no está en la ruta de búsqueda, no podrá acceder a sus componentes sin usar <code>::</code>. De manera confusa, <code>::</code> también cargará un paquete automáticamente si aún no está cargado.</p></li>
+<li><p><strong>Adjuntar</strong> coloca el paquete en la ruta de búsqueda (<a href="#sec-dependencies-search-path-user" class="quarto-xref"><span>Sección 10.3.1</span></a>). No puede adjuntar un paquete sin cargarlo primero, por lo que <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> (o <code><a href="https://rdrr.io/r/base/library.html">require()</a></code>) cargan y luego adjuntan el paquete. Esto también ejecuta la función <code>.onAttach()</code>.</p></li>
+</ul>
+<p>Hay cuatro funciones que hacen que un paquete esté disponible, que se muestran en <a href="#tbl-load-vs-attach" class="quarto-xref">Tabla&nbsp;<span>10.1</span></a>. Se diferencian según si se cargan o adjuntan y qué sucede si no se encuentra el paquete (es decir, arroja un error o devuelve <code>FALSE</code>).</p>
+<div id="tbl-load-vs-attach" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-load-vs-attach-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;10.1: Funciones que cargan o adjuntan un paquete.
+</figcaption><div aria-describedby="tbl-load-vs-attach-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 30%">
+<col style="width: 56%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th>Arroja un error</th>
+<th>Devulve <code>FALSE</code>
+</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Cargar</td>
+<td><code>loadNamespace("x")</code></td>
+<td><code><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace("x", quietly = TRUE)</a></code></td>
+</tr>
+<tr class="even">
+<td>Adjuntar</td>
+<td><code><a href="https://rdrr.io/r/base/library.html">library(x)</a></code></td>
+<td><code><a href="https://rdrr.io/r/base/library.html">require(x, quietly = TRUE)</a></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>De las cuatro, estas dos funciones son, con diferencia, las más útiles:</p>
+<ul>
+<li><p>Utilice <code><a href="https://rdrr.io/r/base/library.html">library(x)</a></code> en, por ejemplo, un script de análisis de datos o una viñeta. Generará un error si el paquete no está instalado y finalizará el script. Desea adjuntar el paquete para ahorrar escritura. Nunca use <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> en el código del paquete debajo de <code>R/</code> o <code>tests/</code>.</p></li>
+<li><p>Utilice <code><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace("x", quietly = TRUE)</a></code> dentro de un paquete si desea especificar un comportamiento diferente dependiendo de si un paquete sugerido está instalado o no. Tenga en cuenta que esto también carga el paquete. Damos ejemplos en <a href="dependencies-in-practice.html#sec-dependencies-in-suggests-r-code" class="quarto-xref"><span>Sección 11.5.1</span></a>.</p></li>
+</ul>
+<p><code><a href="https://rdrr.io/r/base/ns-load.html">loadNamespace()</a></code> es algo esotérico y en realidad solo es necesario para el código R interno.</p>
+<p><code><a href="https://rdrr.io/r/base/library.html">require(pkg)</a></code> casi nunca es una buena idea<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> y, sospechamos, puede provenir de personas que proyectan ciertas esperanzas y sueños en el nombre de la función. Irónicamente, <code><a href="https://rdrr.io/r/base/library.html">require(pkg)</a></code> en realidad no requiere éxito al adjuntar el paquete y su función o script continuará incluso en caso de falla. Esto, a su vez, a menudo conduce a un error muy desconcertante mucho más tarde. Si desea “adjuntar o fallar”, use <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>. Si desea verificar si el paquete está disponible y proceder en consecuencia, use <code><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace("pkg", quietly = TRUE)</a></code>.</p>
+<p>Un uso razonable de <code><a href="https://rdrr.io/r/base/library.html">require()</a></code> es en un ejemplo que usa un paquete que su paquete <code>sugiere</code>, que se analiza con más detalle en <a href="dependencies-in-practice.html#sec-dependencies-in-suggests-in-examples-and-vignettes" class="quarto-xref"><span>Sección 11.5.3</span></a>.</p>
+<p>Las funciones <code>.onLoad()</code> y <code>.onAttach()</code> mencionadas anteriormente son dos de varios ganchos que le permiten ejecutar código específico cuando su paquete está cargado o adjunto (o, incluso, desconectado o descargado). La mayoría de los paquetes no necesitan esto, pero estos ganchos son útiles en determinadas situaciones. Consulte <a href="code.html#sec-code-onLoad-onAttach" class="quarto-xref"><span>Sección 6.5.4</span></a> para conocer algunos casos de uso de <code>.onLoad()</code> y <code>.onAttach()</code>.</p>
+<section id="sec-dependencies-imports-vs-depends" class="level3" data-number="10.4.1"><h3 data-number="10.4.1" class="anchored" data-anchor-id="sec-dependencies-imports-vs-depends">
+<span class="header-section-number">10.4.1</span> Ya sea para importar o depender</h3>
+<p>Ahora estamos en condiciones de establecer la diferencia entre <code>Depends</code> e <code>Imports</code> en el archivo <code>DESCRIPTION</code>. Incluir un paquete en “dependencia” o “importaciones” garantiza que se instale cuando sea necesario. La principal diferencia es que un paquete que usted enumere en <code>Imports</code> simplemente se <em>cargará</em> cuando lo use, mientras que un paquete que usted enumere en <code>Depends</code>se <em>adjuntará</em> cuando su paquete esté adjunto.</p>
+<p>A menos que exista una buena razón para lo contrario, siempre debe enumerar los paquetes en <code>Imports</code>, no en <code>Depends</code>. Esto se debe a que un buen paquete es autónomo y minimiza los cambios en el panorama global, incluida la ruta de búsqueda.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<p>Los usuarios de devtools en realidad están expuestos regularmente al hecho de que devtools “depende” de usethis:</p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/">devtools</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: usethis</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/search.html">search</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] ".GlobalEnv"        "package:devtools"  "package:usethis"  </span></span>
+<span><span class="co">#&gt;  ...</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Esta elección está motivada por la compatibilidad con versiones anteriores. Cuando devtools se dividió en varios paquetes más pequeños (<a href="setup.html#sec-setup-usage" class="quarto-xref"><span>Sección 2.2</span></a>), muchas de las funciones orientadas al usuario pasaron a usaethis. Poner usethis en dependencias fue una elección pragmática para evitar que los usuarios realicen un seguimiento de qué función terminó y dónde.</p>
+<p>Un ejemplo más clásico de dependencia es cómo el <a href="https://censored.tidymodels.org">paquete censored</a> depende de los paquetes <a href="https://parsnip.tidymodels.org">parsnip</a> y <a href="https:%20//cran.r-project.org/package=survival">surival</a>. parsnip proporciona una interfaz unificada para ajustar modelos y censored es un paquete de extensión para análisis de supervivencia. censored no es útil sin parsnip y survival, por lo que tiene sentido enumerarlos en <code>Depends</code>.</p>
+
+
+</section></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>En programación, Happy Path es el escenario donde todas las entradas tienen sentido y son exactamente como las cosas “deberían ser”. El Camino Infeliz es todo lo demás (objetos de longitud o dimensión cero, objetos a los que les faltan datos, dimensiones o atributos, objetos que no existen, etc.).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Antes de escribir su propia versión de X, eche un vistazo al rastreador de errores y al conjunto de pruebas de otro paquete que implemente X. Esto puede resultar útil para apreciar lo que realmente está involucrado.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Hay una publicación de blog que advierte a las personas que no dependan del paquete tidyverse: <a href="https://www.tidyverse.org/blog/2018/06/tidyverse-not-for-packages/" class="uri">https://www.tidyverse.org/blog/2018/06/tidyverse-not-for-packages/</a>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Nos centraremos en los paquetes de este libro, pero hay otras formas además de usar <code>::</code> para abordar conflictos en el código del usuario final: el <a href="https://conflicted.r-lib.org">paquete en conflicto</a> y la opción <a href="https://developer.r-project.org/Blog/public/2019/03/19/managing-search%20-path-conflicts/"><code>"conflicts.policy"</code></a> introducido en base R v3.6.0.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>La publicación de blog clásica <a href="https://yihui.org/en/2014/07/library-vs%20-require/">“<code>library()</code> vs <code>require()</code> en R”</a> de Yihui Xie es otro buen recurso sobre esto.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Thomas Leeper creó varios paquetes de ejemplo para demostrar el comportamiento desconcertante que puede surgir cuando los paquetes usan <code>Depends</code> y compartió el trabajo en <a href="https://github.com/leeper/Depends" class="uri">https://github.com/leeper/Depends</a>. Esta demostración también subraya la importancia de usar <code>::</code> (o <code>importFrom()</code>) al usar funciones externas en su paquete, como se recomienda en <a href="dependencies-in-practice.html" class="quarto-xref"><span>Capítulo 11</span></a>.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./description.html" class="pagination-link" aria-label="`DESCRIPTION`">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./dependencies-in-practice.html" class="pagination-link" aria-label="Dependencias: en la práctica">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+</body></html>

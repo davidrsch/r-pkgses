@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - Apéndice A — R CMD check</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="prev">
+<link href="./logo.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./R-CMD-check.html">Apéndices</a></li><li class="breadcrumb-item"><a href="./R-CMD-check.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">El paquete en el interior de su código</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Componentes de un paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Código R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Otros componentes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Metadatos del paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Probar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Diseñar su conjunto de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Técnicas de prueba avanzadas</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentación</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Otros archivos markdown</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Sitio web</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Mantenimiento y distribución</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Prácticas de desarrollo de software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Ciclo de vida</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li><a href="#verificar-metadatos" id="toc-verificar-metadatos" class="nav-link active" data-scroll-target="#verificar-metadatos"><span class="header-section-number">A.1</span> Verificar metadatos</a></li>
+  <li><a href="#estructura-del-paquete" id="toc-estructura-del-paquete" class="nav-link" data-scroll-target="#estructura-del-paquete"><span class="header-section-number">A.2</span> Estructura del paquete</a></li>
+  <li><a href="#description" id="toc-description" class="nav-link" data-scroll-target="#description"><span class="header-section-number">A.3</span> <code>DESCRIPTION</code></a></li>
+  <li><a href="#namespace" id="toc-namespace" class="nav-link" data-scroll-target="#namespace"><span class="header-section-number">A.4</span> Namespace</a></li>
+  <li><a href="#c%C3%B3digo-r" id="toc-código-r" class="nav-link" data-scroll-target="#c%C3%B3digo-r"><span class="header-section-number">A.5</span> Código R</a></li>
+  <li><a href="#datos" id="toc-datos" class="nav-link" data-scroll-target="#datos"><span class="header-section-number">A.6</span> Datos</a></li>
+  <li><a href="#documentaci%C3%B3n" id="toc-documentación" class="nav-link" data-scroll-target="#documentaci%C3%B3n"><span class="header-section-number">A.7</span> Documentación</a></li>
+  <li><a href="#demos" id="toc-demos" class="nav-link" data-scroll-target="#demos"><span class="header-section-number">A.8</span> Demos</a></li>
+  <li><a href="#c%C3%B3digo-compilado" id="toc-código-compilado" class="nav-link" data-scroll-target="#c%C3%B3digo-compilado"><span class="header-section-number">A.9</span> Código compilado</a></li>
+  <li><a href="#pruebas" id="toc-pruebas" class="nav-link" data-scroll-target="#pruebas"><span class="header-section-number">A.10</span> Pruebas</a></li>
+  <li><a href="#vi%C3%B1etas" id="toc-viñetas" class="nav-link" data-scroll-target="#vi%C3%B1etas"><span class="header-section-number">A.11</span> Viñetas</a></li>
+  <li>
+<a href="#sec-r-cmd-check-informational-notes" id="toc-sec-r-cmd-check-informational-notes" class="nav-link" data-scroll-target="#sec-r-cmd-check-informational-notes"><span class="header-section-number">A.12</span> NOTAS que son informativas</a>
+  <ul class="collapse">
+<li><a href="#env%C3%ADo-inicial-de-cran" id="toc-envío-inicial-de-cran" class="nav-link" data-scroll-target="#env%C3%ADo-inicial-de-cran"><span class="header-section-number">A.12.1</span> Envío inicial de CRAN</a></li>
+  <li><a href="#caracteres-no-ascii-en-datos" id="toc-caracteres-no-ascii-en-datos" class="nav-link" data-scroll-target="#caracteres-no-ascii-en-datos"><span class="header-section-number">A.12.2</span> Caracteres no ASCII en datos</a></li>
+  <li><a href="#rd-referencias-cruzadas" id="toc-rd-referencias-cruzadas" class="nav-link" data-scroll-target="#rd-referencias-cruzadas"><span class="header-section-number">A.12.3</span> Rd referencias cruzadas</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./R-CMD-check.html">Apéndices</a></li><li class="breadcrumb-item"><a href="./R-CMD-check.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-r-cmd-check" class="quarto-section-identifier">Apéndice A — <code>R CMD check</code></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p><code>R CMD check</code> se compone de más de 50 controles individuales, que se describen en las siguientes secciones. Para cada verificación, describimos brevemente qué hace, cuáles son los problemas más comunes y cómo solucionarlos. Cuando tenga un problema con <code>R CMD check</code> y no sepa cómo solucionarlo, utilice esta lista para descubrir qué debe hacer. Para que sea más fácil comprender cómo encajan los cheques, los hemos organizado en secciones que corresponden aproximadamente a los capítulos de este libro. Esto significa que estarán en un orden algo diferente al que verá cuando ejecute <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code>, que es nuestra forma principal de ejecutar <code>R CMD check</code>.</p>
+<p>Si este capítulo no coincide con lo que está viendo, considere que las comprobaciones pueden haber cambiado desde que se redactó. R continúa evolucionando, incluida la <code>R CMD check</code>. Quizás desee consultar la versión en línea más reciente de este capítulo: <a href="https://r-pkgs.org/r-cmd-check.html" class="uri">https://r-pkgs.org/r-cmd-check.html</a>. <a href="https://github.com/hadley/r-pkgs/issues/new">Abra un problema</a> si encuentra un problema con el que este capítulo no ayuda.</p>
+<p>Al final (<a href="#sec-r-cmd-check-informational-notes" class="quarto-xref"><span>Sección A.12</span></a>), destacamos algunas NOTAS que surgen durante la “verificación de R CMD” que no requieren ninguna respuesta por su parte. En general, recomendamos eliminar todas las NOTAS, especialmente para los paquetes destinados a CRAN, pero hay un pequeño puñado de NOTAS que realmente son informativas. Son la excepción a la regla.</p>
+<section id="verificar-metadatos" class="level2" data-number="A.1"><h2 data-number="A.1" class="anchored" data-anchor-id="verificar-metadatos">
+<span class="header-section-number">A.1</span> Verificar metadatos</h2>
+<p><code>R CMD check</code> siempre comienza describiendo tu entorno actual.</p>
+<ul>
+<li>
+<strong>Using log directory</strong> ‘/some/tmp/path/googledrive.Rcheck’</li>
+<li>
+<strong>Using R version</strong> 4.2.2 (2022-10-31)</li>
+<li>
+<strong>Using platform</strong>: x86_64-apple-darwin17.0 (64-bit)</li>
+<li>
+<strong>Using session charset</strong>: UTF-8</li>
+</ul>
+<p>A continuación, se analiza el archivo <code>DESCRIPTION</code> y se imprime la versión y codificación del paquete.</p>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3459 -->
+<ul>
+<li>
+<strong>Checking for file</strong> ‘googledrive/DESCRIPTION’</li>
+<li>
+<strong>This is package</strong> ‘googledrive’ version ‘2.1.0.9000’</li>
+<li>
+<strong>Package encoding</strong>: UTF-8</li>
+</ul></section><section id="estructura-del-paquete" class="level2" data-number="A.2"><h2 data-number="A.2" class="anchored" data-anchor-id="estructura-del-paquete">
+<span class="header-section-number">A.2</span> Estructura del paquete</h2>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L257 -->
+<ul>
+<li>
+<strong>Comprobando el directorio de paquetes</strong>. El directorio que estás comprobando debe existir; <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code> te protege contra este problema.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3720 --><ul>
+<li>
+<strong>Comprobando si se trata de un paquete fuente</strong>. Debe verificar un paquete fuente, no un paquete binario o instalado. Esto nunca debería fallar si usa <code><a href="https://devtools.r-lib.org/reference/check.html">devtools::check()</a></code>.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3015 --><ul>
+<li>
+<strong>Buscando archivos ejecutables</strong>. No debe tener archivos ejecutables en su paquete: no son portátiles, no son de código abierto y representan un riesgo para la seguridad. Elimine cualquier archivo ejecutable de su paquete. (Si no realiza envíos a CRAN, puede silenciar esta advertencia enumerando cada archivo ejecutable en el campo <code>BinaryFiles</code> en su <code>DESCRIPTION</code>).</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3103 --><ul>
+<li>
+<strong>Buscando archivos y directorios ocultos</strong>. En Linux y macOS, los archivos con un nombre que comienza con <code>.</code> están ocultos de forma predeterminada y probablemente los haya incluido en su paquete por error. Elimínelos o, si son importantes, use <code>.Rbuildignore</code> para eliminarlos del paquete. R elimina automáticamente algunos directorios comunes como <code>.git</code> y <code>.svn</code>.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L381 --><ul>
+<li>
+<strong>Buscando nombres de archivos portátiles</strong>. Los paquetes R deben funcionar en Windows, Linux y macOS, por lo que solo puedes usar nombres de archivos que funcionen en todas las plataformas. La forma más sencilla de hacerlo es limitarse a letras, números, guiones bajos y guiones. Evite letras y espacios que no estén en inglés. Solucione esta verificación cambiando el nombre de los archivos enumerados.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L541 --><ul>
+<li>
+<strong>Comprobación de permisos de archivo suficientes/correctos</strong>. Si no puede leer un archivo, no puede verificarlo. Esta verificación detecta el caso poco probable de que tenga archivos en el paquete que no tenga permiso para leer. Solucione este problema arreglando los permisos del archivo.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3141 --><ul>
+<li>
+<strong>Comprobando si se puede instalar el paquete ‘XYZ’</strong>. <code>R CMD check</code> ejecuta <code>R CMD INSTALL</code> para asegurarse de que sea posible instalar su paquete. Si esto falla, debe ejecutar <code><a href="https://devtools.r-lib.org/reference/install.html">devtools::install()</a></code> o su equivalente desde los menús de RStudio y depurar cualquier problema antes de continuar.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3459 --><ul>
+<li>
+<p><strong>Comprobando el tamaño del paquete instalado</strong>. Es fácil incluir accidentalmente archivos grandes que aumentan el tamaño de su paquete. Esta verificación garantiza que todo el paquete tenga menos de 5 MB y que cada subdirectorio tenga menos de 1 MB. Si ve este mensaje, verifique que no haya incluido accidentalmente un archivo grande.</p>
+<p>Si lo envía a CRAN, deberá justificar el tamaño de su paquete. Primero, asegúrese de que el paquete sea lo más pequeño posible: intente recomprimir los datos, <a href="data.html#sec-data-data-raw" class="quarto-xref"><span>Sección 7.1.1</span></a>; y minimizando viñetas, <a href="vignettes.html" class="quarto-xref"><span>Capítulo 17</span></a>. Si todavía es demasiado grande, considere mover los datos a su propio paquete.</p>
+</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L746 --><ul>
+<li>
+<p><strong>Comprobando archivos de nivel superior</strong>. Solo se permiten archivos y directorios específicos en el nivel superior del paquete (por ejemplo, <code>DESCRIPTION</code>, <code>R/</code>, <code>src/</code>). Para incluir otros archivos, tiene dos opciones:</p>
+<ul>
+<li><p>Si no es necesario instalarlos (es decir, solo se usan para tareas de desarrollo), agréguelos a <code>.Rbuildignore</code> con <code><a href="https://usethis.r-lib.org/reference/use_build_ignore.html">usethis::use_build_ignore()</a></code>.</p></li>
+<li><p>Si es necesario instalarlos: muévalos a <code>inst/</code>. Se moverán nuevamente al directorio de paquetes de nivel superior cuando se instalen. Obtenga más información en <a href="misc.html#sec-misc-inst" class="quarto-xref"><span>Sección 8.2</span></a>.</p></li>
+</ul>
+</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L924 --><ul>
+<li>
+<p><strong>Comprobando subdirectorios de paquetes</strong>.</p>
+<ul>
+<li><p>No incluya ningún directorio vacío. Por lo general, estos se eliminan automáticamente con <code>R CMD build</code>, por lo que no deberías ver este error. Si lo hace, simplemente elimine el directorio vacío.</p></li>
+<li><p>Es importante el caso de archivos y directorios. Todos los subdirectorios deben estar en minúsculas, excepto <code>R/</code>. Un archivo de cita, si está presente, debe estar en <code>inst/CITATION</code>. Cambie el nombre según sea necesario.</p></li>
+<li><p>El contenido de <code>inst/</code> no debe chocar con el contenido de nivel superior del paquete, como <code>data/</code> o <code>R/</code>. Si es así, cambie el nombre de sus archivos/directorios. Obtenga más información en <a href="misc.html#sec-misc-inst" class="quarto-xref"><span>Sección 8.2</span></a>.</p></li>
+</ul>
+</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L859 --><ul>
+<li>
+<strong>Buscando archivos sobrantes</strong>. Elimine los archivos enumerados aquí. Han sido incluidos en tu paquete por accidente.</li>
+</ul></section><section id="description" class="level2" data-number="A.3"><h2 data-number="A.3" class="anchored" data-anchor-id="description">
+<span class="header-section-number">A.3</span> <code>DESCRIPTION</code>
+</h2>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L597 -->
+<ul>
+<li>
+<p><strong>Comprobando la metainformación de DESCRIPTION</strong>.</p>
+<ul>
+<li><p>La <code>DESCRIPTION</code> debe ser válida. Es poco probable que vea este error, porque <code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code> ejecuta la misma comprobación cada vez que recarga el paquete.</p></li>
+<li><p>Si utiliza caracteres que no sean ASCII en la descripción, también debe especificar una codificación. Sólo hay tres codificaciones que funcionan en todas las plataformas: latin1, latin2 y UTF-8. Recomendamos encarecidamente UTF-8: <code>Codificación: UTF-8</code>. Obtenga más información en <a href="data.html#sec-data-non-ascii" class="quarto-xref"><span>Sección 7.1.3</span></a>.</p></li>
+<li><p>La <code>License</code> debe hacer referencia a una licencia conocida (puede encontrar una lista completa en <a href="https://svn.r-project.org/R/trunk/share/licenses/license.db" class="uri">https://svn.r-project.org/R/trunk/share/licenses/license.db</a>), o debe usar <code>file LICENSE</code> y ese archivo debe existir. Lo más probable es que los errores aquí sean errores tipográficos. Obtenga más información en <a href="license.html" class="quarto-xref"><span>Capítulo 12</span></a>.</p></li>
+<li><p>Debes proporcionar <code>Autores@R</code> o <code>Authorz</code> y <code>Maintainer</code>. Recibirá un error si ha especificado ambos, que puede solucionar eliminando el que no deseaba. Obtenga más información en <a href="description.html#sec-description-authors-at-r" class="quarto-xref"><span>Sección 9.3</span></a>.</p></li>
+</ul>
+</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3683
+tools:::.check_package_depends --><ul>
+<li>
+<p><strong>Comprobación de dependencias de paquetes</strong>.</p>
+<ul>
+<li><p>Todos los paquetes enumerados en <code>Depends</code>, <code>Imports</code> y <code>LinkingTo</code> deben estar instalados y se deben cumplir sus requisitos de versión; de lo contrario, no se podrá verificar su paquete.</p></li>
+<li><p>Los paquetes enumerados en <code>Suggests</code> deben instalarse, a menos que haya configurado la variable de entorno <code>_R_CHECK_FORCE_SUGGESTS_</code> en un valor falso (por ejemplo, con <code>check(force_suggests = FALSE)</code>). Esto resulta útil si algunos de los paquetes sugeridos no están disponibles en todas las plataformas.</p></li>
+<li><p>Una manera fácil de instalar cualquier dependencia faltante o desactualizada es ejecutar <code>devtools::install_deps(dependencies = TRUE)</code>. Consulte también <code><a href="https://pak.r-lib.org/reference/local_install_deps.html">pak::local_install_deps()</a></code> y <code><a href="https://pak.r-lib.org/reference/local_install_dev_deps.html">pak::local_install_dev_deps()</a></code>.</p></li>
+<li><p>Los paquetes R no pueden tener un ciclo de dependencias: es decir, si el paquete A requiere B, entonces B no puede requerir A (de lo contrario, ¿cuál cargarías primero?). Si ve este error, deberá reconsiderar el diseño de su paquete. Una solución sencilla es mover el paquete en conflicto de <code>Imports</code> o <code>Depends</code> a <code>Suggests</code>.</p></li>
+<li><p>Cualquier paquete utilizado en <code>NAMESPACE</code> debe aparecer en uno de <code>Imports</code> (más comúnmente) o <code>Depends</code> (solo en casos especiales).</p></li>
+<li><p>Cada paquete enumerado en <code>Depends</code> también debe importarse en <code>NAMESPACE</code> o accederse con <code>pkg::foo()</code>. Si no hace esto, su paquete funcionará cuando esté adjunto a la ruta de búsqueda (con <code><a href="https://rdrr.io/r/base/library.html">library(mypackage)</a></code>) pero no funcionará cuando solo esté cargado (por ejemplo, <code>mypackage::foo()</code>).</p></li>
+</ul>
+</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3561 
+tools:::.check_package_CRAN_incoming
+--><ul>
+<li>
+<p><strong>Comprobando la viabilidad entrante de CRAN</strong>. Estas comprobaciones solo se aplican si realiza el envío a CRAN.</p>
+<ul>
+<li><p>Si envía un paquete nuevo, no puede usar el mismo nombre que un paquete existente. Tendrás que pensar en un nuevo nombre.</p></li>
+<li><p>Si envía una actualización, el número de versión debe ser superior a la versión actual de CRAN. Actualice el campo <code>Version</code> en <code>DESCRIPTION</code>.</p></li>
+<li><p>Si el responsable del paquete ha cambiado (incluso si es solo un cambio en la dirección de correo electrónico), el nuevo responsable debe enviarlo a CRAN y el antiguo responsable recibirá un correo electrónico solicitándole que confirme el cambio.</p></li>
+<li><p>Debe utilizar una licencia estándar de código abierto, como se indica en <a href="https://svn.r-project.org/R/trunk/share/licenses/license.db" class="uri">https://svn.r-project.org/R/trunk/share/licenses/license.db</a>. No puede utilizar una licencia personalizada ya que CRAN no tiene los recursos legales para revisar los acuerdos personalizados.</p></li>
+<li><p>El <code>Title</code> y la <code>Description</code> deben estar libres de errores ortográficos. El título del paquete debe estar en mayúsculas y minúsculas. Ni el título ni la descripción deben incluir el nombre de su paquete ni la palabra “paquete”. Vuelva a redactar su título y descripción según sea necesario.</p></li>
+<li><p>Si envía un paquete nuevo, siempre recibirá una “NOTA”. Esto recuerda a los mantenedores de CRAN que deben realizar algunas comprobaciones manuales adicionales.</p></li>
+<li><p>Evite enviar múltiples versiones del mismo paquete en un corto período de tiempo. CRAN prefiere como máximo un envío por mes. Si necesita corregir un error importante, pida disculpas.</p></li>
+</ul>
+</li>
+</ul></section><section id="namespace" class="level2" data-number="A.4"><h2 data-number="A.4" class="anchored" data-anchor-id="namespace">
+<span class="header-section-number">A.4</span> Namespace</h2>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L4433 -->
+<ul>
+<li>
+<strong>Comprobando si hay un espacio de nombres</strong>. Debe tener un archivo <code>NAMESPACE</code>. Esto lo maneja automáticamente el flujo de trabajo de devtools.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3620 --><ul>
+<li>
+<strong>Comprobando la información del espacio de nombres del paquete</strong>. El <code>NAMESPACE</code> debe ser analizable por <code><a href="https://rdrr.io/r/base/ns-internal.html">parseNamespaceFile()</a></code> y válido. Si esta verificación falla, es un error en roxygen2.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2234 --><ul>
+<li>
+<strong>Comprobando si el paquete se puede cargar con las dependencias indicadas</strong>. Ejecuta <code><a href="https://rdrr.io/r/base/library.html">library(pkg)</a></code> con <code>R_DEFAULT_PACKAGES=NULL</code>, por lo que la ruta de búsqueda está vacía (es decir, estadísticas, gráficos, grDevices, utilidades, conjuntos de datos y métodos no se adjuntan como de costumbre). Un error aquí normalmente indica que le falta una dependencia en uno de esos paquetes.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2264 --><ul>
+<li>
+<strong>Comprobando si el espacio de nombres se puede cargar con las dependencias indicadas</strong>. Ejecuta <code>loadNamespace(pkg)</code> con <code>R_DEFAULT_PACKAGES=NULL</code>. El error suele indicar un problema con el espacio de nombres.</li>
+</ul></section><section id="código-r" class="level2" data-number="A.5"><h2 data-number="A.5" class="anchored" data-anchor-id="código-r">
+<span class="header-section-number">A.5</span> Código R</h2>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L1226 -->
+<ul>
+<li>
+<strong>Comprobación de archivos R en busca de caracteres que no sean ASCII</strong>. Para una máxima portabilidad (es decir, para que las personas puedan usar su paquete en Windows), debe evitar el uso de caracteres que no sean ASCII en archivos R. Está bien usarlos en los comentarios, pero los nombres de los objetos no deberían usarlos, y en las cadenas deberías usar escapes Unicode. Consulte las notas específicas de CRAN en <a href="code.html" class="quarto-xref"><span>Capítulo 6</span></a> para obtener más detalles.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L1258 --><ul>
+<li>
+<strong>Comprobación de archivos R en busca de errores de sintaxis</strong>. Obviamente su código R debe ser válido. Es poco probable que veas este error si has estado usando <code><a href="https://devtools.r-lib.org/reference/load_all.html">devtools::load_all()</a></code> con regularidad.</li>
+</ul>
+<!--- tools:::.check_packages_used ---><ul>
+<li>
+<p><strong>Comprobación de dependencias en código R</strong>. Los errores aquí a menudo indican que olvidó declarar un paquete necesario en la <code>DESCRIPTION</code>. Recuerde que nunca debe usar <code><a href="https://rdrr.io/r/base/library.html">require()</a></code> o <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> dentro de un paquete; consulte <a href="description.html#sec-description-imports-suggests" class="quarto-xref"><span>Sección 9.6</span></a>, <a href="dependencies-mindset-background.html" class="quarto-xref"><span>Capítulo 10</span></a> y <a href="dependencies-in-practice.html" class="quarto-xref"><span>Capítulo 11</span></a> para obtener más información. más detalles sobre las mejores prácticas.</p>
+<p>Alternativamente, es posible que haya utilizado accidentalmente <code>:::</code> para acceder a una función exportada desde un paquete. Cambie a <code>::</code> en su lugar.</p>
+</li>
+</ul>
+<!--- tools::checkS3methods ---><ul>
+<li>
+<p><strong>Comprobación de la coherencia genérica/método de S3</strong>. Los métodos S3 deben tener una firma de función compatible con su genérico. Esto significa que el método debe tener los mismos argumentos que su genérico, con una excepción: si el genérico incluye <code>...</code> el método puede tener argumentos adicionales.</p>
+<p>Una causa común de este error es definir métodos de impresión, porque el genérico <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> contiene<code>...</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># MAL</span></span>
+<span><span class="va">print.my_class</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Hi"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># BIEN</span></span>
+<span><span class="va">print.my_class</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Hi"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># también ok</span></span>
+<span><span class="va">print.my_class</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, <span class="va">my_arg</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Hi"</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</li>
+</ul>
+<!-- tools::checkReplaceFuns --><ul>
+<li>
+<strong>Comprobación de funciones de sustitución</strong>. Las funciones de reemplazo (por ejemplo, funciones que se llaman como <code>foo(x) &lt;- y</code>) deben tener <code>valor</code> como último argumento.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L1373
+     tools:::.check_package_code_shlib
+     tools:::.check_package_code_startup_functions
+     tools:::.check_package_code_unload_functions
+     tools:::.check_package_code_tampers
+     tools:::.check_code_usage_in_package
+     tools:::.check_dotInternal
+     tools:::.check_package_code_assign_to_globalenv
+     tools:::.check_package_code_attach
+     tools:::.check_package_code_data_into_globalenv
+     tools:::.check_depdef
+     --><ul>
+<li>
+<p><strong>Comprobando el código R para detectar posibles problemas</strong>. Esta es una verificación compuesta para una amplia gama de problemas:</p>
+<ul>
+<li><p>Las llamadas a <code><a href="https://rdrr.io/r/base/library.dynam.html">library.dynam()</a></code> (y <code><a href="https://rdrr.io/r/base/library.dynam.html">library.dynam.unload()</a></code>) deberían verse como <code>library.dynam("name")</code>, no como <code>library.dynam("name.dll")</code>. Elimine la extensión para corregir este error.</p></li>
+<li><p>Coloque <code><a href="https://rdrr.io/r/base/library.dynam.html">library.dynam()</a></code> en <code>.onLoad()</code>, no en <code>.onAttach()</code>; coloque <code><a href="https://rdrr.io/r/base/message.html">packageStartupMessage()</a></code> en <code>.onAttach()</code>, no en <code>.onLoad()</code>. Coloque <code><a href="https://rdrr.io/r/base/library.dynam.html">library.dynam.unload()</a></code> en <code>.onUnload()</code>. Si utiliza alguna de estas funciones, asegúrese de que esté en el lugar correcto.</p></li>
+<li><p>No utilices <code><a href="https://rdrr.io/r/base/bindenv.html">unlockBinding()</a></code> o <code><a href="https://rdrr.io/r/utils/getFromNamespace.html">assignInNamespace()</a></code> para modificar objetos que no te pertenecen.</p></li>
+<li><p>Se llama a <code><a href="https://rdrr.io/pkg/codetools/man/checkUsage.html">codetools::checkUsagePackage()</a></code> para comprobar que sus funciones no utilizan variables que no existen. Esto a veces genera falsos positivos con funciones que usan evaluación no estándar (NSE), como <code><a href="https://rdrr.io/r/base/subset.html">subset()</a></code> o <code><a href="https://rdrr.io/r/base/with.html">with()</a></code>. Generalmente, creemos que debería evitar NSE en las funciones del paquete y, por lo tanto, evitar esta NOTA, pero si no puede, consulte <code><a href="https://rdrr.io/r/utils/globalVariables.html">?globalVariables</a></code> para saber cómo suprimir esta NOTA.</p></li>
+<li><p>No está permitido utilizar <code><a href="https://rdrr.io/r/base/Internal.html">.Internal()</a></code> en un paquete. Llame a la función contenedora de R o escriba su propia función de C. (Si copia y pega la función C desde la base R, asegúrese de mantener el aviso de derechos de autor, use una licencia compatible con GPL-2 y incluya R-core en el campo <code>Authors@R</code>).</p></li>
+<li><p>De manera similar, no se le permite usar <code>:::</code> para acceder a funciones no exportadas de otros paquetes. Pídale al responsable del paquete que exporte la función que necesita o escriba su propia versión utilizando funciones exportadas. Alternativamente, si las licencias son compatibles, puede copiar y pegar la función exportada en su propio paquete. Si hace esto, recuerde actualizar <code>Authors@R</code>.</p></li>
+<li><p>No utilice <code><a href="https://rdrr.io/r/base/assign.html">assign()</a></code> para modificar objetos en el entorno global. Si necesita mantener el estado en todas las llamadas a funciones, cree su propio entorno, como se describe en <a href="data.html#sec-data-state" class="quarto-xref"><span>Sección 7.4</span></a>.</p></li>
+<li><p>No utilices <code><a href="https://rdrr.io/r/base/attach.html">attach()</a></code> en tu código. En su lugar, haga referencia explícita a las variables.</p></li>
+<li><p>No utilice <code><a href="https://rdrr.io/r/utils/data.html">data()</a></code> sin especificar el argumento <code>envir</code>. De lo contrario, los datos se cargarán en el entorno global.</p></li>
+<li><p>No utilice funciones obsoletas o obsoletas. Actualice su código para usar las últimas versiones.</p></li>
+<li><p>Debes usar <code>TRUE</code> y <code>FALSE</code> en tu código (y ejemplos), no <code>T</code> y <code>F</code>.</p></li>
+</ul>
+</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2209 --><ul>
+<li>
+<strong>Comprobando si el paquete se puede cargar</strong>. R carga su paquete con <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>. Un error aquí normalmente indica un problema con <code>.onLoad()</code> o <code>.onAttach()</code>.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2247 --><ul>
+<li>
+<strong>Comprobando si el paquete se puede descargar limpiamente</strong>. Se carga con <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> y luego <code><a href="https://rdrr.io/r/base/detach.html">detach()</a></code>es. Si esto falla, verifique <code>.onUnload()</code> y <code>.onDetach()</code>.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2279 --><ul>
+<li>
+<strong>Comprobando si el espacio de nombres se puede descargar limpiamente</strong>. Ejecuta <code>loadNamespace("pkg"); descargarNamespace("paquete")</code>. Verifique <code>.onUnload()</code> para ver si hay problemas.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2300 --><ul>
+<li>
+<strong>Comprobando la carga sin estar en la ruta de búsqueda de la biblioteca</strong>. Llama a <code><a href="https://rdrr.io/r/base/library.html">library(x, lib.loc = ...)</a></code>. El error aquí indica que está haciendo una suposición falsa en <code>.onLoad()</code> o <code>.onAttach()</code>.</li>
+</ul></section><section id="datos" class="level2" data-number="A.6"><h2 data-number="A.6" class="anchored" data-anchor-id="datos">
+<span class="header-section-number">A.6</span> Datos</h2>
+<!-- 
+https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L1782 
+tools:::.check_package_datasets
+tools:::.check_package_compact_datasets
+tools:::.check_package_compact_sysdata
+-->
+<ul>
+<li>
+<p><strong>Comprobando el contenido del directorio ‘data’</strong>.</p>
+<ul>
+<li><p>El directorio de datos solo puede contener los tipos de archivos descritos en <a href="data.html#sec-data-data" class="quarto-xref"><span>Sección 7.1</span></a>.</p></li>
+<li><p>Los archivos de datos pueden contener caracteres que no sean ASCII sólo si la codificación está configurada correctamente. Por lo general, esto no debería ser un problema si está guardando archivos <code>.Rdata</code>. Si ve este error, mire la <code>Codificación()</code> de cada columna en el marco de datos y asegúrese de que ninguna sea “desconocida”. (Por lo general, necesitarás solucionar este problema en algún momento del proceso de importación). Obtenga más información en <a href="data.html#sec-data-non-ascii" class="quarto-xref"><span>Sección 7.1.3</span></a>.</p></li>
+<li><p>Si ha comprimido un archivo de datos con <code>bzip2</code> o <code>xz</code>, debe declarar al menos <code>Depende: R (&gt;= 2.10)</code> en su <code>DESCRIPTION</code>.</p></li>
+<li><p>Si ha utilizado un algoritmo de compresión subóptimo para sus datos, vuelva a comprimirlos con el algoritmo sugerido.</p></li>
+</ul>
+</li>
+</ul></section><section id="documentación" class="level2" data-number="A.7"><h2 data-number="A.7" class="anchored" data-anchor-id="documentación">
+<span class="header-section-number">A.7</span> Documentación</h2>
+<p>Si está lidiando específicamente con problemas de documentación, es posible que pueda iterar más rápidamente usando <code><a href="https://devtools.r-lib.org/reference/check_man.html">devtools::check_man()</a></code>, que intenta ejecutar solo el subconjunto relevante de comprobaciones. También llama automáticamente a <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code> por usted.</p>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L1527 -->
+<ul>
+<li>
+<strong>Comprobando archivos Rd</strong>. Esto verifica que todos los archivos <code>man/*.Rd</code> utilicen la sintaxis Rd correcta. Si esto falla, indica un error en roxygen2.</li>
+</ul>
+<!-- tools:::.check_Rd_metadata --><ul>
+<li>
+<strong>Comprobando metadatos Rd</strong>. Los nombres y alias deben ser únicos en todos los archivos de documentación de un paquete. Si encuentra este problema, accidentalmente ha utilizado el mismo <code>@nombre</code> o <code>@alias</code> en varios lugares; asegúrate de que sean únicos.</li>
+</ul>
+<!-- tools:::.check_Rd_line_widths --><ul>
+<li>
+<strong>Comprobando anchos de línea Rd</strong>. Las líneas de los archivos Rd deben tener menos de 90 caracteres de ancho. Es poco probable que esto ocurra si ajusta su código R, y por lo tanto los comentarios de roxygen, a 80 caracteres. Para URL muy largas, utilice un servicio de acortamiento de enlaces como <a href="http://bit.ly">bit.ly</a>.</li>
+</ul>
+<!-- tools:::.check_Rd_xrefs --><ul>
+<li>
+<strong>Comprobando referencias cruzadas de Rd</strong>. Los errores aquí suelen representar errores tipográficos.</li>
+</ul>
+<!-- tools::undoc --><ul>
+<li>
+<strong>Comprobación de entradas de documentación faltantes</strong>. Todos los objetos exportados deben estar documentados. Consulte <code><a href="https://rdrr.io/r/tools/undoc.html">?tools::undoc</a></code> para obtener más detalles.</li>
+</ul>
+<!-- tools::codoc, tools::codocData, tools::codocClasses --><ul>
+<li>
+<strong>Comprobación de discrepancias en códigos/documentaciones</strong>. Esta verificación garantiza que la documentación coincida con el código. Esto nunca debería fallar porque estás usando roxygen2, que automáticamente los mantiene sincronizados y <code>check()</code> normalmente debería volver a <code>document()</code> tu paquete. En cualquier caso, la solución suele ser volver a ejecutar <code><a href="https://devtools.r-lib.org/reference/document.html">devtools::document()</a></code>.</li>
+</ul>
+<!-- tools::checkDocFiles, tools::checkDocStyle --><ul>
+<li>
+<p><strong>Comprobando las secciones Rd <code>\usage</code></strong>. Todos los argumentos deben estar documentados y todos los <code>@params</code> deben documentar un argumento existente. Es posible que haya olvidado documentar un argumento, que haya olvidado eliminar la documentación de un argumento que eliminó o que haya escrito mal el nombre de un argumento.</p>
+<p>Los métodos S3 y S4 necesitan usar marcas especiales <code>\S3method{}</code> y <code>\S4method{}</code> en el archivo Rd. Roxygen2 generará esto automáticamente.</p>
+</li>
+</ul>
+<!-- tools:::.check_Rd_contents --><ul>
+<li>
+<strong>Comprobando el contenido de Rd</strong>. Esto busca contenido generado automáticamente por <code><a href="https://rdrr.io/r/utils/package.skeleton.html">package.skeleton()</a></code>. Como no estás usando <code><a href="https://rdrr.io/r/utils/package.skeleton.html">package.skeleton()</a></code> nunca deberías tener un problema aquí.</li>
+</ul>
+<!-- tools:::.check_packages_used_in_examples --><ul>
+<li>
+<strong>Comprobación de dependencias no declaradas en ejemplos</strong>. Si usa un paquete solo como ejemplo, asegúrese de que aparezca en el campo <code>Suggests</code>. Obtenga más información sobre cómo utilizar diferentes tipos de dependencias en sus ejemplos en <a href="dependencies-in-practice.html" class="quarto-xref"><span>Capítulo 11</span></a>.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2317 --><ul>
+<li>
+<strong>Comprobando ejemplos</strong>. Cada ejemplo de documentación debe ejecutarse sin errores y no debe tardar demasiado. Consulte <a href="man.html#sec-man-examples" class="quarto-xref"><span>Sección 16.5</span></a> para obtener más detalles.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2925 --><ul>
+<li>
+<strong>Consultando la versión PDF del manual</strong>. Ocasionalmente recibirás un error al crear el manual en PDF. Esto suele deberse a que el pdf está creado con látex y te has olvidado de escapar de algo. Depurar esto es doloroso: lo mejor que puede hacer es buscar los registros de látex y el archivo tex combinado y volver desde allí a los archivos <code>.Rd</code> y luego volver a un comentario de roxygen. Cualquier falla de este tipo es potencialmente un error en roxygen2, así que abra un problema.</li>
+</ul></section><section id="demos" class="level2" data-number="A.8"><h2 data-number="A.8" class="anchored" data-anchor-id="demos">
+<span class="header-section-number">A.8</span> Demos</h2>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L877 -->
+<ul>
+<li>
+<p><strong>Comprobando información del índice</strong>. Si ha escrito demostraciones, cada demostración debe aparecer en <code>demo/00Index</code>. El archivo debería verse así:</p>
+<pre><code>demo-name-without-extension  Demo description
+another-demo-name            Another description</code></pre>
+</li>
+</ul></section><section id="código-compilado" class="level2" data-number="A.9"><h2 data-number="A.9" class="anchored" data-anchor-id="código-compilado">
+<span class="header-section-number">A.9</span> Código compilado</h2>
+<!-- tools::checkFF -->
+<ul>
+<li>
+<strong>Comprobando llamadas a funciones externas</strong>. <code><a href="https://rdrr.io/r/base/CallExternal.html">.Call()</a></code>, <code><a href="https://rdrr.io/r/base/Foreign.html">.C()</a></code>, <code><a href="https://rdrr.io/r/base/Foreign.html">.Fortran()</a></code>, <code><a href="https://rdrr.io/r/base/CallExternal.html">.External()</a></code> siempre deben llamarse con un objeto <code>NativeSymbolInfo</code> (como se creó con <code>@useDynLib</code>) o usar el Argumento <code>.paquete</code>. Consulte <code><a href="https://rdrr.io/r/tools/checkFF.html">?tools::checkFF</a></code> para obtener más detalles.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2065 --><ul>
+<li>
+<strong>Comprobando finales de línea en C/C++/fuentes/encabezados de Fortran</strong>. Utilice siempre LF como final de línea.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2084 --><ul>
+<li>
+<strong>Comprobando finales de línea en Makefiles</strong>. Como anteriormente.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2120 --><ul>
+<li>
+<strong>Comprobando el uso portátil de <code>$(BLAS_LIBS)</code> y <code>$(LAPACK_LIBS)</code></strong>. Los errores aquí indican un problema con el uso de BLAS y LAPACK.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2159 
+ tools:::check_compiled_code
+ --><ul>
+<li>
+<strong>Comprobando el código compilado</strong>. Comprueba que no estás utilizando ninguna función de C que no deberías.</li>
+</ul></section><section id="pruebas" class="level2" data-number="A.10"><h2 data-number="A.10" class="anchored" data-anchor-id="pruebas">
+<span class="header-section-number">A.10</span> Pruebas</h2>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2514 -->
+<ul>
+<li>
+<strong>Comprobación de dependencias no declaradas en las pruebas</strong>. Cada paquete utilizado por las pruebas debe incluirse en las dependencias.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2526 --><ul>
+<li>
+<p><strong>Comprobación de pruebas</strong>. Se ejecuta cada archivo en <code>tests/</code>. Si ha seguido las instrucciones en <a href="testing-basics.html" class="quarto-xref"><span>Capítulo 13</span></a>, tendrá al menos un archivo: <code>testthat.R</code>. El resultado de <code>R CMD check</code> no suele ser tan útil, por lo que es posible que deba consultar el archivo de registro <code>package.Rcheck/tests/testthat.Rout</code>. Corrija cualquier prueba fallida iterando con <code><a href="https://devtools.r-lib.org/reference/test.html">devtools::test()</a></code>.</p>
+<p>Ocasionalmente, puede tener un problema donde las pruebas pasan cuando se ejecutan interactivamente con <code><a href="https://devtools.r-lib.org/reference/test.html">devtools::test()</a></code>, pero fallan cuando se ejecutan en <code>R CMD check</code>. Esto generalmente indica que ha hecho una suposición errónea sobre el entorno de prueba y, a menudo, es difícil descifrarla.</p>
+</li>
+</ul></section><section id="viñetas" class="level2" data-number="A.11"><h2 data-number="A.11" class="anchored" data-anchor-id="viñetas">
+<span class="header-section-number">A.11</span> Viñetas</h2>
+<p>Este es un tema bastante complicado que también recibe una cobertura sustancial en la parte principal del libro; consulte <a href="vignettes.html#sec-vignettes-how-built-checked" class="quarto-xref"><span>Sección 17.5</span></a>.</p>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L718 -->
+<ul>
+<li>
+<strong>Comprobando el directorio ‘build’</strong>. <code>build/</code> se utiliza para realizar un seguimiento de las compilaciones de viñetas. Es difícil imaginar cómo esta verificación podría fallar a menos que accidentalmente hayas ignorado <code>.Rbuild</code> el directorio <code>build/</code>.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L1846 --><ul>
+<li>
+<strong>Comprobando archivos instalados desde ‘inst/doc’</strong>. No coloque archivos en <code>inst/doc</code>; mantenga sus viñetas y los archivos que necesitan en <code>vignettes/</code>.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L1941 --><ul>
+<li>
+<strong>Comprobación de archivos en ‘viñetas’</strong>. Los problemas aquí suelen ser sencillos: ha incluido archivos que ya están incluidos en R (como <code>jss.cls</code>, <code>jss.bst</code> o <code>Sweave.sty</code>), o le sobran archivos de compilación de látex. Elimina estos archivos.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2008 --><ul>
+<li>
+<strong>Comprobación del tamaño de los archivos PDF en ‘inst/doc’</strong>. Si está creando viñetas en PDF, puede hacerlas lo más pequeñas posible ejecutando <code><a href="https://rdrr.io/r/tools/compactPDF.html">tools::compactPDF()</a></code>.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2619 --><ul>
+<li>
+<strong>Comprobación de dependencias no declaradas en viñetas</strong>. Al igual que con las pruebas, cada paquete que utilice en una viñeta debe aparecer en la <code>DESCRIPTION</code>. Si un paquete se usa solo para una viñeta y no en ningún otro lugar, asegúrese de que aparezca en <code>Suggests</code>. Si realmente desea utilizar un paquete y no desea incluirlo en <code>DESCRIPTION</code>, escriba un artículo en lugar de una viñeta.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2629 --><ul>
+<li>
+<strong>Comprobación de viñetas de paquetes en ‘inst/doc’</strong>. Esto verifica que cada viñeta fuente (es decir, <code>.Rmd</code>) tenga un equivalente integrado (es decir, <code>.html</code>) en <code>inst/doc</code>. Esto no debería fallar si ha utilizado el proceso estándar descrito en <a href="vignettes.html" class="quarto-xref"><span>Capítulo 17</span></a>. Si hay algún problema, comience revisando su <code>.Rbuildignore</code>.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2763 --><ul>
+<li>
+<strong>Comprobación del código R en ejecución a partir de viñetas</strong>. Se ejecuta el código R de cada viñeta. Si desea ejecutar errores deliberadamente (para mostrarle al usuario cómo se ve la falla), asegúrese de que el fragmento tenga <code>error = TRUE, purl = FALSE</code>.</li>
+</ul>
+<!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2856 --><ul>
+<li>
+<strong>Comprobando la reconstrucción de los resultados de las viñetas</strong>. Cada viñeta se vuelve a tejer para garantizar que la salida corresponda con la entrada. Nuevamente, esto no debería fallar en circunstancias normales.</li>
+</ul></section><section id="sec-r-cmd-check-informational-notes" class="level2" data-number="A.12"><h2 data-number="A.12" class="anchored" data-anchor-id="sec-r-cmd-check-informational-notes">
+<span class="header-section-number">A.12</span> NOTAS que son informativas</h2>
+<p>Nuestro consejo general es eliminar todos los ERRORES, ADVERTENCIAS e incluso NOTAS que vea en “R CMD check”. Pero hay algunas excepciones, es decir, hay un par de NOTAS que no necesita corregir (y, de hecho, probablemente no pueda corregir).</p>
+<section id="envío-inicial-de-cran" class="level3" data-number="A.12.1"><h3 data-number="A.12.1" class="anchored" data-anchor-id="envío-inicial-de-cran">
+<span class="header-section-number">A.12.1</span> Envío inicial de CRAN</h3>
+<p>Cuando un paquete llega por primera vez a CRAN, siempre habrá una NOTA que alerta a los mantenedores de CRAN que se trata de un nuevo envío y que necesitarán realizar algunas comprobaciones adicionales. No puedes eliminar esta NOTA.</p>
+<pre><code>* checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Jane Doe &lt;jane@example.com&gt;'
+
+New submission</code></pre>
+</section><section id="caracteres-no-ascii-en-datos" class="level3" data-number="A.12.2"><h3 data-number="A.12.2" class="anchored" data-anchor-id="caracteres-no-ascii-en-datos">
+<span class="header-section-number">A.12.2</span> Caracteres no ASCII en datos</h3>
+<p>Si los datos de su paquete contienen caracteres que no son ASCII, recibirá una NOTA como esta, pero eso no significa necesariamente que deba hacer algo al respecto.</p>
+<pre><code>Check: data for non-ASCII characters
+Result: NOTE
+     Note: found 25 marked UTF-8 strings</code></pre>
+<p>Siempre que conozca los caracteres que no son ASCII y la NOTA mencione su codificación prevista y declarada (preferiblemente UTF-8), todo estará bien.</p>
+</section><section id="rd-referencias-cruzadas" class="level3" data-number="A.12.3"><h3 data-number="A.12.3" class="anchored" data-anchor-id="rd-referencias-cruzadas">
+<span class="header-section-number">A.12.3</span> Rd referencias cruzadas</h3>
+<p>Si sus comentarios de roxygen contienen una referencia cruzada a un paquete que no es una dependencia directa y formal, es posible que vea una NOTA como esta:</p>
+<pre><code>Check: Rd cross-references
+Result: NOTE
+    Undeclared package ‘jsonlite’ in Rd xrefs</code></pre>
+<p>Esto podría suceder si desea documentar algo relacionado con una dependencia indirecta estricta: hay una razón legítima para vincular un tema en el otro paquete y básicamente se garantiza su instalación. Por lo tanto, en la práctica, a menudo se obtienen más beneficios que daños de la referencia cruzada.</p>
+<p>Según nuestra experiencia, esta NOTA solo se ve en ciertos sabores de cheques CRAN y no en otros. Hasta ahora, los mantenedores de CRAN nunca nos han indicado que abordemos esta NOTA.</p>
+
+
+</section></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./references.html" class="pagination-link" aria-label="Referencias">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Referencias</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+</body></html>

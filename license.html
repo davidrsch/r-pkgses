@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Hadley Wickham y Jenny Bryan">
+<meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
+<title>Paquetes de R - 12&nbsp; Licencias</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./testing-basics.html" rel="next">
+<link href="./dependencies-in-practice.html" rel="prev">
+<link href="./logo.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script><script defer="" data-domain="r-pkgs.org" src="https://plausible.io/js/plausible.js"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./description.html">Metadatos del paquete</a></li><li class="breadcrumb-item"><a href="./license.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Paquetes de R</a> 
+        <div class="sidebar-tools-main">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+<li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
+            Original
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/davidrsch/r-pkgses">
+            Traducción
+            </a>
+          </li>
+      </ul>
+</div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">¡Bienvenidos!</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./preface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prefacio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introducción</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Empezando</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./whole-game.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Configuración del sistema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Estructura y estado del paquete</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow101.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Flujos de trabajo de desarrollo fundamentales</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./package-within.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">El paquete en el interior de su código</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Componentes de un paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Código R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Datos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./misc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Otros componentes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Metadatos del paquete</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./description.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title"><code>DESCRIPTION</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-mindset-background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dependencies-in-practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./license.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Probar</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Diseñar su conjunto de pruebas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./testing-advanced.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Técnicas de prueba avanzadas</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Documentación</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Documentación de la función</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./vignettes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Viñetas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./other-markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Otros archivos markdown</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./website.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Sitio web</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+ <span class="menu-text">Mantenimiento y distribución</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./software-development-practices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Prácticas de desarrollo de software</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Ciclo de vida</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./release.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referencias</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text">Apéndices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./R-CMD-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title"><code>R CMD check</code></span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Tabla de contenidos</h2>
+   
+  <ul>
+<li><a href="#panorama-general" id="toc-panorama-general" class="nav-link active" data-scroll-target="#panorama-general"><span class="header-section-number">12.1</span> Panorama general</a></li>
+  <li>
+<a href="#c%C3%B3digo-que-escribes" id="toc-código-que-escribes" class="nav-link" data-scroll-target="#c%C3%B3digo-que-escribes"><span class="header-section-number">12.2</span> Código que escribes</a>
+  <ul class="collapse">
+<li><a href="#archivos-clave" id="toc-archivos-clave" class="nav-link" data-scroll-target="#archivos-clave"><span class="header-section-number">12.2.1</span> Archivos clave</a></li>
+  <li><a href="#sec-more-licenses" id="toc-sec-more-licenses" class="nav-link" data-scroll-target="#sec-more-licenses"><span class="header-section-number">12.2.2</span> Más licencias para el código</a></li>
+  <li><a href="#licencias-para-datos" id="toc-licencias-para-datos" class="nav-link" data-scroll-target="#licencias-para-datos"><span class="header-section-number">12.2.3</span> Licencias para datos</a></li>
+  <li><a href="#cambiar-licencia" id="toc-cambiar-licencia" class="nav-link" data-scroll-target="#cambiar-licencia"><span class="header-section-number">12.2.4</span> Cambiar Licencia</a></li>
+  </ul>
+</li>
+  <li><a href="#sec-code-given-to-you" id="toc-sec-code-given-to-you" class="nav-link" data-scroll-target="#sec-code-given-to-you"><span class="header-section-number">12.3</span> Código proporcionado a usted</a></li>
+  <li>
+<a href="#sec-code-you-bundle" id="toc-sec-code-you-bundle" class="nav-link" data-scroll-target="#sec-code-you-bundle"><span class="header-section-number">12.4</span> Código que empaquetas</a>
+  <ul class="collapse">
+<li><a href="#license-compatibility" id="toc-license-compatibility" class="nav-link" data-scroll-target="#license-compatibility"><span class="header-section-number">12.4.1</span> License compatibility</a></li>
+  <li><a href="#sec-how-to-include" id="toc-sec-how-to-include" class="nav-link" data-scroll-target="#sec-how-to-include"><span class="header-section-number">12.4.2</span> Cómo incluir</a></li>
+  </ul>
+</li>
+  <li><a href="#c%C3%B3digo-que-utilizas" id="toc-código-que-utilizas" class="nav-link" data-scroll-target="#c%C3%B3digo-que-utilizas"><span class="header-section-number">12.5</span> Código que utilizas</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./description.html">Metadatos del paquete</a></li><li class="breadcrumb-item"><a href="./license.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-license" class="quarto-section-identifier"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Licencias</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>El objetivo de este capítulo es brindarle las herramientas básicas para administrar las licencias de su paquete R. Obviamente, somos desarrolladores de R y no abogados, y nada de esto es asesoramiento legal. Pero, afortunadamente, si estás escribiendo un paquete de código abierto o un paquete utilizado sólo dentro de tu organización<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, no necesitas ser un experto para hacer lo correcto. Debe elegir una licencia que declare cómo desea que se use su código y, si incluye código escrito por otra persona, debe respetar la licencia que utiliza.</p>
+<p>Este capítulo comienza con una descripción general de las licencias y cómo obtener licencias para su propio código. Luego discutiremos los detalles más importantes sobre la aceptación del código que se le proporciona (por ejemplo, en una solicitud de extracción) y cómo agrupar el código escrito por otras personas. Terminaremos con una breve discusión de las implicaciones de usar código de otros paquetes.</p>
+<section id="panorama-general" class="level2" data-number="12.1"><h2 data-number="12.1" class="anchored" data-anchor-id="panorama-general">
+<span class="header-section-number">12.1</span> Panorama general</h2>
+<p>Para comprender los deseos del autor, es útil comprender los dos campos principales de las licencias de código abierto:</p>
+<ul>
+<li><p>Las licencias <strong>permisivas</strong> son muy sencillas. El código con una licencia permisiva se puede copiar, modificar y publicar libremente, y la única restricción es que se debe conservar la licencia. Las licencias <a href="https://choosealicense.com/licenses/mit/"><strong>MIT</strong></a> y <a href="https://choosealicense.com/licenses/apache-2.0/"><strong>Apache</strong></a> son las más licencias permisivas modernas comunes; Las licencias permisivas más antiguas incluyen las diversas formas de la licencia <strong>BSD</strong>.</p></li>
+<li><p>Las licencias <strong>Copyleft</strong> son más estrictas. La licencia copyleft más común es la <a href="https://choosealicense.com/licenses/gpl-3.0/"><strong>GPL</strong></a> que le permite copiar y modificar libremente el código para uso personal, pero si publica versiones modificadas o paquete con otro código, la versión modificada o paquete completo también debe tener licencia GPL.</p></li>
+</ul>
+<p>Cuando analizamos todos los lenguajes de programación, las licencias permisivas son las más comunes. Por ejemplo, una <a href="https://github.blog/2015-03-09-open-source-license-usage-on-github-com/">encuesta de 2015 sobre repositorios de GitHub</a> encontró que ~55% usaba un permiso licencia y ~20% utilizó una licencia copyleft. La comunidad R es bastante diferente: a partir de 2022, mi análisis<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> encontró que ~70% de los paquetes CRAN usan una licencia copyleft y ~20% usa una licencia permisiva. Esto significa que obtener la licencia de su paquete R requiere un poco más de cuidado que para otros lenguajes.</p>
+</section><section id="código-que-escribes" class="level2" data-number="12.2"><h2 data-number="12.2" class="anchored" data-anchor-id="código-que-escribes">
+<span class="header-section-number">12.2</span> Código que escribes</h2>
+<p>Comenzaremos hablando sobre el código que usted escribe y cómo otorgarle licencia para dejar en claro cómo quiere que la gente lo trate. Es importante utilizar una licencia porque, si no lo hace, se aplican las leyes de derechos de autor predeterminadas, lo que significa que nadie puede hacer una copia de su código sin su permiso expreso.</p>
+<p>En breve:</p>
+<ul>
+<li><p>Si desea una licencia permisiva para que las personas puedan usar su código con restricciones mínimas, elija la <a href="https://choosealicense.com/licenses/mit/">licencia MIT</a> con <code>use_mit_license()</code>.</p></li>
+<li><p>Si desea una licencia copyleft para que todos los derivados y paquetes de su código también sean de código abierto, elija la <a href="https://choosealicense.com/licenses/gpl-3.0/">licencia GPLv3</a> con <code>use_gpl_license()</code>.</p></li>
+<li><p>Si su paquete contiene principalmente datos, no código, y desea restricciones mínimas, elija la <a href="https://choosealicense.com/licenses/cc0-1.0/">licencia CC0</a> con <code>use_cc0_license()</code>. O si desea solicitar atribución cuando se utilizan sus datos, elija la <a href="https://choosealicense.com/licenses/cc-by-4.0/">licencia CC BY</a> llamando a <code>use_ccby_license()</code>.</p></li>
+<li><p>Si no desea que su código sea de código abierto, llame a <code>use_proprietary_license()</code>. CRAN no puede distribuir dichos paquetes.</p></li>
+</ul>
+<p>Volveremos con más detalles y presentaremos algunas otras licencias en <a href="#sec-more-licenses" class="quarto-xref"><span>Sección 12.2.2</span></a>.</p>
+<section id="archivos-clave" class="level3" data-number="12.2.1"><h3 data-number="12.2.1" class="anchored" data-anchor-id="archivos-clave">
+<span class="header-section-number">12.2.1</span> Archivos clave</h3>
+<p>Hay tres archivos clave que se utilizan para registrar su decisión de concesión de licencia:</p>
+<ul>
+<li>
+<p>Cada licencia establece el campo <code>License</code> en <code>DESCRIPTION</code>. Contiene el nombre de la licencia en un formato estándar para que <code>R CMD check</code> y CRAN puedan verificarla automáticamente. Viene en cuatro formas principales:</p>
+<ul>
+<li><p>Una especificación de nombre y versión, por ejemplo <code>GPL (&gt;= 2)</code>, o <code>Apache License (== 2.0)</code>.</p></li>
+<li><p>Una abreviatura estándar, por ejemplo <code>GPL-2</code>, <code>LGPL-2.1</code>, <code>Artístico-2.0</code>.</p></li>
+<li><p>Un nombre de una “plantilla” de licencia y un archivo que contiene variables específicas. El caso más común es <code>MIT + archivo LICENSE</code>, donde el archivo <code>LICENSE</code> debe contener dos campos: el año y el titular de los derechos de autor.</p></li>
+<li><p>Dirección al texto completo de una licencia no estándar, <code>archivo LICENSE</code>.</p></li>
+</ul>
+<p>Son posibles estructuras de concesión de licencias más complicadas, pero están fuera del alcance de este texto. Consulte la <a href="https://cran.rstudio.com/doc/manuals/r-devel/R-exts.html#Licensing">sección Licencias</a> de “Escribir extensiones de R” para obtener más detalles.</p>
+</li>
+<li><p>Como se describió anteriormente, el archivo <code>LICENSE</code> se utiliza de dos maneras. Algunas licencias son plantillas que requieren que se completen detalles adicionales en el archivo <code>LICENSE</code>. El archivo <code>LICENSE</code> también puede contener el texto completo de licencias no estándar y de código no abierto. No se le permite incluir el texto completo de las licencias estándar.</p></li>
+<li><p><code>LICENSE.md</code> incluye una copia del texto completo de la licencia. Todas las licencias de código abierto requieren que se incluya una copia de la licencia, pero CRAN no le permite incluir una copia de las licencias estándar en su paquete, por lo que también usamos <code>.Rbuildignore</code> para asegurarnos de que este archivo no se envíe a CRAN.</p></li>
+</ul>
+<p>Hay otro archivo al que volveremos en <a href="#sec-how-to-include" class="quarto-xref"><span>Sección 12.4.2</span></a>: <code>LICENSE.note</code>. Esto se utiliza cuando ha incluido código escrito por otras personas y partes de su paquete tienen licencias más permisivas que el conjunto.</p>
+</section><section id="sec-more-licenses" class="level3" data-number="12.2.2"><h3 data-number="12.2.2" class="anchored" data-anchor-id="sec-more-licenses">
+<span class="header-section-number">12.2.2</span> Más licencias para el código</h3>
+<p>Le dimos el mínimo absoluto que necesita saber arriba. Pero vale la pena mencionar algunas licencias más importantes ordenadas aproximadamente de más permisivas a menos permisivas:</p>
+<ul>
+<li><p><code>use_apache_license()</code>: la <a href="https://choosealicense.com/licenses/apache-2.0/">Licencia Apache</a> es similar a la licencia MIT pero también incluye una concesión de patente explícita. Las patentes son otro componente de la propiedad intelectual distinto de los derechos de autor, y algunas organizaciones también se preocupan por la protección frente a las reclamaciones de patentes.</p></li>
+<li><p><code>use_lgpl_license()</code>: la <a href="https://choosealicense.com/licenses/lgpl-3.0/">LGPL</a> es un poco más débil que la GPL, lo que le permite agrupar código LPGL usando cualquier licencia para el trabajo más grande.</p></li>
+<li><p><code>use_gpl_license():</code> Ya hemos discutido la <a href="https://choosealicense.com/licenses/gpl-3.0/">GPL</a>, pero hay un detalle importante a tener en cuenta: la GPL tiene dos versiones principales, GPLv2 y GPLv3, y no son compatibles (es decir, no se pueden agrupar códigos GPLv2 y GPLv3 en el mismo proyecto). Para evitar este problema, generalmente se recomienda licenciar su paquete como GPL &gt;=2 o GPL &gt;= 3 para que las versiones futuras de la licencia GPL también se apliquen a su código. Esto es lo que hace <code>use_gpl_license()</code> de forma predeterminada.</p></li>
+<li><p><code>use_agpl_license()</code>: La <a href="https://choosealicense.com/licenses/agpl-3.0/">AGPL</a> define la distribución para incluir la prestación de un servicio a través de una red, de modo que si utiliza el código AGPL para proporcionar un servicio web , todo el código incluido también debe ser de código abierto. Debido a que se trata de una exigencia considerablemente más amplia que la GPL, muchas empresas prohíben expresamente el uso del software AGPL.</p></li>
+</ul>
+<p>Hay muchas otras licencias disponibles. Para obtener una vista de alto nivel del espacio de licencias de código abierto y los detalles de las licencias individuales, recomendamos encarecidamente, que hemos utilizado en los enlaces anteriores. Para obtener más detalles sobre la concesión de licencias de paquetes R, recomendamos <a href="https://thinkr-open.github.io/licensing-r/"><em>Licensing R</em></a> de Colin Fay. La principal desventaja de elegir una licencia que no está en la lista anterior es que menos usuarios de R entenderán lo que significa y les resultará más difícil usar su código.</p>
+</section><section id="licencias-para-datos" class="level3" data-number="12.2.3"><h3 data-number="12.2.3" class="anchored" data-anchor-id="licencias-para-datos">
+<span class="header-section-number">12.2.3</span> Licencias para datos</h3>
+<p>Todas estas licencias están diseñadas específicamente para aplicarse al código fuente, por lo que si publica un paquete que contiene principalmente datos, debe utilizar un tipo diferente de licencia. Recomendamos una de las dos licencias <a href="http://creativecommons.org/">Creative Commons</a>:</p>
+<ul>
+<li><p>Si desea que los datos estén disponibles lo más libremente posible, utilice la licencia CC0 con <code>use_cc0_license()</code>. Esta es una licencia permisiva equivalente a la licencia MIT, pero se aplica a los datos, no al código.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p></li>
+<li><p>Si desea solicitar atribución cuando otra persona utiliza sus datos, puede utilizar la licencia CC-BY, con <code>use_ccby_license()</code>.</p></li>
+</ul></section><section id="cambiar-licencia" class="level3" data-number="12.2.4"><h3 data-number="12.2.4" class="anchored" data-anchor-id="cambiar-licencia">
+<span class="header-section-number">12.2.4</span> Cambiar Licencia</h3>
+<p>Cambiar su licencia después del hecho es difícil porque requiere el permiso de todos los titulares de derechos de autor y, a menos que haya tomado medidas especiales (más sobre eso a continuación), esto incluirá a todos los que hayan contribuido con una cantidad no trivial de código.</p>
+<p>Si necesita volver a obtener la licencia de un paquete, le recomendamos los siguientes pasos:</p>
+<ol type="1">
+<li><p>Verifique el campo <code>Authors@R</code> en <code>DESCRIPTION</code> para confirmar que el paquete no contiene código empaquetado (del cual hablaremos en <a href="#sec-code-you-bundle" class="quarto-xref"><span>Sección 12.4</span></a>).</p></li>
+<li><p>Encuentre a todos los contribuyentes consultando el historial de Git o la visualización de los contribuyentes en GitHub.</p></li>
+<li><p>Opcionalmente, inspeccione las contribuciones específicas y elimine a las personas que solo contribuyeron con correcciones de errores tipográficos y similares<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>.</p></li>
+<li><p>Pregunte a todos los contribuyentes si están de acuerdo con cambiar la licencia. Si todos los contribuyentes están en GitHub, la forma más sencilla de hacerlo es crear un problema en el que enumere a todos los contribuyentes y les pida que confirmen que están de acuerdo con el cambio.</p></li>
+<li><p>Una vez que todos los titulares de derechos de autor lo hayan aprobado, realice el cambio llamando a la función de licencia correspondiente.</p></li>
+</ol>
+<p>Puede leer sobre cómo tidyverse siguió este proceso para unificarse en la licencia MIT en <a href="https://www.tidyverse.org/blog/2021/12/relicensing-packages/" class="uri">https://www.tidyverse.org/blog/2021/12/relicensing-packages/</a>.</p>
+</section></section><section id="sec-code-given-to-you" class="level2" data-number="12.3"><h2 data-number="12.3" class="anchored" data-anchor-id="sec-code-given-to-you">
+<span class="header-section-number">12.3</span> Código proporcionado a usted</h2>
+<p>Muchos paquetes incluyen código no escrito por el autor. Hay dos formas principales en que esto sucede: otras personas pueden optar por contribuir a su paquete mediante una solicitud de extracción o algo similar, o usted puede encontrar algún código y optar por agruparlo. Esta sección analizará el código que otros le brindan y la siguiente sección analizará el código que usted incluye.</p>
+<p>Cuando alguien aporta código a su paquete mediante una solicitud de extracción o similar, puede asumir que el autor está contento con que su código use su licencia. Esto está explícito en los <a href="https://docs.github.com/en/github/site-policy/github-terms-of-service#6-contributions-under-repository-license">términos de servicio de GitHub</a>, pero generalmente se considera verdadero independientemente de cómo se contribuya el código <a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>.</p>
+<p>Sin embargo, el autor conserva los derechos de autor de su código, lo que significa que no puedes cambiar la licencia sin su permiso (más sobre esto en breve). Si desea conservar la capacidad de cambiar la licencia, necesita un “acuerdo de licencia de colaborador” explícito o CLA, donde el autor reasigna explícitamente los derechos de autor. Esto es más importante para proyectos duales de código abierto/comerciales porque permite fácilmente licencias duales en las que el código se pone a disposición del mundo con una licencia copyleft y para los clientes que pagan con una licencia diferente y más permisiva.</p>
+<p>También es importante reconocer la contribución y es una buena práctica ser generoso con el agradecimiento y la atribución. En tidyverse, solicitamos que todos los contribuyentes de código incluyan una viñeta en <code>NEWS.md</code> con su nombre de usuario de GitHub, y agradecemos a todos los contribuyentes en los anuncios de lanzamiento. Solo agregamos desarrolladores principales<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> al archivo <code>DESCRIPTION</code>; pero algunos proyectos optan por agregar a todos los contribuyentes, sin importar cuán pequeños sean.</p>
+</section><section id="sec-code-you-bundle" class="level2" data-number="12.4"><h2 data-number="12.4" class="anchored" data-anchor-id="sec-code-you-bundle">
+<span class="header-section-number">12.4</span> Código que empaquetas</h2>
+<p>Hay tres razones comunes por las que podrías optar por incluir código escrito por otra persona:</p>
+<ul>
+<li><p>Estás incluyendo la biblioteca CSS o JS de otra persona para crear una página web o widgets HTML útiles y atractivos. Shiny es un gran ejemplo de un paquete que hace esto ampliamente.</p></li>
+<li><p>Estás proporcionando un contenedor R para una biblioteca C o C++ simple. (Para bibliotecas complejas de C/C++, normalmente no incluye el código en su paquete, sino que lo vincula a una copia instalada en otra parte del sistema).</p></li>
+<li><p>Has copiado una pequeña cantidad de código R de otro paquete para evitar crear una dependencia. Generalmente, depender de otro paquete es lo correcto porque no necesita preocuparse por la licencia y automáticamente obtendrá correcciones de errores. Pero a veces sólo necesitas una cantidad muy pequeña de código de un paquete grande, y copiarlo y pegarlo en tu paquete es lo correcto.</p></li>
+</ul>
+<section id="license-compatibility" class="level3" data-number="12.4.1"><h3 data-number="12.4.1" class="anchored" data-anchor-id="license-compatibility">
+<span class="header-section-number">12.4.1</span> License compatibility</h3>
+<p>Compatibilidad de licencia</p>
+<p>Antes de incluir el código de otra persona en su paquete, primero debe verificar que la licencia incluida sea compatible con su licencia. Al distribuir código, puede agregar restricciones adicionales, pero no puede eliminar restricciones, lo que significa que la compatibilidad de licencias no es simétrica. Por ejemplo, puede agrupar código con licencia MIT en un paquete con licencia GPL, pero no puede agrupar código con licencia GPL en un paquete con licencia MIT.</p>
+<p>Hay cinco casos principales a considerar:</p>
+<ul>
+<li><p>Si su licencia y la de ellos son iguales: está bien agruparlas.</p></li>
+<li><p>Si su licencia es MIT o BSD, está bien agruparla.</p></li>
+<li><p>Si su código tiene una licencia copyleft y su código tiene una licencia permisiva, no puede agrupar su código. Deberá considerar un enfoque alternativo, ya sea buscar código con una licencia más permisiva o colocar el código externo en un paquete separado.</p></li>
+<li><p>Si el código proviene de Stack Overflow, está licenciado<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> con la licencia Creative Common CC BY-SA, que solo es compatible con GPLv3<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> . Esto significa que debe tener especial cuidado al utilizar el código Stack Overflow en paquetes de código abierto . . Obtenga más información en <a href="https://empirical-software.engineering/blog/so-snippets-in-gh-projects" class="uri">https://empirical-software.engineering/blog/so-snippets-in-gh-projects</a>.</p></li>
+<li><p>De lo contrario, tendrás que investigar un poco. Wikipedia tiene un [diagrama útil] (https://en.wikipedia.org/wiki/License_compatibility#Compatibility_of_FOSS_licenses) y Google es tu amigo. Es importante tener en cuenta que las diferentes versiones de la misma licencia no son necesariamente compatibles, por ejemplo GPLv2 y GPLv3 no son compatibles.</p></li>
+</ul>
+<p>Si su paquete no es de código abierto, las cosas son más complicadas. Las licencias permisivas siguen siendo fáciles y las licencias copyleft generalmente no restringen su uso siempre y cuando no distribuya el paquete fuera de su empresa. Pero este es un tema complejo y las opiniones difieren, y usted debe consultar primero con su departamento legal.</p>
+</section><section id="sec-how-to-include" class="level3" data-number="12.4.2"><h3 data-number="12.4.2" class="anchored" data-anchor-id="sec-how-to-include">
+<span class="header-section-number">12.4.2</span> Cómo incluir</h3>
+<p>Una vez que haya determinado que las licencias son compatibles, puede traer el código en su paquete. Al hacerlo, debe preservar todas las declaraciones de licencia y derechos de autor existentes y facilitar al máximo que los futuros lectores comprendan la situación de la licencia:</p>
+<ul>
+<li><p>Si incluye un fragmento de otro proyecto, generalmente es mejor colocar su propio archivo y asegurarse de que el archivo tenga declaraciones de derechos de autor y una descripción de la licencia en la parte superior.</p></li>
+<li><p>Si incluye varios archivos, colóquelos en un directorio y coloque un archivo de licencia en ese directorio.</p></li>
+</ul>
+<p>También debe incluir algunos metadatos estándar en <code>Authors@R</code>. Debe utilizar <code>role = "cph"</code> para declarar que el autor es el titular de los derechos de autor, con un comentario, <code>comment</code>, que describa de qué es autor.</p>
+<p>Si realiza el envío a CRAN y el código incluido tiene una licencia diferente (pero compatible), también debe incluir un archivo <code>LICENSE.note</code> que describa la licencia general del paquete y las licencias específicas de cada componente individual. Por ejemplo, el paquete diffviewer incluye seis bibliotecas de Javascript, todas las cuales utilizan una licencia permisiva. <a href="https://github.com/r-lib/diffviewer/blob/main/DESCRIPTION"><code>DESCRIPTION</code></a> enumera todos los titulares de derechos de autor y la <a href="https://github.com/%20r-lib/diffviewer/blob/main/LICENSE.note"><code>LICENSE.nota</code></a> describe sus licencias. (Otros paquetes utilizan otras técnicas, pero creemos que este es el enfoque más simple que funcionará con CRAN).</p>
+</section></section><section id="código-que-utilizas" class="level2" data-number="12.5"><h2 data-number="12.5" class="anchored" data-anchor-id="código-que-utilizas">
+<span class="header-section-number">12.5</span> Código que utilizas</h2>
+<!-- https://web.archive.org/web/20100727142807/http://www.law.washington.edu/lta/swp/Law/derivative.html -->
+<p>Obviamente, todo el código R que escribe utiliza R, y R tiene licencia GPL. ¿Eso significa que su código R siempre debe tener licencia GPL? No, y la Fundación R <a href="https://stat.ethz.ch/pipermail/r-devel/2009-May/053248.html">lo dejó claro</a> en 2009. De manera similar, es nuestra opinión personal que la licencia de su paquete no necesita ser compatible con las licencias de los paquetes R que usted simplemente usa llamando a sus funciones R exportadas (es decir, a través de <code>Suggests</code> o <code>Imports</code>).</p>
+<p>Las cosas son diferentes en otros lenguajes, como C, porque la creación de un ejecutable en C casi invariablemente termina copiando algún componente del código que usa en el ejecutable. Esto también puede surgir si su paquete R tiene código compilado y lo vincula (usando <code>LinkingTo</code> en su <code>DESCRIPTION</code>): necesitará investigar más para asegurarse de que su licencia sea compatible. Sin embargo, si solo está vinculando a R, generalmente puede obtener la licencia que desee porque los encabezados de R tienen licencia <a href="https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License">Lesser GPL</a>.</p>
+<p>Por supuesto, cualquier usuario de su paquete tendrá que descargar todos los paquetes de los que depende su paquete (así como el propio R), por lo que aún tendrá que cumplir con los términos de esas licencias.</p>
+
+
+</section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
+<ol>
+<li id="fn1"><p>Inspirado en el de <a href="https://seankross.com/2016/08/02/How-R-Packages-are-Licensed.html">Sean Kross</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Inspirado en el de <a href="https://seankross.com/2016/08/02/How-R-Packages-are-Licensed.html">Sean Kross</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Si le preocupan las implicaciones de la licencia CC0 con respecto a las citas, es posible que le interese la publicación del blog de Dryad <a href="https://blog.datadryad.org%20/2011/10/05/por-que-la-dr%C3%ADada-usa-cc0/">¿Por qué Dryad usa CC0?</a>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Las contribuciones muy simples, como las correcciones de errores tipográficos, generalmente no están protegidas por derechos de autor porque no son trabajos creativos. Pero incluso una sola frase puede considerarse un trabajo creativo, así que opte por la seguridad y, si tiene alguna duda, deje al colaborador.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Algunas organizaciones particularmente reacias al riesgo exigen que los contribuyentes proporcionen un <a href="https://developercertificate.org">certificado de origen de desarrollador</a>, pero esto es relativamente raro en general y no lo hemos visto en el Comunidad R.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p><a href="https://stackoverflow.com/help/licensing" class="uri">https://stackoverflow.com/help/licensing</a><a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p><a href="https://stackoverflow.com/help/licensing" class="uri">https://stackoverflow.com/help/licensing</a><a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p><a href="https://creativecommons.org/share-your-work/licensing-considerations/compatible-licenses/" class="uri">https://creativecommons.org/share-your-work/licensing-considerations/compatible-licenses/</a><a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></main><!-- /main --><script>
+
+  // Chapter name
+  const currentChapterFile = window.location.pathname.split('/').pop().replace('.html', '');
+
+  //Deffining urls
+  const originalURL = "https://github.com/hadley/r-pkgs/";
+  const translationURL = "https://github.com/davidrsch/r-pkgses";
+
+  //Deffining texts
+  const edit_text = "Editar esta página";
+  const issue_text = "Informar de un problema"
+
+  //Deffining git_i
+  const git_i = '<div><i class="bi bi-github"></i></div>';
+
+  // Adding TOC if not exist
+  const sidebarmargin = document.getElementById('quarto-margin-sidebar');
+  const buscar_TOC = document.getElementById('TOC');
+
+  if (!buscar_TOC) {
+    const crear_TOC = document.createElement('nav');
+    crear_TOC.id = 'TOC';
+    crear_TOC.role = "doc-toc";
+    crear_TOC.class = "toc-active";
+    sidebarmargin.appendChild(crear_TOC);
+  }
+
+
+  // Adding original github actions
+  const TOC = document.getElementById('TOC');
+  const originalga = document.createElement('h2');
+  originalga.textContent = "Original";
+  const toc_act_O = document.createElement('div');
+  toc_act_O.className = 'toc-actions';
+  toc_act_O.id = 'toc-act-O';
+  const act_link_O = document.createElement('div');
+  act_link_O.className='action-links';
+  act_link_O.id='act-link-O';
+  const edit_issue_O ='<p><a href="'+originalURL+'/edit/main/'+currentChapterFile+'.Rmd" class="toc-action">'+edit_text+'</p><p><a href="'+originalURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(originalga);
+  TOC.appendChild(toc_act_O);
+  toc_act_O.innerHTML += git_i;
+  toc_act_O.appendChild(act_link_O);
+  act_link_O.innerHTML += edit_issue_O;
+
+  // Adding translation github actions
+  const translationga = document.createElement('h2');
+  translationga.textContent = "Traducción";
+  const toc_act_T = document.createElement('div');
+  toc_act_T.className = 'toc-actions';
+  toc_act_T.id = 'toc-act-T';
+  const act_link_T = document.createElement('div');
+  act_link_T.className='action-links';
+  act_link_T.id='act-link-T';
+  const edit_issue_T ='<p><a href="'+translationURL+'/edit/main/'+currentChapterFile+'.qmd" class="toc-action">'+edit_text+'</p><p><a href="'+translationURL+'/issues/new" class="toc-action">'+issue_text+'</p>';
+
+
+  TOC.appendChild(translationga);
+  TOC.appendChild(toc_act_T);
+  toc_act_T.innerHTML += git_i;
+  toc_act_T.appendChild(act_link_T);
+  act_link_T.innerHTML += edit_issue_T;
+
+
+</script><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./dependencies-in-practice.html" class="pagination-link" aria-label="Dependencias: en la práctica">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dependencias: en la práctica</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./testing-basics.html" class="pagination-link" aria-label="Conceptos básicos de pruebas">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Conceptos básicos de pruebas</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Paquetes de R fue escrito por Hadley Wickham y Jenny Bryan</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Este libro fue creado usando <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+</body></html>

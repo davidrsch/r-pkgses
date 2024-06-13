@@ -1,0 +1,963 @@
+[[sec-whole-game]]
+= Todo el juego
+:description: Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.
+:lang: es
+
+_¡Alerta de spoiler!_
+
+Este capítulo recorre el desarrollo de un pequeño paquete de juguete. Su objetivo es pintar el panorama general y sugerir un flujo de trabajo, antes de pasar al tratamiento detallado de los componentes clave de un paquete R.
+
+Para mantener el ritmo rápido, aprovechamos las comodidades modernas del paquete devtools y el IDE de RStudio. En capítulos posteriores, seremos más explícitos acerca de lo que esos ayudantes están haciendo por nosotros.
+
+Este capítulo es independiente, ya que completar el ejercicio no es un requisito estricto para continuar con el resto del libro; sin embargo, le sugerimos encarecidamente que lo siga y cree este paquete de juguete con nosotros.
+
+== Cargar devtools y amigos
+
+Puede iniciar su nuevo paquete desde cualquier sesión de R activa. No necesita preocuparse por si está en un proyecto nuevo o existente o no. Las funciones que utilizamos garantizan que creemos un nuevo proyecto limpio para el paquete.
+
+Cargue el paquete devtools, que es la cara pública de un conjunto de paquetes que admiten varios aspectos del desarrollo de paquetes. El más obvio de ellos es el paquete usethis, que verá que también se está cargando.
+
+[source,r,cell-code]
+----
+library(devtools)
+#> Loading required package: usethis
+----
+
+¿Tienes una versión antigua de devtools? Compare su versión con la nuestra y actualícela si es necesario.
+
+[source,r,cell-code]
+----
+packageVersion("devtools")
+#> [1] '2.4.5'
+----
+
+== Paquete de juguete: regexcite
+
+Para ayudarle a través del proceso, utilizamos varias funciones de devtools para crear un pequeño paquete de juguete desde cero, con características que se ven comúnmente en los paquetes lanzados:
+
+* Funciones para abordar una necesidad específica, en este caso ayudantes para trabajar con expresiones regulares.
+* Control de versiones y proceso de desarrollo abierto.
+** Esto es completamente opcional en tu trabajo, pero muy recomendable. Verás cómo Git y GitHub nos ayudan a exponer todas las etapas intermedias de nuestro paquete de juguete.
+* Acceso a flujos de trabajo establecidos para instalación, obtención de ayuda y verificación de calidad.
+** Documentación para funciones individuales mediante https://roxygen2.r-lib.org[roxygen2].
+** Pruebas unitarias con https://testthat.r-lib.org[testthat].
+** Documentación del paquete en su conjunto a través de un ejecutable. `+README.Rmd+`.
+
+Llamamos al paquete *regexcite* y contiene un par de funciones que facilitan las tareas comunes con expresiones regulares. Tenga en cuenta que estas funciones son muy simples y solo las utilizamos aquí como medio para guiarlo a través del proceso de desarrollo del paquete. Si está buscando ayudas reales para trabajar con expresiones regulares, existen varios paquetes de R adecuados que abordan este espacio problemático:
+
+* https://stringr.tidyverse.org[stringr] (which uses stringi)
+* https://stringi.gagolewski.com/[stringi]
+* https://cran.r-project.org/package=rex[rex]
+* https://cran.r-project.org/package=rematch2[rematch2]
+
+Nuevamente, el paquete regexcite en sí es solo un dispositivo para demostrar un flujo de trabajo típico para el desarrollo de paquetes con devtools.
+
+== Vista previa del producto terminado
+
+Se realiza un seguimiento del paquete regexcite durante su desarrollo con el sistema de control de versiones Git. Esto es puramente opcional y ciertamente puede seguirlo sin implementarlo. Un buen beneficio adicional es que eventualmente lo conectamos a un repositorio remoto en GitHub, lo que significa que puedes ver el glorioso resultado por el que estamos trabajando visitando regexcite en GitHub: https://github.com/jennybc/regexcite. Al inspeccionar el https://github.com/jennybc/regexcite/commits/main[commit history] y especialmente las diferencias, puedes ver exactamente qué cambios en cada paso del proceso que se detalla a continuación.
+
+== `+create_package()+`
+
+Llame a `+create_package()+` para inicializar un nuevo paquete en un directorio de su computadora. `+create_package()+` creará automáticamente ese directorio si aún no existe (y ese suele ser el caso). Consulte <<sec-workflow101-create-package>> para obtener más información sobre la creación de paquetes.
+
+Elija deliberadamente dónde crear este paquete en su computadora. Probablemente debería estar en algún lugar de su directorio de inicio, junto con sus otros proyectos de R. No debe estar anidado dentro de otro proyecto RStudio, paquete R o repositorio Git. Tampoco debería estar en una biblioteca de paquetes de R, que contiene paquetes que ya han sido creados e instalados. La conversión del paquete fuente que creamos aquí en un paquete instalado es parte de lo que facilita devtools. ¡No intentes hacer el trabajo de devtools por el!
+
+Una vez que haya seleccionado dónde crear este paquete, sustituya la ruta elegida por una llamada `+create_package()+` como esta:
+
+[source,r,cell-code]
+----
+create_package("~/path/to/regexcite")
+----
+
+Para la creación de este libro tenemos que trabajar en un directorio temporal, porque el libro está construido de forma no interactiva en la nube. Detrás de escena, estamos ejecutando nuestro propio comando `+create_package()+`, pero no te sorprendas si nuestra salida difiere un poco de la tuya.
+
+....
+#> ✔ Creating '/tmp/RtmpqMNDJZ/regexcite/'
+#> ✔ Setting active project to '/tmp/RtmpqMNDJZ/regexcite'
+#> ✔ Creating 'R/'
+#> ✔ Writing 'DESCRIPTION'
+#> Package: regexcite
+#> Title: What the Package Does (One Line, Title Case)
+#> Version: 0.0.0.9000
+#> Authors@R (parsed):
+#>     * First Last <first.last@example.com> [aut, cre] (YOUR-ORCID-ID)
+#> Description: What the package does (one paragraph).
+#> License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+#>     license
+#> Encoding: UTF-8
+#> Roxygen: list(markdown = TRUE)
+#> RoxygenNote: 7.3.1
+#> ✔ Writing 'NAMESPACE'
+#> ✔ Writing 'regexcite.Rproj'
+#> ✔ Adding '^regexcite\\.Rproj$' to '.Rbuildignore'
+#> ✔ Adding '.Rproj.user' to '.gitignore'
+#> ✔ Adding '^\\.Rproj\\.user$' to '.Rbuildignore'
+#> ✔ Setting active project to '<no active project>'
+....
+
+Si está trabajando en RStudio, debería encontrarse en una nueva instancia de RStudio, abierta en su nuevo paquete regexcite (y Proyecto). Si de alguna manera necesita hacer esto manualmente, navegue hasta el directorio y haga doble clic en `+regexcite.Rproj+`. RStudio tiene un manejo especial para paquetes y ahora debería ver una pestaña _Build_ en el mismo panel que _Environment_ e _History_.
+
+Probablemente necesites llamar a `+library(devtools)+` nuevamente, porque `+create_package()+` probablemente te haya llevado a una nueva sesión de R, en tu nuevo paquete.
+
+[source,r,cell-code]
+----
+library(devtools)
+----
+
+¿Qué hay en este nuevo directorio que también es un paquete R y, probablemente, un proyecto RStudio? Aquí hay una lista (localmente, puede consultar su panel _Files_):
+
+[cols="<,<",options="header",]
+|===
+|path |type
+|.Rbuildignore |file
+|.gitignore |file
+|DESCRIPTION |file
+|NAMESPACE |file
+|R |directory
+|regexcite.Rproj |file
+|===
+
+[TIP]
+.RStudio
+====
+En el panel _Files_, vaya a _More (símbolo de engranaje) > Show Hidden Files_ para alternar la visibilidad de archivos ocultos (a.k.a. https://en.wikipedia.org/wiki/Hidden_file_and_hidden_directory#Unix_and_Unix-like_environments["`dotfiles`"]). Unos pocos seleccionados están visibles todo el tiempo, pero a veces quieres verlos todos.
+====
+
+* `+.Rbuildignore+` enumera los archivos que necesitamos tener a mano pero que no deben incluirse al crear el paquete R desde el código fuente. Si no está utilizando RStudio, es posible que `+create_package()+` no cree este archivo (ni tampoco `+.gitignore+`) al principio, ya que no hay ninguna maquinaria relacionada con RStudio que deba ignorarse. Sin embargo, es probable que en algún momento desarrolle la necesidad de `+.Rbuildignore+`, independientemente del editor que esté utilizando. Se analiza con más detalle en <<sec-rbuildignore>>.
+* `+.Rproj.user+`, si lo tiene, es un directorio utilizado internamente por RStudio.
+* `+.gitignore+` anticipa el uso de Git y le dice a Git que ignore algunos archivos estándar detrás de escena creados por R y RStudio. Incluso si no planeas usar Git, esto es inofensivo.
+* `+DESCRIPTION+` proporciona metadatos sobre su paquete. Editaremos esto en breve y <<sec-description>> cubre el tema general del archivo `+DESCRIPTION+`.
+* `+NAMESPACE+` declara las funciones que su paquete exporta para uso externo y las funciones externas que su paquete importa de otros paquetes. En este punto, está vacío, excepto por un comentario que declara que este es un archivo que no debes editar a mano.
+* El directorio `+R/+` es el "`final comercial`" de su paquete. Pronto contendrá archivos `+.R+` con definiciones de funciones.
+* `+regexcite.Rproj+` es el archivo que convierte este directorio en un proyecto RStudio. Incluso si no utiliza RStudio, este archivo es inofensivo. O puede suprimir su creación con `+create_package(..., rstudio = FALSE)+`. Más en <<sec-workflow101-rstudio-projects>>.
+
+== `+use_git()+`
+
+El directorio regexcite es un paquete fuente de R y un proyecto RStudio. Ahora lo convertimos también en un repositorio Git, con `+use_git()+`. (Por cierto, `+use_git()+` funciona en cualquier proyecto, independientemente de si es un paquete R).
+
+[source,r,cell-code]
+----
+use_git()
+#> ✔ Initialising Git repo
+#> ✔ Adding '.Rhistory', '.Rdata', '.httr-oauth', '.DS_Store', '.quarto' to '.gitignore'
+----
+
+En una sesión interactiva, se le preguntará si desea enviar algunos archivos aquí y deberá aceptar la oferta. Detrás de escena, también enviaremos esos mismos archivos.
+
+Entonces, ¿qué ha cambiado en el paquete? Sólo la creación de un directorio `+.git+`, que está oculto en la mayoría de los contextos, incluido el explorador de archivos RStudio. Su existencia es evidencia de que efectivamente hemos inicializado un repositorio de Git aquí.
+
+[cols="<,<",options="header",]
+|===
+|path |type
+|.git |directory
+|===
+
+Si está utilizando RStudio, probablemente solicitó permiso para reiniciarse en este proyecto, lo cual debería hacer. Puede hacerlo manualmente saliendo y luego reiniciando RStudio haciendo doble clic en `+regexcite.Rproj+`. Ahora, además del soporte para el desarrollo de paquetes, tiene acceso a un cliente Git básico en la pestaña _Git_ del panel _Environment/History/Build_.
+
+Haga clic en Historial (el ícono del reloj en el panel de Git) y, si dio su consentimiento, verá una confirmación inicial realizada a través de `+use_git()+`:
+
+[width="100%",cols="<14%,<71%,<15%",options="header",]
+|===
+|commit |author |message
+|2707fac184… |Quarto GHA Workflow Runner quarto-github-actions-publish@example.com |Initial commit
+|===
+
+[TIP]
+.RStudio
+====
+RStudio puede inicializar un repositorio Git, en cualquier proyecto, incluso si no es un paquete R, siempre que haya configurado la integración de RStudio + Git. Hacer _Tools > Version Control > Project Setup_. Entonces seleccione _Version control system: Git_ y _initialize a new git repository for this project_.
+====
+
+== Escribe la primera función.
+
+Una tarea bastante común cuando se trata de cadenas es la necesidad de dividir una única cadena en muchas partes. La función `+strsplit()+` en base R hace exactamente esto.
+
+[source,r,cell-code]
+----
+(x <- "alfa,bravo,charlie,delta")
+#> [1] "alfa,bravo,charlie,delta"
+strsplit(x, split = ",")
+#> [[1]]
+#> [1] "alfa"    "bravo"   "charlie" "delta"
+----
+
+Observe de cerca el valor de retorno.
+
+[source,r,cell-code]
+----
+str(strsplit(x, split = ","))
+#> List of 1
+#>  $ : chr [1:4] "alfa" "bravo" "charlie" "delta"
+----
+
+La forma de este valor de retorno a menudo sorprende a la gente o, al menos, les incomoda. La entrada es un vector de caracteres de longitud uno y la salida es una lista de longitud uno. Esto tiene mucho sentido a la luz de la tendencia fundamental de R hacia la vectorización. Pero a veces sigue siendo un poco fastidioso. A menudo sabes que tu entrada es moralmente un escalar, es decir, es solo una cadena y realmente quieres que la salida sea el vector de caracteres de sus partes.
+
+Esto lleva a los usuarios de R a emplear varios métodos para "`deslistar`" el resultado:
+
+[source,r,cell-code]
+----
+unlist(strsplit(x, split = ","))
+#> [1] "alfa"    "bravo"   "charlie" "delta"
+
+strsplit(x, split = ",")[[1]]
+#> [1] "alfa"    "bravo"   "charlie" "delta"
+----
+
+La segunda solución, más segura, es la base para la función inaugural de regexcite: `+strsplit1()+`.
+
+[source,r,r,cell-code]
+----
+strsplit1 <- function(x, split) {
+  strsplit(x, split = split)[[1]]
+}
+----
+
+Este libro no le enseña cómo escribir funciones en R. Para obtener más información al respecto, eche un vistazo a https://r4ds.hadley.nz/functions.html[Capítulo de funciones] de R para Ciencia de Datos y el https://adv-r.hadley.nz/functions.html[Capítulo de funciones] de R Avanzado.
+
+[TIP]
+====
+El nombre de `+strsplit1()+` es un guiño al muy útil `+paste0()+`, que apareció por primera vez en R 2.15.0 en 2012. `+paste0()+` fue creado para abordar el caso de uso extremadamente común de pegar - unir cadenas _sin_ un separador. `+paste0()+` ha sido descrito cariñosamente como https://simplystatistics.org/posts/2013-01-31-paste0-is-statistical-computings-most-influential-contribution-of-the-21st-century/["`la contribución más influyente de la informática estadística del siglo XXI`"].
+
+La función `+strsplit1()+` fue tan inspiradora que ahora es una función real en el paquete stringr: `+stringr::str_split_1()+`!
+
+====
+
+== `+use_r()+`
+
+¿Dónde deberías poner la definición de `+strsplit1()+`? Guárdelo en un archivo `+.R+`, en el subdirectorio `+R/+` de su paquete. Una posición inicial razonable es crear un nuevo archivo `+.R+` para cada función orientada al usuario en su paquete y nombrar el archivo después de la función. A medida que agregue más funciones, querrá relajar esto y comenzar a agrupar funciones relacionadas. Guardaremos la definición de `+strsplit1()+` en el archivo `+R/strsplit1.R+`.
+
+El asistente `+use_r()+` crea y/o abre un script debajo de `+R/+`. Realmente brilla en un paquete más maduro, cuando se navega entre archivos `+.R+` y el archivo de prueba asociado. Pero incluso en este caso es útil evitar dejarse llevar demasiado mientras se trabaja en `+Untitled4+`.
+
+[source,r,cell-code]
+----
+use_r("strsplit1")
+#> • Edit 'R/strsplit1.R'
+----
+
+Coloque la definición de `+strsplit1()+` *y solo la definición de `+strsplit1()+`* en `+R/strsplit1.R+` y guárdela. El archivo `+R/strsplit1.R+` NO debe contener ningún otro código de nivel superior que hayamos ejecutado recientemente, como la definición de nuestra entrada de práctica `+x+`, `+library(devtools)+` o `+use_git()+` . Esto presagia un ajuste que deberá realizar a medida que pasa de escribir scripts R a paquetes R. Los paquetes y scripts utilizan diferentes mecanismos para declarar su dependencia de otros paquetes y almacenar código de ejemplo o de prueba. Exploramos esto más a fondo en <<sec-r>>.
+
+[[sec-whole-game-load-all]]
+== `+load_all()+`
+
+¿Cómo probamos `+strsplit1()+`? Si se tratara de un script R normal, podríamos usar RStudio para enviar la definición de la función a la Consola R y definir `+strsplit1()+` en el entorno global. O tal vez llamaríamos `+source ("R/strsplit1.R")+`. Sin embargo, para el desarrollo de paquetes, devtools ofrece un enfoque más sólido.
+
+Llame a `+load_all()+` para que `+strsplit1()+` esté disponible para la experimentación.
+
+[source,r,cell-code]
+----
+load_all()
+#> ℹ Loading regexcite
+----
+
+Ahora llame a `+strsplit1(x)+` para ver cómo funciona.
+
+[source,r,cell-code]
+----
+(x <- "alfa,bravo,charlie,delta")
+#> [1] "alfa,bravo,charlie,delta"
+strsplit1(x, split = ",")
+#> [1] "alfa"    "bravo"   "charlie" "delta"
+----
+
+Tenga en cuenta que `+load_all()+` ha hecho que la función `+strsplit1()+` esté disponible, aunque no existe en el entorno global.
+
+[source,r,cell-code]
+----
+exists("strsplit1", where = globalenv(), inherits = FALSE)
+#> [1] FALSE
+----
+
+Si ve `+TRUE+` en lugar de `+FALSE+`, eso indica que todavía está utilizando un flujo de trabajo orientado a secuencias de comandos y obteniendo sus funciones. A continuación le indicamos cómo volver a la normalidad:
+
+* Limpie el entorno global y reinicie R.
+* Vuelva a adjuntar devtools con `+library(devtools)+` y vuelva a cargar regexcite con `+load_all()+`.
+* Redefina la entrada de prueba `+x+` y llame a `+strsplit1(x, split = ",")+` nuevamente. ¡Esto debería funcionar!
+* Ejecute `+exists("strsplit1", donde = globalenv(), hereda = FALSE)+` nuevamente y debería ver `+FALSE+`.
+
+`+load_all()+` Simula el proceso de construcción, instalación y conexión del paquete regexcite. A medida que su paquete acumula más funciones, algunas exportadas, otras no, algunas de las cuales se llaman entre sí, algunas de las cuales llaman a funciones de paquetes de los que depende, `+load_all()+` le brinda una idea mucho más precisa de cómo se está desarrollando el paquete que funciones de conducción de prueba definidas en el entorno global. Además, `+load_all()+` permite una iteración mucho más rápida que construir, instalar y adjuntar el paquete. Consulte <<sec-workflow101-load-all>> para obtener más información sobre `+load_all()+`.
+
+Para revisar lo que hemos hecho hasta ahora:
+
+* Escribimos nuestra primera función, `+strsplit1()+`, para dividir una cadena en un vector de caracteres (no una lista que contenga un vector de caracteres).
+* Usamos `+load_all()+` para hacer que esta función esté disponible rápidamente para uso interactivo, como si hubiéramos creado e instalado regexcite y lo hubiéramos adjuntado a través de `+library(regexcite)+`.
+
+[TIP]
+.RStudio
+====
+RStudio expone `+load_all()+` en el menu _Build_, en el panel _Build_ via _More > Load All_, y en atajos de teclado Ctrl + Shift + L (Windows & Linux) o Cmd + Shift + L (macOS).
+====
+
+=== Commit `+strsplit1()+`
+
+Si estás usando Git, usa tu método preferido para enviar el nuevo archivo `+R/strsplit1.R+`. Lo hacemos detrás de escena aquí y aquí está la diferencia asociada.
+
+....
+diff --git a/R/strsplit1.R b/R/strsplit1.R
+new file mode 100644
+index 0000000..29efb88
+--- /dev/null
++++ b/R/strsplit1.R
+@@ -0,0 +1,3 @@
++strsplit1 <- function(x, split) {
++  strsplit(x, split = split)[[1]]
++}
+....
+
+A partir de este momento, realizaremos un commit después de cada paso. Recuerda https://github.com/jennybc/regexcite/commits/main[estos commits] están disponibles en el repositorio público.
+
+== `+check()+`
+
+Tenemos evidencia empírica e informal de que `+strsplit1()+` funciona. Pero, ¿cómo podemos estar seguros de que todas las partes móviles del paquete regexcite siguen funcionando? Puede parecer una tontería comprobarlo después de una adición tan pequeña, pero es bueno establecer el hábito de comprobarlo con frecuencia.
+
+`+R CMD check+`, ejecutado en el shell, es el estándar de oro para comprobar que un paquete R está en pleno funcionamiento. `+check()+` es una forma conveniente de ejecutar esto sin salir de la sesión de R.
+
+Tenga en cuenta que `+check()+` produce una salida bastante voluminosa, optimizada para el consumo interactivo. Lo interceptamos aquí y solo revelamos un resumen. Su salida local `+check()+` será diferente.
+
+[source,r,cell-code]
+----
+check()
+----
+
+....
+── R CMD check results ─────────────────── regexcite 0.0.0.9000 ────
+Duration: 5.5s
+
+❯ checking DESCRIPTION meta-information ... WARNING
+  Non-standard license specification:
+    `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+  Standardizable: FALSE
+
+0 errors ✔ | 1 warning ✖ | 0 notes ✔
+....
+
+_¡Es esencial leer realmente el resultado del cheque!_ Aborde los problemas tempranamente y con frecuencia. Es como el desarrollo incremental de archivos `+.R+` y `+.Rmd+`. Cuanto más tiempo pase entre comprobaciones completas de que todo funciona, más difícil será identificar y resolver sus problemas.
+
+En este punto, esperamos 1 advertencia (y 0 errores, 0 notas):
+
+....
+Non-standard license specification:
+  `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+  license
+....
+
+Abordaremos eso pronto, haciendo exactamente lo que dice. Puedes aprender más sobre `+check()+` en <<sec-workflow101-r-cmd-check>>.
+
+[TIP]
+.RStudio
+====
+RStudio expone `+check()+` en el menú _Build_, en el panel _Build_ a través de _Check_ y en los atajos de teclado Ctrl + Shift + E (Windows & Linux) o Cmd + Shift + E (macOS).
+====
+
+== Editar `+DESCRIPTION+`
+
+El archivo `+DESCRIPTION+` proporciona metadatos sobre su paquete y se trata completamente en <<sec-description>>. Este es un buen momento para echar un vistazo a la descripción actual de regexcite. Verá que está lleno de contenido repetitivo, que debe ser reemplazado.
+
+Para agregar sus propios metadatos, realice estas ediciones:
+
+* Conviértete en el autor. Si no tiene un ORCID, puede omitir la parte `+coment = ...+`.
+* Escriba un texto descriptivo en los campos `+Title+` y `+Description+`.
+
+[TIP]
+.RStudio
+====
+Use Ctrl + `+.+` en RStudio y comienza a escribir "`DESCRIPTION`" para activar un asistente que facilita la apertura de un archivo para editarlo. Además de un nombre de archivo, su sugerencia puede ser el nombre de una función. Esto es muy útil cuando un paquete tiene muchos archivos.
+====
+
+Cuando termines, `+DESCRIPTION+` debería verse similar a esto:
+
+[source,text,text,cell-code]
+----
+Package: regexcite
+Title: Haga que las expresiones regulares sean más emocionantes
+Version: 0.0.0.9000
+Authors@R: 
+    person("Jane", "Doe", , "jane@example.com", role = c("aut", "cre"))
+Description: Funciones convenientes para facilitar un poco algunas tareas
+    comunes con manipulación de cadenas y expresiones regulares.
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+----
+
+== `+use_mit_license()+`
+
+____
+https://blog.codinghorror.com/pick-a-license-any-license/[Elija una licencia&#44; cualquier licencia. – Jeff Atwood]
+____
+
+Actualmente tenemos un marcador de posición en el campo `+License+` de `+DESCRIPTION+` que es deliberadamente inválido y sugiere una solución.
+
+....
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+....
+
+Para configurar una licencia válida para el paquete, llame `+use_mit_license()+`.
+
+[source,r,cell-code]
+----
+use_mit_license()
+#> ✔ Adding 'MIT + file LICENSE' to License
+#> ✔ Writing 'LICENSE'
+#> ✔ Writing 'LICENSE.md'
+#> ✔ Adding '^LICENSE\\.md$' to '.Rbuildignore'
+----
+
+Esto configura correctamente el campo `+License+` para la licencia MIT, que promete nombrar a los titulares de los derechos de autor y el año en un archivo `+LICENSE+`. Abra el archivo `+LICENSE+` recién creado y confirme que se ve así:
+
+....
+YEAR: 2024
+COPYRIGHT HOLDER: regexcite authors
+....
+
+Al igual que otros asistentes de licencia, `+use_mit_license()+` también coloca una copia de la licencia completa en `+LICENSE.md+` y agrega este archivo a `+.Rbuildignore+`. Se considera una buena práctica incluir una licencia completa en el código fuente de su paquete, como en GitHub, pero CRAN no permite la inclusión de este archivo en un paquete. Puede obtener más información sobre las licencias en <<sec-license>>.
+
+[[sec-whole-game-document]]
+== `+document()+`
+
+¿No sería bueno recibir ayuda sobre `+strsplit1()+`, tal como lo hacemos con otras funciones de R? Esto requiere que su paquete tenga un archivo de documentación R especial, `+man/strsplit1.Rd+`, escrito en un lenguaje de marcado específico de R que es algo así como LaTeX. Afortunadamente, no necesariamente tenemos que crear eso directamente.
+
+Escribimos un comentario con formato especial justo encima de `+strsplit1()+`, en su archivo fuente, y luego dejamos que un paquete llamado https://roxygen2.r-lib.org[roxygen2] manejar la creación de `+man/strsplit1.Rd+`. La motivación y la mecánica de roxygen2 se tratan en <<sec-man>>.
+
+Si usa RStudio, abra `+R/strsplit1.R+` en el editor de código fuente y coloque el cursor en algún lugar de la definición de la función `+strsplit1()+`. Ahora haz _Code > Insert roxygen skeleton_. Debería aparecer un comentario muy especial encima de tu función, en el que cada línea comienza con `+#'+`. RStudio solo inserta una plantilla básica, por lo que deberá editarla para que se vea así a continuación.
+
+Si no utiliza RStudio, cree el comentario usted mismo. De todos modos, debes modificarlo para que se vea así:
+
+[source,r,r,cell-code]
+----
+#' dividir una cadena de caracteres
+#'
+#' @param x Un vector de caracteres con un elemento..
+#' @param split En qué dividirse.
+#'
+#' @return Un vector de caracteres.
+#' @export
+#'
+#' @examples
+#' x <- "alfa,bravo,charlie,delta"
+#' strsplit1(x, split = ",")
+strsplit1 <- function(x, split) {
+  strsplit(x, split = split)[[1]]
+}
+----
+
+¡Pero aún no hemos terminado! Todavía tenemos que activar la conversión de este nuevo comentario de roxygen en `+man/strsplit1.Rd+` con `+document()+`:
+
+[source,r,cell-code]
+----
+document()
+#> ℹ Updating regexcite documentation
+#> Setting `RoxygenNote` to "7.3.1"
+#> ℹ Loading regexcite
+#> Writing 'NAMESPACE'
+#> Writing 'strsplit1.Rd'
+----
+
+[TIP]
+.RStudio
+====
+RStudio expone `+document()+` en el menú _Build_, en el panel _Build_ a través de _More > Document_ y con atajos de teclado Ctrl + Shift + D (Windows & Linux) o Cmd + Shift + D (macOS).
+====
+
+Ahora debería poder obtener una vista previa de su archivo de ayuda de esta manera:
+
+[source,r,cell-code]
+----
+?strsplit1
+----
+
+Verás un mensaje como "`Rendering development documentation for '`strsplit1`'`", lo que recuerda que básicamente está obteniendo una vista previa del borrador de la documentación. Es decir, esta documentación está presente en el código fuente de su paquete, pero aún no está presente en un paquete instalado. De hecho, todavía no hemos instalado regexcite, pero lo haremos pronto. Si `+?strsplit1+` no funciona para usted, es posible que deba llamar a `+load_all()+` primero y luego intentarlo nuevamente.
+
+Tenga en cuenta también que la documentación de su paquete no se conectará correctamente hasta que se haya construido e instalado formalmente. Esto elimina detalles como los enlaces entre archivos de ayuda y la creación de un índice de paquetes.
+
+=== `+NAMESPACE+` cambios
+
+Además de convertir el comentario especial de `+strsplit1()+` en `+man/strsplit1.Rd+`, la llamada a `+document()+` actualiza el archivo `+NAMESPACE+`, basándose en las etiquetas `+@export+` que se encuentran en los comentarios de roxygen. Abra `+NAMESPACE+` para su inspección. Los contenidos deben ser:
+
+....
+# Generated by roxygen2: do not edit by hand
+
+export(strsplit1)
+....
+
+La directiva de exportación en `+NAMESPACE+` es lo que hace que `+strsplit1()+` esté disponible para un usuario después de adjuntar regexcite a través de `+library(regexcite)+`. Así como es completamente posible crear archivos `+.Rd+` "`a mano`", puedes administrar `+NAMESPACE+` explícitamente tú mismo. Pero elegimos delegar esto a devtools (y a roxygen2).
+
+== `+check()+` de nuevo
+
+regexcite debería pasar la `+R CMD check+` limpiamente ahora y para siempre: 0 errores, 0 advertencias, 0 notas.
+
+[source,r,cell-code]
+----
+check()
+----
+
+....
+── R CMD check results ─────────────────── regexcite 0.0.0.9000 ────
+Duration: 7s
+
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+....
+
+== `+install()+`
+
+Ahora que sabemos que tenemos un producto mínimo viable, instalemos el paquete regexcite en su biblioteca mediante `+install()+`:
+
+[source,r,cell-code]
+----
+install()
+----
+
+....
+── R CMD build ─────────────────────────────────────────────────────
+* checking for file ‘/tmp/RtmpqMNDJZ/regexcite/DESCRIPTION’ ... OK
+* preparing ‘regexcite’:
+* checking DESCRIPTION meta-information ... OK
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+* building ‘regexcite_0.0.0.9000.tar.gz’
+Running /opt/R/4.4.0/lib/R/bin/R CMD INSTALL \
+  /tmp/RtmpqMNDJZ/regexcite_0.0.0.9000.tar.gz --install-tests 
+* installing to library ‘/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu’
+* installing *source* package ‘regexcite’ ...
+** using staged installation
+** R
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (regexcite)
+....
+
+[TIP]
+.RStudio
+====
+RStudio expone una funcionalidad similar en el menu _Build_ y en el panel _Build_ via _Install and Restart_, y con atajos de teclado Ctrl + Shift + B (Windows & Linux) o Cmd + Shift + B (macOS).
+====
+
+Una vez completada la instalación, podemos adjuntar y usar regexcite como cualquier otro paquete. Revisemos nuestro pequeño ejemplo desde arriba. Este también es un buen momento para reiniciar su sesión de R y asegurarse de tener un espacio de trabajo limpio.
+
+[source,r,cell-code]
+----
+library(regexcite)
+
+x <- "alfa,bravo,charlie,delta"
+strsplit1(x, split = ",")
+#> [1] "alfa"    "bravo"   "charlie" "delta"
+----
+
+¡Éxito!
+
+== `+use_testthat()+`
+
+Hemos probado `+strsplit1()+` de manera informal, en un solo ejemplo. Podemos formalizar esto como una prueba unitaria. Esto significa que expresamos una expectativa concreta sobre el resultado correcto de `+strsplit1()+` para una entrada específica.
+
+Primero, declaramos nuestra intención de escribir pruebas unitarias y usar el paquete testthat para esto, a través de `+use_testthat()+`:
+
+[source,r,cell-code]
+----
+use_testthat()
+#> ✔ Adding 'testthat' to Suggests field in DESCRIPTION
+#> ✔ Adding '3' to Config/testthat/edition
+#> ✔ Creating 'tests/testthat/'
+#> ✔ Writing 'tests/testthat.R'
+#> • Call `use_test()` to initialize a basic test file and open it for editing.
+----
+
+Esto inicializa la maquinaria de prueba unitaria para su paquete. Añade `+Suggests: testthat+` a `+DESCRIPTION+`, crea el directorio `+tests/testthat/+`, y añade el script `+tests/testthat.R+`. Notarás que la prueba probablemente se agregó con una versión mínima de 3.0.0 y un segundo campo DESCRIPTION, `+Config/testthat/edition: 3+`. Hablaremos más sobre esos detalles en <<sec-testing-basics>>.
+
+Sin embargo, ¡todavía depende de USTED escribir las pruebas reales!
+
+El asistente `+use_test()+` abre y/o crea un archivo de prueba. Puede proporcionar el nombre base del archivo o, si está editando el archivo fuente relevante en RStudio, se generará automáticamente. Para muchos de ustedes, si `+R/strsplit1.R+` es el archivo activo en RStudio, pueden simplemente llamar a `+use_test()+`. Sin embargo, dado que este libro no se creó de forma interactiva, debemos proporcionar el nombre base de forma explícita:
+
+[source,r,cell-code]
+----
+use_test("strsplit1")
+#> ✔ Writing 'tests/testthat/test-strsplit1.R'
+#> • Edit 'tests/testthat/test-strsplit1.R'
+----
+
+Esto crea el archivo `+tests/testthat/test-strsplit1.R+`. Si ya hubiera existido, `+use_test()+` simplemente lo habría abierto. Notarás que hay una prueba de ejemplo en el archivo recién creado; elimina ese código y reemplázalo con este contenido:
+
+[source,r,r,cell-code]
+----
+test_that("strsplit1() splits a string", {
+  expect_equal(strsplit1("a,b,c", split = ","), c("a", "b", "c"))
+})
+----
+
+Esto prueba que `+strsplit1()+` da el resultado esperado al dividir una cadena de caracteres.
+
+Ejecute esta prueba de forma interactiva, como lo hará cuando escriba la suya propia. Si no se puede encontrar `+test_that()+` o `+strsplit1()+`, eso sugiere que probablemente necesites llamar a `+load_all()+`.
+
+En el futuro, sus pruebas se ejecutarán principalmente _en masa_ y en condiciones de plena competencia a través de `+test()+`:
+
+[source,r,cell-code]
+----
+test()
+#> ℹ Testing regexcite
+#> ✔ | F W  S  OK | Context
+#> 
+#> ⠏ |          0 | strsplit1                                          
+#> ✔ |          1 | strsplit1
+#> 
+#> ══ Results ═════════════════════════════════════════════════════════
+#> [ FAIL 0 | WARN 0 | SKIP 0 | PASS 1 ]
+----
+
+[TIP]
+.RStudio
+====
+RStudio expone `+test()+` en el menú _Build_, en el panel _Build_ via _More > Test package_, y con atajos de teclado Ctrl + Shift + T (Windows & Linux) o Cmd + Shift + T (macOS).
+====
+
+Sus pruebas también se ejecutan cada vez que `+check()+` el paquete. De esta manera, básicamente aumentas los controles estándar con algunos propios, que son específicos de tu paquete. Es una buena idea utilizar el https://covr.r-lib.org[paquete covr] para realizar un seguimiento de qué proporción del código fuente de su paquete se ejerce mediante las pruebas. Se pueden encontrar más detalles en <<sec-testing-design-coverage>>.
+
+== `+use_package()+`
+
+Inevitablemente querrás utilizar una función de otro paquete en tu propio paquete. Necesitaremos usar métodos específicos de paquetes para declarar los otros paquetes que necesitamos (es decir, nuestras dependencias) y para usar estos paquetes en los nuestros. Si planea enviar un paquete a CRAN, tenga en cuenta que esto se aplica incluso a funciones en paquetes que considera "`siempre disponibles`", como `+stats::median()+` o `+utils::head()+`.
+
+Un dilema común al utilizar las funciones de expresión regular de R es la incertidumbre sobre si solicitar `+perl = TRUE+` o `+perl = FALSE+`. Y luego, a menudo, pero no siempre, hay otros argumentos que alteran la forma en que se combinan los patrones, como `+fixed+`, `+ignore.case+` e `+invert+`. Puede ser difícil realizar un seguimiento de qué funciones utilizan qué argumentos y cómo interactúan los argumentos, por lo que muchos usuarios nunca llegan al punto en el que conservan estos detalles sin volver a leer los documentos.
+
+El paquete stringr "`proporciona un conjunto coherente de funciones diseñadas para hacer que trabajar con cadenas de caracteres sea lo más fácil posible`". En particular, stringr usa un sistema de expresión regular en todas partes (expresiones regulares ICU) y usa la misma interfaz en cada función para controlar comportamientos coincidentes, como la distinción entre mayúsculas y minúsculas. A algunas personas les resulta más fácil internalizar y programar esto. Imaginemos que decide que prefiere construir regexcite basado en stringr (y stringi) que en las funciones de expresión regular de base R.
+
+Primero, declare su intención general de utilizar algunas funciones del espacio de nombres stringr con `+use_package()+`:
+
+[source,r,cell-code]
+----
+use_package("stringr")
+#> ✔ Adding 'stringr' to Imports field in DESCRIPTION
+#> • Refer to functions with `stringr::fun()`
+----
+
+Esto agrega el paquete stringr al campo `+Imports+` de `+DESCRIPTION+`. Y eso es todo lo que hace.
+
+Volvamos a visitar `+strsplit1()+` para hacerlo más parecido a una cadena. Aquí hay una nueva versiónfootnote:[Recuerde que este ejemplo fue tan inspirador que ahora es una función real en el paquete stringr: `stringr::str_split_1()`!]:
+
+[source,r,cell-code]
+----
+str_split_one <- function(string, pattern, n = Inf) {
+  stopifnot(is.character(string), length(string) <= 1)
+  if (length(string) == 1) {
+    stringr::str_split(string = string, pattern = pattern, n = n)[[1]]
+  } else {
+    character()
+  }
+}
+----
+
+Tenga en cuenta que nosotros:
+
+* Cambie el nombre de la función a `+str_split_one()+`, para indicar que es un contenedor alrededor de `+stringr::str_split()+`.
+* Adopte los nombres de los argumentos de `+stringr::str_split()+`. Ahora tenemos `+string+` y `+pattern+` (y `+n+`), en lugar de `+x+` y `+split+`.
+* Introducir un poco de verificación de argumentos y manejo de casos extremos. Esto no está relacionado con el cambio a stringr y sería igualmente beneficioso en la versión construida en `+strsplit()+`.
+* Utilice el formulario `+paquete::función()+` al llamar a `+stringr::str_split()+`. Esto especifica que queremos llamar a la función `+str_split()+` desde el espacio de nombres stringr. Hay más de una forma de llamar a una función desde otro paquete y la que recomendamos aquí se explica detalladamente en <<sec-dependencies-in-practice>>.
+
+¿Dónde deberíamos escribir esta nueva definición de función? Si queremos seguir la convención en la que nombramos el archivo `+.R+` después de la función que define, ahora necesitamos realizar algunos cambios complicados en los archivos. Debido a que esto ocurre con bastante frecuencia en la vida real, tenemos la función `+rename_files()+`, que coreografía el cambio de nombre de un archivo en `+R/+` y sus archivos complementarios asociados debajo de `+test/+`.
+
+[source,r,cell-code]
+----
+rename_files("strsplit1", "str_split_one")
+#> ✔ Moving 'R/strsplit1.R' to 'R/str_split_one.R'
+#> ✔ Moving 'tests/testthat/test-strsplit1.R' to 'tests/testthat/test-str_split_one.R'
+----
+
+Recuerde: el trabajo del nombre del archivo es puramente aspiracional. ¡Aún necesitamos actualizar el contenido de estos archivos!
+
+Aquí están los contenidos actualizados de `+R/str_split_one.R+`. Además de cambiar la definición de la función, también actualizamos el encabezado de roxygen para reflejar los nuevos argumentos e incluir ejemplos que muestren las características de stringr.
+
+[source,r,r,cell-code]
+----
+#' dividir una cuerda
+#'
+#' @param string Un vector de caracteres con, como máximo, un elemento.
+#' @inheritParams stringr::str_split
+#'
+#' @return Un vector de caracteres.
+#' @export
+#'
+#' @examples
+#' x <- "alfa,bravo,charlie,delta"
+#' str_split_one(x, pattern = ",")
+#' str_split_one(x, pattern = ",", n = 2)
+#'
+#' y <- "192.168.0.1"
+#' str_split_one(y, pattern = stringr::fixed("."))
+str_split_one <- function(string, pattern, n = Inf) {
+  stopifnot(is.character(string), length(string) <= 1)
+  if (length(string) == 1) {
+    stringr::str_split(string = string, pattern = pattern, n = n)[[1]]
+  } else {
+    character()
+  }
+}
+----
+
+¡No olvides actualizar también el archivo de prueba!
+
+Aquí están los contenidos actualizados de `+tests/testthat/test-str_split_one.R+`. Además del cambio en el nombre y los argumentos de la función, agregamos un par de pruebas más.
+
+[source,r,r,cell-code]
+----
+test_that("str_split_one() divide una cadena de caracteres", {
+  expect_equal(str_split_one("a,b,c", ","), c("a", "b", "c"))
+})
+
+test_that("str_split_one() errores si la longitud de entrada > 1", {
+  expect_error(str_split_one(c("a,b","c,d"), ","))
+})
+
+test_that("str_split_one() expone características de stringr::str_split()", {
+  expect_equal(str_split_one("a,b,c", ",", n = 2), c("a", "b,c"))
+  expect_equal(str_split_one("a.b", stringr::fixed(".")), c("a", "b"))
+})
+----
+
+Antes de probar el nuevo `+str_split_one()+`, necesitamos llamar a `+document()+`. ¿Por qué? Recuerde que `+document()+` realiza dos tareas principales:
+
+[arabic]
+. Convierte nuestros comentarios de roxygen en documentación R adecuada.
+. (Re)genera `+NAMESPACE+`.
+
+El segundo trabajo es especialmente importante aquí, ya que ya no exportaremos `+strsplit1()+` y ahora exportaremos `+str_split_one()+`. No se desanime por la advertencia sobre `+"Objects listed as exports, but not present in namespace: strsplit1"+`. Eso siempre sucede cuando eliminas algo del espacio de nombres.
+
+[source,r,cell-code]
+----
+document()
+#> ℹ Updating regexcite documentation
+#> ℹ Loading regexcite
+#> Warning: Objects listed as exports, but not present in namespace:
+#> • strsplit1
+#> Writing 'NAMESPACE'
+#> Writing 'str_split_one.Rd'
+#> Deleting 'strsplit1.Rd'
+----
+
+Pruebe la nueva función `+str_split_one()+` simulando la instalación del paquete mediante `+load_all()+`:
+
+[source,r,cell-code]
+----
+load_all()
+#> ℹ Loading regexcite
+str_split_one("a, b, c", pattern = ", ")
+#> [1] "a" "b" "c"
+----
+
+== `+use_github()+`
+
+Nos has visto haciendo commits durante el proceso de desarrollo de regexcite. Puede ver un historial indicativo en https://github.com/jennybc/regexcite. Nuestro uso del control de versiones y la decisión de exponer el proceso de desarrollo significa que puede inspeccionar el estado de la fuente de regexcite en cada etapa de desarrollo. Al observar las llamadas diferencias, puede ver exactamente cómo cada función auxiliar de devtools modifica los archivos fuente que constituyen el paquete regexcite.
+
+¿Cómo conectaría su paquete regexcite local y su repositorio Git a un repositorio complementario en GitHub? Aquí hay tres enfoques:
+
+[arabic]
+. https://usethis.r-lib.org/reference/use_github.html[`+use_github()+`] es una ayuda que recomendamos a largo plazo. No lo demostraremos aquí porque requiere cierta configuración de credenciales por su parte. Tampoco queremos derribar y reconstruir el paquete público de regexcite cada vez que construimos este libro.
+. ¡Primero configura el repositorio de GitHub! Suena contrario a la intuición, pero la forma más fácil de llevar su trabajo a GitHub es iniciarlo allí y luego usar RStudio para comenzar a trabajar en una copia local sincronizada. Este enfoque se describe en los flujos de trabajo de Happy Git https://happygitwithr.com/new-github-first.html[Nuevo proyecto&#44; GitHub primero] y https://happygitwithr.com/existing-github-first.html[Proyecto existente&#44; GitHub primero].
+. La línea de comando Git siempre se puede usar para agregar un repositorio remoto _post hoc_. Esto se describe en el flujo de trabajo de Happy Git https://happygitwithr.com/existing-github-last.html[Proyecto existente&#44; GitHub último].
+
+Cualquiera de estos enfoques conectará su proyecto regexcite local a un repositorio de GitHub, público o privado, al que puede enviar o extraer usando el cliente Git integrado en RStudio. En <<sec-sw-dev-practices>>, explicamos por qué vale la pena incorporar el control de versiones (por ejemplo, Git) y, específicamente, el control de versiones alojado (por ejemplo, GitHub) en su proceso de desarrollo de paquetes.
+
+== `+use_readme_rmd()+`
+
+Ahora que su paquete está en GitHub, el archivo `+README.md+` es importante. Es la página de inicio y el tapete de bienvenida del paquete, al menos hasta que decida darle un sitio web (ver <<sec-website>>), agregar una viñeta (ver <<sec-vignettes>>) o enviarlo a CRAN (ver <<sec-release>> ).
+
+La función `+use_readme_rmd()+` inicializa un `+README.Rmd+` básico y ejecutable listo para que usted pueda editar:
+
+[source,r,cell-code]
+----
+use_readme_rmd()
+#> ✔ Writing 'README.Rmd'
+#> ✔ Adding '^README\\.Rmd$' to '.Rbuildignore'
+#> • Update 'README.Rmd' to include installation instructions.
+#> ✔ Writing '.git/hooks/pre-commit'
+----
+
+Además de crear `+README.Rmd+`, esto agrega algunas líneas a `+.Rbuildignore+` y crea un enlace de confirmación previa de Git para ayudarlo a mantener sincronizados `+README.Rmd+` y `+README.md+`.
+
+`+README.Rmd+` ya tiene secciones que le solicitan que:
+
+* Describe el propósito del paquete.
+* Proporcionar instrucciones de instalación. Si se detecta un control remoto de GitHub cuando se llama a `+use_readme_rmd()+`, esta sección está completa con instrucciones sobre cómo instalar desde GitHub.
+* Muestra un poco de uso..
+
+¿Cómo poblar este esqueleto? Copie material generosamente de `+DESCRIPTION+` y cualquier prueba o ejemplo formal e informal que tenga. Algo es mejor que nada. Esto es útil porque la gente probablemente no instalará su paquete ni revisará los archivos de ayuda individuales para descubrir cómo usarlo.
+
+Nos gusta escribir el `+README+` en R Markdown, para que pueda incluir el uso real. La inclusión de código en vivo también hace que sea menos probable que su `+README+` se vuelva obsoleto y no esté sincronizado con su paquete real.
+
+Para realizar sus propias ediciones, si RStudio aún no lo ha hecho, abra `+README.Rmd+` para editar. Asegúrese de que muestre algún uso de `+str_split_one()+`.
+
+El `+README.Rmd+` que utilizamos está aquí: https://github.com/jennybc/regexcite/blob/main/README.Rmd[README.Rmd] y esto es lo que contiene:
+
+....
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+**NOTE: This is a toy package created for expository purposes, for the second edition of [R Packages](https://r-pkgs.org). It is not meant to actually be useful. If you want a package for factor handling, please see [stringr](https://stringr.tidyverse.org), [stringi](https://stringi.gagolewski.com/),
+[rex](https://cran.r-project.org/package=rex), and
+[rematch2](https://cran.r-project.org/package=rematch2).**
+
+# regexcite
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of regexcite is to make regular expressions more exciting!
+It provides convenience functions to make some common tasks with string manipulation and regular expressions a bit easier.
+
+## Installation
+
+You can install the development version of regexcite from [GitHub](https://github.com/) with:
+      
+``` r
+# install.packages("devtools")
+devtools::install_github("jennybc/regexcite")
+```
+
+## Usage
+
+A fairly common task when dealing with strings is the need to split a single string into many parts.
+This is what `base::strplit()` and `stringr::str_split()` do.
+
+```{r}
+(x <- "alfa,bravo,charlie,delta")
+strsplit(x, split = ",")
+stringr::str_split(x, pattern = ",")
+```
+
+Notice how the return value is a **list** of length one, where the first element holds the character vector of parts.
+Often the shape of this output is inconvenient, i.e. we want the un-listed version.
+
+That's exactly what `regexcite::str_split_one()` does.
+
+```{r}
+library(regexcite)
+
+str_split_one(x, pattern = ",")
+```
+
+Use `str_split_one()` when the input is known to be a single string.
+For safety, it will error if its input has length greater than one.
+
+`str_split_one()` is built on `stringr::str_split()`, so you can use its `n` argument and stringr's general interface for describing the `pattern` to be matched.
+
+```{r}
+str_split_one(x, pattern = ",", n = 2)
+
+y <- "192.168.0.1"
+str_split_one(y, pattern = stringr::fixed("."))
+```
+....
+
+¡No olvides renderizarlo para crear `+README.md+`! El enlace de confirmación previa debería recordarle si intenta confirmar `+README.Rmd+`, pero no `+README.md+`, y también cuando `+README.md+` parece estar desactualizado.
+
+La mejor manera de renderizar `+README.Rmd+` es con `+build_readme()+`, porque se encarga de renderizar con la versión más actual de su paquete, es decir, instala una copia temporal de la fuente actual.
+
+[source,r,cell-code]
+----
+build_readme()
+#> ℹ Installing regexcite in temporary library
+#> ℹ Building '/tmp/RtmpqMNDJZ/regexcite/README.Rmd'
+----
+
+Puede ver el `+README.md+` renderizado simplemente https://github.com/jennybc/regexcite#readme[visitando regexcite en GitHub].
+
+Finalmente, no olvides hacer una última confirmación. Y realiza un push, si estás usando GitHub.
+
+== El último: `+check()+` e `+install()+`
+
+Ejecutemos `+check()+` nuevamente para asegurarnos de que todo esté bien.
+
+[source,r,cell-code]
+----
+check()
+----
+
+....
+── R CMD check results ─────────────────── regexcite 0.0.0.9000 ────
+Duration: 8.2s
+
+0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+....
+
+regexcite No debe tener errores, advertencias o notas. Este sería un buen momento para reconstruirlo e instalarlo correctamente. ¡Y celebra!
+
+[source,r,cell-code]
+----
+install()
+----
+
+....
+── R CMD build ─────────────────────────────────────────────────────
+* checking for file ‘/tmp/RtmpqMNDJZ/regexcite/DESCRIPTION’ ... OK
+* preparing ‘regexcite’:
+* checking DESCRIPTION meta-information ... OK
+* checking for LF line-endings in source and make files and shell scripts
+* checking for empty or unneeded directories
+Removed empty directory ‘regexcite/tests/testthat/_snaps’
+* building ‘regexcite_0.0.0.9000.tar.gz’
+Running /opt/R/4.4.0/lib/R/bin/R CMD INSTALL \
+  /tmp/RtmpqMNDJZ/regexcite_0.0.0.9000.tar.gz --install-tests 
+* installing to library ‘/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu’
+* installing *source* package ‘regexcite’ ...
+** using staged installation
+** R
+** tests
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (regexcite)
+....
+
+No dude en visitar el https://github.com/jennybc/regexcite[paquete regexcite] en GitHub, que aparece exactamente como se desarrolló aquí. El historial de commits refleja cada paso individual, así que utilice las diferencias para ver la adición y modificación de archivos a medida que evoluciona el paquete. El resto de este libro detalla cada paso que has visto aquí y mucho más.
+
+== Revisión
+
+Este capítulo está destinado a darle una idea del flujo de trabajo típico de desarrollo de paquetes, resumido como un diagrama en <<fig-package-dev-workflow>>. Todo lo que ve aquí se ha abordado en este capítulo, con la excepción de las Acciones de GitHub, sobre las cuales aprenderá más en <<sec-sw-dev-practices-gha>>.
+
+.El flujo de trabajo de desarrollo del paquete devtools.
+[#fig-package-dev-workflow]
+image::diagrams/workflow.png[diagrams/workflow]
+
+Aquí hay una revisión de las funciones clave que ha visto en este capítulo, organizadas aproximadamente por su papel en el proceso de desarrollo.
+
+Estas funciones configuran partes del paquete y normalmente se llaman una vez por paquete:
+
+* `+create_package()+`
+* `+use_git()+`
+* `+use_mit_license()+`
+* `+use_testthat()+`
+* `+use_github()+`
+* `+use_readme_rmd()+`
+
+Llamará a estas funciones de forma regular, a medida que agregue funciones y pruebas o asuma dependencias:
+
+* `+use_r()+`
+* `+use_test()+`
+* `+use_package()+`
+
+Llamará a estas funciones varias veces por día o por hora, durante el desarrollo:
+
+* `+load_all()+`
+* `+document()+`
+* `+test()+`
+* `+check()+`

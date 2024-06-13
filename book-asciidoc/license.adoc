@@ -1,0 +1,136 @@
+[[sec-license]]
+= Licencias
+:description: Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.
+:lang: es
+
+El objetivo de este capítulo es brindarle las herramientas básicas para administrar las licencias de su paquete R. Obviamente, somos desarrolladores de R y no abogados, y nada de esto es asesoramiento legal. Pero, afortunadamente, si estás escribiendo un paquete de código abierto o un paquete utilizado sólo dentro de tu organizaciónfootnote:[Inspirado en el de https://seankross.com/2016/08/02/How-R-Packages-are-Licensed.html[Sean Kross].], no necesitas ser un experto para hacer lo correcto. Debe elegir una licencia que declare cómo desea que se use su código y, si incluye código escrito por otra persona, debe respetar la licencia que utiliza.
+
+Este capítulo comienza con una descripción general de las licencias y cómo obtener licencias para su propio código. Luego discutiremos los detalles más importantes sobre la aceptación del código que se le proporciona (por ejemplo, en una solicitud de extracción) y cómo agrupar el código escrito por otras personas. Terminaremos con una breve discusión de las implicaciones de usar código de otros paquetes.
+
+== Panorama general
+
+Para comprender los deseos del autor, es útil comprender los dos campos principales de las licencias de código abierto:
+
+* Las licencias *permisivas* son muy sencillas. El código con una licencia permisiva se puede copiar, modificar y publicar libremente, y la única restricción es que se debe conservar la licencia. Las licencias https://choosealicense.com/licenses/mit/[*MIT*] y https://choosealicense.com/licenses/apache-2.0/[*Apache*] son las más licencias permisivas modernas comunes; Las licencias permisivas más antiguas incluyen las diversas formas de la licencia *BSD*.
+* Las licencias *Copyleft* son más estrictas. La licencia copyleft más común es la https://choosealicense.com/licenses/gpl-3.0/[*GPL*] que le permite copiar y modificar libremente el código para uso personal, pero si publica versiones modificadas o paquete con otro código, la versión modificada o paquete completo también debe tener licencia GPL.
+
+Cuando analizamos todos los lenguajes de programación, las licencias permisivas son las más comunes. Por ejemplo, una https://github.blog/2015-03-09-open-source-license-usage-on-github-com/[encuesta de 2015 sobre repositorios de GitHub] encontró que ~55% usaba un permiso licencia y ~20% utilizó una licencia copyleft. La comunidad R es bastante diferente: a partir de 2022, mi análisisfootnote:[Inspirado en el de https://seankross.com/2016/08/02/How-R-Packages-are-Licensed.html[Sean Kross].] encontró que ~70% de los paquetes CRAN usan una licencia copyleft y ~20% usa una licencia permisiva. Esto significa que obtener la licencia de su paquete R requiere un poco más de cuidado que para otros lenguajes.
+
+== Código que escribes
+
+Comenzaremos hablando sobre el código que usted escribe y cómo otorgarle licencia para dejar en claro cómo quiere que la gente lo trate. Es importante utilizar una licencia porque, si no lo hace, se aplican las leyes de derechos de autor predeterminadas, lo que significa que nadie puede hacer una copia de su código sin su permiso expreso.
+
+En breve:
+
+* Si desea una licencia permisiva para que las personas puedan usar su código con restricciones mínimas, elija la https://choosealicense.com/licenses/mit/[licencia MIT] con `+use_mit_license()+`.
+* Si desea una licencia copyleft para que todos los derivados y paquetes de su código también sean de código abierto, elija la https://choosealicense.com/licenses/gpl-3.0/[licencia GPLv3] con `+use_gpl_license()+`.
+* Si su paquete contiene principalmente datos, no código, y desea restricciones mínimas, elija la https://choosealicense.com/licenses/cc0-1.0/[licencia CC0] con `+use_cc0_license()+`. O si desea solicitar atribución cuando se utilizan sus datos, elija la https://choosealicense.com/licenses/cc-by-4.0/[licencia CC BY] llamando a `+use_ccby_license()+`.
+* Si no desea que su código sea de código abierto, llame a `+use_proprietary_license()+`. CRAN no puede distribuir dichos paquetes.
+
+Volveremos con más detalles y presentaremos algunas otras licencias en <<sec-more-licenses>>.
+
+=== Archivos clave
+
+Hay tres archivos clave que se utilizan para registrar su decisión de concesión de licencia:
+
+* Cada licencia establece el campo `+License+` en `+DESCRIPTION+`. Contiene el nombre de la licencia en un formato estándar para que `+R CMD check+` y CRAN puedan verificarla automáticamente. Viene en cuatro formas principales:
+** Una especificación de nombre y versión, por ejemplo `+GPL (>= 2)+`, o `+Apache License (== 2.0)+`.
+** Una abreviatura estándar, por ejemplo `+GPL-2+`, `+LGPL-2.1+`, `+Artístico-2.0+`.
+** Un nombre de una "`plantilla`" de licencia y un archivo que contiene variables específicas. El caso más común es `+MIT + archivo LICENSE+`, donde el archivo `+LICENSE+` debe contener dos campos: el año y el titular de los derechos de autor.
+** Dirección al texto completo de una licencia no estándar, `+archivo LICENSE+`.
++
+Son posibles estructuras de concesión de licencias más complicadas, pero están fuera del alcance de este texto. Consulte la https://cran.rstudio.com/doc/manuals/r-devel/R-exts.html#Licensing[sección Licencias] de "`Escribir extensiones de R`" para obtener más detalles.
+* Como se describió anteriormente, el archivo `+LICENSE+` se utiliza de dos maneras. Algunas licencias son plantillas que requieren que se completen detalles adicionales en el archivo `+LICENSE+`. El archivo `+LICENSE+` también puede contener el texto completo de licencias no estándar y de código no abierto. No se le permite incluir el texto completo de las licencias estándar.
+* `+LICENSE.md+` incluye una copia del texto completo de la licencia. Todas las licencias de código abierto requieren que se incluya una copia de la licencia, pero CRAN no le permite incluir una copia de las licencias estándar en su paquete, por lo que también usamos `+.Rbuildignore+` para asegurarnos de que este archivo no se envíe a CRAN.
+
+Hay otro archivo al que volveremos en <<sec-how-to-include>>: `+LICENSE.note+`. Esto se utiliza cuando ha incluido código escrito por otras personas y partes de su paquete tienen licencias más permisivas que el conjunto.
+
+[[sec-more-licenses]]
+=== Más licencias para el código
+
+Le dimos el mínimo absoluto que necesita saber arriba. Pero vale la pena mencionar algunas licencias más importantes ordenadas aproximadamente de más permisivas a menos permisivas:
+
+* `+use_apache_license()+`: la https://choosealicense.com/licenses/apache-2.0/[Licencia Apache] es similar a la licencia MIT pero también incluye una concesión de patente explícita. Las patentes son otro componente de la propiedad intelectual distinto de los derechos de autor, y algunas organizaciones también se preocupan por la protección frente a las reclamaciones de patentes.
+* `+use_lgpl_license()+`: la https://choosealicense.com/licenses/lgpl-3.0/[LGPL] es un poco más débil que la GPL, lo que le permite agrupar código LPGL usando cualquier licencia para el trabajo más grande.
+* `+use_gpl_license():+` Ya hemos discutido la https://choosealicense.com/licenses/gpl-3.0/[GPL], pero hay un detalle importante a tener en cuenta: la GPL tiene dos versiones principales, GPLv2 y GPLv3, y no son compatibles (es decir, no se pueden agrupar códigos GPLv2 y GPLv3 en el mismo proyecto). Para evitar este problema, generalmente se recomienda licenciar su paquete como GPL >=2 o GPL >= 3 para que las versiones futuras de la licencia GPL también se apliquen a su código. Esto es lo que hace `+use_gpl_license()+` de forma predeterminada.
+* `+use_agpl_license()+`: La https://choosealicense.com/licenses/agpl-3.0/[AGPL] define la distribución para incluir la prestación de un servicio a través de una red, de modo que si utiliza el código AGPL para proporcionar un servicio web , todo el código incluido también debe ser de código abierto. Debido a que se trata de una exigencia considerablemente más amplia que la GPL, muchas empresas prohíben expresamente el uso del software AGPL.
+
+Hay muchas otras licencias disponibles. Para obtener una vista de alto nivel del espacio de licencias de código abierto y los detalles de las licencias individuales, recomendamos encarecidamente, que hemos utilizado en los enlaces anteriores. Para obtener más detalles sobre la concesión de licencias de paquetes R, recomendamos https://thinkr-open.github.io/licensing-r/[_Licensing R_] de Colin Fay. La principal desventaja de elegir una licencia que no está en la lista anterior es que menos usuarios de R entenderán lo que significa y les resultará más difícil usar su código.
+
+=== Licencias para datos
+
+Todas estas licencias están diseñadas específicamente para aplicarse al código fuente, por lo que si publica un paquete que contiene principalmente datos, debe utilizar un tipo diferente de licencia. Recomendamos una de las dos licencias http://creativecommons.org/[Creative Commons]:
+
+* Si desea que los datos estén disponibles lo más libremente posible, utilice la licencia CC0 con `+use_cc0_license()+`. Esta es una licencia permisiva equivalente a la licencia MIT, pero se aplica a los datos, no al código.footnote:[Si le preocupan las implicaciones de la licencia CC0 con respecto a las citas, es posible que le interese la publicación del blog de Dryad https://blog.datadryad.org%20/2011/10/05/por-que-la-dríada-usa-cc0/[¿Por qué Dryad usa CC0?].]
+* Si desea solicitar atribución cuando otra persona utiliza sus datos, puede utilizar la licencia CC-BY, con `+use_ccby_license()+`.
+
+=== Cambiar Licencia
+
+Cambiar su licencia después del hecho es difícil porque requiere el permiso de todos los titulares de derechos de autor y, a menos que haya tomado medidas especiales (más sobre eso a continuación), esto incluirá a todos los que hayan contribuido con una cantidad no trivial de código.
+
+Si necesita volver a obtener la licencia de un paquete, le recomendamos los siguientes pasos:
+
+[arabic]
+. Verifique el campo `+Authors@R+` en `+DESCRIPTION+` para confirmar que el paquete no contiene código empaquetado (del cual hablaremos en <<sec-code-you-bundle>>).
+. Encuentre a todos los contribuyentes consultando el historial de Git o la visualización de los contribuyentes en GitHub.
+. Opcionalmente, inspeccione las contribuciones específicas y elimine a las personas que solo contribuyeron con correcciones de errores tipográficos y similaresfootnote:[Las contribuciones muy simples, como las correcciones de errores tipográficos, generalmente no están protegidas por derechos de autor porque no son trabajos creativos. Pero incluso una sola frase puede considerarse un trabajo creativo, así que opte por la seguridad y, si tiene alguna duda, deje al colaborador.].
+. Pregunte a todos los contribuyentes si están de acuerdo con cambiar la licencia. Si todos los contribuyentes están en GitHub, la forma más sencilla de hacerlo es crear un problema en el que enumere a todos los contribuyentes y les pida que confirmen que están de acuerdo con el cambio.
+. Una vez que todos los titulares de derechos de autor lo hayan aprobado, realice el cambio llamando a la función de licencia correspondiente.
+
+Puede leer sobre cómo tidyverse siguió este proceso para unificarse en la licencia MIT en https://www.tidyverse.org/blog/2021/12/relicensing-packages/.
+
+[[sec-code-given-to-you]]
+== Código proporcionado a usted
+
+Muchos paquetes incluyen código no escrito por el autor. Hay dos formas principales en que esto sucede: otras personas pueden optar por contribuir a su paquete mediante una solicitud de extracción o algo similar, o usted puede encontrar algún código y optar por agruparlo. Esta sección analizará el código que otros le brindan y la siguiente sección analizará el código que usted incluye.
+
+Cuando alguien aporta código a su paquete mediante una solicitud de extracción o similar, puede asumir que el autor está contento con que su código use su licencia. Esto está explícito en los https://docs.github.com/en/github/site-policy/github-terms-of-service#6-contributions-under-repository-license[términos de servicio de GitHub], pero generalmente se considera verdadero independientemente de cómo se contribuya el código footnote:[Algunas organizaciones particularmente reacias al riesgo exigen que los contribuyentes proporcionen un https://developercertificate.org[certificado de origen de desarrollador], pero esto es relativamente raro en general y no lo hemos visto en el Comunidad R.].
+
+Sin embargo, el autor conserva los derechos de autor de su código, lo que significa que no puedes cambiar la licencia sin su permiso (más sobre esto en breve). Si desea conservar la capacidad de cambiar la licencia, necesita un "`acuerdo de licencia de colaborador`" explícito o CLA, donde el autor reasigna explícitamente los derechos de autor. Esto es más importante para proyectos duales de código abierto/comerciales porque permite fácilmente licencias duales en las que el código se pone a disposición del mundo con una licencia copyleft y para los clientes que pagan con una licencia diferente y más permisiva.
+
+También es importante reconocer la contribución y es una buena práctica ser generoso con el agradecimiento y la atribución. En tidyverse, solicitamos que todos los contribuyentes de código incluyan una viñeta en `+NEWS.md+` con su nombre de usuario de GitHub, y agradecemos a todos los contribuyentes en los anuncios de lanzamiento. Solo agregamos desarrolladores principalesfootnote:[https://stackoverflow.com/help/licensing] al archivo `+DESCRIPTION+`; pero algunos proyectos optan por agregar a todos los contribuyentes, sin importar cuán pequeños sean.
+
+[[sec-code-you-bundle]]
+== Código que empaquetas
+
+Hay tres razones comunes por las que podrías optar por incluir código escrito por otra persona:
+
+* Estás incluyendo la biblioteca CSS o JS de otra persona para crear una página web o widgets HTML útiles y atractivos. Shiny es un gran ejemplo de un paquete que hace esto ampliamente.
+* Estás proporcionando un contenedor R para una biblioteca C o C++ simple. (Para bibliotecas complejas de C/C++, normalmente no incluye el código en su paquete, sino que lo vincula a una copia instalada en otra parte del sistema).
+* Has copiado una pequeña cantidad de código R de otro paquete para evitar crear una dependencia. Generalmente, depender de otro paquete es lo correcto porque no necesita preocuparse por la licencia y automáticamente obtendrá correcciones de errores. Pero a veces sólo necesitas una cantidad muy pequeña de código de un paquete grande, y copiarlo y pegarlo en tu paquete es lo correcto.
+
+=== License compatibility
+
+Compatibilidad de licencia
+
+Antes de incluir el código de otra persona en su paquete, primero debe verificar que la licencia incluida sea compatible con su licencia. Al distribuir código, puede agregar restricciones adicionales, pero no puede eliminar restricciones, lo que significa que la compatibilidad de licencias no es simétrica. Por ejemplo, puede agrupar código con licencia MIT en un paquete con licencia GPL, pero no puede agrupar código con licencia GPL en un paquete con licencia MIT.
+
+Hay cinco casos principales a considerar:
+
+* Si su licencia y la de ellos son iguales: está bien agruparlas.
+* Si su licencia es MIT o BSD, está bien agruparla.
+* Si su código tiene una licencia copyleft y su código tiene una licencia permisiva, no puede agrupar su código. Deberá considerar un enfoque alternativo, ya sea buscar código con una licencia más permisiva o colocar el código externo en un paquete separado.
+* Si el código proviene de Stack Overflow, está licenciadofootnote:[https://stackoverflow.com/help/licensing] con la licencia Creative Common CC BY-SA, que solo es compatible con GPLv3footnote:[https://creativecommons.org/share-your-work/licensing-considerations/compatible-licenses/] . Esto significa que debe tener especial cuidado al utilizar el código Stack Overflow en paquetes de código abierto . . Obtenga más información en https://empirical-software.engineering/blog/so-snippets-in-gh-projects.
+* De lo contrario, tendrás que investigar un poco. Wikipedia tiene un [diagrama útil] (https://en.wikipedia.org/wiki/License_compatibility#Compatibility_of_FOSS_licenses) y Google es tu amigo. Es importante tener en cuenta que las diferentes versiones de la misma licencia no son necesariamente compatibles, por ejemplo GPLv2 y GPLv3 no son compatibles.
+
+Si su paquete no es de código abierto, las cosas son más complicadas. Las licencias permisivas siguen siendo fáciles y las licencias copyleft generalmente no restringen su uso siempre y cuando no distribuya el paquete fuera de su empresa. Pero este es un tema complejo y las opiniones difieren, y usted debe consultar primero con su departamento legal.
+
+[[sec-how-to-include]]
+=== Cómo incluir
+
+Una vez que haya determinado que las licencias son compatibles, puede traer el código en su paquete. Al hacerlo, debe preservar todas las declaraciones de licencia y derechos de autor existentes y facilitar al máximo que los futuros lectores comprendan la situación de la licencia:
+
+* Si incluye un fragmento de otro proyecto, generalmente es mejor colocar su propio archivo y asegurarse de que el archivo tenga declaraciones de derechos de autor y una descripción de la licencia en la parte superior.
+* Si incluye varios archivos, colóquelos en un directorio y coloque un archivo de licencia en ese directorio.
+
+También debe incluir algunos metadatos estándar en `+Authors@R+`. Debe utilizar `+role = "cph"+` para declarar que el autor es el titular de los derechos de autor, con un comentario, `+comment+`, que describa de qué es autor.
+
+Si realiza el envío a CRAN y el código incluido tiene una licencia diferente (pero compatible), también debe incluir un archivo `+LICENSE.note+` que describa la licencia general del paquete y las licencias específicas de cada componente individual. Por ejemplo, el paquete diffviewer incluye seis bibliotecas de Javascript, todas las cuales utilizan una licencia permisiva. https://github.com/r-lib/diffviewer/blob/main/DESCRIPTION[`+DESCRIPTION+`] enumera todos los titulares de derechos de autor y la https://github.com/%20r-lib/diffviewer/blob/main/LICENSE.note[`+LICENSE.nota+`] describe sus licencias. (Otros paquetes utilizan otras técnicas, pero creemos que este es el enfoque más simple que funcionará con CRAN).
+
+== Código que utilizas
+
+Obviamente, todo el código R que escribe utiliza R, y R tiene licencia GPL. ¿Eso significa que su código R siempre debe tener licencia GPL? No, y la Fundación R https://stat.ethz.ch/pipermail/r-devel/2009-May/053248.html[lo dejó claro] en 2009. De manera similar, es nuestra opinión personal que la licencia de su paquete no necesita ser compatible con las licencias de los paquetes R que usted simplemente usa llamando a sus funciones R exportadas (es decir, a través de `+Suggests+` o `+Imports+`).
+
+Las cosas son diferentes en otros lenguajes, como C, porque la creación de un ejecutable en C casi invariablemente termina copiando algún componente del código que usa en el ejecutable. Esto también puede surgir si su paquete R tiene código compilado y lo vincula (usando `+LinkingTo+` en su `+DESCRIPTION+`): necesitará investigar más para asegurarse de que su licencia sea compatible. Sin embargo, si solo está vinculando a R, generalmente puede obtener la licencia que desee porque los encabezados de R tienen licencia https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License[Lesser GPL].
+
+Por supuesto, cualquier usuario de su paquete tendrá que descargar todos los paquetes de los que depende su paquete (así como el propio R), por lo que aún tendrá que cumplir con los términos de esas licencias.
