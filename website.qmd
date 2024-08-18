@@ -155,7 +155,7 @@ Por defecto, la URL tiene esta forma general: `https://USERNAME.github.io/REPONA
 
 [^website-1]: A veces hay un pequeño retraso, así que espere un par de minutos para implementarlo.
 
-## ¿Ahora que?
+## ¿Ahora qué?
 
 Para un paquete típico, podría detenerse aquí, después de crear un sitio de pkgdown básico y organizar su reconstrucción e implementación con regularidad --- y las personas que usen (o consideren usar) su paquete se beneficiarían enormemente.
 Todo lo que pase más allá de este punto es "un placer tenerlo".

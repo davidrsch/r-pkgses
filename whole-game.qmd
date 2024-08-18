@@ -799,7 +799,7 @@ Además de cambiar la definición de la función, también actualizamos el encab
 
 ```{cat str-split-one-write, eval = create, class.source = "r"}
 #| engine.opts = list(file = path("R", "str_split_one.R"))
-#' dividir una cuerda
+#' dividir una cadena de caracteres
 #'
 #' @param string Un vector de caracteres con, como máximo, un elemento.
 #' @inheritParams stringr::str_split
