@@ -52,11 +52,11 @@ lobstr::mem_used()
 #> 74.51 MB
 library(nycflights13)
 lobstr::mem_used()
-#> 76.23 MB
+#> 76.24 MB
 
 invisible(flights)
 lobstr::mem_used()
-#> 116.93 MB
+#> 116.94 MB
 ----
 
 Le recomendamos que incluya `+LazyData: true+` en su `+DESCRIPTION+` si envía archivos `+.rda+` debajo de `+data/+`. Si utiliza `+use_data()+` para crear dichos conjuntos de datos, automáticamente realizará esta modificación en `+DESCRIPTION+` por usted.

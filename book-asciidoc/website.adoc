@@ -29,7 +29,7 @@ usethis::use_pkgdown()
 ----
 
 ....
-#> ✔ Setting active project to '/tmp/RtmpgBNera/mypackage'
+#> ✔ Setting active project to '/tmp/RtmpUWuVUi/mypackage'
 #> ✔ Adding '^_pkgdown\\.yml$', '^docs$', '^pkgdown$' to '.Rbuildignore'
 #> ✔ Adding 'docs' to '.gitignore'
 #> ✔ Writing '_pkgdown.yml'
@@ -51,11 +51,11 @@ pkgdown::build_site()
 ----
 
 ....
-#> ✔ Setting active project to '/tmp/RtmpgBNera/mypackage'
+#> ✔ Setting active project to '/tmp/RtmpUWuVUi/mypackage'
 #> ── Installing package mypackage into temporary library ─────────────
 #> ── Building pkgdown site for package mypackage ─────────────────────────────────
-#> Reading from: /tmp/RtmpgBNera/mypackage
-#> Writing to: /tmp/RtmpgBNera/mypackage/docs
+#> Reading from: /tmp/RtmpUWuVUi/mypackage
+#> Writing to: /tmp/RtmpUWuVUi/mypackage/docs
 #> ── Initialising site ───────────────────────────────────────────────────────────
 #> Copying
 #> ../../../home/runner/work/_temp/renv/cache/v5/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu/pkgdown/2.0.9/8bf1151ed1a48328d71b937e651117a6/pkgdown/BS5/assets/link.svg
@@ -128,7 +128,7 @@ Veamos qué hace realmente `+use_pkgdown_github_pages()+`:
 
 Después de la ejecución exitosa de `+use_pkgdown_github_pages()+`, debería poder visitar su nuevo sitio en la URL que se muestra en el resultado anterior.footnote:[A veces hay un pequeño retraso, así que espere un par de minutos para implementarlo.] Por defecto, la URL tiene esta forma general: `+https://USERNAME.github.io/REPONAME/+`.
 
-== ¿Ahora que?
+== ¿Ahora qué?
 
 Para un paquete típico, podría detenerse aquí, después de crear un sitio de pkgdown básico y organizar su reconstrucción e implementación con regularidad — y las personas que usen (o consideren usar) su paquete se beneficiarían enormemente. Todo lo que pase más allá de este punto es "`un placer tenerlo`".
 

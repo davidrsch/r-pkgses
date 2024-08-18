@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.555">
+<meta name="generator" content="quarto-1.5.56">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hadley Wickham y Jenny Bryan">
 <meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
-<title>Paquetes de R - 10&nbsp; Dependencias: mentalidad y antecedentes</title>
+<title>10&nbsp; Dependencias: mentalidad y antecedentes – Paquetes de R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -32,7 +32,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -104,13 +104,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./description.html">Metadatos del paquete</a></li><li class="breadcrumb-item"><a href="./dependencies-mindset-background.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Dependencias: mentalidad y antecedentes</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -121,7 +121,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <a href="./">Paquetes de R</a> 
         <div class="sidebar-tools-main">
     <div class="dropdown">
-      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label=""><i class="bi bi-github"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
 <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
@@ -170,9 +170,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Empezando</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -211,9 +211,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">Componentes de un paquete</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -240,9 +240,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Metadatos del paquete</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -275,9 +275,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Probar</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -304,9 +304,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text">Documentación</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -339,9 +339,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
  <span class="menu-text">Mantenimiento y distribución</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -374,9 +374,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text">Apéndices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -621,7 +621,7 @@ Envío a CRAN
 <span><span class="co">#&gt; function (x, na.rm = FALSE) </span></span>
 <span><span class="co">#&gt; sqrt(var(if (is.vector(x) || is.factor(x)) x else as.double(x), </span></span>
 <span><span class="co">#&gt;     na.rm = na.rm))</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x55dd4870d7b0&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x555934120a78&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:stats&gt;</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Se define en términos de otra función, <code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code>, también del paquete de estadísticas. Entonces, ¿qué sucede si anulamos <code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code> con nuestra propia definición? ¿Se rompe <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code>?</p>
@@ -699,7 +699,7 @@ useDynLib(testthat, .registration = TRUE)</code></pre>
 </ol>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-search-path-baseline" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Una cadena de entornos etiquetados. Cada entorno tiene una flecha que apunta a su entorno padre.">
+<div id="fig-search-path-baseline" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Una cadena de entornos etiquetados. Cada entorno tiene una flecha que apunta a su entorno padre.">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-search-path-baseline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="diagrams/search-path/search-path.png" class="img-fluid figure-img" style="width:50.0%" alt="Una cadena de entornos etiquetados. Cada entorno tiene una flecha que apunta a su entorno padre.">
 </div>
@@ -713,7 +713,7 @@ Figura&nbsp;10.1: Estado típico de la ruta de búsqueda.
 <p>Pero la sección intermedia de paquetes adjuntos es más dinámica. Cuando se adjunta un nuevo paquete, se inserta inmediatamente después y se convierte en el padre del entorno global. Cuando adjuntas otro paquete con <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>, cambia la ruta de búsqueda, como se muestra en <a href="#fig-search-path-insertion" class="quarto-xref">Figura&nbsp;<span>10.2</span></a>:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-search-path-insertion" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Una cadena de entornos etiquetados, con un paquete recién adjunto insertado como padre del entorno global.">
+<div id="fig-search-path-insertion" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Una cadena de entornos etiquetados, con un paquete recién adjunto insertado como padre del entorno global.">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-search-path-insertion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="diagrams/search-path/search-path-insertion.png" class="img-fluid figure-img" style="width:50.0%" alt="Una cadena de entornos etiquetados, con un paquete recién adjunto insertado como padre del entorno global.">
 </div>
@@ -737,7 +737,7 @@ Figura&nbsp;10.2: Se inserta un paquete recién adjunto en la ruta de búsqueda.
 <p><a href="#fig-function-environment" class="quarto-xref">Figura&nbsp;<span>10.3</span></a> representa la función <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code> como un rectángulo con un extremo redondeado. Las flechas de <code>paquete:stats</code> y <code>namespace:stats</code> muestran que <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code> está vinculado en ambos. Pero la relación no es simétrica. El círculo negro con una flecha que apunta hacia <code>namespace:stats</code> indica dónde <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code> buscará los objetos que necesita: en el entorno del espacio de nombres, no en el entorno del paquete.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-function-environment" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Una función que está vinculada al nombre `sd()` por dos entornos, el el entorno del paquete y el entorno del espacio de nombres, indicados por dos flechas. Pero la función en sí sólo vincula el entorno del espacio de nombres, indicado una sola flecha.">
+<div id="fig-function-environment" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Una función que está vinculada al nombre `sd()` por dos entornos, el el entorno del paquete y el entorno del espacio de nombres, indicados por dos flechas. Pero la función en sí sólo vincula el entorno del espacio de nombres, indicado una sola flecha.">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-function-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="diagrams/namespace/namespace-bind.png" class="img-fluid figure-img" style="width:60.0%" alt="Una función que está vinculada al nombre `sd()` por dos entornos, el el entorno del paquete y el entorno del espacio de nombres, indicados por dos flechas. Pero la función en sí sólo vincula el entorno del espacio de nombres, indicado una sola flecha.">
 </div>
@@ -758,7 +758,7 @@ Figura&nbsp;10.3: Una función exportada está vinculada en el entorno del paque
 </ul>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-namespace-environment" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Una cadena de entornos etiquetados. Cada entorno tiene una flecha que apunta a su entorno padre.">
+<div id="fig-namespace-environment" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Una cadena de entornos etiquetados. Cada entorno tiene una flecha que apunta a su entorno padre.">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-namespace-environment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="diagrams/namespace/namespace-env.png" class="img-fluid figure-img" style="width:100.0%" alt="Una cadena de entornos etiquetados. Cada entorno tiene una flecha que apunta a su entorno padre.">
 </div>
@@ -771,7 +771,7 @@ Figura&nbsp;10.4: El entorno del espacio de nombres tiene el entorno imports com
 <p>Finalmente, podemos juntarlo todo en este último diagrama, <a href="#fig-search-path-and-namespace" class="quarto-xref">Figura&nbsp;<span>10.5</span></a>. Esto muestra la ruta de búsqueda del usuario, en la parte inferior, y la ruta de búsqueda de estadísticas internas, en la parte superior.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-search-path-and-namespace" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Dos cadenas de entornos etiquetados, uno es la ruta de búsqueda del usuario y el el otro es el espacio de nombres del paquete (y sus padres).">
+<div id="fig-search-path-and-namespace" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Dos cadenas de entornos etiquetados, uno es la ruta de búsqueda del usuario y el el otro es el espacio de nombres del paquete (y sus padres).">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-search-path-and-namespace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="diagrams/namespace/namespace.png" class="img-fluid figure-img" style="width:100.0%" alt="Dos cadenas de entornos etiquetados, uno es la ruta de búsqueda del usuario y el el otro es el espacio de nombres del paquete (y sus padres).">
 </div>
@@ -791,7 +791,7 @@ Figura&nbsp;10.5: Para el código de usuario, los objetos se encuentran utilizan
 <li><p><strong>Adjuntar</strong> coloca el paquete en la ruta de búsqueda (<a href="#sec-dependencies-search-path-user" class="quarto-xref"><span>Sección 10.3.1</span></a>). No puede adjuntar un paquete sin cargarlo primero, por lo que <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> (o <code><a href="https://rdrr.io/r/base/library.html">require()</a></code>) cargan y luego adjuntan el paquete. Esto también ejecuta la función <code>.onAttach()</code>.</p></li>
 </ul>
 <p>Hay cuatro funciones que hacen que un paquete esté disponible, que se muestran en <a href="#tbl-load-vs-attach" class="quarto-xref">Tabla&nbsp;<span>10.1</span></a>. Se diferencian según si se cargan o adjuntan y qué sucede si no se encuentra el paquete (es decir, arroja un error o devuelve <code>FALSE</code>).</p>
-<div id="tbl-load-vs-attach" class="quarto-float anchored">
+<div id="tbl-load-vs-attach" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-load-vs-attach-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Tabla&nbsp;10.1: Funciones que cargan o adjuntan un paquete.
 </figcaption><div aria-describedby="tbl-load-vs-attach-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -959,18 +959,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1002,7 +991,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -1010,7 +1021,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {

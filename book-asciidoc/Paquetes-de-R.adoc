@@ -17,7 +17,7 @@ Este sitio web es y será siempre gratuito, con licencia bajo la Licencia https:
 
 Esta traducción de "`Paquetes de R`" es un proyecto personal de https://github.com/davidrsch[David Díaz Rodríguez] con el objetivo de facilitar el estudio de construcción de paquetes de R, tanto al propio traductor como a todas aquellas personas de habla hispana que deseen aprender sobre este tema.
 
-Señalar que esta es una traducción textual del libro por lo que cuando los autores se refieren así mismo en primera persona, serán Hadley Wickham & Jenny Bryan no el traductor.
+Señalar que esta es una traducción textual del libro por lo que cuando los autores se refieren a sí mismo en primera persona, serán Hadley Wickham & Jenny Bryan no el traductor.
 
 La traducción fue realizada usando Google Translate y fueron corregidos algunos errores gramaticales y de coherencia. Si detecta algún error relacionado con el contenido de la traducción, siéntase libre de abrir un issue o un pull request en este https://github.com/davidrsch/r-pkgses[repositorio].
 

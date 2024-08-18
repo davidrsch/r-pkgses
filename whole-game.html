@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.555">
+<meta name="generator" content="quarto-1.5.56">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hadley Wickham y Jenny Bryan">
 <meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
-<title>Paquetes de R - 1&nbsp; Todo el juego</title>
+<title>1&nbsp; Todo el juego – Paquetes de R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -32,7 +32,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -104,13 +104,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./whole-game.html">Empezando</a></li><li class="breadcrumb-item"><a href="./whole-game.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Todo el juego</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -121,7 +121,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <a href="./">Paquetes de R</a> 
         <div class="sidebar-tools-main">
     <div class="dropdown">
-      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label=""><i class="bi bi-github"></i></a>
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label=""><i class="bi bi-github"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
 <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://github.com/hadley/r-pkgs/">
@@ -170,9 +170,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Empezando</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -211,9 +211,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">Componentes de un paquete</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -240,9 +240,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Metadatos del paquete</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -275,9 +275,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
  <span class="menu-text">Probar</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -304,9 +304,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text">Documentación</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -339,9 +339,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
  <span class="menu-text">Mantenimiento y distribución</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -374,9 +374,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text">Apéndices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-expanded="true" aria-label="Alternar sección">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Alternar sección">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -504,8 +504,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Para la creación de este libro tenemos que trabajar en un directorio temporal, porque el libro está construido de forma no interactiva en la nube. Detrás de escena, estamos ejecutando nuestro propio comando <code><a href="https://usethis.r-lib.org/reference/create_package.html">create_package()</a></code>, pero no te sorprendas si nuestra salida difiere un poco de la tuya.</p>
 <div class="cell">
-<pre><code>#&gt; ✔ Creating '/tmp/RtmpFAvdYs/regexcite/'
-#&gt; ✔ Setting active project to '/tmp/RtmpFAvdYs/regexcite'
+<pre><code>#&gt; ✔ Creating '/tmp/Rtmp7lvu2B/regexcite/'
+#&gt; ✔ Setting active project to '/tmp/Rtmp7lvu2B/regexcite'
 #&gt; ✔ Creating 'R/'
 #&gt; ✔ Writing 'DESCRIPTION'
 #&gt; Package: regexcite
@@ -632,7 +632,7 @@ RStudio
 <th style="text-align: left;">message</th>
 </tr></thead>
 <tbody><tr class="odd">
-<td style="text-align: left;">4a73369e09…</td>
+<td style="text-align: left;">74535a62ac…</td>
 <td style="text-align: left;">Quarto GHA Workflow Runner <a href="mailto:quarto-github-actions-publish@example.com" class="email">quarto-github-actions-publish@example.com</a>
 </td>
 <td style="text-align: left;">Initial commit</td>
@@ -783,7 +783,7 @@ index 0000000..29efb88
 </div>
 <div class="cell">
 <pre><code>── R CMD check results ─────────────────── regexcite 0.0.0.9000 ────
-Duration: 5.6s
+Duration: 5.7s
 
 ❯ checking DESCRIPTION meta-information ... WARNING
   Non-standard license specification:
@@ -943,7 +943,7 @@ export(strsplit1)</code></pre>
 </div>
 <div class="cell">
 <pre><code>── R CMD check results ─────────────────── regexcite 0.0.0.9000 ────
-Duration: 7s
+Duration: 7.2s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔</code></pre>
 </div>
@@ -956,14 +956,14 @@ Duration: 7s
 </div>
 <div class="cell">
 <pre><code>── R CMD build ─────────────────────────────────────────────────────
-* checking for file ‘/tmp/RtmpFAvdYs/regexcite/DESCRIPTION’ ... OK
+* checking for file ‘/tmp/Rtmp7lvu2B/regexcite/DESCRIPTION’ ... OK
 * preparing ‘regexcite’:
 * checking DESCRIPTION meta-information ... OK
 * checking for LF line-endings in source and make files and shell scripts
 * checking for empty or unneeded directories
 * building ‘regexcite_0.0.0.9000.tar.gz’
 Running /opt/R/4.4.0/lib/R/bin/R CMD INSTALL \
-  /tmp/RtmpFAvdYs/regexcite_0.0.0.9000.tar.gz --install-tests 
+  /tmp/Rtmp7lvu2B/regexcite_0.0.0.9000.tar.gz --install-tests 
 * installing to library ‘/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu’
 * installing *source* package ‘regexcite’ ...
 ** using staged installation
@@ -1095,7 +1095,7 @@ RStudio
 <p>Recuerde: el trabajo del nombre del archivo es puramente aspiracional. ¡Aún necesitamos actualizar el contenido de estos archivos!</p>
 <p>Aquí están los contenidos actualizados de <code>R/str_split_one.R</code>. Además de cambiar la definición de la función, también actualizamos el encabezado de roxygen para reflejar los nuevos argumentos e incluir ejemplos que muestren las características de stringr.</p>
 <div class="cell">
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' dividir una cuerda</span></span>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' dividir una cadena de caracteres</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' @param string Un vector de caracteres con, como máximo, un elemento.</span></span>
 <span><span class="co">#' @inheritParams stringr::str_split</span></span>
@@ -1269,7 +1269,7 @@ str_split_one(y, pattern = stringr::fixed("."))
 <div class="cell">
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://devtools.r-lib.org/reference/build_rmd.html">build_readme</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Installing regexcite in temporary library</span></span>
-<span><span class="co">#&gt; ℹ Building '/tmp/RtmpFAvdYs/regexcite/README.Rmd'</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">#&gt; ℹ Building '/tmp/Rtmp7lvu2B/regexcite/README.Rmd'</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Puede ver el <code>README.md</code> renderizado simplemente <a href="https://github.com/jennybc/regexcite#readme">visitando regexcite en GitHub</a>.</p>
 <p>Finalmente, no olvides hacer una última confirmación. Y realiza un push, si estás usando GitHub.</p>
@@ -1282,7 +1282,7 @@ str_split_one(y, pattern = stringr::fixed("."))
 </div>
 <div class="cell">
 <pre><code>── R CMD check results ─────────────────── regexcite 0.0.0.9000 ────
-Duration: 8.2s
+Duration: 8.4s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔</code></pre>
 </div>
@@ -1292,7 +1292,7 @@ Duration: 8.2s
 </div>
 <div class="cell">
 <pre><code>── R CMD build ─────────────────────────────────────────────────────
-* checking for file ‘/tmp/RtmpFAvdYs/regexcite/DESCRIPTION’ ... OK
+* checking for file ‘/tmp/Rtmp7lvu2B/regexcite/DESCRIPTION’ ... OK
 * preparing ‘regexcite’:
 * checking DESCRIPTION meta-information ... OK
 * checking for LF line-endings in source and make files and shell scripts
@@ -1300,7 +1300,7 @@ Duration: 8.2s
 Removed empty directory ‘regexcite/tests/testthat/_snaps’
 * building ‘regexcite_0.0.0.9000.tar.gz’
 Running /opt/R/4.4.0/lib/R/bin/R CMD INSTALL \
-  /tmp/RtmpFAvdYs/regexcite_0.0.0.9000.tar.gz --install-tests 
+  /tmp/Rtmp7lvu2B/regexcite_0.0.0.9000.tar.gz --install-tests 
 * installing to library ‘/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu’
 * installing *source* package ‘regexcite’ ...
 ** using staged installation
@@ -1321,7 +1321,7 @@ Running /opt/R/4.4.0/lib/R/bin/R CMD INSTALL \
 <p>Este capítulo está destinado a darle una idea del flujo de trabajo típico de desarrollo de paquetes, resumido como un diagrama en <a href="#fig-package-dev-workflow" class="quarto-xref">Figura&nbsp;<span>1.1</span></a>. Todo lo que ve aquí se ha abordado en este capítulo, con la excepción de las Acciones de GitHub, sobre las cuales aprenderá más en <a href="software-development-practices.html#sec-sw-dev-practices-gha" class="quarto-xref"><span>Sección 20.2.1</span></a>.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-package-dev-workflow" class="quarto-figure quarto-figure-center quarto-float anchored" alt="Diagrama que presenta 4 funciones clave en el flujo de trabajo de devtools: load_all(), test(), document() y check(). Cada uno es parte de uno o más bucles indicados por flechas, que representan el proceso típico de editar código, pruebas o documentación, luego de probar ese código, ejecutar pruebas o obtener una vista previa de la documentación. check() se conecta externamente a `git commit`, `git push` y GitHub Actions.">
+<div id="fig-package-dev-workflow" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Diagrama que presenta 4 funciones clave en el flujo de trabajo de devtools: load_all(), test(), document() y check(). Cada uno es parte de uno o más bucles indicados por flechas, que representan el proceso típico de editar código, pruebas o documentación, luego de probar ese código, ejecutar pruebas o obtener una vista previa de la documentación. check() se conecta externamente a `git commit`, `git push` y GitHub Actions.">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-package-dev-workflow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="diagrams/workflow.png" class="img-fluid figure-img" alt="Diagrama que presenta 4 funciones clave en el flujo de trabajo de devtools: load_all(), test(), document() y check(). Cada uno es parte de uno o más bucles indicados por flechas, que representan el proceso típico de editar código, pruebas o documentación, luego de probar ese código, ejecutar pruebas o obtener una vista previa de la documentación. check() se conecta externamente a `git commit`, `git push` y GitHub Actions.">
 </div>
@@ -1461,18 +1461,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1504,7 +1493,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -1512,7 +1523,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {
