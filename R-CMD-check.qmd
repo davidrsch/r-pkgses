@@ -4,20 +4,11 @@
 source("common.R")
 ```
 
-`R CMD check` se compone de más de 50 controles individuales, que se describen en las siguientes secciones.
-Para cada verificación, describimos brevemente qué hace, cuáles son los problemas más comunes y cómo solucionarlos.
-Cuando tenga un problema con `R CMD check` y no sepa cómo solucionarlo, utilice esta lista para descubrir qué debe hacer.
-Para que sea más fácil comprender cómo encajan los cheques, los hemos organizado en secciones que corresponden aproximadamente a los capítulos de este libro.
-Esto significa que estarán en un orden algo diferente al que verá cuando ejecute `devtools::check()`, que es nuestra forma principal de ejecutar `R CMD check`.
+`R CMD check` se compone de más de 50 controles individuales, que se describen en las siguientes secciones. Para cada verificación, describimos brevemente qué hace, cuáles son los problemas más comunes y cómo solucionarlos. Cuando tenga un problema con `R CMD check` y no sepa cómo solucionarlo, utilice esta lista para descubrir qué debe hacer. Para que sea más fácil comprender cómo encajan los cheques, los hemos organizado en secciones que corresponden aproximadamente a los capítulos de este libro. Esto significa que estarán en un orden algo diferente al que verá cuando ejecute `devtools::check()`, que es nuestra forma principal de ejecutar `R CMD check`.
 
-Si este capítulo no coincide con lo que está viendo, considere que las comprobaciones pueden haber cambiado desde que se redactó.
-R continúa evolucionando, incluida la `R CMD check`.
-Quizás desee consultar la versión en línea más reciente de este capítulo: <https://r-pkgs.org/r-cmd-check.html>.
-[Abra un problema](https://github.com/hadley/r-pkgs/issues/new) si encuentra un problema con el que este capítulo no ayuda.
+Si este capítulo no coincide con lo que está viendo, considere que las comprobaciones pueden haber cambiado desde que se redactó. R continúa evolucionando, incluida la `R CMD check`. Quizás desee consultar la versión en línea más reciente de este capítulo: <https://r-pkgs.org/r-cmd-check.html>. [Abra un problema](https://github.com/hadley/r-pkgs/issues/new) si encuentra un problema con el que este capítulo no ayuda.
 
-Al final (@sec-r-cmd-check-informational-notes), destacamos algunas NOTAS que surgen durante la "verificación de R CMD" que no requieren ninguna respuesta por su parte.
-En general, recomendamos eliminar todas las NOTAS, especialmente para los paquetes destinados a CRAN, pero hay un pequeño puñado de NOTAS que realmente son informativas.
-Son la excepción a la regla.
+Al final (@sec-r-cmd-check-informational-notes), destacamos algunas NOTAS que surgen durante la "verificación de R CMD" que no requieren ninguna respuesta por su parte. En general, recomendamos eliminar todas las NOTAS, especialmente para los paquetes destinados a CRAN, pero hay un pequeño puñado de NOTAS que realmente son informativas. Son la excepción a la regla.
 
 ## Verificar metadatos
 
@@ -68,43 +59,27 @@ A continuación, se analiza el archivo `DESCRIPTION` y se imprime la versión y 
 
 <!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3459 -->
 
--   **Comprobando el tamaño del paquete instalado**.
-    Es fácil incluir accidentalmente archivos grandes que aumentan el tamaño de su paquete.
-    Esta verificación garantiza que todo el paquete tenga menos de 5 MB y que cada subdirectorio tenga menos de 1 MB.
-    Si ve este mensaje, verifique que no haya incluido accidentalmente un archivo grande.
+-   **Comprobando el tamaño del paquete instalado**. Es fácil incluir accidentalmente archivos grandes que aumentan el tamaño de su paquete. Esta verificación garantiza que todo el paquete tenga menos de 5 MB y que cada subdirectorio tenga menos de 1 MB. Si ve este mensaje, verifique que no haya incluido accidentalmente un archivo grande.
 
-    Si lo envía a CRAN, deberá justificar el tamaño de su paquete.
-    Primero, asegúrese de que el paquete sea lo más pequeño posible: intente recomprimir los datos, @sec-data-data-raw; y minimizando viñetas, @sec-vignettes.
-    Si todavía es demasiado grande, considere mover los datos a su propio paquete.
+    Si lo envía a CRAN, deberá justificar el tamaño de su paquete. Primero, asegúrese de que el paquete sea lo más pequeño posible: intente recomprimir los datos, @sec-data-data-raw; y minimizando viñetas, @sec-vignettes. Si todavía es demasiado grande, considere mover los datos a su propio paquete.
 
 <!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L746 -->
 
--   **Comprobando archivos de nivel superior**.
-    Solo se permiten archivos y directorios específicos en el nivel superior del paquete (por ejemplo, `DESCRIPTION`, `R/`, `src/`).
-    Para incluir otros archivos, tiene dos opciones:
+-   **Comprobando archivos de nivel superior**. Solo se permiten archivos y directorios específicos en el nivel superior del paquete (por ejemplo, `DESCRIPTION`, `R/`, `src/`). Para incluir otros archivos, tiene dos opciones:
 
     -   Si no es necesario instalarlos (es decir, solo se usan para tareas de desarrollo), agréguelos a `.Rbuildignore` con `usethis::use_build_ignore()`.
 
-    -   Si es necesario instalarlos: muévalos a `inst/`.
-        Se moverán nuevamente al directorio de paquetes de nivel superior cuando se instalen.
-        Obtenga más información en @sec-misc-inst.
+    -   Si es necesario instalarlos: muévalos a `inst/`. Se moverán nuevamente al directorio de paquetes de nivel superior cuando se instalen. Obtenga más información en @sec-misc-inst.
 
 <!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L924 -->
 
 -   **Comprobando subdirectorios de paquetes**.
 
-    -   No incluya ningún directorio vacío.
-        Por lo general, estos se eliminan automáticamente con `R CMD build`, por lo que no deberías ver este error.
-        Si lo hace, simplemente elimine el directorio vacío.
+    -   No incluya ningún directorio vacío. Por lo general, estos se eliminan automáticamente con `R CMD build`, por lo que no deberías ver este error. Si lo hace, simplemente elimine el directorio vacío.
 
-    -   Es importante el caso de archivos y directorios.
-        Todos los subdirectorios deben estar en minúsculas, excepto `R/`.
-        Un archivo de cita, si está presente, debe estar en `inst/CITATION`.
-        Cambie el nombre según sea necesario.
+    -   Es importante el caso de archivos y directorios. Todos los subdirectorios deben estar en minúsculas, excepto `R/`. Un archivo de cita, si está presente, debe estar en `inst/CITATION`. Cambie el nombre según sea necesario.
 
-    -   El contenido de `inst/` no debe chocar con el contenido de nivel superior del paquete, como `data/` o `R/`.
-        Si es así, cambie el nombre de sus archivos/directorios.
-        Obtenga más información en @sec-misc-inst.
+    -   El contenido de `inst/` no debe chocar con el contenido de nivel superior del paquete, como `data/` o `R/`. Si es así, cambie el nombre de sus archivos/directorios. Obtenga más información en @sec-misc-inst.
 
 <!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L859 -->
 
@@ -116,75 +91,54 @@ A continuación, se analiza el archivo `DESCRIPTION` y se imprime la versión y 
 
 -   **Comprobando la metainformación de DESCRIPTION**.
 
-    -   La `DESCRIPTION` debe ser válida.
-        Es poco probable que vea este error, porque `devtools::load_all()` ejecuta la misma comprobación cada vez que recarga el paquete.
+    -   La `DESCRIPTION` debe ser válida. Es poco probable que vea este error, porque `devtools::load_all()` ejecuta la misma comprobación cada vez que recarga el paquete.
 
-    -   Si utiliza caracteres que no sean ASCII en la descripción, también debe especificar una codificación.
-        Sólo hay tres codificaciones que funcionan en todas las plataformas: latin1, latin2 y UTF-8.
-        Recomendamos encarecidamente UTF-8: `Codificación: UTF-8`.
-        Obtenga más información en @sec-data-non-ascii.
+    -   Si utiliza caracteres que no sean ASCII en la descripción, también debe especificar una codificación. Sólo hay tres codificaciones que funcionan en todas las plataformas: latin1, latin2 y UTF-8. Recomendamos encarecidamente UTF-8: `Codificación: UTF-8`. Obtenga más información en @sec-data-non-ascii.
 
-    -   La `License` debe hacer referencia a una licencia conocida (puede encontrar una lista completa en <https://svn.r-project.org/R/trunk/share/licenses/license.db>), o debe usar `file LICENSE` y ese archivo debe existir.
-        Lo más probable es que los errores aquí sean errores tipográficos.
-        Obtenga más información en @sec-license.
+    -   La `License` debe hacer referencia a una licencia conocida (puede encontrar una lista completa en <https://svn.r-project.org/R/trunk/share/licenses/license.db>), o debe usar `file LICENSE` y ese archivo debe existir. Lo más probable es que los errores aquí sean errores tipográficos. Obtenga más información en @sec-license.
 
-    -   Debes proporcionar `Autores@R` o `Authorz` y `Maintainer`.
-        Recibirá un error si ha especificado ambos, que puede solucionar eliminando el que no deseaba.
-        Obtenga más información en @sec-description-authors-at-r.
+    -   Debes proporcionar `Autores@R` o `Authorz` y `Maintainer`. Recibirá un error si ha especificado ambos, que puede solucionar eliminando el que no deseaba. Obtenga más información en @sec-description-authors-at-r.
 
 ```{=html}
 <!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3683
 tools:::.check_package_depends -->
 ```
+
 -   **Comprobación de dependencias de paquetes**.
 
     -   Todos los paquetes enumerados en `Depends`, `Imports` y `LinkingTo` deben estar instalados y se deben cumplir sus requisitos de versión; de lo contrario, no se podrá verificar su paquete.
 
-    -   Los paquetes enumerados en `Suggests` deben instalarse, a menos que haya configurado la variable de entorno `_R_CHECK_FORCE_SUGGESTS_` en un valor falso (por ejemplo, con `check(force_suggests = FALSE)`).
-        Esto resulta útil si algunos de los paquetes sugeridos no están disponibles en todas las plataformas.
+    -   Los paquetes enumerados en `Suggests` deben instalarse, a menos que haya configurado la variable de entorno `_R_CHECK_FORCE_SUGGESTS_` en un valor falso (por ejemplo, con `check(force_suggests = FALSE)`). Esto resulta útil si algunos de los paquetes sugeridos no están disponibles en todas las plataformas.
 
-    -   Una manera fácil de instalar cualquier dependencia faltante o desactualizada es ejecutar `devtools::install_deps(dependencies = TRUE)`.
-        Consulte también `pak::local_install_deps()` y `pak::local_install_dev_deps()`.
+    -   Una manera fácil de instalar cualquier dependencia faltante o desactualizada es ejecutar `devtools::install_deps(dependencies = TRUE)`. Consulte también `pak::local_install_deps()` y `pak::local_install_dev_deps()`.
 
-    -   Los paquetes R no pueden tener un ciclo de dependencias: es decir, si el paquete A requiere B, entonces B no puede requerir A (de lo contrario, ¿cuál cargarías primero?).
-        Si ve este error, deberá reconsiderar el diseño de su paquete.
-        Una solución sencilla es mover el paquete en conflicto de `Imports` o `Depends` a `Suggests`.
+    -   Los paquetes R no pueden tener un ciclo de dependencias: es decir, si el paquete A requiere B, entonces B no puede requerir A (de lo contrario, ¿cuál cargarías primero?). Si ve este error, deberá reconsiderar el diseño de su paquete. Una solución sencilla es mover el paquete en conflicto de `Imports` o `Depends` a `Suggests`.
 
     -   Cualquier paquete utilizado en `NAMESPACE` debe aparecer en uno de `Imports` (más comúnmente) o `Depends` (solo en casos especiales).
 
-    -   Cada paquete enumerado en `Depends` también debe importarse en `NAMESPACE` o accederse con `pkg::foo()`.
-        Si no hace esto, su paquete funcionará cuando esté adjunto a la ruta de búsqueda (con `library(mypackage)`) pero no funcionará cuando solo esté cargado (por ejemplo, `mypackage::foo()`).
+    -   Cada paquete enumerado en `Depends` también debe importarse en `NAMESPACE` o accederse con `pkg::foo()`. Si no hace esto, su paquete funcionará cuando esté adjunto a la ruta de búsqueda (con `library(mypackage)`) pero no funcionará cuando solo esté cargado (por ejemplo, `mypackage::foo()`).
 
 ```{=html}
 <!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L3561 
 tools:::.check_package_CRAN_incoming
 -->
 ```
--   **Comprobando la viabilidad entrante de CRAN**.
-    Estas comprobaciones solo se aplican si realiza el envío a CRAN.
 
-    -   Si envía un paquete nuevo, no puede usar el mismo nombre que un paquete existente.
-        Tendrás que pensar en un nuevo nombre.
+-   **Comprobando la viabilidad entrante de CRAN**. Estas comprobaciones solo se aplican si realiza el envío a CRAN.
 
-    -   Si envía una actualización, el número de versión debe ser superior a la versión actual de CRAN.
-        Actualice el campo `Version` en `DESCRIPTION`.
+    -   Si envía un paquete nuevo, no puede usar el mismo nombre que un paquete existente. Tendrás que pensar en un nuevo nombre.
+
+    -   Si envía una actualización, el número de versión debe ser superior a la versión actual de CRAN. Actualice el campo `Version` en `DESCRIPTION`.
 
     -   Si el responsable del paquete ha cambiado (incluso si es solo un cambio en la dirección de correo electrónico), el nuevo responsable debe enviarlo a CRAN y el antiguo responsable recibirá un correo electrónico solicitándole que confirme el cambio.
 
-    -   Debe utilizar una licencia estándar de código abierto, como se indica en <https://svn.r-project.org/R/trunk/share/licenses/license.db>.
-        No puede utilizar una licencia personalizada ya que CRAN no tiene los recursos legales para revisar los acuerdos personalizados.
+    -   Debe utilizar una licencia estándar de código abierto, como se indica en <https://svn.r-project.org/R/trunk/share/licenses/license.db>. No puede utilizar una licencia personalizada ya que CRAN no tiene los recursos legales para revisar los acuerdos personalizados.
 
-    -   El `Title` y la `Description` deben estar libres de errores ortográficos.
-        El título del paquete debe estar en mayúsculas y minúsculas.
-        Ni el título ni la descripción deben incluir el nombre de su paquete ni la palabra "paquete".
-        Vuelva a redactar su título y descripción según sea necesario.
+    -   El `Title` y la `Description` deben estar libres de errores ortográficos. El título del paquete debe estar en mayúsculas y minúsculas. Ni el título ni la descripción deben incluir el nombre de su paquete ni la palabra "paquete". Vuelva a redactar su título y descripción según sea necesario.
 
-    -   Si envía un paquete nuevo, siempre recibirá una "NOTA".
-        Esto recuerda a los mantenedores de CRAN que deben realizar algunas comprobaciones manuales adicionales.
+    -   Si envía un paquete nuevo, siempre recibirá una "NOTA". Esto recuerda a los mantenedores de CRAN que deben realizar algunas comprobaciones manuales adicionales.
 
-    -   Evite enviar múltiples versiones del mismo paquete en un corto período de tiempo.
-        CRAN prefiere como máximo un envío por mes.
-        Si necesita corregir un error importante, pida disculpas.
+    -   Evite enviar múltiples versiones del mismo paquete en un corto período de tiempo. CRAN prefiere como máximo un envío por mes. Si necesita corregir un error importante, pida disculpas.
 
 ## Namespace
 
@@ -216,19 +170,13 @@ tools:::.check_package_CRAN_incoming
 
 <!--- tools:::.check_packages_used --->
 
--   **Comprobación de dependencias en código R**.
-    Los errores aquí a menudo indican que olvidó declarar un paquete necesario en la `DESCRIPTION`.
-    Recuerde que nunca debe usar `require()` o `library()` dentro de un paquete; consulte @sec-description-imports-suggests, @sec-dependencies-mindset-background y @sec-dependencies-in-practice para obtener más información.
-    más detalles sobre las mejores prácticas.
+-   **Comprobación de dependencias en código R**. Los errores aquí a menudo indican que olvidó declarar un paquete necesario en la `DESCRIPTION`. Recuerde que nunca debe usar `require()` o `library()` dentro de un paquete; consulte @sec-description-imports-suggests, @sec-dependencies-mindset-background y @sec-dependencies-in-practice para obtener más información. más detalles sobre las mejores prácticas.
 
-    Alternativamente, es posible que haya utilizado accidentalmente `:::` para acceder a una función exportada desde un paquete.
-    Cambie a `::` en su lugar.
+    Alternativamente, es posible que haya utilizado accidentalmente `:::` para acceder a una función exportada desde un paquete. Cambie a `::` en su lugar.
 
 <!--- tools::checkS3methods --->
 
--   **Comprobación de la coherencia genérica/método de S3**.
-    Los métodos S3 deben tener una firma de función compatible con su genérico.
-    Esto significa que el método debe tener los mismos argumentos que su genérico, con una excepción: si el genérico incluye `...` el método puede tener argumentos adicionales.
+-   **Comprobación de la coherencia genérica/método de S3**. Los métodos S3 deben tener una firma de función compatible con su genérico. Esto significa que el método debe tener los mismos argumentos que su genérico, con una excepción: si el genérico incluye `...` el método puede tener argumentos adicionales.
 
     Una causa común de este error es definir métodos de impresión, porque el genérico `print()` contiene`...`:
 
@@ -261,42 +209,28 @@ tools:::.check_package_CRAN_incoming
      tools:::.check_depdef
      -->
 ```
--   **Comprobando el código R para detectar posibles problemas**.
-    Esta es una verificación compuesta para una amplia gama de problemas:
 
-    -   Las llamadas a `library.dynam()` (y `library.dynam.unload()`) deberían verse como `library.dynam("name")`, no como `library.dynam("name.dll")`.
-        Elimine la extensión para corregir este error.
+-   **Comprobando el código R para detectar posibles problemas**. Esta es una verificación compuesta para una amplia gama de problemas:
 
-    -   Coloque `library.dynam()` en `.onLoad()`, no en `.onAttach()`; coloque `packageStartupMessage()` en `.onAttach()`, no en `.onLoad()`.
-        Coloque `library.dynam.unload()` en `.onUnload()`.
-        Si utiliza alguna de estas funciones, asegúrese de que esté en el lugar correcto.
+    -   Las llamadas a `library.dynam()` (y `library.dynam.unload()`) deberían verse como `library.dynam("name")`, no como `library.dynam("name.dll")`. Elimine la extensión para corregir este error.
+
+    -   Coloque `library.dynam()` en `.onLoad()`, no en `.onAttach()`; coloque `packageStartupMessage()` en `.onAttach()`, no en `.onLoad()`. Coloque `library.dynam.unload()` en `.onUnload()`. Si utiliza alguna de estas funciones, asegúrese de que esté en el lugar correcto.
 
     -   No utilices `unlockBinding()` o `assignInNamespace()` para modificar objetos que no te pertenecen.
 
-    -   Se llama a `codetools::checkUsagePackage()` para comprobar que sus funciones no utilizan variables que no existen.
-        Esto a veces genera falsos positivos con funciones que usan evaluación no estándar (NSE), como `subset()` o `with()`.
-        Generalmente, creemos que debería evitar NSE en las funciones del paquete y, por lo tanto, evitar esta NOTA, pero si no puede, consulte `?globalVariables` para saber cómo suprimir esta NOTA.
+    -   Se llama a `codetools::checkUsagePackage()` para comprobar que sus funciones no utilizan variables que no existen. Esto a veces genera falsos positivos con funciones que usan evaluación no estándar (NSE), como `subset()` o `with()`. Generalmente, creemos que debería evitar NSE en las funciones del paquete y, por lo tanto, evitar esta NOTA, pero si no puede, consulte `?globalVariables` para saber cómo suprimir esta NOTA.
 
-    -   No está permitido utilizar `.Internal()` en un paquete.
-        Llame a la función contenedora de R o escriba su propia función de C.
-        (Si copia y pega la función C desde la base R, asegúrese de mantener el aviso de derechos de autor, use una licencia compatible con GPL-2 y incluya R-core en el campo `Authors@R`).
+    -   No está permitido utilizar `.Internal()` en un paquete. Llame a la función contenedora de R o escriba su propia función de C. (Si copia y pega la función C desde la base R, asegúrese de mantener el aviso de derechos de autor, use una licencia compatible con GPL-2 y incluya R-core en el campo `Authors@R`).
 
-    -   De manera similar, no se le permite usar `:::` para acceder a funciones no exportadas de otros paquetes.
-        Pídale al responsable del paquete que exporte la función que necesita o escriba su propia versión utilizando funciones exportadas.
-        Alternativamente, si las licencias son compatibles, puede copiar y pegar la función exportada en su propio paquete.
-        Si hace esto, recuerde actualizar `Authors@R`.
+    -   De manera similar, no se le permite usar `:::` para acceder a funciones no exportadas de otros paquetes. Pídale al responsable del paquete que exporte la función que necesita o escriba su propia versión utilizando funciones exportadas. Alternativamente, si las licencias son compatibles, puede copiar y pegar la función exportada en su propio paquete. Si hace esto, recuerde actualizar `Authors@R`.
 
-    -   No utilice `assign()` para modificar objetos en el entorno global.
-        Si necesita mantener el estado en todas las llamadas a funciones, cree su propio entorno, como se describe en @sec-data-state.
+    -   No utilice `assign()` para modificar objetos en el entorno global. Si necesita mantener el estado en todas las llamadas a funciones, cree su propio entorno, como se describe en @sec-data-state.
 
-    -   No utilices `attach()` en tu código.
-        En su lugar, haga referencia explícita a las variables.
+    -   No utilices `attach()` en tu código. En su lugar, haga referencia explícita a las variables.
 
-    -   No utilice `data()` sin especificar el argumento `envir`.
-        De lo contrario, los datos se cargarán en el entorno global.
+    -   No utilice `data()` sin especificar el argumento `envir`. De lo contrario, los datos se cargarán en el entorno global.
 
-    -   No utilice funciones obsoletas o obsoletas.
-        Actualice su código para usar las últimas versiones.
+    -   No utilice funciones obsoletas o obsoletas. Actualice su código para usar las últimas versiones.
 
     -   Debes usar `TRUE` y `FALSE` en tu código (y ejemplos), no `T` y `F`.
 
@@ -326,15 +260,12 @@ tools:::.check_package_compact_datasets
 tools:::.check_package_compact_sysdata
 -->
 ```
+
 -   **Comprobando el contenido del directorio 'data'**.
 
     -   El directorio de datos solo puede contener los tipos de archivos descritos en @sec-data-data.
 
-    -   Los archivos de datos pueden contener caracteres que no sean ASCII sólo si la codificación está configurada correctamente.
-        Por lo general, esto no debería ser un problema si está guardando archivos `.Rdata`.
-        Si ve este error, mire la `Codificación()` de cada columna en el marco de datos y asegúrese de que ninguna sea "desconocida".
-        (Por lo general, necesitarás solucionar este problema en algún momento del proceso de importación).
-        Obtenga más información en @sec-data-non-ascii.
+    -   Los archivos de datos pueden contener caracteres que no sean ASCII sólo si la codificación está configurada correctamente. Por lo general, esto no debería ser un problema si está guardando archivos `.Rdata`. Si ve este error, mire la `Codificación()` de cada columna en el marco de datos y asegúrese de que ninguna sea "desconocida". (Por lo general, necesitarás solucionar este problema en algún momento del proceso de importación). Obtenga más información en @sec-data-non-ascii.
 
     -   Si ha comprimido un archivo de datos con `bzip2` o `xz`, debe declarar al menos `Depende: R (>= 2.10)` en su `DESCRIPTION`.
 
@@ -342,8 +273,7 @@ tools:::.check_package_compact_sysdata
 
 ## Documentación
 
-Si está lidiando específicamente con problemas de documentación, es posible que pueda iterar más rápidamente usando `devtools::check_man()`, que intenta ejecutar solo el subconjunto relevante de comprobaciones.
-También llama automáticamente a `devtools::document()` por usted.
+Si está lidiando específicamente con problemas de documentación, es posible que pueda iterar más rápidamente usando `devtools::check_man()`, que intenta ejecutar solo el subconjunto relevante de comprobaciones. También llama automáticamente a `devtools::document()` por usted.
 
 <!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L1527 -->
 
@@ -371,12 +301,9 @@ También llama automáticamente a `devtools::document()` por usted.
 
 <!-- tools::checkDocFiles, tools::checkDocStyle -->
 
--   **Comprobando las secciones Rd `\usage`**.
-    Todos los argumentos deben estar documentados y todos los `@params` deben documentar un argumento existente.
-    Es posible que haya olvidado documentar un argumento, que haya olvidado eliminar la documentación de un argumento que eliminó o que haya escrito mal el nombre de un argumento.
+-   **Comprobando las secciones Rd `\usage`**. Todos los argumentos deben estar documentados y todos los `@params` deben documentar un argumento existente. Es posible que haya olvidado documentar un argumento, que haya olvidado eliminar la documentación de un argumento que eliminó o que haya escrito mal el nombre de un argumento.
 
-    Los métodos S3 y S4 necesitan usar marcas especiales `\S3method{}` y `\S4method{}` en el archivo Rd.
-    Roxygen2 generará esto automáticamente.
+    Los métodos S3 y S4 necesitan usar marcas especiales `\S3method{}` y `\S4method{}` en el archivo Rd. Roxygen2 generará esto automáticamente.
 
 <!-- tools:::.check_Rd_contents -->
 
@@ -398,9 +325,7 @@ También llama automáticamente a `devtools::document()` por usted.
 
 <!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L877 -->
 
--   **Comprobando información del índice**.
-    Si ha escrito demostraciones, cada demostración debe aparecer en `demo/00Index`.
-    El archivo debería verse así:
+-   **Comprobando información del índice**. Si ha escrito demostraciones, cada demostración debe aparecer en `demo/00Index`. El archivo debería verse así:
 
     ```         
     demo-name-without-extension  Demo description
@@ -430,6 +355,7 @@ También llama automáticamente a `devtools::document()` por usted.
  tools:::check_compiled_code
  -->
 ```
+
 -   **Comprobando el código compilado**. Comprueba que no estás utilizando ninguna función de C que no deberías.
 
 ## Pruebas
@@ -440,14 +366,9 @@ También llama automáticamente a `devtools::document()` por usted.
 
 <!-- https://github.com/wch/r-source/blob/trunk/src/library/tools/R/check.R#L2526 -->
 
--   **Comprobación de pruebas**.
-    Se ejecuta cada archivo en `tests/`.
-    Si ha seguido las instrucciones en @sec-testing-basics, tendrá al menos un archivo: `testthat.R`.
-    El resultado de `R CMD check` no suele ser tan útil, por lo que es posible que deba consultar el archivo de registro `package.Rcheck/tests/testthat.Rout`.
-    Corrija cualquier prueba fallida iterando con `devtools::test()`.
+-   **Comprobación de pruebas**. Se ejecuta cada archivo en `tests/`. Si ha seguido las instrucciones en @sec-testing-basics, tendrá al menos un archivo: `testthat.R`. El resultado de `R CMD check` no suele ser tan útil, por lo que es posible que deba consultar el archivo de registro `package.Rcheck/tests/testthat.Rout`. Corrija cualquier prueba fallida iterando con `devtools::test()`.
 
-    Ocasionalmente, puede tener un problema donde las pruebas pasan cuando se ejecutan interactivamente con `devtools::test()`, pero fallan cuando se ejecutan en `R CMD check`.
-    Esto generalmente indica que ha hecho una suposición errónea sobre el entorno de prueba y, a menudo, es difícil descifrarla.
+    Ocasionalmente, puede tener un problema donde las pruebas pasan cuando se ejecutan interactivamente con `devtools::test()`, pero fallan cuando se ejecutan en `R CMD check`. Esto generalmente indica que ha hecho una suposición errónea sobre el entorno de prueba y, a menudo, es difícil descifrarla.
 
 ## Viñetas
 
@@ -487,13 +408,11 @@ Este es un tema bastante complicado que también recibe una cobertura sustancial
 
 ## NOTAS que son informativas {#sec-r-cmd-check-informational-notes}
 
-Nuestro consejo general es eliminar todos los ERRORES, ADVERTENCIAS e incluso NOTAS que vea en "R CMD check".
-Pero hay algunas excepciones, es decir, hay un par de NOTAS que no necesita corregir (y, de hecho, probablemente no pueda corregir).
+Nuestro consejo general es eliminar todos los ERRORES, ADVERTENCIAS e incluso NOTAS que vea en "R CMD check". Pero hay algunas excepciones, es decir, hay un par de NOTAS que no necesita corregir (y, de hecho, probablemente no pueda corregir).
 
 ### Envío inicial de CRAN
 
-Cuando un paquete llega por primera vez a CRAN, siempre habrá una NOTA que alerta a los mantenedores de CRAN que se trata de un nuevo envío y que necesitarán realizar algunas comprobaciones adicionales.
-No puedes eliminar esta NOTA.
+Cuando un paquete llega por primera vez a CRAN, siempre habrá una NOTA que alerta a los mantenedores de CRAN que se trata de un nuevo envío y que necesitarán realizar algunas comprobaciones adicionales. No puedes eliminar esta NOTA.
 
 ```         
 * checking CRAN incoming feasibility ... NOTE
@@ -524,8 +443,6 @@ Result: NOTE
     Undeclared package ‘jsonlite’ in Rd xrefs
 ```
 
-Esto podría suceder si desea documentar algo relacionado con una dependencia indirecta estricta: hay una razón legítima para vincular un tema en el otro paquete y básicamente se garantiza su instalación.
-Por lo tanto, en la práctica, a menudo se obtienen más beneficios que daños de la referencia cruzada.
+Esto podría suceder si desea documentar algo relacionado con una dependencia indirecta estricta: hay una razón legítima para vincular un tema en el otro paquete y básicamente se garantiza su instalación. Por lo tanto, en la práctica, a menudo se obtienen más beneficios que daños de la referencia cruzada.
 
-Según nuestra experiencia, esta NOTA solo se ve en ciertos sabores de cheques CRAN y no en otros.
-Hasta ahora, los mantenedores de CRAN nunca nos han indicado que abordemos esta NOTA.
+Según nuestra experiencia, esta NOTA solo se ve en ciertos sabores de cheques CRAN y no en otros. Hasta ahora, los mantenedores de CRAN nunca nos han indicado que abordemos esta NOTA.

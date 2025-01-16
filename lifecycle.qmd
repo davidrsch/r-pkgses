@@ -4,8 +4,7 @@
 source("common.R")
 ```
 
-Este capítulo trata sobre la gestión de la evolución de su paquete.
-La parte más complicada de gestionar el cambio es equilibrar los intereses de varias partes interesadas:
+Este capítulo trata sobre la gestión de la evolución de su paquete. La parte más complicada de gestionar el cambio es equilibrar los intereses de varias partes interesadas:
 
 -   El mantenedor(es), que lo incluye a usted y posiblemente a otros, especialmente en el futuro.
 
@@ -13,20 +12,13 @@ La parte más complicada de gestionar el cambio es equilibrar los intereses de v
 
 -   Los usuarios futuros, que se espera que incluyan a los usuarios existentes, pero que potencialmente podrían incluir a muchas más personas.
 
-Es imposible optimizar para todas estas personas, todo el tiempo y al mismo tiempo.
-Así que describiremos cómo pensamos acerca de varias compensaciones.
-Incluso si tus prioridades difieren de las del equipo de tidyverse, este capítulo debería ayudarte a identificar los problemas que deseas considerar.
+Es imposible optimizar para todas estas personas, todo el tiempo y al mismo tiempo. Así que describiremos cómo pensamos acerca de varias compensaciones. Incluso si tus prioridades difieren de las del equipo de tidyverse, este capítulo debería ayudarte a identificar los problemas que deseas considerar.
 
-Muy pocos usuarios se quejan cuando un paquete gana funciones o se corrige un error.
-En cambio, hablaremos principalmente de los llamados cambios importantes, como eliminar una función o reducir las entradas aceptables para una función.
-En @sec-lifecycle-breaking-change-definition, exploramos cómo determinar si algo es un cambio importante o, de manera más realista, medir dónde se encuentra en un espectro de "ruptura".
-Aunque puede ser doloroso, a veces un cambio importante es beneficioso para la salud a largo plazo de un paquete (@sec-lifecycle-breaking-change-pros-cons).
+Muy pocos usuarios se quejan cuando un paquete gana funciones o se corrige un error. En cambio, hablaremos principalmente de los llamados cambios importantes, como eliminar una función o reducir las entradas aceptables para una función. En @sec-lifecycle-breaking-change-definition, exploramos cómo determinar si algo es un cambio importante o, de manera más realista, medir dónde se encuentra en un espectro de "ruptura". Aunque puede ser doloroso, a veces un cambio importante es beneficioso para la salud a largo plazo de un paquete (@sec-lifecycle-breaking-change-pros-cons).
 
-Dado que el cambio es inevitable, lo mejor que puede hacer por sus usuarios es comunicarse con claridad y ayudarlos a adaptarse al cambio.
-Varias prácticas trabajan juntas para lograr esto:
+Dado que el cambio es inevitable, lo mejor que puede hacer por sus usuarios es comunicarse con claridad y ayudarlos a adaptarse al cambio. Varias prácticas trabajan juntas para lograr esto:
 
--   Número de versión del paquete: la forma principal de cambio de cara al usuario es el lanzamiento del paquete (@sec-lifecycle-evolution).
-    Sea intencional sobre qué tipo de cambios se incluyen en, por ejemplo, una versión de parche versus una versión principal (@sec-lifecycle-version-number, @sec-lifecycle-release-type).
+-   Número de versión del paquete: la forma principal de cambio de cara al usuario es el lanzamiento del paquete (@sec-lifecycle-evolution). Sea intencional sobre qué tipo de cambios se incluyen en, por ejemplo, una versión de parche versus una versión principal (@sec-lifecycle-version-number, @sec-lifecycle-release-type).
 
 -   Etapa del ciclo de vida: sea explícito cuando una función o argumento se considere experimental, reemplazado o obsoleto, en contraposición a estable (el valor predeterminado asumido) (@sec-lifecycle-stages-and-package).
 
@@ -34,16 +26,9 @@ Varias prácticas trabajan juntas para lograr esto:
 
 ## Evolución del paquete {#sec-lifecycle-evolution}
 
-Primero debemos establecer una definición funcional de lo que significa que su paquete cambie.
-Técnicamente, se podría decir que el paquete ha cambiado cada vez que cambia cualquier archivo en su fuente.
-Sin embargo, este nivel de pedantería no es muy útil.
-El incremento más pequeño de cambio que sea significativo probablemente sea una confirmación de Git.
-Esto representa un estado específico del paquete fuente del que se puede hablar, instalar, comparar, someter a `R CMD check`, revertir, etc.
-En realidad, este nivel de granularidad sólo interesa a los desarrolladores.
-Pero los estados del paquete accesibles a través del historial de Git son realmente útiles para el mantenedor, por lo que si necesita algún estímulo para ser más intencional con sus confirmaciones, que sea así.
+Primero debemos establecer una definición funcional de lo que significa que su paquete cambie. Técnicamente, se podría decir que el paquete ha cambiado cada vez que cambia cualquier archivo en su fuente. Sin embargo, este nivel de pedantería no es muy útil. El incremento más pequeño de cambio que sea significativo probablemente sea una confirmación de Git. Esto representa un estado específico del paquete fuente del que se puede hablar, instalar, comparar, someter a `R CMD check`, revertir, etc. En realidad, este nivel de granularidad sólo interesa a los desarrolladores. Pero los estados del paquete accesibles a través del historial de Git son realmente útiles para el mantenedor, por lo que si necesita algún estímulo para ser más intencional con sus confirmaciones, que sea así.
 
-La señal principal de un cambio significativo es incrementar el número de versión del paquete y publicarlo, para alguna definición de lanzamiento, como publicar en CRAN (@sec-release).
-Recuerde que esta importante pieza de metadatos se encuentra en el campo `Version` del archivo `DESCRIPTION`:
+La señal principal de un cambio significativo es incrementar el número de versión del paquete y publicarlo, para alguna definición de lanzamiento, como publicar en CRAN (@sec-release). Recuerde que esta importante pieza de metadatos se encuentra en el campo `Version` del archivo `DESCRIPTION`:
 
 ``` yaml
 Package: usethis
@@ -52,8 +37,7 @@ Version: 2.1.6
 ...
 ```
 
-Si visita la página de inicio de CRAN para usar esto, puede acceder a su historial a través de *Downloads \> Old sources \> [use este archivo] (https://cran.r-project.org/src/contrib/Archive/usethis/) *.
-Eso enlaza a una carpeta de paquetes (@sec-bundled-package), que refleja la fuente de usethis para cada versión lanzada en CRAN, presentada en @tbl-usethis-versions:
+Si visita la página de inicio de CRAN para usar esto, puede acceder a su historial a través de *Downloads \> Old sources \> \[use este archivo\] (https://cran.r-project.org/src/contrib/Archive/usethis/)* . Eso enlaza a una carpeta de paquetes (@sec-bundled-package), que refleja la fuente de usethis para cada versión lanzada en CRAN, presentada en @tbl-usethis-versions:
 
 ```{r R.options = list(tidyverse.quiet = TRUE)}
 #| echo: false
@@ -66,27 +50,15 @@ cran_package_history("usethis") |>
   knitr::kable(row.names = FALSE)
 ```
 
-Este es el tipo de evolución de paquetes que abordaremos en este capítulo.
-En @sec-lifecycle-version-number, profundizaremos en el mundo de los números de versión de software, que es un tema más rico de lo que cabría esperar.
-R también tiene algunas reglas y herramientas específicas sobre los números de versión de los paquetes.
-Finalmente, explicaremos las convenciones que usamos para los números de versión de los paquetes tidyverse (@sec-lifecycle-version-number-tidyverse).
+Este es el tipo de evolución de paquetes que abordaremos en este capítulo. En @sec-lifecycle-version-number, profundizaremos en el mundo de los números de versión de software, que es un tema más rico de lo que cabría esperar. R también tiene algunas reglas y herramientas específicas sobre los números de versión de los paquetes. Finalmente, explicaremos las convenciones que usamos para los números de versión de los paquetes tidyverse (@sec-lifecycle-version-number-tidyverse).
 
-Pero primero, este es un buen momento para revisar un recurso que señalamos por primera vez en @sec-source-package, al presentar los diferentes estados de un paquete R.
-Recuerde que la organización (no oficial) "cran" en GitHub proporciona un historial de solo lectura de todos los paquetes CRAN.
-Por ejemplo, puede obtener una vista diferente de las versiones publicadas de usethis en <https://github.com/cran/usethis/>.
+Pero primero, este es un buen momento para revisar un recurso que señalamos por primera vez en @sec-source-package, al presentar los diferentes estados de un paquete R. Recuerde que la organización (no oficial) "cran" en GitHub proporciona un historial de solo lectura de todos los paquetes CRAN. Por ejemplo, puede obtener una vista diferente de las versiones publicadas de usethis en <https://github.com/cran/usethis/>.
 
-El archivo proporcionado por CRAN le permite descargar versiones anteriores de usethis como archivos `.tar.gz`, lo cual es útil si realmente desea tener en sus manos el código fuente de una versión anterior.
-Sin embargo, si solo desea verificar algo rápidamente sobre una versión o comparar dos versiones de usethis, el espejo de solo lectura de GitHub es mucho más útil.
-Cada confirmación en el historial de este repositorio representa una versión de CRAN, lo que facilita ver exactamente qué cambió: <https://github.com/cran/usethis/commits/HEAD>.
-Además, puede explorar el estado de todos los archivos fuente del paquete en cualquier versión específica, como [use la versión inicial de este en la versión 1.0.0](https://github.com/cran/usethis/tree/1.0.0)[ ^ciclo de vida-1].
+El archivo proporcionado por CRAN le permite descargar versiones anteriores de usethis como archivos `.tar.gz`, lo cual es útil si realmente desea tener en sus manos el código fuente de una versión anterior. Sin embargo, si solo desea verificar algo rápidamente sobre una versión o comparar dos versiones de usethis, el espejo de solo lectura de GitHub es mucho más útil. Cada confirmación en el historial de este repositorio representa una versión de CRAN, lo que facilita ver exactamente qué cambió: <https://github.com/cran/usethis/commits/HEAD>. Además, puede explorar el estado de todos los archivos fuente del paquete en cualquier versión específica, como [use la versión inicial de este en la versión 1.0.0](https://github.com/cran/usethis/tree/1.0.0)[^lifecycle-1].
 
-[^lifecycle-1]: Es inusual que una versión inicial sea la versión 1.0.0, pero recuerde que usethis se creó básicamente a partir de un paquete muy maduro (devtools).
+Esta información está técnicamente disponible en el repositorio donde realmente se desarrolla usethis (<https://github.com/r-lib/usethis>). BPero hay que trabajar mucho más para acercarse al nivel de las versiones de CRAN, en medio del desorden de los pequeños pasos incrementales en los que realmente se desarrolla el desarrollo. Estas tres vistas diferentes de la evolución de usethis son útiles para diferentes propósitos:
 
-Esta información está técnicamente disponible en el repositorio donde realmente se desarrolla usethis (<https://github.com/r-lib/usethis>).
-BPero hay que trabajar mucho más para acercarse al nivel de las versiones de CRAN, en medio del desorden de los pequeños pasos incrementales en los que realmente se desarrolla el desarrollo.
-Estas tres vistas diferentes de la evolución de usethis son útiles para diferentes propósitos:
-
--   <https://cran.r-project.org/src/contrib/Archive/usethis/>:  los paquetes empaquetados oficiales de CRAN.
+-   <https://cran.r-project.org/src/contrib/Archive/usethis/>: los paquetes empaquetados oficiales de CRAN.
 
 -   <https://github.com/cran/usethis/commits/HEAD>: el espejo CRAN no oficial de solo lectura, que se obtiene al desempaquetar los empaquetados de CRAN.
 
@@ -94,12 +66,7 @@ Estas tres vistas diferentes de la evolución de usethis son útiles para difere
 
 ## Número de versión del paquete {#sec-lifecycle-version-number}
 
-Formalmente, una versión de un paquete R es una secuencia de al menos dos números enteros separados por `.` o `-`.
-Por ejemplo, "1.0" y "0.9.1-10" son versiones válidas, pero "1" y "1.0-devel" no lo son.
-Base R ofrece la función `utils::package_version()`[^lifecycle-2] para analizar una cadena de versión de paquete en una clase S3 adecuada con el mismo nombre.
-Esta clase facilita hacer cosas como comparar versiones.
-
-[^lifecycle-2]: Podemos llamar a `package_version()` directamente aquí, pero en el código del paquete, debes usar el formulario `utils::package_version()` y enumerar el paquete de utilidades en `Imports`.
+Formalmente, una versión de un paquete R es una secuencia de al menos dos números enteros separados por `.` o `-`. Por ejemplo, "1.0" y "0.9.1-10" son versiones válidas, pero "1" y "1.0-devel" no lo son. Base R ofrece la función `package_version()` para analizar una cadena de versión de paquete en una clase S3 adecuada con el mismo nombre. Esta clase facilita hacer cosas como comparar versiones.
 
 ```{r}
 #| error: true
@@ -116,8 +83,7 @@ package_version("1.9") < package_version("1.9.2")
 package_version(c("1.9", "1.9.2")) < package_version("1.10")
 ```
 
-Los últimos ejemplos anteriores dejan en claro que R considera que la versión "1.9" es igual a "1.9.0" y menor que "1.9.2".
-Y tanto "1.9" como "1.9.2" son menores que "1.10", que debería considerar como la versión "uno punto diez", no "un punto uno cero".
+Los últimos ejemplos anteriores dejan en claro que R considera que la versión "1.9" es igual a "1.9.0" y menor que "1.9.2". Y tanto "1.9" como "1.9.2" son menores que "1.10", que debería considerar como la versión "uno punto diez", no "un punto uno cero".
 
 Si no estás seguro de que la clase `package_version` sea realmente necesaria, consulta este ejemplo:
 
@@ -126,11 +92,9 @@ Si no estás seguro de que la clase `package_version` sea realmente necesaria, c
 package_version("2.0") > package_version("10.0")
 ```
 
-La cadena `2.0` se considera mayor que la cadena `10.0`, porque el carácter `2` viene después del carácter `1`.
-Al analizar las cadenas de versión en objetos `package_version` adecuados, obtenemos la comparación correcta, es decir, que la versión `2.0` es menor que la versión `10.0`.
+La cadena `2.0` se considera mayor que la cadena `10.0`, porque el carácter `2` viene después del carácter `1`. Al analizar las cadenas de versión en objetos `package_version` adecuados, obtenemos la comparación correcta, es decir, que la versión `2.0` es menor que la versión `10.0`.
 
-R ofrece este soporte para trabajar con versiones de paquetes, porque es necesario, por ejemplo, determinar si se cumplen las dependencias del paquete (@sec-description-imports-suggests-minium-version).
-Debajo del capó, esta herramienta se utiliza para hacer cumplir las versiones mínimas registradas así en `DESCRIPTION`:
+R ofrece este soporte para trabajar con versiones de paquetes, porque es necesario, por ejemplo, determinar si se cumplen las dependencias del paquete (@sec-description-imports-suggests-minium-version). Debajo del capó, esta herramienta se utiliza para hacer cumplir las versiones mínimas registradas así en `DESCRIPTION`:
 
 ``` yaml
 Imports:
@@ -138,9 +102,9 @@ Imports:
     tidyr (>= 1.1.0)
 ```
 
-En su propio código, si necesita determinar qué versión de un paquete está instalada, use `utils::packageVersion()`[^lifecycle-3]:
+En su propio código, si necesita determinar qué versión de un paquete está instalada, use `utils::packageVersion()`[^lifecycle-2]:
 
-[^lifecycle-3]: Al igual que con `package_version()`, en el código del paquete, debes usar el formulario `utils::packageVersion()` y enumerar el paquete de utilidades en `Imports`.
+[^lifecycle-2]: Al igual que con `package_version()`, en el código del paquete, debes usar el formulario `utils::packageVersion()` y enumerar el paquete de utilidades en `Imports`.
 
 ```{r}
 packageVersion("usethis")
@@ -150,68 +114,35 @@ packageVersion("usethis") > package_version("10.0")
 packageVersion("usethis") > "10.0"
 ```
 
-El valor de retorno de `packageVersion()` tiene la clase `package_version` y, por lo tanto, está listo para compararse con otros números de versión.
-Tenga en cuenta el último ejemplo en el que parece que estamos comparando un número de versión con una cadena.
-¿Cómo podemos obtener el resultado correcto sin convertir explícitamente `10.0` a una versión de paquete?
-Resulta que esta conversión es automática siempre que uno de los comparadores tenga la clase `package_version`.
+El valor de retorno de `packageVersion()` tiene la clase `package_version` y, por lo tanto, está listo para compararse con otros números de versión. Tenga en cuenta el último ejemplo en el que parece que estamos comparando un número de versión con una cadena. ¿Cómo podemos obtener el resultado correcto sin convertir explícitamente `10.0` a una versión de paquete? Resulta que esta conversión es automática siempre que uno de los comparadores tenga la clase `package_version`.
 
 ## Convenciones de versión del paquete Tidyverse {#sec-lifecycle-version-number-tidyverse}
 
-R considera que `0.9.1-10` es una versión válida del paquete, pero nunca verás un número de versión como ese para un paquete tidyverse.
-Aquí está nuestro marco recomendado para administrar el número de versión del paquete:
+R considera que `0.9.1-10` es una versión válida del paquete, pero nunca verás un número de versión como ese para un paquete tidyverse. Aquí está nuestro marco recomendado para administrar el número de versión del paquete:
 
 -   Utilice siempre `.` como separador, nunca `-`.
 
--   Un número de versión publicada consta de tres números, `<principal>.<menor>.<parche>`.
-     Para el número de versión "1.9.2", "1" es el número principal, "9" es el número menor y "2" es el número de parche.
-     Nunca utilice versiones como `1.0`.
-     Explique siempre los tres componentes, "1.0.0".
+-   Un número de versión publicada consta de tres números, `<principal>.<menor>.<parche>`. Para el número de versión "1.9.2", "1" es el número principal, "9" es el número menor y "2" es el número de parche. Nunca utilice versiones como `1.0`. Explique siempre los tres componentes, "1.0.0".
 
--   Un paquete en desarrollo tiene un cuarto componente: la versión de desarrollo.
-     Esto debería comenzar en 9000.
-     El número 9000 es arbitrario, pero proporciona una señal clara de que hay algo diferente en este número de versión.
-     Hay dos razones para esta práctica: primero, la presencia de un cuarto componente hace que sea fácil saber si se trata de una versión publicada o en desarrollo.
-     Además, el uso del cuarto lugar significa que no estás limitado a cuál será la próxima versión lanzada.
-     `0.0.1`, `0.1.0` y `1.0.0` son todos mayores que `0.0.0.9000`.
+-   Un paquete en desarrollo tiene un cuarto componente: la versión de desarrollo. Esto debería comenzar en 9000. El número 9000 es arbitrario, pero proporciona una señal clara de que hay algo diferente en este número de versión. Hay dos razones para esta práctica: primero, la presencia de un cuarto componente hace que sea fácil saber si se trata de una versión publicada o en desarrollo. Además, el uso del cuarto lugar significa que no estás limitado a cuál será la próxima versión lanzada. `0.0.1`, `0.1.0` y `1.0.0` son todos mayores que `0.0.0.9000`.
 
-     Incrementar la versión de desarrollo, p.e. de `9000` a `9001`, si ha agregado una característica importante y usted (u otros) necesita poder detectar o requerir la presencia de esta característica.
-     Por ejemplo, esto puede suceder cuando dos paquetes se desarrollan en conjunto.
-     Generalmente esta es la única razón por la que nos molestamos en incrementar la versión de desarrollo.
-     Esto hace que las versiones en desarrollo sean especiales y, en cierto sentido, degeneradas.
-     Dado que no incrementamos el componente de desarrollo con cada confirmación de Git, el mismo número de versión del paquete se asocia con muchos estados diferentes del origen del paquete, entre versiones.
+    Incrementar la versión de desarrollo, p.e. de `9000` a `9001`, si ha agregado una característica importante y usted (u otros) necesita poder detectar o requerir la presencia de esta característica. Por ejemplo, esto puede suceder cuando dos paquetes se desarrollan en conjunto. Generalmente esta es la única razón por la que nos molestamos en incrementar la versión de desarrollo. Esto hace que las versiones en desarrollo sean especiales y, en cierto sentido, degeneradas. Dado que no incrementamos el componente de desarrollo con cada confirmación de Git, el mismo número de versión del paquete se asocia con muchos estados diferentes del origen del paquete, entre versiones.
 
-El consejo anterior está inspirado en parte en [Semantic Versioning](https://semver.org) y en [X.Org](https://www.x.org/releases/X11R7.7/doc/xorg- docs/Versions.html) esquemas de control de versiones.
-Léalos si desea comprender más sobre los estándares de control de versiones utilizados por muchos proyectos de código abierto.
-Pero debemos subrayar que nuestras prácticas están inspiradas en estos esquemas y están algo menos reglamentadas.
-Finalmente, sepa que otros mantenedores siguen diferentes filosofías sobre cómo administrar el número de versión del paquete.
+El consejo anterior está inspirado en parte en [Semantic Versioning](https://semver.org) y en [X.Org](https://www.x.org/releases/X11R7.7/doc/xorg-%20docs/Versions.html) esquemas de control de versiones. Léalos si desea comprender más sobre los estándares de control de versiones utilizados por muchos proyectos de código abierto. Pero debemos subrayar que nuestras prácticas están inspiradas en estos esquemas y están algo menos reglamentadas. Finalmente, sepa que otros mantenedores siguen diferentes filosofías sobre cómo administrar el número de versión del paquete.
 
 ## Compatibilidad con versiones anteriores y cambios importantes {#sec-lifecycle-breaking-change-definition}
 
-El número de versión de su paquete siempre aumenta, pero es más que un simple contador incremental: la forma en que el número cambia con cada versión puede transmitir información sobre la naturaleza de los cambios.
-La transición de 0.3.1 a 0.3.2, que es una versión de parche, tiene una vibra muy diferente de la transición de 0.3.2 a 1.0.0, que es una versión importante.
-Un número de versión de paquete también puede transmitir información sobre dónde se encuentra el paquete en su ciclo de vida.
-Por ejemplo, la versión 1.0.0 a menudo indica que la interfaz pública de un paquete se considera estable.
+El número de versión de su paquete siempre aumenta, pero es más que un simple contador incremental: la forma en que el número cambia con cada versión puede transmitir información sobre la naturaleza de los cambios. La transición de 0.3.1 a 0.3.2, que es una versión de parche, tiene una vibra muy diferente de la transición de 0.3.2 a 1.0.0, que es una versión importante. Un número de versión de paquete también puede transmitir información sobre dónde se encuentra el paquete en su ciclo de vida. Por ejemplo, la versión 1.0.0 a menudo indica que la interfaz pública de un paquete se considera estable.
 
-¿Cómo se decide qué tipo de lanzamiento realizar, es decir, qué componente(s) de la versión debería incrementar?
-Un concepto clave es si los cambios asociados son compatibles con versiones anteriores, lo que significa que el código preexistente seguirá "funcionando" con la nueva versión.
-Ponemos "trabajo" entre comillas, porque esta designación está abierta a cierta interpretación.
-Un intransigente podría entender que esto significa "el código funciona exactamente de la misma manera, en todos los contextos, para todas las entradas".
-Una interpretación más pragmática es que "el código todavía funciona, pero podría producir un resultado diferente en algunos casos extremos".
-Un cambio que no es compatible con versiones anteriores a menudo se describe como un cambio *importante*.
-Aquí vamos a hablar sobre cómo evaluar si un cambio se está rompiendo.
-En @sec-lifecycle-breaking-change-pros-cons hablaremos sobre cómo decidir si un cambio importante vale la pena.
+¿Cómo se decide qué tipo de lanzamiento realizar, es decir, qué componente(s) de la versión debería incrementar? Un concepto clave es si los cambios asociados son compatibles con versiones anteriores, lo que significa que el código preexistente seguirá "funcionando" con la nueva versión. Ponemos "trabajo" entre comillas, porque esta designación está abierta a cierta interpretación. Un intransigente podría entender que esto significa "el código funciona exactamente de la misma manera, en todos los contextos, para todas las entradas". Una interpretación más pragmática es que "el código todavía funciona, pero podría producir un resultado diferente en algunos casos extremos". Un cambio que no es compatible con versiones anteriores a menudo se describe como un cambio *importante*. Aquí vamos a hablar sobre cómo evaluar si un cambio se está rompiendo. En @sec-lifecycle-breaking-change-pros-cons hablaremos sobre cómo decidir si un cambio importante vale la pena.
 
-En la práctica, la compatibilidad con versiones anteriores no es una distinción clara.
-Es típico evaluar el impacto de un cambio desde varios ángulos:
+En la práctica, la compatibilidad con versiones anteriores no es una distinción clara. Es típico evaluar el impacto de un cambio desde varios ángulos:
 
--   Grado de cambio en el comportamiento.
-    El más extremo es convertir algo que solía ser posible en un error, es decir, imposible.
+-   Grado de cambio en el comportamiento. El más extremo es convertir algo que solía ser posible en un error, es decir, imposible.
 
--   Cómo encajan los cambios en el diseño del paquete.
-    Un cambio en una infraestructura de bajo nivel, como una utilidad a la que se llama en todas las funciones de cara al usuario, es más complicado que un cambio que sólo afecta a un parámetro de una única función.
+-   Cómo encajan los cambios en el diseño del paquete. Un cambio en una infraestructura de bajo nivel, como una utilidad a la que se llama en todas las funciones de cara al usuario, es más complicado que un cambio que sólo afecta a un parámetro de una única función.
 
--   Cuánto se ve afectado el uso existente.
-    Esta es una combinación de cuántos de sus usuarios percibirán el cambio y cuántos usuarios existentes hay para empezar.
+-   Cuánto se ve afectado el uso existente. Esta es una combinación de cuántos de sus usuarios percibirán el cambio y cuántos usuarios existentes hay para empezar.
 
 A continuación se muestran algunos ejemplos concretos de cambios radicales:
 
@@ -223,36 +154,23 @@ A continuación se muestran algunos ejemplos concretos de cambios radicales:
 
 Por el contrario, normalmente no se consideran rotos:
 
--   Agregar una función.
-    Advertencia: existe una pequeña posibilidad de que esto introduzca un conflicto en el código de usuario.
+-   Agregar una función. Advertencia: existe una pequeña posibilidad de que esto introduzca un conflicto en el código de usuario.
 
--   Agregar un argumento.
-    Advertencia: esto podría fallar por algún uso, p. si un usuario confía en la coincidencia de argumentos basada en la posición.
-    Esto también requiere cierto cuidado en una función que acepta "...".
+-   Agregar un argumento. Advertencia: esto podría fallar por algún uso, p. si un usuario confía en la coincidencia de argumentos basada en la posición. Esto también requiere cierto cuidado en una función que acepta "...".
 
 -   Incrementar el conjunto de entradas válidas.
 
--   Cambiar el texto de un método de impresión o error.
-    Advertencia: esto puede resultar problemático si otros paquetes dependen del suyo de manera frágil, como la creación de lógica o una prueba que se basa en un mensaje de error de su paquete.
+-   Cambiar el texto de un método de impresión o error. Advertencia: esto puede resultar problemático si otros paquetes dependen del suyo de manera frágil, como la creación de lógica o una prueba que se basa en un mensaje de error de su paquete.
 
--   Arreglando un error.
-    Advertencia: Realmente puede suceder que los usuarios escriban código que "depende" de un error.
-    A veces, dicho código tenía fallas desde el principio, pero el problema no se detectaba hasta que se solucionaba el error.
-    Otras veces esto muestra código que usa su paquete de una manera inesperada, es decir, no es necesariamente *incorrecto*, pero tampoco es *correcto*.
+-   Arreglando un error. Advertencia: Realmente puede suceder que los usuarios escriban código que "depende" de un error. A veces, dicho código tenía fallas desde el principio, pero el problema no se detectaba hasta que se solucionaba el error. Otras veces esto muestra código que usa su paquete de una manera inesperada, es decir, no es necesariamente *incorrecto*, pero tampoco es *correcto*.
 
-Si el razonamiento sobre el código fuera una forma confiable de evaluar cómo funcionará en la vida real, el mundo no tendría tanto software con errores.
-La mejor manera de evaluar las consecuencias de un cambio en su paquete es probarlo y ver qué sucede.
-Además de ejecutar sus propias pruebas, también puede ejecutar las pruebas de sus dependencias inversas y ver si el cambio propuesto rompe algo.
-El equipo de tidyverse tiene un conjunto bastante extenso de herramientas para ejecutar las llamadas comprobaciones de dependencia inversa (@sec-release-revdep-checks), donde ejecutamos `R CMD check` en todos los paquetes que dependen del nuestro.
-A veces utilizamos esta infraestructura para estudiar el impacto de un cambio potencial, es decir, las comprobaciones de dependencia inversa se pueden utilizar para guiar el desarrollo, no solo como una comprobación previa al lanzamiento de último minuto.
-Esto lleva a otra definición, profundamente pragmática, de un cambio radical:
+Si el razonamiento sobre el código fuera una forma confiable de evaluar cómo funcionará en la vida real, el mundo no tendría tanto software con errores. La mejor manera de evaluar las consecuencias de un cambio en su paquete es probarlo y ver qué sucede. Además de ejecutar sus propias pruebas, también puede ejecutar las pruebas de sus dependencias inversas y ver si el cambio propuesto rompe algo. El equipo de tidyverse tiene un conjunto bastante extenso de herramientas para ejecutar las llamadas comprobaciones de dependencia inversa (@sec-release-revdep-checks), donde ejecutamos `R CMD check` en todos los paquetes que dependen del nuestro. A veces utilizamos esta infraestructura para estudiar el impacto de un cambio potencial, es decir, las comprobaciones de dependencia inversa se pueden utilizar para guiar el desarrollo, no solo como una comprobación previa al lanzamiento de último minuto. Esto lleva a otra definición, profundamente pragmática, de un cambio radical:
 
 > Un cambio se interrumpe si hace que un paquete CRAN que anteriormente pasaba la "verificación R CMD" ahora falle Y el uso y comportamiento originales del paquete son correctos.
 
 Obviamente, esta es una definición estrecha e incompleta de cambio radical, pero al menos es relativamente fácil obtener datos sólidos.
 
-Esperemos que hayamos dejado claro que la compatibilidad con versiones anteriores no siempre es una distinción clara.
-Pero es de esperar que también hayamos proporcionado muchos criterios concretos a considerar al pensar si un cambio podría alterar el código de otra persona.
+Esperemos que hayamos dejado claro que la compatibilidad con versiones anteriores no siempre es una distinción clara. Pero es de esperar que también hayamos proporcionado muchos criterios concretos a considerar al pensar si un cambio podría alterar el código de otra persona.
 
 ## Lanzamiento mayor, menor o parche {#sec-lifecycle-release-type}
 
@@ -265,28 +183,17 @@ Recuerde que un número de versión tendrá una de estas formas, si sigue las co
 
 Si la versión actual del paquete es `0.8.1.9000`, estos son nuestros consejos sobre cómo elegir el número de versión para la próxima versión:
 
--   Incrementar `parche`, p.e. `0.8.2` para una **versión de parche**: ha corregido errores, pero no ha agregado ninguna característica nueva significativa y no hay cambios importantes.
-    Por ejemplo, si descubrimos un error que detiene el espectáculo poco después de un lanzamiento, realizaríamos un lanzamiento rápido de parche con la solución.
-    La mayoría de las versiones tendrán un número de parche 0.
+-   Incrementar `parche`, p.e. `0.8.2` para una **versión de parche**: ha corregido errores, pero no ha agregado ninguna característica nueva significativa y no hay cambios importantes. Por ejemplo, si descubrimos un error que detiene el espectáculo poco después de un lanzamiento, realizaríamos un lanzamiento rápido de parche con la solución. La mayoría de las versiones tendrán un número de parche 0.
 
--   Incremento `menor`, p.e. `0.9.0`, para una **versión menor**.
-    Una versión menor puede incluir correcciones de errores, nuevas funciones y cambios que sean compatibles con versiones anteriores[^lifecycle-4].
-    Este es el tipo de liberación más común.
-    Está perfectamente bien tener tantas versiones menores que necesites usar dos (¡o incluso tres!) dígitos, p. `1.17.0`.
+-   Incremento `menor`, p.e. `0.9.0`, para una **versión menor**. Una versión menor puede incluir correcciones de errores, nuevas funciones y cambios que sean compatibles con versiones anteriores[^lifecycle-3]. Este es el tipo de liberación más común. Está perfectamente bien tener tantas versiones menores que necesites usar dos (¡o incluso tres!) dígitos, p. `1.17.0`.
 
--   Incremento `mayor`, p.e. `1.0.0`, para una **versión principal**.
-    Este es el momento más adecuado para realizar cambios que no sean compatibles con versiones anteriores y que probablemente afecten a muchos usuarios.
-    La versión `1.0.0` tiene un significado especial y generalmente indica que su paquete tiene funciones completas con una API estable.
-	 
-[^lifecycle-4]: Para obtener una definición adecuadamente pragmática de "compatible con versiones anteriores".
+-   Incremento `mayor`, p.e. `1.0.0`, para una **versión principal**. Este es el momento más adecuado para realizar cambios que no sean compatibles con versiones anteriores y que probablemente afecten a muchos usuarios. La versión `1.0.0` tiene un significado especial y generalmente indica que su paquete tiene funciones completas con una API estable.
 
-La decisión más complicada que probablemente enfrentará es si un cambio está lo suficientemente "roto" como para merecer una versión importante.
-Por ejemplo, si realiza un cambio incompatible con API en una parte de su código que rara vez se usa, puede que no tenga sentido aumentar el número principal.
-Pero si corrige un error del que dependen muchas personas (¡sucede!), esas personas lo sentirán como un cambio radical.
-Es posible que una corrección de errores de este tipo merezca una versión importante.
+[^lifecycle-3]: Para obtener una definición adecuadamente pragmática de "compatible con versiones anteriores".
 
-Nos centramos principalmente en los cambios importantes, pero no olvidemos que a veces también agregas funciones nuevas e interesantes a tu paquete.
-Desde una perspectiva de marketing, probablemente desee guardarlos para un lanzamiento importante, porque es más probable que sus usuarios conozcan las novedades al leer una publicación de blog o "NOTICIAS".
+La decisión más complicada que probablemente enfrentará es si un cambio está lo suficientemente "roto" como para merecer una versión importante. Por ejemplo, si realiza un cambio incompatible con API en una parte de su código que rara vez se usa, puede que no tenga sentido aumentar el número principal. Pero si corrige un error del que dependen muchas personas (¡sucede!), esas personas lo sentirán como un cambio radical. Es posible que una corrección de errores de este tipo merezca una versión importante.
+
+Nos centramos principalmente en los cambios importantes, pero no olvidemos que a veces también agregas funciones nuevas e interesantes a tu paquete. Desde una perspectiva de marketing, probablemente desee guardarlos para un lanzamiento importante, porque es más probable que sus usuarios conozcan las novedades al leer una publicación de blog o "NOTICIAS".
 
 A continuación se muestran algunas publicaciones del blog de tidyverse que han acompañado a diferentes tipos de lanzamientos de paquetes:
 
@@ -298,11 +205,9 @@ A continuación se muestran algunas publicaciones del blog de tidyverse que han 
 
 ### Mecánica de la versión del paquete
 
-Su paquete debería comenzar con el número de versión `0.0.0.9000`.
-`usethis::create_package()` comienza con esta versión, de forma predeterminada.
+Su paquete debería comenzar con el número de versión `0.0.0.9000`. `usethis::create_package()` comienza con esta versión, de forma predeterminada.
 
-A partir de ese momento, puede usar `usethis::use_version()` para incrementar la versión del paquete.
-Cuando se llama de forma interactiva, sin argumentos, presenta un menú útil:
+A partir de ese momento, puede usar `usethis::use_version()` para incrementar la versión del paquete. Cuando se llama de forma interactiva, sin argumentos, presenta un menú útil:
 
 ```{r}
 #| eval: false
@@ -322,52 +227,27 @@ Además de incrementar `Version` en `DESCRIPTION` (@sec-description), `use_versi
 
 ## Pros y contras del cambio radical {#sec-lifecycle-breaking-change-pros-cons}
 
-La gran diferencia entre las versiones principales y menores es si el código es compatible con versiones anteriores o no.
-En el mundo del software en general, la idea es que una versión importante indique a los usuarios que puede contener cambios importantes y que solo deben actualizar cuando tengan la capacidad de abordar cualquier problema que surja.
+La gran diferencia entre las versiones principales y menores es si el código es compatible con versiones anteriores o no. En el mundo del software en general, la idea es que una versión importante indique a los usuarios que puede contener cambios importantes y que solo deben actualizar cuando tengan la capacidad de abordar cualquier problema que surja.
 
-La realidad es un poco diferente en la comunidad R, debido a la forma en que la mayoría de los usuarios gestionan la instalación de paquetes.
-Si somos honestos, la mayoría de los usuarios de R no administran las versiones de los paquetes de una manera muy intencional.
-Dada la forma en que funcionan `update.packages()` e `install.packages()`, es bastante fácil actualizar un paquete a una nueva versión principal sin quererlo, especialmente para las dependencias del paquete de destino.
-Esto, a su vez, puede provocar una exposición inesperada a cambios importantes en el código que anteriormente funcionaba.
-Este malestar tiene implicaciones tanto para los usuarios como para los mantenedores.
+La realidad es un poco diferente en la comunidad R, debido a la forma en que la mayoría de los usuarios gestionan la instalación de paquetes. Si somos honestos, la mayoría de los usuarios de R no administran las versiones de los paquetes de una manera muy intencional. Dada la forma en que funcionan `update.packages()` e `install.packages()`, es bastante fácil actualizar un paquete a una nueva versión principal sin quererlo, especialmente para las dependencias del paquete de destino. Esto, a su vez, puede provocar una exposición inesperada a cambios importantes en el código que anteriormente funcionaba. Este malestar tiene implicaciones tanto para los usuarios como para los mantenedores.
 
-Si es importante proteger un producto de datos contra cambios en las dependencias de su paquete R, recomendamos el uso de una biblioteca de paquetes específica del proyecto.
-En particular, nos gusta implementar este enfoque utilizando el [paquete renv](https://rstudio.github.io/renv/).
-Esto respalda un estilo de vida en el que la biblioteca de paquetes predeterminada de un usuario se administra de la forma habitual, algo desordenada.
-Pero cualquier proyecto que tenga un requisito específico y más alto de reproducibilidad se gestiona con renv.
-Esto evita que las actualizaciones de paquetes activadas por el trabajo en el proyecto A rompan el código del proyecto B y también ayuda con la colaboración y la implementación.
+Si es importante proteger un producto de datos contra cambios en las dependencias de su paquete R, recomendamos el uso de una biblioteca de paquetes específica del proyecto. En particular, nos gusta implementar este enfoque utilizando el [paquete renv](https://rstudio.github.io/renv/). Esto respalda un estilo de vida en el que la biblioteca de paquetes predeterminada de un usuario se administra de la forma habitual, algo desordenada. Pero cualquier proyecto que tenga un requisito específico y más alto de reproducibilidad se gestiona con renv. Esto evita que las actualizaciones de paquetes activadas por el trabajo en el proyecto A rompan el código del proyecto B y también ayuda con la colaboración y la implementación.
 
-Sospechamos que las bibliotecas y herramientas específicas de paquetes como renv están actualmente infrautilizadas en el mundo R.
-Es decir, muchos usuarios de R todavía usan una sola biblioteca de paquetes.
-Por lo tanto, los mantenedores de paquetes aún deben tener mucha precaución y cuidado cuando introducen cambios importantes, independientemente de lo que esté sucediendo con el número de versión.
-En @sec-lifecycle-stages-and-package, describimos cómo los paquetes tidyverse abordan esto, respaldados por herramientas en el paquete de ciclo de vida.
+Sospechamos que las bibliotecas y herramientas específicas de proyectos como renv están actualmente infrautilizadas en el mundo R. Es decir, muchos usuarios de R todavía usan una sola biblioteca de paquetes. Por lo tanto, los mantenedores de paquetes aún deben tener mucha precaución y cuidado cuando introducen cambios importantes, independientemente de lo que esté sucediendo con el número de versión. En @sec-lifecycle-stages-and-package, describimos cómo los paquetes tidyverse abordan esto, respaldados por herramientas en el paquete de ciclo de vida.
 
-Al igual que con las dependencias (@sec-dependencies-pros-cons), encontramos que el extremismo no es una postura muy productiva.
-La resistencia extrema a los cambios radicales supone un obstáculo importante para el desarrollo y el mantenimiento continuos.
-El código compatible con versiones anteriores tiende a ser más difícil de trabajar debido a la necesidad de mantener múltiples rutas para admitir la funcionalidad de versiones anteriores.
-Cuanto más se esfuerce por mantener la compatibilidad con versiones anteriores, más difícil será desarrollar nuevas funciones o corregir viejos errores.
-Esto, a su vez, puede desalentar la adopción por parte de nuevos usuarios y dificultar la contratación de nuevos contribuyentes.
-Por otro lado, si realiza cambios importantes constantemente, los usuarios se sentirán muy frustrados con su paquete y decidirán que están mejor sin él.
-Encuentra un punto medio feliz.
-Preocúpate por la compatibilidad con versiones anteriores, pero no dejes que eso te paralice.
+Al igual que con las dependencias (@sec-dependencies-pros-cons), encontramos que el extremismo no es una postura muy productiva. La resistencia extrema a los cambios radicales supone un obstáculo importante para el desarrollo y el mantenimiento continuos. El código compatible con versiones anteriores tiende a ser más difícil de trabajar debido a la necesidad de mantener múltiples rutas para admitir la funcionalidad de versiones anteriores. Cuanto más se esfuerce por mantener la compatibilidad con versiones anteriores, más difícil será desarrollar nuevas funciones o corregir viejos errores. Esto, a su vez, puede desalentar la adopción por parte de nuevos usuarios y dificultar la contratación de nuevos contribuyentes. Por otro lado, si realiza cambios importantes constantemente, los usuarios se sentirán muy frustrados con su paquete y decidirán que están mejor sin él. Encuentra un punto medio feliz. Preocúpate por la compatibilidad con versiones anteriores, pero no dejes que eso te paralice.
 
-La importancia de la compatibilidad con versiones anteriores es directamente proporcional a la cantidad de personas que utilizan su paquete: está intercambiando su tiempo y dolor por el de sus usuarios.
-Hay buenas razones para realizar cambios incompatibles con versiones anteriores.
-Una vez que haya decidido que es necesario, su principal prioridad es utilizar un proceso humano que respete a sus usuarios.
+La importancia de la compatibilidad con versiones anteriores es directamente proporcional a la cantidad de personas que utilizan su paquete: está intercambiando su tiempo y dolor por el de sus usuarios. Hay buenas razones para realizar cambios incompatibles con versiones anteriores. Una vez que haya decidido que es necesario, su principal prioridad es utilizar un proceso humano que respete a sus usuarios.
 
 ## Etapas del ciclo de vida y herramientas de soporte {#sec-lifecycle-stages-and-package}
 
-El enfoque del equipo de tidyverse para la evolución de paquetes se ha vuelto más estructurado y deliberado a lo largo de los años.
-Las herramientas y la documentación asociadas se encuentran en el paquete del ciclo de vida ([lifecycle.r-lib.org](https://lifecycle.r-lib.org/index.html)).
-El enfoque se basa en dos componentes principales:
+El enfoque del equipo de tidyverse para la evolución de paquetes se ha vuelto más estructurado y deliberado a lo largo de los años. Las herramientas y la documentación asociadas se encuentran en el paquete del ciclo de vida ([lifecycle.r-lib.org](https://lifecycle.r-lib.org/index.html)). El enfoque se basa en dos componentes principales:
 
 -   Etapas del ciclo de vida, que se pueden aplicar en diferentes niveles, es decir, a un argumento o función individual o a un paquete completo.
 
--   Convenciones y funciones a utilizar al realizar la transición de una función de una etapa del ciclo de vida a otra.
-    El proceso de desaprobación es el que exige mayor cuidado.
+-   Convenciones y funciones a utilizar al realizar la transición de una función de una etapa del ciclo de vida a otra. El proceso de desaprobación es el que exige mayor cuidado.
 
-No duplicaremos demasiada documentación del ciclo de vida aquí.
-En lugar de ello, destacamos los principios generales de la gestión del ciclo de vida y presentamos ejemplos específicos de "movimientos" exitosos del ciclo de vida.
+No duplicaremos demasiada documentación del ciclo de vida aquí. En lugar de ello, destacamos los principios generales de la gestión del ciclo de vida y presentamos ejemplos específicos de "movimientos" exitosos del ciclo de vida.
 
 ### Etapas del ciclo de vida e insignias
 
@@ -387,27 +267,17 @@ knitr::include_graphics("diagrams/lifecycle.svg")
 
 Las cuatro etapas del ciclo de vida son:
 
--   Estable.
-    Esta es la etapa predeterminada e indica que los usuarios deben sentirse cómodos confiando en una función o paquete.
-    Los cambios importantes deberían ser poco frecuentes y deberían ocurrir gradualmente, dando a los usuarios suficiente tiempo y orientación para adaptar su uso.
+-   Estable. Esta es la etapa predeterminada e indica que los usuarios deben sentirse cómodos confiando en una función o paquete. Los cambios importantes deberían ser poco frecuentes y deberían ocurrir gradualmente, dando a los usuarios suficiente tiempo y orientación para adaptar su uso.
 
--   Experimentales.
-    Esto es apropiado cuando se introduce una función por primera vez y el mantenedor se reserva el derecho de cambiarla sin mucho proceso de desaprobación.
-    Esta es la etapa implícita para cualquier paquete con una versión principal de "0", es decir, que aún no ha tenido una versión "1.0.0".
+-   Experimentales. Esto es apropiado cuando se introduce una función por primera vez y el mantenedor se reserva el derecho de cambiarla sin mucho proceso de desaprobación. Esta es la etapa implícita para cualquier paquete con una versión principal de "0", es decir, que aún no ha tenido una versión "1.0.0".
 
--   Obsoleto.
-    Esto se aplica a la funcionalidad cuya eliminación está prevista.
-    Inicialmente, todavía funciona, pero activa una advertencia de desactivación con información sobre las alternativas preferidas.
-    Después de un período de tiempo adecuado y con un cambio de versión adecuado, estas funciones normalmente se eliminan.
+-   Obsoleto. Esto se aplica a la funcionalidad cuya eliminación está prevista. Inicialmente, todavía funciona, pero activa una advertencia de desactivación con información sobre las alternativas preferidas. Después de un período de tiempo adecuado y con un cambio de versión adecuado, estas funciones normalmente se eliminan.
 
--   Reemplazado.
-    Esta es una versión más suave de obsoleta, donde la funcionalidad heredada se conserva como en una cápsula del tiempo.
-    Las funciones reemplazadas reciben solo un mantenimiento mínimo, como correcciones de errores críticos.
+-   Reemplazado. Esta es una versión más suave de obsoleta, donde la funcionalidad heredada se conserva como en una cápsula del tiempo. Las funciones reemplazadas reciben solo un mantenimiento mínimo, como correcciones de errores críticos.
 
 Puedes obtener mucho más detalle en `vignette("stages", package = "lifecycle")`.
 
-La etapa del ciclo de vida suele comunicarse mediante una insignia.
-Si desea utilizar insignias de ciclo de vida, llame a `usethis::use_lifecycle()` para realizar una configuración única:
+La etapa del ciclo de vida suele comunicarse mediante una insignia. Si desea utilizar insignias de ciclo de vida, llame a `usethis::use_lifecycle()` para realizar una configuración única:
 
 ```{r}
 #| include: false
@@ -436,8 +306,7 @@ unlink(temp_pkg)
 
 Esto le permite utilizar insignias de ciclo de vida en temas de ayuda y funciones de ciclo de vida, como se describe en el resto de esta sección.
 
-Para una función, incluya la insignia en su bloque `@description`.
-Así es como indicamos que `dplyr::top_n()` está reemplazado:
+Para una función, incluya la insignia en su bloque `@description`. Así es como indicamos que `dplyr::top_n()` está reemplazado:
 
 ```{r}
 #' Select top (or bottom) n rows (by value)
@@ -447,8 +316,7 @@ Así es como indicamos que `dplyr::top_n()` está reemplazado:
 #' `top_n()` has been superseded in favour of ...
 ```
 
-Para un argumento de función, incluya la insignia en la etiqueta `@param`.
-Así es como se documenta la obsolescencia de `readr::write_file(path =)`:
+Para un argumento de función, incluya la insignia en la etiqueta `@param`. Así es como se documenta la obsolescencia de `readr::write_file(path =)`:
 
 ```{r}
 #' @param path `r lifecycle::badge("deprecated")` Utilice el argumento `archivo`
@@ -457,17 +325,13 @@ Así es como se documenta la obsolescencia de `readr::write_file(path =)`:
 
 Llame a `usethis::use_lifecycle_badge()` si desea utilizar una insignia en `README` para indicar el ciclo de vida de un paquete completo (@sec-readme).
 
-Si el ciclo de vida de un paquete es estable, no es realmente necesario utilizar una insignia, ya que se supone que esa es la etapa predeterminada.
-De manera similar, normalmente solo usamos una insignia para una función si su etapa difiere de la del paquete asociado y de la misma manera para un argumento y la función asociada.
+Si el ciclo de vida de un paquete es estable, no es realmente necesario utilizar una insignia, ya que se supone que esa es la etapa predeterminada. De manera similar, normalmente solo usamos una insignia para una función si su etapa difiere de la del paquete asociado y de la misma manera para un argumento y la función asociada.
 
 ### Desuso de una función
 
-Si va a eliminar o realizar cambios importantes en una función, normalmente es mejor hacerlo en fases.
-Desuso es un término general para la situación en la que algo se desaconseja explícitamente, pero aún no se ha eliminado.
-Se exploran varios escenarios de desaprobación en `vignette("communicate", package = "lifecycle")`; Aquí solo vamos a cubrir la idea principal.
+Si va a eliminar o realizar cambios importantes en una función, normalmente es mejor hacerlo en fases. Desuso es un término general para la situación en la que algo se desaconseja explícitamente, pero aún no se ha eliminado. Se exploran varios escenarios de desaprobación en `vignette("communicate", package = "lifecycle")`; Aquí solo vamos a cubrir la idea principal.
 
-La función `lifecycle::deprecate_warn()` se puede usar dentro de una función para informar al usuario que está usando una característica obsoleta e, idealmente, para informarle sobre la alternativa preferida.
-En este ejemplo, la función `plus3()` está siendo reemplazada por `add3()`:
+La función `lifecycle::deprecate_warn()` se puede usar dentro de una función para informar al usuario que está usando una característica obsoleta e, idealmente, para informarle sobre la alternativa preferida. En este ejemplo, la función `plus3()` está siendo reemplazada por `add3()`:
 
 ```{r R.options = list("lifecycle:::calling_package" = "somepackage", "lifecycle_verbosity" = "warning")}
 # función nueva
@@ -484,50 +348,36 @@ plus3 <- function(x, y, z) {
 plus3(1, 2, 3)
 ```
 
-En este punto, un usuario que llama a `plus3()` ve una advertencia que explica que la función tiene un nuevo nombre, pero seguimos adelante y llamamos a `add3()` con sus entradas.
-El código preexistente todavía "funciona".
-En alguna versión importante futura, `plus3()` podría eliminarse por completo.
+En este punto, un usuario que llama a `plus3()` ve una advertencia que explica que la función tiene un nuevo nombre, pero seguimos adelante y llamamos a `add3()` con sus entradas. El código preexistente todavía "funciona". En alguna versión importante futura, `plus3()` podría eliminarse por completo.
 
 `lifecycle::deprecate_warn()` y sus amigos tienen algunas características que vale la pena destacar:
 
--   El mensaje de advertencia se crea a partir de entradas como "cuándo", "qué", "con" y "detalles", lo que proporciona a las advertencias de obsolescencia una forma predecible en diferentes funciones, paquetes y tiempos.
-    La intención es reducir la carga cognitiva de los usuarios que ya pueden estar algo estresados.
+-   El mensaje de advertencia se crea a partir de entradas como "cuándo", "qué", "con" y "detalles", lo que proporciona a las advertencias de obsolescencia una forma predecible en diferentes funciones, paquetes y tiempos. La intención es reducir la carga cognitiva de los usuarios que ya pueden estar algo estresados.
 
--   De forma predeterminada, solo se emite una advertencia específica una vez cada 8 horas, en un esfuerzo por causar la cantidad justa de molestia.
-    El objetivo es ser lo suficientemente molesto como para motivar al usuario a actualizar su código antes de que la función o el argumento desaparezca, pero no tan molesto como para arrojar su computadora al mar.
-    Cerca del final del proceso de desaprobación, el argumento "siempre" se puede establecer en "VERDADERO" para advertir en cada llamada.
+-   De forma predeterminada, solo se emite una advertencia específica una vez cada 8 horas, en un esfuerzo por causar la cantidad justa de molestia. El objetivo es ser lo suficientemente molesto como para motivar al usuario a actualizar su código antes de que la función o el argumento desaparezca, pero no tan molesto como para arrojar su computadora al mar. Cerca del final del proceso de desaprobación, el argumento "siempre" se puede establecer en "VERDADERO" para advertir en cada llamada.
 
--   Si usa `lifecycle::deprecate_soft()` (en lugar de `deprecate_warn()`), solo se emite una advertencia si la persona que lo lee es la que realmente puede hacer algo al respecto, es decir, actualizar el código infractor.
-    Si un usuario llama indirectamente a una función obsoleta, es decir, porque está usando un paquete que usa una función obsoleta, de forma predeterminada ese usuario no recibe una advertencia.
-    (Pero el mantenedor del paquete culpable verá estas advertencias en los resultados de sus pruebas).
+-   Si usa `lifecycle::deprecate_soft()` (en lugar de `deprecate_warn()`), solo se emite una advertencia si la persona que lo lee es la que realmente puede hacer algo al respecto, es decir, actualizar el código infractor. Si un usuario llama indirectamente a una función obsoleta, es decir, porque está usando un paquete que usa una función obsoleta, de forma predeterminada ese usuario no recibe una advertencia. (Pero el mantenedor del paquete culpable verá estas advertencias en los resultados de sus pruebas).
 
 Aquí hay un cronograma hipotético para eliminar una función `fun()`:
 
--   Versión del paquete `1.5.0`: `fun()` existe.
-    La etapa del ciclo de vida del paquete es estable, como lo indica su número de versión posterior a `1.0.0` y, tal vez, una insignia a nivel de paquete.
-    La etapa del ciclo de vida de `fun()` también es estable, por extensión, ya que no ha sido marcada específicamente como experimental.
+-   Versión del paquete `1.5.0`: `fun()` existe. La etapa del ciclo de vida del paquete es estable, como lo indica su número de versión posterior a `1.0.0` y, tal vez, una insignia a nivel de paquete. La etapa del ciclo de vida de `fun()` también es estable, por extensión, ya que no ha sido marcada específicamente como experimental.
 
--   Versión del paquete `1.6.0`: Comienza el proceso de desuso de `fun()`.
-    Insertamos una insignia en su tema de ayuda:
+-   Versión del paquete `1.6.0`: Comienza el proceso de desuso de `fun()`. Insertamos una insignia en su tema de ayuda:
 
     ```{r, eval = FALSE}
     #' @description
     #' `r lifecycle::badge("deprecated")`
     ```
 
-    En el cuerpo de `fun()`, agregamos una llamada a `lifecycle::deprecate_warn()` para informar a los usuarios sobre la situación.
-    De lo contrario, `fun()` sigue funcionando como siempre.
+    En el cuerpo de `fun()`, agregamos una llamada a `lifecycle::deprecate_warn()` para informar a los usuarios sobre la situación. De lo contrario, `fun()` sigue funcionando como siempre.
 
--   Versión del paquete `1.7.0` o `2.0.0`: `fun()` se elimina.
-    Si esto sucede en una versión menor o mayor dependerá del contexto, es decir, qué tan ampliamente se usa este paquete y función.
+-   Versión del paquete `1.7.0` o `2.0.0`: `fun()` se elimina. Si esto sucede en una versión menor o mayor dependerá del contexto, es decir, qué tan ampliamente se usa este paquete y función.
 
 Si está utilizando base R únicamente, las funciones `.Deprecated()` y `.Defunct()` son los sustitutos más cercanos de `lifecycle::deprecate_warn()` y sus amigas.
 
 ### Desuso de un argumento
 
-`lifecycle::deprecate_warn()` también es útil cuando se desaprueba un argumento.
-En este caso, también es útil utilizar `lifecycle::deprecated()` como valor predeterminado para el argumento obsoleto.
-Aquí continuamos con un ejemplo anterior, es decir, el cambio de `ruta` a `archivo` en `readr::write_file()`:
+`lifecycle::deprecate_warn()` también es útil cuando se desaprueba un argumento. En este caso, también es útil utilizar `lifecycle::deprecated()` como valor predeterminado para el argumento obsoleto. Aquí continuamos con un ejemplo anterior, es decir, el cambio de `ruta` a `archivo` en `readr::write_file()`:
 
 ```{r}
 #| eval: false
@@ -549,23 +399,15 @@ Esto es lo que ve un usuario si usa el argumento obsoleto:
 readr::write_file("hi", path = tempfile("lifecycle-demo-"))
 ```
 
-El uso de `deprecated()` como predeterminado logra dos cosas.
-Primero, si el usuario lee la documentación, esto es una fuerte señal de que un argumento está obsoleto.
-Pero `deprecated()` también tiene beneficios para el mantenedor del paquete.
-Dentro de la función afectada, puede usar `lifecycle::is_present()` para determinar si el usuario ha especificado el argumento obsoleto y proceder en consecuencia, como se muestra arriba.
+El uso de `deprecated()` como predeterminado logra dos cosas. Primero, si el usuario lee la documentación, esto es una fuerte señal de que un argumento está obsoleto. Pero `deprecated()` también tiene beneficios para el mantenedor del paquete. Dentro de la función afectada, puede usar `lifecycle::is_present()` para determinar si el usuario ha especificado el argumento obsoleto y proceder en consecuencia, como se muestra arriba.
 
 Si está utilizando base R únicamente, la función `missing()` tiene una superposición sustancial con `lifecycle::is_present()`, aunque puede ser más complicado solucionar problemas relacionados con los valores predeterminados.
 
 ### Ayudantes de desuso
 
-A veces, una desaprobación afecta el código en varios lugares y es complicado incorporar la lógica completa en todas partes.
-En este caso, puede crear un asistente interno para centralizar la lógica de desaprobación.
+A veces, una desaprobación afecta el código en varios lugares y es complicado incorporar la lógica completa en todas partes. En este caso, puede crear un asistente interno para centralizar la lógica de desaprobación.
 
-Esto sucedió en GoogleDrive, cuando cambiamos la forma de controlar la detalle del paquete.
-El diseño original permitía al usuario especificar esto en cada función, mediante el argumento `verbose = TRUE/FALSE`.
-Más tarde, decidimos que tenía más sentido utilizar una opción global para controlar la verbosidad a nivel de paquete.
-Este es un caso en el que (eventualmente) se elimina un argumento, pero afecta prácticamente a todas las funciones del paquete.
-Así es como se ve una función típica después de iniciar el proceso de desusar:
+Esto sucedió en GoogleDrive, cuando cambiamos la forma de controlar la detalle del paquete. El diseño original permitía al usuario especificar esto en cada función, mediante el argumento `verbose = TRUE/FALSE`. Más tarde, decidimos que tenía más sentido utilizar una opción global para controlar la verbosidad a nivel de paquete. Este es un caso en el que (eventualmente) se elimina un argumento, pero afecta prácticamente a todas las funciones del paquete. Así es como se ve una función típica después de iniciar el proceso de desusar:
 
 ```{r}
 #| eval: false
@@ -575,8 +417,7 @@ drive_publish <- function(file, ..., verbose = deprecated()) {
 }
 ```
 
-Tenga en cuenta el uso de `verbose = obsoleto()`.
-Aquí hay una versión ligeramente simplificada de `warn_for_verbose()`:
+Tenga en cuenta el uso de `verbose = obsoleto()`. Aquí hay una versión ligeramente simplificada de `warn_for_verbose()`:
 
 ```{r}
 #| eval: false
@@ -609,27 +450,15 @@ warn_for_verbose <- function(verbose = TRUE,
 }
 ```
 
-El usuario llama a una función, como `drive_publish()`, que luego llama a `warn_for_verbose()`.
-Si el usuario deja `verbose` sin especificar o si solicita `detallado = TRUE` (comportamiento predeterminado), `warn_for_verbose()` no hace nada.
-Pero si solicitan explícitamente `verbose = FALSE`, lanzamos una advertencia con consejos sobre la forma preferida de suprimir los mensajes de Googledrive.
-También seguimos adelante y honramos sus deseos por el momento, a través de la llamada a `googledrive::local_drive_quiet()`.
-En la próxima versión principal, el argumento "detallado" se puede eliminar en todas partes y este asistente se puede eliminar.
+El usuario llama a una función, como `drive_publish()`, que luego llama a `warn_for_verbose()`. Si el usuario deja `verbose` sin especificar o si solicita `detallado = TRUE` (comportamiento predeterminado), `warn_for_verbose()` no hace nada. Pero si solicitan explícitamente `verbose = FALSE`, lanzamos una advertencia con consejos sobre la forma preferida de suprimir los mensajes de Googledrive. También seguimos adelante y honramos sus deseos por el momento, a través de la llamada a `googledrive::local_drive_quiet()`. En la próxima versión principal, el argumento "detallado" se puede eliminar en todas partes y este asistente se puede eliminar.
 
 ### Cómo afrontar el cambio en una dependencia
 
-¿Qué sucede si desea utilizar la funcionalidad en una nueva versión de otro paquete?
-O la versión menos feliz: ¿qué pasa si los cambios en otro paquete van a romper el suyo?
-Hay algunos escenarios posibles, dependiendo de si se lanzó el otro paquete y de la experiencia que desea para sus usuarios.
-Comenzaremos con el caso simple y feliz de usar funciones recientemente disponibles en una dependencia.
+¿Qué sucede si desea utilizar la funcionalidad en una nueva versión de otro paquete? O la versión menos feliz: ¿qué pasa si los cambios en otro paquete van a romper el suyo? Hay algunos escenarios posibles, dependiendo de si se lanzó el otro paquete y de la experiencia que desea para sus usuarios. Comenzaremos con el caso simple y feliz de usar funciones recientemente disponibles en una dependencia.
 
-Si el otro paquete ya se lanzó, puede aumentar la versión mínima que declara en `DESCRIPTION` y usar la nueva funcionalidad incondicionalmente.
-Esto también significa que los usuarios que actualicen su paquete se verán obligados a actualizar el otro paquete, lo cual al menos debería considerar.
-Tenga en cuenta también que esto solo funciona para una dependencia en "Importaciones".
-Si bien es una buena idea registrar una versión mínima para un paquete sugerido, generalmente no se aplica de la misma manera que para las "Importaciones".
+Si el otro paquete ya se lanzó, puede aumentar la versión mínima que declara en `DESCRIPTION` y usar la nueva funcionalidad incondicionalmente. Esto también significa que los usuarios que actualicen su paquete se verán obligados a actualizar el otro paquete, lo cual al menos debería considerar. Tenga en cuenta también que esto solo funciona para una dependencia en "Importaciones". Si bien es una buena idea registrar una versión mínima para un paquete sugerido, generalmente no se aplica de la misma manera que para las "Importaciones".
 
-Si no desea exigir a sus usuarios que actualicen este otro paquete, puede hacer que su paquete funcione tanto con versiones nuevas como antiguas.
-Esto significa que comprobará su versión en tiempo de ejecución y procederá en consecuencia.
-Aquí hay un bosquejo de cómo podría verse eso en el contexto de una función nueva o existente:
+Si no desea exigir a sus usuarios que actualicen este otro paquete, puede hacer que su paquete funcione tanto con versiones nuevas como antiguas. Esto significa que comprobará su versión en tiempo de ejecución y procederá en consecuencia. Aquí hay un bosquejo de cómo podría verse eso en el contexto de una función nueva o existente:
 
 ```{r}
 #| eval: false
@@ -651,12 +480,7 @@ your_new_function <- function(...) {
 
 Alternativamente, este también sería un excelente lugar para usar `rlang::is_installed()` y `rlang::check_installed()` con el argumento `version` (ver ejemplos de uso en @sec-dependencies-in-suggests-r-code).
 
-Este enfoque también se puede adaptar si está respondiendo a cambios aún no publicados que llegarán pronto en una de sus dependencias.
-Es útil tener una versión de su paquete que funcione antes y después del cambio.
-Esto le permite liberar su paquete en cualquier momento, incluso antes que el otro paquete.
-A veces puedes refactorizar tu código para que funcione con cualquiera de las versiones del otro paquete, en cuyo caso no necesitas condicionar en absoluto la versión del otro paquete.
-Pero a veces es posible que necesites un código diferente para las dos versiones.
-Considere este ejemplo:
+Este enfoque también se puede adaptar si está respondiendo a cambios aún no publicados que llegarán pronto en una de sus dependencias. Es útil tener una versión de su paquete que funcione antes y después del cambio. Esto le permite liberar su paquete en cualquier momento, incluso antes que el otro paquete. A veces puedes refactorizar tu código para que funcione con cualquiera de las versiones del otro paquete, en cuyo caso no necesitas condicionar en absoluto la versión del otro paquete. Pero a veces es posible que necesites un código diferente para las dos versiones. Considere este ejemplo:
 
 ```{r}
 #| eval: false
@@ -670,35 +494,20 @@ your_function <- function(...) {
 }
 ```
 
-La versión mínima hipotética de `1.3.9000` sugiere un caso en el que la versión de desarrollo de otherpkg ya tiene el cambio al que estás respondiendo, que es una función nueva en este caso.
-Suponiendo que `their_new_function()` no existe en la última versión de otherpkg, recibirá una nota de `R CMD check` indicando que `ir_new_function()` no existe en el espacio de nombres de otherpkg.
-Si envía una versión de este tipo a CRAN, puede explicar que lo hace por motivos de compatibilidad hacia atrás y hacia adelante con otros paquetes y es probable que queden satisfechos.
+La versión mínima hipotética de `1.3.9000` sugiere un caso en el que la versión de desarrollo de otherpkg ya tiene el cambio al que estás respondiendo, que es una función nueva en este caso. Suponiendo que `their_new_function()` no existe en la última versión de otherpkg, recibirá una nota de `R CMD check` indicando que `ir_new_function()` no existe en el espacio de nombres de otherpkg. Si envía una versión de este tipo a CRAN, puede explicar que lo hace por motivos de compatibilidad hacia atrás y hacia adelante con otros paquetes y es probable que queden satisfechos.
 
 ### Reemplazar una función
 
-Se reemplaza la última etapa del ciclo de vida de la que hablaremos.
-Esto es apropiado cuando siente que una función ya no es la solución preferida a un problema, pero tiene suficiente uso e historial como para no querer iniciar el proceso de eliminarla.
-Buenos ejemplos de esto son `tidyr::spread()` y `tidyr::gather()`.
-Esas funciones han sido reemplazadas por `tidyr::pivot_wider()` y `tidyr::pivot_longer()`.
-Pero algunos usuarios todavía prefieren las funciones más antiguas y es probable que se hayan utilizado mucho en proyectos que no están en desarrollo activo.
-Por lo tanto, `spread()` y `gather()` están marcados como reemplazados, no reciben ninguna innovación nueva, pero no corren riesgo de ser eliminados.
+Se reemplaza la última etapa del ciclo de vida de la que hablaremos. Esto es apropiado cuando siente que una función ya no es la solución preferida a un problema, pero tiene suficiente uso e historial como para no querer iniciar el proceso de eliminarla. Buenos ejemplos de esto son `tidyr::spread()` y `tidyr::gather()`. Esas funciones han sido reemplazadas por `tidyr::pivot_wider()` y `tidyr::pivot_longer()`. Pero algunos usuarios todavía prefieren las funciones más antiguas y es probable que se hayan utilizado mucho en proyectos que no están en desarrollo activo. Por lo tanto, `spread()` y `gather()` están marcados como reemplazados, no reciben ninguna innovación nueva, pero no corren riesgo de ser eliminados.
 
-Un fenómeno relacionado es cuando desea cambiar algún aspecto de un paquete, pero también desea brindarles a los usuarios existentes una forma de optar por el comportamiento heredado.
-La idea es proporcionar a los usuarios una curita que puedan aplicar para que el código antiguo funcione rápidamente, hasta que tengan el ancho de banda para realizar una actualización más exhaustiva (lo que, en algunos casos, es posible que nunca suceda).
-A continuación se muestran algunos ejemplos en los que se conservó el comportamiento heredado para los usuarios que optaron por participar:
+Un fenómeno relacionado es cuando desea cambiar algún aspecto de un paquete, pero también desea brindarles a los usuarios existentes una forma de optar por el comportamiento heredado. La idea es proporcionar a los usuarios una curita que puedan aplicar para que el código antiguo funcione rápidamente, hasta que tengan el ancho de banda para realizar una actualización más exhaustiva (lo que, en algunos casos, es posible que nunca suceda). A continuación se muestran algunos ejemplos en los que se conservó el comportamiento heredado para los usuarios que optaron por participar:
 
--   En tidyr 1.0.0, la interfaz de `tidyr::nest()` y `tidyr::unnest()` cambió.
-    El uso más auténtico se puede traducir a la nueva sintaxis, lo que tidyr hace automáticamente, además de transmitir la sintaxis moderna preferida mediante una advertencia.
-    Pero la antigua interfaz sigue estando disponible a través de `tidyr::nest_legacy()` y `tidyr::unnest_legacy()`, que se marcaron como reemplazadas en el momento de su creación.
+-   En tidyr 1.0.0, la interfaz de `tidyr::nest()` y `tidyr::unnest()` cambió. El uso más auténtico se puede traducir a la nueva sintaxis, lo que tidyr hace automáticamente, además de transmitir la sintaxis moderna preferida mediante una advertencia. Pero la antigua interfaz sigue estando disponible a través de `tidyr::nest_legacy()` y `tidyr::unnest_legacy()`, que se marcaron como reemplazadas en el momento de su creación.
 
--   dplyr 1.1.0 aprovecha un algoritmo mucho más rápido para grupos informáticos.
-    Pero este método más rápido también ordena los grupos con respecto a la configuración regional C, mientras que anteriormente se usaba la configuración regional del sistema.
-    La opción global `dplyr.legacy_locale` permite a un usuario solicitar explícitamente el comportamiento heredado.[^lifecycle-5]
+-   dplyr 1.1.0 aprovecha un algoritmo mucho más rápido para grupos informáticos. Pero este método más rápido también ordena los grupos con respecto a la configuración regional C, mientras que anteriormente se usaba la configuración regional del sistema. La opción global `dplyr.legacy_locale` permite a un usuario solicitar explícitamente el comportamiento heredado.[^lifecycle-4]
 
--   Los paquetes tidyverse se han estandarizado en un enfoque común para la reparación de nombres, que se implementa en `vctrs::vec_as_names()`.
-    El paquete vctrs también ofrece `vctrs::vec_as_names_legacy()`, lo que facilita la reparación de nombres con estrategias más antiguas utilizadas anteriormente en paquetes como tibble, tidyr y readxl.
+-   Los paquetes tidyverse se han estandarizado en un enfoque común para la reparación de nombres, que se implementa en `vctrs::vec_as_names()`. El paquete vctrs también ofrece `vctrs::vec_as_names_legacy()`, lo que facilita la reparación de nombres con estrategias más antiguas utilizadas anteriormente en paquetes como tibble, tidyr y readxl.
 
--   readr 2.0.0 introdujo la llamada segunda edición, que marca el cambio a un backend proporcionado por el paquete vroom.
-    Funciones como `readr::with_edition(1, ...)` y `readr::local_edition(1)` facilitan que un usuario solicite el comportamiento de la primera edición para un fragmento de código específico o para un script específico.
+-   readr 2.0.0 introdujo la llamada segunda edición, que marca el cambio a un backend proporcionado por el paquete vroom. Funciones como `readr::with_edition(1, ...)` y `readr::local_edition(1)` facilitan que un usuario solicite el comportamiento de la primera edición para un fragmento de código específico o para un script específico.
 
-[^lifecycle-5]: puede obtener más información sobre el análisis que condujo a este cambio en <https://github.com/tidyverse/tidyups/blob/main/006-dplyr-group-by-ordering.md>.
+[^lifecycle-4]: puede obtener más información sobre el análisis que condujo a este cambio en <https://github.com/tidyverse/tidyups/blob/main/006-dplyr-group-by-ordering.md>.
