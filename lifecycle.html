@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hadley Wickham y Jenny Bryan">
 <meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
@@ -69,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-add8df1384afd63d4428e4d746d5364a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -361,7 +361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./release.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></span></a>
   </div>
 </li>
       </ul>
@@ -459,7 +459,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Title</span><span class="kw">:</span><span class="at"> Automate Package and Project Setup</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Version</span><span class="kw">:</span><span class="at"> </span><span class="fl">2.1.6</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">...</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Si visita la página de inicio de CRAN para usar esto, puede acceder a su historial a través de <em>Downloads &gt; Old sources &gt; [use este archivo] (https://cran.r-project.org/src/contrib/Archive/usethis/) </em>. Eso enlaza a una carpeta de paquetes (<a href="structure.html#sec-bundled-package" class="quarto-xref"><span>Sección 3.3</span></a>), que refleja la fuente de usethis para cada versión lanzada en CRAN, presentada en <a href="#tbl-usethis-versions" class="quarto-xref">Tabla&nbsp;<span>21.1</span></a>:</p>
+<p>Si visita la página de inicio de CRAN para usar esto, puede acceder a su historial a través de <em>Downloads &gt; Old sources &gt; [use este archivo] (https://cran.r-project.org/src/contrib/Archive/usethis/)</em> . Eso enlaza a una carpeta de paquetes (<a href="structure.html#sec-bundled-package" class="quarto-xref"><span>Sección 3.3</span></a>), que refleja la fuente de usethis para cada versión lanzada en CRAN, presentada en <a href="#tbl-usethis-versions" class="quarto-xref">Tabla&nbsp;<span>21.1</span></a>:</p>
 <div class="cell">
 <div id="tbl-usethis-versions" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure"><figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-usethis-versions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -560,6 +560,10 @@ Tabla&nbsp;21.1: Versiones del paquete usethis.
 <td style="text-align: left;">3.0.0</td>
 <td style="text-align: left;">2024-07-29 07:20:02 UTC</td>
 </tr>
+<tr class="odd">
+<td style="text-align: left;">3.1.0</td>
+<td style="text-align: left;">2024-11-26 10:20:02 UTC</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -569,7 +573,7 @@ Tabla&nbsp;21.1: Versiones del paquete usethis.
 </div>
 <p>Este es el tipo de evolución de paquetes que abordaremos en este capítulo. En <a href="#sec-lifecycle-version-number" class="quarto-xref"><span>Sección 21.2</span></a>, profundizaremos en el mundo de los números de versión de software, que es un tema más rico de lo que cabría esperar. R también tiene algunas reglas y herramientas específicas sobre los números de versión de los paquetes. Finalmente, explicaremos las convenciones que usamos para los números de versión de los paquetes tidyverse (<a href="#sec-lifecycle-version-number-tidyverse" class="quarto-xref"><span>Sección 21.3</span></a>).</p>
 <p>Pero primero, este es un buen momento para revisar un recurso que señalamos por primera vez en <a href="structure.html#sec-source-package" class="quarto-xref"><span>Sección 3.2</span></a>, al presentar los diferentes estados de un paquete R. Recuerde que la organización (no oficial) “cran” en GitHub proporciona un historial de solo lectura de todos los paquetes CRAN. Por ejemplo, puede obtener una vista diferente de las versiones publicadas de usethis en <a href="https://github.com/cran/usethis/" class="uri">https://github.com/cran/usethis/</a>.</p>
-<p>El archivo proporcionado por CRAN le permite descargar versiones anteriores de usethis como archivos <code>.tar.gz</code>, lo cual es útil si realmente desea tener en sus manos el código fuente de una versión anterior. Sin embargo, si solo desea verificar algo rápidamente sobre una versión o comparar dos versiones de usethis, el espejo de solo lectura de GitHub es mucho más útil. Cada confirmación en el historial de este repositorio representa una versión de CRAN, lo que facilita ver exactamente qué cambió: <a href="https://github.com/cran/usethis/commits/HEAD" class="uri">https://github.com/cran/usethis/commits/HEAD</a>. Además, puede explorar el estado de todos los archivos fuente del paquete en cualquier versión específica, como <a href="https://github.com/cran/usethis/tree/1.0.0">use la versión inicial de este en la versión 1.0.0</a>[ ^ciclo de vida-1].</p>
+<p>El archivo proporcionado por CRAN le permite descargar versiones anteriores de usethis como archivos <code>.tar.gz</code>, lo cual es útil si realmente desea tener en sus manos el código fuente de una versión anterior. Sin embargo, si solo desea verificar algo rápidamente sobre una versión o comparar dos versiones de usethis, el espejo de solo lectura de GitHub es mucho más útil. Cada confirmación en el historial de este repositorio representa una versión de CRAN, lo que facilita ver exactamente qué cambió: <a href="https://github.com/cran/usethis/commits/HEAD" class="uri">https://github.com/cran/usethis/commits/HEAD</a>. Además, puede explorar el estado de todos los archivos fuente del paquete en cualquier versión específica, como <a href="https://github.com/cran/usethis/tree/1.0.0">use la versión inicial de este en la versión 1.0.0</a>[^lifecycle-1].</p>
 <p>Esta información está técnicamente disponible en el repositorio donde realmente se desarrolla usethis (<a href="https://github.com/r-lib/usethis" class="uri">https://github.com/r-lib/usethis</a>). BPero hay que trabajar mucho más para acercarse al nivel de las versiones de CRAN, en medio del desorden de los pequeños pasos incrementales en los que realmente se desarrolla el desarrollo. Estas tres vistas diferentes de la evolución de usethis son útiles para diferentes propósitos:</p>
 <ul>
 <li><p><a href="https://cran.r-project.org/src/contrib/Archive/usethis/" class="uri">https://cran.r-project.org/src/contrib/Archive/usethis/</a>: los paquetes empaquetados oficiales de CRAN.</p></li>
@@ -577,7 +581,7 @@ Tabla&nbsp;21.1: Versiones del paquete usethis.
 <li><p><a href="https://github.com/r-lib/usethis/commits/HEAD" class="uri">https://github.com/r-lib/usethis/commits/HEAD</a>: el sitio de desarrollo oficial para usethis.</p></li>
 </ul></section><section id="sec-lifecycle-version-number" class="level2" data-number="21.2"><h2 data-number="21.2" class="anchored" data-anchor-id="sec-lifecycle-version-number">
 <span class="header-section-number">21.2</span> Número de versión del paquete</h2>
-<p>Formalmente, una versión de un paquete R es una secuencia de al menos dos números enteros separados por <code>.</code> o <code>-</code>. Por ejemplo, “1.0” y “0.9.1-10” son versiones válidas, pero “1” y “1.0-devel” no lo son. Base R ofrece la función <code>utils::package_version()</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> para analizar una cadena de versión de paquete en una clase S3 adecuada con el mismo nombre. Esta clase facilita hacer cosas como comparar versiones.</p>
+<p>Formalmente, una versión de un paquete R es una secuencia de al menos dos números enteros separados por <code>.</code> o <code>-</code>. Por ejemplo, “1.0” y “0.9.1-10” son versiones válidas, pero “1” y “1.0-devel” no lo son. Base R ofrece la función <code><a href="https://rdrr.io/r/base/numeric_version.html">package_version()</a></code> para analizar una cadena de versión de paquete en una clase S3 adecuada con el mismo nombre. Esta clase facilita hacer cosas como comparar versiones.</p>
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html">package_version</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"1.0"</span>, <span class="st">"0.9.1-10"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] '1.0'      '0.9.1.10'</span></span>
@@ -611,7 +615,7 @@ Tabla&nbsp;21.1: Versiones del paquete usethis.
 <div class="sourceCode" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Imports</span><span class="kw">:</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">    dplyr (&gt;= 1.0.0),</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">    tidyr (&gt;= 1.1.0)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>En su propio código, si necesita determinar qué versión de un paquete está instalada, use <code><a href="https://rdrr.io/r/utils/packageDescription.html">utils::packageVersion()</a></code><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>:</p>
+<p>En su propio código, si necesita determinar qué versión de un paquete está instalada, use <code><a href="https://rdrr.io/r/utils/packageDescription.html">utils::packageVersion()</a></code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>:</p>
 <div class="cell">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html">packageVersion</a></span><span class="op">(</span><span class="st">"usethis"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] '2.2.3'</span></span>
@@ -675,7 +679,7 @@ Tabla&nbsp;21.1: Versiones del paquete usethis.
 <p>Si la versión actual del paquete es <code>0.8.1.9000</code>, estos son nuestros consejos sobre cómo elegir el número de versión para la próxima versión:</p>
 <ul>
 <li><p>Incrementar <code>parche</code>, p.e. <code>0.8.2</code> para una <strong>versión de parche</strong>: ha corregido errores, pero no ha agregado ninguna característica nueva significativa y no hay cambios importantes. Por ejemplo, si descubrimos un error que detiene el espectáculo poco después de un lanzamiento, realizaríamos un lanzamiento rápido de parche con la solución. La mayoría de las versiones tendrán un número de parche 0.</p></li>
-<li><p>Incremento <code>menor</code>, p.e. <code>0.9.0</code>, para una <strong>versión menor</strong>. Una versión menor puede incluir correcciones de errores, nuevas funciones y cambios que sean compatibles con versiones anteriores<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Este es el tipo de liberación más común. Está perfectamente bien tener tantas versiones menores que necesites usar dos (¡o incluso tres!) dígitos, p.&nbsp;<code>1.17.0</code>.</p></li>
+<li><p>Incremento <code>menor</code>, p.e. <code>0.9.0</code>, para una <strong>versión menor</strong>. Una versión menor puede incluir correcciones de errores, nuevas funciones y cambios que sean compatibles con versiones anteriores<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Este es el tipo de liberación más común. Está perfectamente bien tener tantas versiones menores que necesites usar dos (¡o incluso tres!) dígitos, p.&nbsp;<code>1.17.0</code>.</p></li>
 <li><p>Incremento <code>mayor</code>, p.e. <code>1.0.0</code>, para una <strong>versión principal</strong>. Este es el momento más adecuado para realizar cambios que no sean compatibles con versiones anteriores y que probablemente afecten a muchos usuarios. La versión <code>1.0.0</code> tiene un significado especial y generalmente indica que su paquete tiene funciones completas con una API estable.</p></li>
 </ul>
 <p>La decisión más complicada que probablemente enfrentará es si un cambio está lo suficientemente “roto” como para merecer una versión importante. Por ejemplo, si realiza un cambio incompatible con API en una parte de su código que rara vez se usa, puede que no tenga sentido aumentar el número principal. Pero si corrige un error del que dependen muchas personas (¡sucede!), esas personas lo sentirán como un cambio radical. Es posible que una corrección de errores de este tipo merezca una versión importante.</p>
@@ -708,7 +712,7 @@ Tabla&nbsp;21.1: Versiones del paquete usethis.
 <p>La gran diferencia entre las versiones principales y menores es si el código es compatible con versiones anteriores o no. En el mundo del software en general, la idea es que una versión importante indique a los usuarios que puede contener cambios importantes y que solo deben actualizar cuando tengan la capacidad de abordar cualquier problema que surja.</p>
 <p>La realidad es un poco diferente en la comunidad R, debido a la forma en que la mayoría de los usuarios gestionan la instalación de paquetes. Si somos honestos, la mayoría de los usuarios de R no administran las versiones de los paquetes de una manera muy intencional. Dada la forma en que funcionan <code><a href="https://rdrr.io/r/utils/update.packages.html">update.packages()</a></code> e <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code>, es bastante fácil actualizar un paquete a una nueva versión principal sin quererlo, especialmente para las dependencias del paquete de destino. Esto, a su vez, puede provocar una exposición inesperada a cambios importantes en el código que anteriormente funcionaba. Este malestar tiene implicaciones tanto para los usuarios como para los mantenedores.</p>
 <p>Si es importante proteger un producto de datos contra cambios en las dependencias de su paquete R, recomendamos el uso de una biblioteca de paquetes específica del proyecto. En particular, nos gusta implementar este enfoque utilizando el <a href="https://rstudio.github.io/renv/">paquete renv</a>. Esto respalda un estilo de vida en el que la biblioteca de paquetes predeterminada de un usuario se administra de la forma habitual, algo desordenada. Pero cualquier proyecto que tenga un requisito específico y más alto de reproducibilidad se gestiona con renv. Esto evita que las actualizaciones de paquetes activadas por el trabajo en el proyecto A rompan el código del proyecto B y también ayuda con la colaboración y la implementación.</p>
-<p>Sospechamos que las bibliotecas y herramientas específicas de paquetes como renv están actualmente infrautilizadas en el mundo R. Es decir, muchos usuarios de R todavía usan una sola biblioteca de paquetes. Por lo tanto, los mantenedores de paquetes aún deben tener mucha precaución y cuidado cuando introducen cambios importantes, independientemente de lo que esté sucediendo con el número de versión. En <a href="#sec-lifecycle-stages-and-package" class="quarto-xref"><span>Sección 21.7</span></a>, describimos cómo los paquetes tidyverse abordan esto, respaldados por herramientas en el paquete de ciclo de vida.</p>
+<p>Sospechamos que las bibliotecas y herramientas específicas de proyectos como renv están actualmente infrautilizadas en el mundo R. Es decir, muchos usuarios de R todavía usan una sola biblioteca de paquetes. Por lo tanto, los mantenedores de paquetes aún deben tener mucha precaución y cuidado cuando introducen cambios importantes, independientemente de lo que esté sucediendo con el número de versión. En <a href="#sec-lifecycle-stages-and-package" class="quarto-xref"><span>Sección 21.7</span></a>, describimos cómo los paquetes tidyverse abordan esto, respaldados por herramientas en el paquete de ciclo de vida.</p>
 <p>Al igual que con las dependencias (<a href="dependencies-mindset-background.html#sec-dependencies-pros-cons" class="quarto-xref"><span>Sección 10.1</span></a>), encontramos que el extremismo no es una postura muy productiva. La resistencia extrema a los cambios radicales supone un obstáculo importante para el desarrollo y el mantenimiento continuos. El código compatible con versiones anteriores tiende a ser más difícil de trabajar debido a la necesidad de mantener múltiples rutas para admitir la funcionalidad de versiones anteriores. Cuanto más se esfuerce por mantener la compatibilidad con versiones anteriores, más difícil será desarrollar nuevas funciones o corregir viejos errores. Esto, a su vez, puede desalentar la adopción por parte de nuevos usuarios y dificultar la contratación de nuevos contribuyentes. Por otro lado, si realiza cambios importantes constantemente, los usuarios se sentirán muy frustrados con su paquete y decidirán que están mejor sin él. Encuentra un punto medio feliz. Preocúpate por la compatibilidad con versiones anteriores, pero no dejes que eso te paralice.</p>
 <p>La importancia de la compatibilidad con versiones anteriores es directamente proporcional a la cantidad de personas que utilizan su paquete: está intercambiando su tiempo y dolor por el de sus usuarios. Hay buenas razones para realizar cambios incompatibles con versiones anteriores. Una vez que haya decidido que es necesario, su principal prioridad es utilizar un proceso humano que respete a sus usuarios.</p>
 </section><section id="sec-lifecycle-stages-and-package" class="level2" data-number="21.7"><h2 data-number="21.7" class="anchored" data-anchor-id="sec-lifecycle-stages-and-package">
@@ -918,7 +922,7 @@ Figura&nbsp;21.1: Las cuatro etapas principales del ciclo de vida de tidyverse: 
 <p>Un fenómeno relacionado es cuando desea cambiar algún aspecto de un paquete, pero también desea brindarles a los usuarios existentes una forma de optar por el comportamiento heredado. La idea es proporcionar a los usuarios una curita que puedan aplicar para que el código antiguo funcione rápidamente, hasta que tengan el ancho de banda para realizar una actualización más exhaustiva (lo que, en algunos casos, es posible que nunca suceda). A continuación se muestran algunos ejemplos en los que se conservó el comportamiento heredado para los usuarios que optaron por participar:</p>
 <ul>
 <li><p>En tidyr 1.0.0, la interfaz de <code><a href="https://tidyr.tidyverse.org/reference/nest.html">tidyr::nest()</a></code> y <code><a href="https://tidyr.tidyverse.org/reference/unnest.html">tidyr::unnest()</a></code> cambió. El uso más auténtico se puede traducir a la nueva sintaxis, lo que tidyr hace automáticamente, además de transmitir la sintaxis moderna preferida mediante una advertencia. Pero la antigua interfaz sigue estando disponible a través de <code><a href="https://tidyr.tidyverse.org/reference/nest_legacy.html">tidyr::nest_legacy()</a></code> y <code><a href="https://tidyr.tidyverse.org/reference/nest_legacy.html">tidyr::unnest_legacy()</a></code>, que se marcaron como reemplazadas en el momento de su creación.</p></li>
-<li><p>dplyr 1.1.0 aprovecha un algoritmo mucho más rápido para grupos informáticos. Pero este método más rápido también ordena los grupos con respecto a la configuración regional C, mientras que anteriormente se usaba la configuración regional del sistema. La opción global <code>dplyr.legacy_locale</code> permite a un usuario solicitar explícitamente el comportamiento heredado.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p></li>
+<li><p>dplyr 1.1.0 aprovecha un algoritmo mucho más rápido para grupos informáticos. Pero este método más rápido también ordena los grupos con respecto a la configuración regional C, mientras que anteriormente se usaba la configuración regional del sistema. La opción global <code>dplyr.legacy_locale</code> permite a un usuario solicitar explícitamente el comportamiento heredado.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p></li>
 <li><p>Los paquetes tidyverse se han estandarizado en un enfoque común para la reparación de nombres, que se implementa en <code><a href="https://vctrs.r-lib.org/reference/vec_as_names.html">vctrs::vec_as_names()</a></code>. El paquete vctrs también ofrece <code><a href="https://vctrs.r-lib.org/reference/vec_as_names_legacy.html">vctrs::vec_as_names_legacy()</a></code>, lo que facilita la reparación de nombres con estrategias más antiguas utilizadas anteriormente en paquetes como tibble, tidyr y readxl.</p></li>
 <li><p>readr 2.0.0 introdujo la llamada segunda edición, que marca el cambio a un backend proporcionado por el paquete vroom. Funciones como <code>readr::with_edition(1, ...)</code> y <code>readr::local_edition(1)</code> facilitan que un usuario solicite el comportamiento de la primera edición para un fragmento de código específico o para un script específico.</p></li>
 </ul>
@@ -926,10 +930,9 @@ Figura&nbsp;21.1: Las cuatro etapas principales del ciclo de vida de tidyverse: 
 
 </section></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
 <ol>
-<li id="fn1"><p>Podemos llamar a <code><a href="https://rdrr.io/r/base/numeric_version.html">package_version()</a></code> directamente aquí, pero en el código del paquete, debes usar el formulario <code>utils::package_version()</code> y enumerar el paquete de utilidades en <code>Imports</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Al igual que con <code><a href="https://rdrr.io/r/base/numeric_version.html">package_version()</a></code>, en el código del paquete, debes usar el formulario <code><a href="https://rdrr.io/r/utils/packageDescription.html">utils::packageVersion()</a></code> y enumerar el paquete de utilidades en <code>Imports</code>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Para obtener una definición adecuadamente pragmática de “compatible con versiones anteriores”.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>puede obtener más información sobre el análisis que condujo a este cambio en <a href="https://github.com/tidyverse/tidyups/blob/main/006-dplyr-group-by-ordering.md" class="uri">https://github.com/tidyverse/tidyups/blob/main/006-dplyr-group-by-ordering.md</a>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Al igual que con <code><a href="https://rdrr.io/r/base/numeric_version.html">package_version()</a></code>, en el código del paquete, debes usar el formulario <code><a href="https://rdrr.io/r/utils/packageDescription.html">utils::packageVersion()</a></code> y enumerar el paquete de utilidades en <code>Imports</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Para obtener una definición adecuadamente pragmática de “compatible con versiones anteriores”.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>puede obtener más información sobre el análisis que condujo a este cambio en <a href="https://github.com/tidyverse/tidyups/blob/main/006-dplyr-group-by-ordering.md" class="uri">https://github.com/tidyverse/tidyups/blob/main/006-dplyr-group-by-ordering.md</a>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section></main><!-- /main --><script>
 
   // Chapter name
@@ -1079,8 +1082,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -1191,7 +1192,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
@@ -1422,8 +1422,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./release.html" class="pagination-link" aria-label="Liberando a CRAN">
-        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./release.html" class="pagination-link" aria-label="Subiendo a CRAN">
+        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

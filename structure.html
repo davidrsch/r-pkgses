@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hadley Wickham y Jenny Bryan">
 <meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
@@ -69,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-add8df1384afd63d4428e4d746d5364a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -361,7 +361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./release.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></span></a>
   </div>
 </li>
       </ul>
@@ -497,7 +497,7 @@ Figura&nbsp;3.1: Formas de paquete: fuente versus empaquetado versus binario.
 </h3>
 <p>No necesitará contemplar la estructura exacta de los archivos del paquete <code>.tar.gz</code> con mucha frecuencia, pero sí necesitará comprender el archivo <code>.Rbuildignore</code>. Controla qué archivos del paquete fuente llegan a las formas posteriores.</p>
 <p>Cada línea de <code>.Rbuildignore</code> es una expresión regular compatible con Perl que coincide, sin importar mayúsculas y minúsculas, con la ruta a cada archivo en el paquete fuente<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Si la expresión regular coincide, ese archivo o directorio se excluye. Tenga en cuenta que existen algunas exclusiones predeterminadas implementadas por el propio R, en su mayoría relacionadas con editores y sistemas de control de versiones clásicos, como SVN, Git y Emacs.</p>
-<p>Generalmente modificamos <code>.Rbuildignore</code> con la función <code><a href="https://usethis.r-lib.org/reference/use_build_ignore.html">usethis::use_build_ignore()</a></code>, que se encarga de detalles fáciles de olvidar, como el anclaje y el escape de expresiones regulares. Para excluir un archivo o directorio específico (el caso de uso más común), <strong>DEBE</strong> anclar la expresión regular. Por ejemplo, para excluir un directorio llamado “notas”, la entrada <code>.Rbuildignore</code> debe ser <code>^notas$</code>, mientras que la expresión regular no anclada <code>notas</code> coincidirá con cualquier nombre de archivo que contenga “notas”, p. <code>R/notas.R</code>, <code>man/important-notas.R</code>, <code>data/notasfinales.Rdata</code>, etc. Descubrimos que <code><a href="https://usethis.r-lib.org/reference/use_build_ignore.html">use_build_ignore()</a></code> nos ayuda a obtener más entradas de <code>.Rbuildignore</code> correctamente la primera vez.</p>
+<p>Generalmente modificamos <code>.Rbuildignore</code> con la función <code><a href="https://usethis.r-lib.org/reference/use_build_ignore.html">usethis::use_build_ignore()</a></code>, que se encarga de detalles fáciles de olvidar, como el anclaje y el escape de expresiones regulares. Para excluir un archivo o directorio específico (el caso de uso más común), <strong>DEBE</strong> anclar la expresión regular. Por ejemplo, para excluir un directorio llamado “notas”, la entrada <code>.Rbuildignore</code> debe ser <code>^notas$</code>, mientras que la expresión regular no anclada <code>notas</code> coincidirá con cualquier nombre de archivo que contenga “notas”, p.&nbsp;<code>R/notas.R</code>, <code>man/important-notas.R</code>, <code>data/notasfinales.Rdata</code>, etc. Descubrimos que <code><a href="https://usethis.r-lib.org/reference/use_build_ignore.html">use_build_ignore()</a></code> nos ayuda a obtener más entradas de <code>.Rbuildignore</code> correctamente la primera vez.</p>
 <p><code>.Rbuildignore</code> es una forma de resolver parte de la tensión entre las prácticas que respaldan su proceso de desarrollo y los requisitos de CRAN para el envío y la distribución (<a href="release.html" class="quarto-xref"><span>Capítulo 22</span></a>). Incluso si no planea publicar en CRAN, seguir estas convenciones le permitirá hacer el mejor uso de las herramientas integradas de R para la verificación e instalación de paquetes. Los archivos que debe <code>.Rbuildignore</code> se dividen en dos clases amplias y semisuperpuestas:</p>
 <ul>
 <li>Archivos que le ayudan a generar contenidos de paquetes mediante programación. Ejemplos:
@@ -683,7 +683,7 @@ RStudio
 <ol>
 <li id="fn1"><p>Para ver el conjunto de rutas de archivos que deberían estar en su radar, ejecute <code>dir(full.names = TRUE, recursive = TRUE, include.dirs = TRUE, all.files = TRUE)</code> en el directorio de nivel superior del paquete.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>Bueno, en realidad, <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> carga y adjunta un paquete, pero ese es un tema para <a href="dependencies-mindset-background.html#sec-dependencies-attach-vs-load" class="quarto-xref"><span>Sección 10.4</span></a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Para obtener más detalles, consulte la sección <a href="https://whattheyforgot.org/maintaining-r.html#how-to-transfer-your-library-when-updating-r">Mantenimiento de R</a> en <em>Lo que olvidaron enseñarte sobre R</em>, <a href="https://rstudio.github.io/r-manuals/r-admin/Add-on-packages.html#managing-libraries">Gestión de bibliotecas</a> en <em>Instalación y administración de R</em> y los archivos de ayuda de R para <code><a href="https://rdrr.io/r/base/Startup.html">?Startup</a></code> y <code><a href="https://rdrr.io/r/base/libPaths.html">?.libPaths</a></code>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Para obtener más detalles, consulte la sección <a href="https://rstats.wtf/maintaining-r#how-to-transfer-your-library-when-updating-r">Mantenimiento de R</a> en <em>Lo que olvidaron enseñarte sobre R</em>, <a href="https://rstudio.github.io/r-manuals/r-admin/Add-on-packages.html#managing-libraries">Gestión de bibliotecas</a> en <em>Instalación y administración de R</em> y los archivos de ayuda de R para <code><a href="https://rdrr.io/r/base/Startup.html">?Startup</a></code> y <code><a href="https://rdrr.io/r/base/libPaths.html">?.libPaths</a></code>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol></section></main><!-- /main --><script>
 
   // Chapter name
@@ -833,8 +833,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -945,7 +943,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

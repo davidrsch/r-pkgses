@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hadley Wickham y Jenny Bryan">
 <meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
-<title>22&nbsp; Liberando a CRAN – Paquetes de R</title>
+<title>22&nbsp; Subiendo a CRAN – Paquetes de R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -69,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-add8df1384afd63d4428e4d746d5364a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -107,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software-development-practices.html">Mantenimiento y distribución</a></li><li class="breadcrumb-item"><a href="./release.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software-development-practices.html">Mantenimiento y distribución</a></li><li class="breadcrumb-item"><a href="./release.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
@@ -361,7 +361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./release.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></span></a>
   </div>
 </li>
       </ul>
@@ -424,8 +424,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software-development-practices.html">Mantenimiento y distribución</a></li><li class="breadcrumb-item"><a href="./release.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></a></li></ol></nav><div class="quarto-title">
-<h1 class="title"><span id="sec-release" class="quarto-section-identifier"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./software-development-practices.html">Mantenimiento y distribución</a></li><li class="breadcrumb-item"><a href="./release.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-release" class="quarto-section-identifier"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></span></h1>
 </div>
 
 
@@ -512,7 +512,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="políticas-de-cran" class="level3" data-number="22.2.1"><h3 data-number="22.2.1" class="anchored" data-anchor-id="políticas-de-cran">
 <span class="header-section-number">22.2.1</span> Políticas de CRAN</h3>
 <p>Le alertamos sobre políticas CRAN específicas a lo largo de este libro y, especialmente, a través de este capítulo. Sin embargo, se trata de un objetivo en movimiento, por lo que vale la pena hacer un esfuerzo para mantenerse informado sobre los cambios futuros en la política de CRAN.</p>
-<p>El hogar oficial de la política CRAN es <a href="https://cran.r-project.org/web/packages/policies.html" class="uri">https://cran.r-project.org/web/packages/policies.html</a>. Sin embargo, no es muy práctico leer este documento, por ejemplo, una vez a la semana y simplemente esperar notar algún cambio. El repositorio de GitHub <a href="https://github.com/eddelbuettel/crp">eddelbuettel/crp</a> monitorea la Política del repositorio de CRAN al rastrear la evolución de los archivos subyacentes en la fuente del sitio web de CRAN. Por lo tanto, el historial de confirmaciones de ese repositorio hace que los cambios de políticas sean mucho más fáciles de navegar. Es posible que también desee seguir la <a href="https://fosstodon.org/@CRANberriesFeed@mas.to">cuenta de CRAN Policy Watch Mastodon</a>, que suena cada vez que se detecta un cambio.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>El hogar oficial de la política CRAN es <a href="https://cran.r-project.org/web/packages/policies.html" class="uri">https://cran.r-project.org/web/packages/policies.html</a>. Sin embargo, no es muy práctico leer este documento, por ejemplo, una vez a la semana y simplemente esperar notar algún cambio. El repositorio de GitHub <a href="https://github.com/eddelbuettel/crp">eddelbuettel/crp</a> monitorea la Política del repositorio de CRAN al rastrear la evolución de los archivos subyacentes en la fuente del sitio web de CRAN. Por lo tanto, el historial de confirmaciones de ese repositorio hace que los cambios de políticas sean mucho más fáciles de navegar. Es posible que también desee seguir la <a href="https://fosstodon.org/@cranpolicyWatch">cuenta de CRAN Policy Watch Mastodon</a>, que suena cada vez que se detecta un cambio.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <p>La <a href="https://stat.ethz.ch/mailman/listinfo/r-package-devel">lista de correo de R-package-devel</a> es otro buen recurso para aprender más sobre el desarrollo de paquetes. Puede suscribirse para estar al tanto de lo que hablan otros mantenedores. Incluso si no está suscrito, puede resultar útil buscar en esta lista cuando esté investigando un tema específico.</p>
 </section></section><section id="mantenerse-al-día-con-el-cambio" class="level2" data-number="22.3"><h2 data-number="22.3" class="anchored" data-anchor-id="mantenerse-al-día-con-el-cambio">
 <span class="header-section-number">22.3</span> Mantenerse al día con el cambio</h2>
@@ -962,8 +962,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -1074,7 +1072,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

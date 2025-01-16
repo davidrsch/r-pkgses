@@ -248,7 +248,7 @@ Muchas otras opciones se describen en https://yihui.name/knitr/options.
 
 Existe una última técnica, si no desea que ningún código se ejecute en CRAN. En lugar de una viñeta, puede crear un artículo, que es un término utilizado por pkgdown para un documento `+.Rmd+` similar a una viñeta que no se envía con el paquete, pero que aparece sólo en el sitio web. Un artículo será menos accesible que una viñeta para ciertos usuarios, como aquellos con acceso limitado a Internet, porque no está presente en la instalación local. Pero ese podría ser un compromiso aceptable, por ejemplo, para un paquete que incluye una API web.
 
-Puede redactar un nuevo artículo con `+usethis::use_article()+`, lo que garantiza que el artículo será `+.Rbuildignore+`d. Una buena razón para utilizar un artículo en lugar de una viñeta es mostrar que su paquete funciona en conjunto con otros paquetes de los que no desea depender formalmente. Otro caso de uso atractivo es cuando un artículo realmente exige muchos gráficos. Esto es problemático para una viñeta, porque el gran tamaño del paquete causa problemas con `+R CMD check+` (y, por lo tanto, CRAN) y también es una carga para todos los que lo instalan, especialmente aquellos con Internet limitado.
+Puede redactar un nuevo artículo con `+usethis::use_article()+`, lo que garantiza que el artículo será `+.Rbuildignore+`d. Una buena razón para utilizar un artículo en lugar de una viñeta es mostrar que su paquete funciona en conjunto con otros paquetes de los que no desea depender formalmente. Otro caso de uso atractivo es cuando un artículo realmente exige muchos gráficos. Esto es problemático para una viñeta, porque el gran tamaño del paquete causa problemas con `+R CMD check+` (y, por lo tanto, CRAN) y también es una carga para todos los que lo instalan, especialmente aquellos con Internet limitado.
 
 [[sec-vignettes-how-built-checked]]
 == Cómo se construyen y verifican las viñetas
@@ -285,7 +285,7 @@ Recomendamos encarecidamente tratar `+inst/doc/+` como un directorio estrictamen
 
 Sin embargo, reconocemos que existen excepciones a cada regla. En algunos dominios, puede resultar poco práctico reconstruir viñetas con tanta frecuencia como implica nuestro flujo de trabajo recomendado. Aquí hay algunos consejos:
 
-* Puedes evitar la limpieza de `+inst/doc/+` con `+pkgbuild::build(clean_doc =)+`. Puede poner `+Config/build/clean-inst-doc: FALSE+` en `+DESCRIPTION+` para evitar que pkgbuild y rcmdcheck limpien `+inst/doc/+`.
+* Puedes evitar la limpieza de `+inst/doc/+` con `+pkgbuild::build(clean_doc = FALSE)+`. Puede poner `+Config/build/clean-inst-doc: FALSE+` en `+DESCRIPTION+` para evitar que pkgbuild y rcmdcheck limpien `+inst/doc/+`.
 * La nota técnica de rOpenSci https://ropensci.org/blog/2019/12/08/precompute-vignettes/[Cómo precalcular viñetas de paquetes o artículos pkgdown] describe una técnica inteligente y liviana para mantener una viñeta actualizada manualmente en `+viñetas/+`.
 * El paquete https://henrikbengtsson.github.io/R.rsp/index.html[R.rsp] ofrece soporte explícito para viñetas estáticas.
 

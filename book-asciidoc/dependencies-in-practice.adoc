@@ -548,33 +548,27 @@ export(count)
 ...
 ....
 
-Ahora imagina que tu paquete implementa un método para `+count()+` para una clase de tu "`propiedad`" (no `+data.frame+`). Un buen ejemplo es el paquete dbplyr, que implementa `+count()+` para la clase `+tbl_lazy+`. Un paquete complementario que implemente un genérico S3 para una nueva clase debe enumerar el paquete proveedor de genéricos en `+Imports+`, importar el genérico a su espacio de nombres y exportar su método S3. Aquí hay parte del archivo `+DESCRIPTION+` de dbplyr:
+Ahora imagina que tu paquete implementa un método para `+count()+` para una clase que "`tu posees`" (no `+data.frame+`). Un buen ejemplo es el paquete dbplyr, que implementa el genérico `+count()+` de dplyr para la clase `+tbl_lazy+` de dbplyr.
 
-....
-Imports: 
-    ...,
-    dplyr,
-    ...
-....
-
-En `+dbplyr/R/verb-count.R+`, tenemos:
+En este caso, `+@export+` no funcionará porque supone que el genérico `+count()+` está incluido o importado en el `+NAMESPACE+` de dbplyr, por lo que en su lugar necesitamos usar `+@exportS3Method+`, proporcionando el genérico preciso que estamos proporcionando. un método para.
 
 [source,r,cell-code]
 ----
-#' @importFrom dplyr count
-#' @export
+#' @exportS3Method dplyr::count
 count.tbl_lazy <- function(x, ..., wt = NULL, sort = FALSE, name = NULL) { ... }
 ----
 
 En `+NAMESPACE+`, tenemos:
 
 ....
-S3method(count,tbl_lazy)
-...
-importFrom(dplyr,count)
+S3method(dplyr::count,tbl_lazy)
 ....
 
-Dbplyr también proporciona métodos para varios genéricos proporcionados por el paquete base, como `+dim()+` y `+names()+`. En este caso, no es necesario importar esos genéricos, pero sí es necesario exportar los métodos. En `+dbplyr/R/tbl_lazy.R+`, tenemos:
+Esto también funciona para genéricos de paquetes que son dependencias sugeridas, por ejemplo donde el paquete glue implementa un método para testthat que es `+compare()+` genérico: glue enumera testthat que solo es una dependencia sugerida, por lo que (a partir de R 3.6.0) R registrará condicionalmente el método `+compare.glue()+` cuando ambos testthat y los paquetes de glue estarán cargados.
+
+dbplyr también proporciona métodos para varios genéricos proporcionados por el paquete base, como `+dim()+` y `+names()+`; en este caso, aún podemos usar `+@export+` ya que los genéricos están disponibles en el paquete `+NAMESPACE+`.
+
+En `+dbplyr/R/tbl_lazy.R+`, tenemos:
 
 [source,r,cell-code]
 ----
@@ -596,53 +590,3 @@ S3method(dim,tbl_lazy)
 ...
 S3method(names,tbl_lazy)
 ....
-
-El último caso y el más complicado es cuando su paquete ofrece un método genérico "`propiedad`" de un paquete que ha enumerado en `+Suggests+`. La idea básica es que desea registrar la disponibilidad de su método S3 de forma condicional, cuando se carga su paquete. Si el paquete sugerido está presente, su método S3 debería estar registrado, pero en caso contrario no debería estar registrado.
-
-Ilustraremos esto con un ejemplo. Dentro de tidyverse, el paquete glue se administra como un paquete de bajo nivel que debe tener dependencias mínimas (<<sec-dependencies-tidyverse>>). Las funciones de glue generalmente devuelven un vector de caracteres que también tiene la clase S3 `+"glue"+`.
-
-[source,r,cell-code]
-----
-library(glue)
-name <- "Betty"
-(ret <- glue('My name is {name}.'))
-#> My name is Betty.
-class(ret)
-#> [1] "glue"      "character"
-----
-
-La motivación para esto es que permite que glue ofrezca métodos especiales para `+print()+`, el operador `+++` y subconjuntos mediante `+[+` y `+[[+`. Sin embargo, una desventaja es que este atributo de clase complica las comparaciones de cadenas:
-
-[source,r,cell-code]
-----
-identical(ret, "My name is Betty.")
-#> [1] FALSE
-all.equal(ret, "My name is Betty.")
-#> [1] "Attributes: < Modes: list, NULL >"                   
-#> [2] "Attributes: < Lengths: 1, 0 >"                       
-#> [3] "Attributes: < names for target but not for current >"
-#> [4] "Attributes: < current is not list-like >"            
-#> [5] "target is glue, current is character"
-----
-
-Por lo tanto, para las pruebas, es útil si glue ofrece un método para `+testthat::compare()+`, que explica por qué esta expectativa tiene éxito:
-
-[source,r,cell-code]
-----
-testthat::expect_equal(ret, "My name is Betty.")
-----
-
-¡Pero glue no puede incluir la prueba en `+Imports+`! Debe ir en `+Suggests+`. La solución es registrar el método de forma condicional cuando se carga glue. Aquí hay una versión redactada de la función `+.onLoad()+` de glue, donde verá que también registra condicionalmente algunos otros métodos:
-
-[source,r,cell-code]
-----
-.onLoad <- function(...) {
-  s3_register("testthat::compare", "glue")
-  s3_register("waldo::compare_proxy", "glue")
-  s3_register("vctrs::vec_ptype2", "glue.glue")
-  ...
-  invisible()
-}
-----
-
-La función `+s3_register()+` proviene del paquete vctrs. Si no tiene una necesidad orgánica de depender de vctrs, es común (y recomendable) simplemente insertar https://github.com/r-lib/vctrs/blob/%20main/R/register-s3.R[la fuente `+s3_register()+`] en su propio paquete. No siempre puedes copiar el código de los paquetes de otras personas y pegarlo en el tuyo, pero en este caso puedes hacerlo. Este uso está específicamente permitido por la licencia del código fuente de `+s3_register()+`. Esto proporciona una gran transición hacia <<sec-license>>, que tiene que ver con las licencias.

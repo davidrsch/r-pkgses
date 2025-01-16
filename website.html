@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hadley Wickham y Jenny Bryan">
 <meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
@@ -69,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-add8df1384afd63d4428e4d746d5364a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -361,7 +361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./release.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></span></a>
   </div>
 </li>
       </ul>
@@ -465,7 +465,7 @@ Tip
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/use_pkgdown.html">use_pkgdown</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<pre><code>#&gt; ✔ Setting active project to '/tmp/RtmpsmyYn2/mypackage'
+<pre><code>#&gt; ✔ Setting active project to '/tmp/Rtmp95OYWy/mypackage'
 #&gt; ✔ Adding '^_pkgdown\\.yml$', '^docs$', '^pkgdown$' to '.Rbuildignore'
 #&gt; ✔ Adding 'docs' to '.gitignore'
 #&gt; ✔ Writing '_pkgdown.yml'
@@ -483,16 +483,16 @@ Tip
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pkgdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgdown.r-lib.org/reference/build_site.html">build_site</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<pre><code>#&gt; ✔ Setting active project to '/tmp/RtmpsmyYn2/mypackage'
+<pre><code>#&gt; ✔ Setting active project to '/tmp/Rtmp95OYWy/mypackage'
 #&gt; ── Installing package mypackage into temporary library ─────────────
 #&gt; ── Building pkgdown site for package mypackage ─────────────────────────────────
-#&gt; Reading from: /tmp/RtmpsmyYn2/mypackage
-#&gt; Writing to: /tmp/RtmpsmyYn2/mypackage/docs
+#&gt; Reading from: /tmp/Rtmp95OYWy/mypackage
+#&gt; Writing to: /tmp/Rtmp95OYWy/mypackage/docs
 #&gt; ── Initialising site ───────────────────────────────────────────────────────────
 #&gt; Copying
-#&gt; ../../../home/runner/work/_temp/renv/cache/v5/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu/pkgdown/2.0.9/8bf1151ed1a48328d71b937e651117a6/pkgdown/BS5/assets/link.svg
+#&gt; ../../../home/runner/work/_temp/renv/cache/v5/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu/pkgdown/2.0.9/8bf1151ed1a48328d71b937e651117a6/pkgdown/BS5/assets/link.svg
 #&gt; and
-#&gt; ../../../home/runner/work/_temp/renv/cache/v5/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu/pkgdown/2.0.9/8bf1151ed1a48328d71b937e651117a6/pkgdown/BS5/assets/pkgdown.js
+#&gt; ../../../home/runner/work/_temp/renv/cache/v5/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu/pkgdown/2.0.9/8bf1151ed1a48328d71b937e651117a6/pkgdown/BS5/assets/pkgdown.js
 #&gt; to link.svg and pkgdown.js
 #&gt; ── Building home ───────────────────────────────────────────────────────────────
 #&gt; Writing `authors.html`
@@ -564,7 +564,7 @@ RStudio
 <p>En las secciones siguientes, destacamos algunas áreas que están conectadas con otros temas del libro o personalizaciones que son particularmente gratificantes.</p>
 </section><section id="logotipo" class="level2" data-number="19.4"><h2 data-number="19.4" class="anchored" data-anchor-id="logotipo">
 <span class="header-section-number">19.4</span> Logotipo</h2>
-<p>¡Es divertido tener un logotipo de paquete! En la comunidad R, tenemos una fuerte tradición de pegatinas hexagonales, por lo que puede ser bueno unirte con tu propio logotipo hexagonal. La usuaria de Keen R, Amelia McNamara, <a href="https://www.amelia.mn/blog/misc/2019/08/17/Tidy-Dress.html">se hizo un vestido</a> con tela con logotipo hexagonal personalizado y useR! 2018 presentó un <a href="https://www.mitchelloharawild.com/blog/hexwall/">espectacular muro de fotografías hexagonales</a>.</p>
+<p>¡Es divertido tener un logotipo de paquete! En la comunidad R, tenemos una fuerte tradición de pegatinas hexagonales, por lo que puede ser bueno unirte con tu propio logotipo hexagonal. La usuaria de Keen R, Amelia McNamara, <a href="https://www.amelia.mn/blog/2019-08-17-Tidy-Dress/">se hizo un vestido</a> con tela con logotipo hexagonal personalizado y useR! 2018 presentó un <a href="https://www.mitchelloharawild.com/blog/hexwall/">espectacular muro de fotografías hexagonales</a>.</p>
 <p>Aquí hay algunos recursos para guiar sus esfuerzos de logotipo:</p>
 <ul>
 <li><p>La convención es orientar el logo con un vértice en la parte superior e inferior, con lados verticales planos.</p></li>
@@ -900,8 +900,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -1012,7 +1010,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

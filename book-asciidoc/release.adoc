@@ -1,5 +1,5 @@
 [[sec-release]]
-= Liberando a CRAN
+= Subiendo a CRAN
 :description: Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.
 :lang: es
 
@@ -104,7 +104,7 @@ Finalmente, aproveche cualquier lista de comprobaciones _ad hoc_ que otros desar
 
 Le alertamos sobre políticas CRAN específicas a lo largo de este libro y, especialmente, a través de este capítulo. Sin embargo, se trata de un objetivo en movimiento, por lo que vale la pena hacer un esfuerzo para mantenerse informado sobre los cambios futuros en la política de CRAN.
 
-El hogar oficial de la política CRAN es https://cran.r-project.org/web/packages/policies.html. Sin embargo, no es muy práctico leer este documento, por ejemplo, una vez a la semana y simplemente esperar notar algún cambio. El repositorio de GitHub https://github.com/eddelbuettel/crp[eddelbuettel/crp] monitorea la Política del repositorio de CRAN al rastrear la evolución de los archivos subyacentes en la fuente del sitio web de CRAN. Por lo tanto, el historial de confirmaciones de ese repositorio hace que los cambios de políticas sean mucho más fáciles de navegar. Es posible que también desee seguir la https://fosstodon.org/@CRANberriesFeed@mas.to[cuenta de CRAN Policy Watch Mastodon], que suena cada vez que se detecta un cambio.footnote:[Durante muchos años, existió, en cambio, una https://twitter.com/CRANPolicyWatch[cuenta de Twitter de CRAN Policy Watch]. Pero gracias a los nuevos límites de acceso a la API para ese "`cadáver podrido de una plataforma`", la cuenta de Twitter ya no puede funcionar.]
+El hogar oficial de la política CRAN es https://cran.r-project.org/web/packages/policies.html. Sin embargo, no es muy práctico leer este documento, por ejemplo, una vez a la semana y simplemente esperar notar algún cambio. El repositorio de GitHub https://github.com/eddelbuettel/crp[eddelbuettel/crp] monitorea la Política del repositorio de CRAN al rastrear la evolución de los archivos subyacentes en la fuente del sitio web de CRAN. Por lo tanto, el historial de confirmaciones de ese repositorio hace que los cambios de políticas sean mucho más fáciles de navegar. Es posible que también desee seguir la https://fosstodon.org/@cranpolicyWatch[cuenta de CRAN Policy Watch Mastodon], que suena cada vez que se detecta un cambio.footnote:[Durante muchos años, existió, en cambio, una https://twitter.com/CRANPolicyWatch[cuenta de Twitter de CRAN Policy Watch]. Pero gracias a los nuevos límites de acceso a la API para ese "`cadáver podrido de una plataforma`", la cuenta de Twitter ya no puede funcionar.]
 
 La https://stat.ethz.ch/mailman/listinfo/r-package-devel[lista de correo de R-package-devel] es otro buen recurso para aprender más sobre el desarrollo de paquetes. Puede suscribirse para estar al tanto de lo que hablan otros mantenedores. Incluso si no está suscrito, puede resultar útil buscar en esta lista cuando esté investigando un tema específico.
 

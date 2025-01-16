@@ -29,7 +29,7 @@ usethis::use_pkgdown()
 ----
 
 ....
-#> ✔ Setting active project to '/tmp/RtmpUWuVUi/mypackage'
+#> ✔ Setting active project to '/tmp/RtmpZ1Md02/mypackage'
 #> ✔ Adding '^_pkgdown\\.yml$', '^docs$', '^pkgdown$' to '.Rbuildignore'
 #> ✔ Adding 'docs' to '.gitignore'
 #> ✔ Writing '_pkgdown.yml'
@@ -51,16 +51,16 @@ pkgdown::build_site()
 ----
 
 ....
-#> ✔ Setting active project to '/tmp/RtmpUWuVUi/mypackage'
+#> ✔ Setting active project to '/tmp/RtmpZ1Md02/mypackage'
 #> ── Installing package mypackage into temporary library ─────────────
 #> ── Building pkgdown site for package mypackage ─────────────────────────────────
-#> Reading from: /tmp/RtmpUWuVUi/mypackage
-#> Writing to: /tmp/RtmpUWuVUi/mypackage/docs
+#> Reading from: /tmp/RtmpZ1Md02/mypackage
+#> Writing to: /tmp/RtmpZ1Md02/mypackage/docs
 #> ── Initialising site ───────────────────────────────────────────────────────────
 #> Copying
-#> ../../../home/runner/work/_temp/renv/cache/v5/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu/pkgdown/2.0.9/8bf1151ed1a48328d71b937e651117a6/pkgdown/BS5/assets/link.svg
+#> ../../../home/runner/work/_temp/renv/cache/v5/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu/pkgdown/2.0.9/8bf1151ed1a48328d71b937e651117a6/pkgdown/BS5/assets/link.svg
 #> and
-#> ../../../home/runner/work/_temp/renv/cache/v5/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu/pkgdown/2.0.9/8bf1151ed1a48328d71b937e651117a6/pkgdown/BS5/assets/pkgdown.js
+#> ../../../home/runner/work/_temp/renv/cache/v5/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu/pkgdown/2.0.9/8bf1151ed1a48328d71b937e651117a6/pkgdown/BS5/assets/pkgdown.js
 #> to link.svg and pkgdown.js
 #> ── Building home ───────────────────────────────────────────────────────────────
 #> Writing `authors.html`
@@ -138,7 +138,7 @@ En las secciones siguientes, destacamos algunas áreas que están conectadas con
 
 == Logotipo
 
-¡Es divertido tener un logotipo de paquete! En la comunidad R, tenemos una fuerte tradición de pegatinas hexagonales, por lo que puede ser bueno unirte con tu propio logotipo hexagonal. La usuaria de Keen R, Amelia McNamara, https://www.amelia.mn/blog/misc/2019/08/17/Tidy-Dress.html[se hizo un vestido] con tela con logotipo hexagonal personalizado y useR! 2018 presentó un https://www.mitchelloharawild.com/blog/hexwall/[espectacular muro de fotografías hexagonales].
+¡Es divertido tener un logotipo de paquete! En la comunidad R, tenemos una fuerte tradición de pegatinas hexagonales, por lo que puede ser bueno unirte con tu propio logotipo hexagonal. La usuaria de Keen R, Amelia McNamara, https://www.amelia.mn/blog/2019-08-17-Tidy-Dress/[se hizo un vestido] con tela con logotipo hexagonal personalizado y useR! 2018 presentó un https://www.mitchelloharawild.com/blog/hexwall/[espectacular muro de fotografías hexagonales].
 
 Aquí hay algunos recursos para guiar sus esfuerzos de logotipo:
 

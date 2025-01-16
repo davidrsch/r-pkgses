@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hadley Wickham y Jenny Bryan">
 <meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
@@ -69,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-add8df1384afd63d4428e4d746d5364a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -361,7 +361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./release.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></span></a>
   </div>
 </li>
       </ul>
@@ -504,8 +504,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Para la creación de este libro tenemos que trabajar en un directorio temporal, porque el libro está construido de forma no interactiva en la nube. Detrás de escena, estamos ejecutando nuestro propio comando <code><a href="https://usethis.r-lib.org/reference/create_package.html">create_package()</a></code>, pero no te sorprendas si nuestra salida difiere un poco de la tuya.</p>
 <div class="cell">
-<pre><code>#&gt; ✔ Creating '/tmp/Rtmp7lvu2B/regexcite/'
-#&gt; ✔ Setting active project to '/tmp/Rtmp7lvu2B/regexcite'
+<pre><code>#&gt; ✔ Creating '/tmp/RtmpayyARh/regexcite/'
+#&gt; ✔ Setting active project to '/tmp/RtmpayyARh/regexcite'
 #&gt; ✔ Creating 'R/'
 #&gt; ✔ Writing 'DESCRIPTION'
 #&gt; Package: regexcite
@@ -632,7 +632,7 @@ RStudio
 <th style="text-align: left;">message</th>
 </tr></thead>
 <tbody><tr class="odd">
-<td style="text-align: left;">74535a62ac…</td>
+<td style="text-align: left;">6f9f6379f2…</td>
 <td style="text-align: left;">Quarto GHA Workflow Runner <a href="mailto:quarto-github-actions-publish@example.com" class="email">quarto-github-actions-publish@example.com</a>
 </td>
 <td style="text-align: left;">Initial commit</td>
@@ -783,7 +783,7 @@ index 0000000..29efb88
 </div>
 <div class="cell">
 <pre><code>── R CMD check results ─────────────────── regexcite 0.0.0.9000 ────
-Duration: 5.7s
+Duration: 5.5s
 
 ❯ checking DESCRIPTION meta-information ... WARNING
   Non-standard license specification:
@@ -869,7 +869,7 @@ RoxygenNote: 7.1.2</code></pre>
 </div>
 <p>Esto configura correctamente el campo <code>License</code> para la licencia MIT, que promete nombrar a los titulares de los derechos de autor y el año en un archivo <code>LICENSE</code>. Abra el archivo <code>LICENSE</code> recién creado y confirme que se ve así:</p>
 <div class="cell">
-<pre><code>YEAR: 2024
+<pre><code>YEAR: 2025
 COPYRIGHT HOLDER: regexcite authors</code></pre>
 </div>
 <p>Al igual que otros asistentes de licencia, <code><a href="https://usethis.r-lib.org/reference/licenses.html">use_mit_license()</a></code> también coloca una copia de la licencia completa en <code>LICENSE.md</code> y agrega este archivo a <code>.Rbuildignore</code>. Se considera una buena práctica incluir una licencia completa en el código fuente de su paquete, como en GitHub, pero CRAN no permite la inclusión de este archivo en un paquete. Puede obtener más información sobre las licencias en <a href="license.html" class="quarto-xref"><span>Capítulo 12</span></a>.</p>
@@ -943,7 +943,7 @@ export(strsplit1)</code></pre>
 </div>
 <div class="cell">
 <pre><code>── R CMD check results ─────────────────── regexcite 0.0.0.9000 ────
-Duration: 7.2s
+Duration: 6.9s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔</code></pre>
 </div>
@@ -956,15 +956,15 @@ Duration: 7.2s
 </div>
 <div class="cell">
 <pre><code>── R CMD build ─────────────────────────────────────────────────────
-* checking for file ‘/tmp/Rtmp7lvu2B/regexcite/DESCRIPTION’ ... OK
+* checking for file ‘/tmp/RtmpayyARh/regexcite/DESCRIPTION’ ... OK
 * preparing ‘regexcite’:
 * checking DESCRIPTION meta-information ... OK
 * checking for LF line-endings in source and make files and shell scripts
 * checking for empty or unneeded directories
 * building ‘regexcite_0.0.0.9000.tar.gz’
 Running /opt/R/4.4.0/lib/R/bin/R CMD INSTALL \
-  /tmp/Rtmp7lvu2B/regexcite_0.0.0.9000.tar.gz --install-tests 
-* installing to library ‘/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu’
+  /tmp/RtmpayyARh/regexcite_0.0.0.9000.tar.gz --install-tests 
+* installing to library ‘/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu’
 * installing *source* package ‘regexcite’ ...
 ** using staged installation
 ** R
@@ -1269,7 +1269,7 @@ str_split_one(y, pattern = stringr::fixed("."))
 <div class="cell">
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://devtools.r-lib.org/reference/build_rmd.html">build_readme</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Installing regexcite in temporary library</span></span>
-<span><span class="co">#&gt; ℹ Building '/tmp/Rtmp7lvu2B/regexcite/README.Rmd'</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">#&gt; ℹ Building '/tmp/RtmpayyARh/regexcite/README.Rmd'</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Puede ver el <code>README.md</code> renderizado simplemente <a href="https://github.com/jennybc/regexcite#readme">visitando regexcite en GitHub</a>.</p>
 <p>Finalmente, no olvides hacer una última confirmación. Y realiza un push, si estás usando GitHub.</p>
@@ -1282,7 +1282,7 @@ str_split_one(y, pattern = stringr::fixed("."))
 </div>
 <div class="cell">
 <pre><code>── R CMD check results ─────────────────── regexcite 0.0.0.9000 ────
-Duration: 8.4s
+Duration: 8s
 
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔</code></pre>
 </div>
@@ -1292,7 +1292,7 @@ Duration: 8.4s
 </div>
 <div class="cell">
 <pre><code>── R CMD build ─────────────────────────────────────────────────────
-* checking for file ‘/tmp/Rtmp7lvu2B/regexcite/DESCRIPTION’ ... OK
+* checking for file ‘/tmp/RtmpayyARh/regexcite/DESCRIPTION’ ... OK
 * preparing ‘regexcite’:
 * checking DESCRIPTION meta-information ... OK
 * checking for LF line-endings in source and make files and shell scripts
@@ -1300,8 +1300,8 @@ Duration: 8.4s
 Removed empty directory ‘regexcite/tests/testthat/_snaps’
 * building ‘regexcite_0.0.0.9000.tar.gz’
 Running /opt/R/4.4.0/lib/R/bin/R CMD INSTALL \
-  /tmp/Rtmp7lvu2B/regexcite_0.0.0.9000.tar.gz --install-tests 
-* installing to library ‘/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu’
+  /tmp/RtmpayyARh/regexcite_0.0.0.9000.tar.gz --install-tests 
+* installing to library ‘/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu’
 * installing *source* package ‘regexcite’ ...
 ** using staged installation
 ** R
@@ -1508,8 +1508,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -1620,7 +1618,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

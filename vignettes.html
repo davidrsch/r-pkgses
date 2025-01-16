@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hadley Wickham y Jenny Bryan">
 <meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
@@ -69,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-add8df1384afd63d4428e4d746d5364a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -361,7 +361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./release.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></span></a>
   </div>
 </li>
       </ul>
@@ -624,7 +624,7 @@ Envío a CRAN
 <section id="sec-vignettes-article" class="level3" data-number="17.4.1"><h3 data-number="17.4.1" class="anchored" data-anchor-id="sec-vignettes-article">
 <span class="header-section-number">17.4.1</span> Artículo en lugar de viñeta</h3>
 <p>Existe una última técnica, si no desea que ningún código se ejecute en CRAN. En lugar de una viñeta, puede crear un artículo, que es un término utilizado por pkgdown para un documento <code>.Rmd</code> similar a una viñeta que no se envía con el paquete, pero que aparece sólo en el sitio web. Un artículo será menos accesible que una viñeta para ciertos usuarios, como aquellos con acceso limitado a Internet, porque no está presente en la instalación local. Pero ese podría ser un compromiso aceptable, por ejemplo, para un paquete que incluye una API web.</p>
-<p>Puede redactar un nuevo artículo con <code><a href="https://usethis.r-lib.org/reference/use_vignette.html">usethis::use_article()</a></code>, lo que garantiza que el artículo será <code>.Rbuildignore</code>d. Una buena razón para utilizar un artículo en lugar de una viñeta es mostrar que su paquete funciona en conjunto con otros paquetes de los que no desea depender formalmente. Otro caso de uso atractivo es cuando un artículo realmente exige muchos gráficos. Esto es problemático para una viñeta, porque el gran tamaño del paquete causa problemas con <code>R CMD check</code> (y, por lo tanto, CRAN) y también es una carga para todos los que lo instalan, especialmente aquellos con Internet limitado.</p>
+<p>Puede redactar un nuevo artículo con <code><a href="https://usethis.r-lib.org/reference/use_vignette.html">usethis::use_article()</a></code>, lo que garantiza que el artículo será <code>.Rbuildignore</code>d.&nbsp;Una buena razón para utilizar un artículo en lugar de una viñeta es mostrar que su paquete funciona en conjunto con otros paquetes de los que no desea depender formalmente. Otro caso de uso atractivo es cuando un artículo realmente exige muchos gráficos. Esto es problemático para una viñeta, porque el gran tamaño del paquete causa problemas con <code>R CMD check</code> (y, por lo tanto, CRAN) y también es una carga para todos los que lo instalan, especialmente aquellos con Internet limitado.</p>
 </section></section><section id="sec-vignettes-how-built-checked" class="level2" data-number="17.5"><h2 data-number="17.5" class="anchored" data-anchor-id="sec-vignettes-how-built-checked">
 <span class="header-section-number">17.5</span> Cómo se construyen y verifican las viñetas</h2>
 <p>Cerramos este capítulo volviendo a algunos problemas de flujo de trabajo que no cubrimos en <a href="#sec-vignettes-workflow-writing" class="quarto-xref"><span>Sección 17.1</span></a>: ¿Cómo se convierten los archivos <code>.Rmd</code> en viñetas consumidas por los usuarios de un paquete instalado? ¿Qué hace <code>R CMD check</code> con las viñetas? ¿Cuáles son las implicaciones para mantener sus viñetas?</p>
@@ -675,7 +675,7 @@ Viñetas prediseñadas (or other documentation)
 <p>Recomendamos encarecidamente tratar <code>inst/doc/</code> como un directorio estrictamente editable por máquina para viñetas. Le recomendamos que no aproveche el hecho de que puede colocar documentación prediseñada arbitraria en <code>inst/doc/</code>. Esta opinión impregna el ecosistema devtools que, de forma predeterminada, limpia <code>inst/doc/</code> durante diversas tareas de desarrollo, para combatir el problema de la documentación obsoleta.</p>
 <p>Sin embargo, reconocemos que existen excepciones a cada regla. En algunos dominios, puede resultar poco práctico reconstruir viñetas con tanta frecuencia como implica nuestro flujo de trabajo recomendado. Aquí hay algunos consejos:</p>
 <ul>
-<li><p>Puedes evitar la limpieza de <code>inst/doc/</code> con <code>pkgbuild::build(clean_doc =)</code>. Puede poner <code>Config/build/clean-inst-doc: FALSE</code> en <code>DESCRIPTION</code> para evitar que pkgbuild y rcmdcheck limpien <code>inst/doc/</code>.</p></li>
+<li><p>Puedes evitar la limpieza de <code>inst/doc/</code> con <code>pkgbuild::build(clean_doc = FALSE)</code>. Puede poner <code>Config/build/clean-inst-doc: FALSE</code> en <code>DESCRIPTION</code> para evitar que pkgbuild y rcmdcheck limpien <code>inst/doc/</code>.</p></li>
 <li><p>La nota técnica de rOpenSci <a href="https://ropensci.org/blog/2019/12/08/precompute-vignettes/">Cómo precalcular viñetas de paquetes o artículos pkgdown</a> describe una técnica inteligente y liviana para mantener una viñeta actualizada manualmente en <code>viñetas/</code>.</p></li>
 <li><p>El paquete <a href="https://henrikbengtsson.github.io/R.rsp/index.html">R.rsp</a> ofrece soporte explícito para viñetas estáticas.</p></li>
 </ul>
@@ -857,8 +857,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -969,7 +967,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

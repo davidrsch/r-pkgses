@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hadley Wickham y Jenny Bryan">
 <meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
@@ -69,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-add8df1384afd63d4428e4d746d5364a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -361,7 +361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./release.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></span></a>
   </div>
 </li>
       </ul>
@@ -611,7 +611,7 @@ Envío a CRAN
 <ul>
 <li>
 <p><code>Depends</code>: Antes de la implementación de espacios de nombres en R 2.14.0 en 2011, <code>Depends</code> era la única forma de “depender” de otro paquete. Ahora bien, a pesar del nombre, casi siempre deberías usar <code>Imports</code>, no <code>Depends</code>. Aprenderá por qué y cuándo debería seguir usándo <code>Depends</code>, en <a href="dependencies-mindset-background.html#sec-dependencies-imports-vs-depends" class="quarto-xref"><span>Sección 10.4.1</span></a>.</p>
-<p>El uso actual más legítimo de <code>Depends</code> es indicar una versión mínima para el propio R, p. <code>Depends: R (&gt;= 4.0.0)</code>. Nuevamente, piense detenidamente si hace esto. Esto plantea los mismos problemas que establecer una versión mínima para un paquete del que depende, excepto que lo que está en juego es mucho mayor cuando se trata del propio R. Los usuarios no pueden simplemente dar su consentimiento para la actualización necesaria, por lo que, si otros paquetes dependen del suyo, su requisito de versión mínima para R puede causar una cascada de fallas en la instalación de paquetes.</p>
+<p>El uso actual más legítimo de <code>Depends</code> es indicar una versión mínima para el propio R, p.&nbsp;<code>Depends: R (&gt;= 4.0.0)</code>. Nuevamente, piense detenidamente si hace esto. Esto plantea los mismos problemas que establecer una versión mínima para un paquete del que depende, excepto que lo que está en juego es mucho mayor cuando se trata del propio R. Los usuarios no pueden simplemente dar su consentimiento para la actualización necesaria, por lo que, si otros paquetes dependen del suyo, su requisito de versión mínima para R puede causar una cascada de fallas en la instalación de paquetes.</p>
 <ul>
 <li>El <a href="https://cran.r-project.org/package=backports">paquete backports</a> es útil si desea utilizar una función como <code><a href="https://rdrr.io/r/tools/userdir.html">tools::R_user_dir()</a></code>, que se introdujo en 4.0.0 en 2020, sin dejar de ser compatible con versiones anteriores de R.</li>
 <li>Los paquetes tidyverse son oficialmente compatibles con la versión R actual, la versión devel y cuatro versiones anteriores.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> Probamos proactivamente este soporte en la matriz de compilación estándar que utilizamos para la integración continua.</li>
@@ -646,7 +646,7 @@ Envío a CRAN
 <p><code>SystemRequirements</code> es donde describe las dependencias externas a R. Este es un campo de texto sin formato y, por ejemplo, en realidad no instala ni verifica nada, por lo que es posible que deba incluir detalles de instalación adicionales en su archivo README (<a href="other-markdown.html#sec-readme" class="quarto-xref"><span>Sección 18.1</span></a>). El uso más común es en el contexto de un paquete con código compilado, donde se usa <code>SystemRequirements</code> para declarar el estándar C++, la necesidad de crear GNU o alguna otra dependencia externa. Ejemplos:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">SystemRequirements</span><span class="kw">:</span><span class="at"> C++17</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">SystemRequirements</span><span class="kw">:</span><span class="at"> GNU make</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">SystemRequirements</span><span class="kw">:</span><span class="at"> TensorFlow (https://www.tensorflow.org/</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">SystemRequirements</span><span class="kw">:</span><span class="at"> TensorFlow (https://www.tensorflow.org/)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </li>
 </ul>
 <p>No recomendamos el uso explícito del campo <code>Date</code>, ya que es muy fácil olvidarse de actualizarlo si administra la fecha manualmente. Este campo se completará en el curso natural de agrupar el paquete, p.&nbsp;al enviar a CRAN, y le recomendamos que deje que eso suceda.</p>
@@ -816,8 +816,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -928,7 +926,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

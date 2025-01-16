@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hadley Wickham y Jenny Bryan">
 <meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
@@ -69,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-add8df1384afd63d4428e4d746d5364a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -361,7 +361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./release.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></span></a>
   </div>
 </li>
       </ul>
@@ -450,11 +450,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Por último, muchos paquetes se benefician de tener datos internos que se utilizan para fines internos, pero que no están expuestos directamente a los usuarios del paquete.</p>
 <p>En este capítulo describimos mecanismos útiles para incluir datos en su paquete. Los detalles prácticos difieren según quién necesita acceso a los datos, con qué frecuencia cambian y qué harán con ellos:</p>
 <ul>
-<li><p>Si desea almacenar objetos R y ponerlos a disposición del usuario, colóquelos en <code>datos/</code>. Este es el mejor lugar para colocar conjuntos de datos de ejemplo. Todos los ejemplos concretos anteriores para datos en un paquete y datos como paquete utilizan este mecanismo. Mira la sección <a href="#sec-data-data" class="quarto-xref"><span>Sección 7.1</span></a>.</p></li>
-<li><p>Si desea almacenar objetos R para su propio uso como desarrollador, colóquelos en <code>R/sysdata.rda</code>. Este es el mejor lugar para colocar los datos internos que sus funciones necesitan. Mira la sección <a href="#sec-data-sysdata" class="quarto-xref"><span>Sección 7.2</span></a>.</p></li>
-<li><p>Si desea almacenar datos en algún formato sin procesar, no específico de R y ponerlos a disposición del usuario, colóquelos en <code>inst/extdata/</code>. Por ejemplo, readr y readxl utilizan este mecanismo para proporcionar una colección de archivos delimitados y libros de Excel, respectivamente. Mira la sección <a href="#sec-data-extdata" class="quarto-xref"><span>Sección 7.3</span></a>.</p></li>
-<li><p>Si desea almacenar datos dinámicos que reflejen el estado interno de su paquete dentro de una única sesión de R, utilice un entorno. Esta técnica no es tan común ni tan conocida como las anteriores, pero puede resultar muy útil en situaciones concretas. Mira la sección <a href="#sec-data-state" class="quarto-xref"><span>Sección 7.4</span></a>.</p></li>
-<li><p>Si desea almacenar datos de forma persistente en sesiones de R, como configuración o datos específicos del usuario, utilice una de las ubicaciones autorizadas oficialmente. Mira la sección <a href="#sec-data-persistent" class="quarto-xref"><span>Sección 7.5</span></a>.</p></li>
+<li><p>Si desea almacenar objetos R y ponerlos a disposición del usuario, colóquelos en <code>datos/</code>. Este es el mejor lugar para colocar conjuntos de datos de ejemplo. Todos los ejemplos concretos anteriores para datos en un paquete y datos como paquete utilizan este mecanismo. Mira <a href="#sec-data-data" class="quarto-xref"><span>Sección 7.1</span></a>.</p></li>
+<li><p>Si desea almacenar objetos R para su propio uso como desarrollador, colóquelos en <code>R/sysdata.rda</code>. Este es el mejor lugar para colocar los datos internos que sus funciones necesitan. Mira <a href="#sec-data-sysdata" class="quarto-xref"><span>Sección 7.2</span></a>.</p></li>
+<li><p>Si desea almacenar datos en algún formato sin procesar, no específico de R y ponerlos a disposición del usuario, colóquelos en <code>inst/extdata/</code>. Por ejemplo, readr y readxl utilizan este mecanismo para proporcionar una colección de archivos delimitados y libros de Excel, respectivamente. Mira <a href="#sec-data-extdata" class="quarto-xref"><span>Sección 7.3</span></a>.</p></li>
+<li><p>Si desea almacenar datos dinámicos que reflejen el estado interno de su paquete dentro de una única sesión de R, utilice un entorno. Esta técnica no es tan común ni tan conocida como las anteriores, pero puede resultar muy útil en situaciones concretas. Mira <a href="#sec-data-state" class="quarto-xref"><span>Sección 7.4</span></a>.</p></li>
+<li><p>Si desea almacenar datos de forma persistente en sesiones de R, como configuración o datos específicos del usuario, utilice una de las ubicaciones autorizadas oficialmente. Mira <a href="#sec-data-persistent" class="quarto-xref"><span>Sección 7.5</span></a>.</p></li>
 </ul>
 <section id="sec-data-data" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="sec-data-data">
 <span class="header-section-number">7.1</span> Datos exportados</h2>
@@ -476,14 +476,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Si la <code>DESCRIPTION</code> contiene <code>LazyData: true</code>, los conjuntos de datos se cargarán de forma diferida. Esto significa que no ocuparán memoria hasta que los uses. El siguiente ejemplo muestra el uso de la memoria antes y después de cargar el paquete nycflights13. Puede ver que el uso de la memoria no cambia significativamente hasta que inspecciona el conjunto de datos de <code>flights</code> almacenados dentro del paquete.</p>
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">lobstr</span><span class="fu">::</span><span class="fu"><a href="https://lobstr.r-lib.org/reference/mem_used.html">mem_used</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 74.57 MB</span></span>
+<span><span class="co">#&gt; 74.56 MB</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/hadley/nycflights13">nycflights13</a></span><span class="op">)</span></span>
 <span><span class="fu">lobstr</span><span class="fu">::</span><span class="fu"><a href="https://lobstr.r-lib.org/reference/mem_used.html">mem_used</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 76.30 MB</span></span>
+<span><span class="co">#&gt; 76.29 MB</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="va">flights</span><span class="op">)</span></span>
 <span><span class="fu">lobstr</span><span class="fu">::</span><span class="fu"><a href="https://lobstr.r-lib.org/reference/mem_used.html">mem_used</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 117.00 MB</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">#&gt; 116.98 MB</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Le recomendamos que incluya <code>LazyData: true</code> en su <code>DESCRIPTION</code> si envía archivos <code>.rda</code> debajo de <code>data/</code>. Si utiliza <code>use_data()</code> para crear dichos conjuntos de datos, automáticamente realizará esta modificación en <code>DESCRIPTION</code> por usted.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
@@ -661,7 +661,7 @@ Envío a CRAN
 <span><span class="co">#&gt;  [9] "type-me.xls"   "type-me.xlsx"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"clippy.xlsx"</span>, package <span class="op">=</span> <span class="st">"readxl"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu/readxl/extdata/clippy.xlsx"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">#&gt; [1] "/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu/readxl/extdata/clippy.xlsx"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Estas rutas de archivos presentan otro dilema en el flujo de trabajo: cuando estás desarrollando tu paquete, interactúas con él en su formato fuente, pero tus usuarios interactúan con él como un paquete instalado. Afortunadamente, devtools proporciona una corrección para <code><a href="https://rdrr.io/r/base/system.file.html">base::system.file()</a></code> que se activa mediante <code>load_all()</code>. Esto realiza llamadas interactivas a <code><a href="https://rdrr.io/r/base/system.file.html">system.file()</a></code> desde el entorno global y las llamadas desde dentro del espacio de nombres del paquete “simplemente funcionan”.</p>
 <p>Tenga en cuenta que, de forma predeterminada, <code><a href="https://rdrr.io/r/base/system.file.html">system.file()</a></code> devuelve la cadena vacía, no un error, para un archivo que no existe.</p>
@@ -683,14 +683,14 @@ Envío a CRAN
 <div class="cell">
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path_package.html">path_package</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"idonotexist"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error: Can't find package `idonotexist` in library locations:</span></span>
-<span><span class="co">#&gt;   - '/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu'</span></span>
-<span><span class="co">#&gt;   - '/home/runner/.cache/R/renv/sandbox/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu/3df92652'</span></span>
+<span><span class="co">#&gt;   - '/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu'</span></span>
+<span><span class="co">#&gt;   - '/home/runner/.cache/R/renv/sandbox/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu/3df92652'</span></span>
 <span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path_package.html">path_package</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"I_do_not_exist.csv"</span>, package <span class="op">=</span> <span class="st">"readr"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error: File(s) '/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu/readr/extdata/I_do_not_exist.csv' do not exist</span></span>
+<span><span class="co">#&gt; Error: File(s) '/home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu/readr/extdata/I_do_not_exist.csv' do not exist</span></span>
 <span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/path_package.html">path_package</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"chickens.csv"</span>, package <span class="op">=</span> <span class="st">"readr"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; /home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu/readr/extdata/chickens.csv</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">#&gt; /home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu/readr/extdata/chickens.csv</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <!--
 
@@ -728,7 +728,7 @@ A common theme you've now encountered in multiple places is that devtools and re
 <span><span class="co">#&gt;  [9] "type-me.xls"   "type-me.xlsx"</span></span>
 <span></span>
 <span><span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/readxl_example.html">readxl_example</a></span><span class="op">(</span><span class="st">"clippy.xlsx"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "/home/runner/work/_temp/renv/cache/v5/linux-ubuntu-jammy/R-4.4/x86_64-pc-linux-gnu/readxl/1.4.3/8cf9c239b96df1bbb133b74aef77ad0a/readxl/extdata/clippy.xlsx"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="co">#&gt; [1] "/home/runner/work/_temp/renv/cache/v5/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu/readxl/1.4.3/8cf9c239b96df1bbb133b74aef77ad0a/readxl/extdata/clippy.xlsx"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section></section><section id="sec-data-state" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="sec-data-state">
 <span class="header-section-number">7.4</span> Estado interno</h2>
@@ -797,7 +797,7 @@ A common theme you've now encountered in multiple places is that devtools and re
 </div>
 <p>Tenga en cuenta que este nuevo valor para <code>the$favorite_letters</code> persiste solo durante el resto de la sesión actual de R (o hasta que el usuario llame a <code>set_mfl2()</code> nuevamente). Más precisamente, el estado alterado persiste sólo hasta la próxima vez que se carga el paquete (incluso a través de <code>load_all()</code>). En el momento de la carga, el entorno <code>the</code> se restablece a un entorno que contiene exactamente un objeto, llamado <code>favorite_letters</code>, con valor (“a”, “b”, “c”). Es como la película El día de la marmota. (Discutiremos datos más persistentes específicos de paquetes y usuarios en la siguiente sección).</p>
 <p>Jim Hester presentó a nuestro grupo la ingeniosa idea de utilizar “el” como nombre de un entorno de paquete interno. Esto le permite referirse a los objetos internos de una manera muy natural, como <code>the$token</code>, que significa “<em>the</em> token”. También es importante especificar <code>parent = vacíoenv()</code> al definir un entorno interno, ya que generalmente no desea que el entorno herede de ningún otro entorno (no vacío).</p>
-<p>Como se ve en el ejemplo anterior, la definición del entorno debe realizarse como una asignación de nivel superior en un archivo debajo de <code>R/</code>. (En particular, esta es una razón legítima para definir una no función en el nivel superior de un paquete; consulte la sección <a href="code.html#sec-code-when-executed" class="quarto-xref"><span>Sección 6.4</span></a> para saber por qué esto debería ser poco común). En cuanto a dónde colocar esta definición, hay dos consideraciones:</p>
+<p>Como se ve en el ejemplo anterior, la definición del entorno debe realizarse como una asignación de nivel superior en un archivo debajo de <code>R/</code>. (En particular, esta es una razón legítima para definir una no función en el nivel superior de un paquete; consulte <a href="code.html#sec-code-when-executed" class="quarto-xref"><span>Sección 6.4</span></a> para saber por qué esto debería ser poco común). En cuanto a dónde colocar esta definición, hay dos consideraciones:</p>
 <ul>
 <li><p>Defínelo antes de usarlo. Si otras llamadas de nivel superior se refieren al entorno, la definición debe aparecer primero cuando el código del paquete se ejecuta en el momento de la compilación. Es por eso que <code>R/aaa.R</code> es una opción común y segura.</p></li>
 <li><p>Facilite su búsqueda más adelante cuando esté trabajando en funciones relacionadas. Si un entorno solo es utilizado por una familia de funciones, defínalo allí. Si el uso del entorno se distribuye alrededor del paquete, defínalo en un archivo con connotaciones para todo el paquete.</p></li>
@@ -997,8 +997,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -1109,7 +1107,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

@@ -34,7 +34,7 @@ Version: 2.1.6
 ...
 ----
 
-Si visita la página de inicio de CRAN para usar esto, puede acceder a su historial a través de _Downloads > Old sources > [use este archivo] (https://cran.r-project.org/src/contrib/Archive/usethis/) _. Eso enlaza a una carpeta de paquetes (<<sec-bundled-package>>), que refleja la fuente de usethis para cada versión lanzada en CRAN, presentada en <<tbl-usethis-versions>>:
+Si visita la página de inicio de CRAN para usar esto, puede acceder a su historial a través de _Downloads > Old sources > [use este archivo] (https://cran.r-project.org/src/contrib/Archive/usethis/)_ . Eso enlaza a una carpeta de paquetes (<<sec-bundled-package>>), que refleja la fuente de usethis para cada versión lanzada en CRAN, presentada en <<tbl-usethis-versions>>:
 
 .Versiones del paquete usethis.
 [[tbl-usethis-versions]]
@@ -65,6 +65,7 @@ Si visita la página de inicio de CRAN para usar esto, puede acceder a su histor
 |2.2.2 |2023-07-06 00:20:02 UTC
 |2.2.3 |2024-02-19 16:00:02 UTC
 |3.0.0 |2024-07-29 07:20:02 UTC
+|3.1.0 |2024-11-26 10:20:02 UTC
 |===
 
 ====
@@ -73,7 +74,7 @@ Este es el tipo de evolución de paquetes que abordaremos en este capítulo. En 
 
 Pero primero, este es un buen momento para revisar un recurso que señalamos por primera vez en <<sec-source-package>>, al presentar los diferentes estados de un paquete R. Recuerde que la organización (no oficial) "`cran`" en GitHub proporciona un historial de solo lectura de todos los paquetes CRAN. Por ejemplo, puede obtener una vista diferente de las versiones publicadas de usethis en https://github.com/cran/usethis/.
 
-El archivo proporcionado por CRAN le permite descargar versiones anteriores de usethis como archivos `+.tar.gz+`, lo cual es útil si realmente desea tener en sus manos el código fuente de una versión anterior. Sin embargo, si solo desea verificar algo rápidamente sobre una versión o comparar dos versiones de usethis, el espejo de solo lectura de GitHub es mucho más útil. Cada confirmación en el historial de este repositorio representa una versión de CRAN, lo que facilita ver exactamente qué cambió: https://github.com/cran/usethis/commits/HEAD. Además, puede explorar el estado de todos los archivos fuente del paquete en cualquier versión específica, como https://github.com/cran/usethis/tree/1.0.0[use la versión inicial de este en la versión 1.0.0][ ^ciclo de vida-1].
+El archivo proporcionado por CRAN le permite descargar versiones anteriores de usethis como archivos `+.tar.gz+`, lo cual es útil si realmente desea tener en sus manos el código fuente de una versión anterior. Sin embargo, si solo desea verificar algo rápidamente sobre una versión o comparar dos versiones de usethis, el espejo de solo lectura de GitHub es mucho más útil. Cada confirmación en el historial de este repositorio representa una versión de CRAN, lo que facilita ver exactamente qué cambió: https://github.com/cran/usethis/commits/HEAD. Además, puede explorar el estado de todos los archivos fuente del paquete en cualquier versión específica, como https://github.com/cran/usethis/tree/1.0.0[use la versión inicial de este en la versión 1.0.0][^lifecycle-1].
 
 Esta información está técnicamente disponible en el repositorio donde realmente se desarrolla usethis (https://github.com/r-lib/usethis). BPero hay que trabajar mucho más para acercarse al nivel de las versiones de CRAN, en medio del desorden de los pequeños pasos incrementales en los que realmente se desarrolla el desarrollo. Estas tres vistas diferentes de la evolución de usethis son útiles para diferentes propósitos:
 
@@ -84,7 +85,7 @@ Esta información está técnicamente disponible en el repositorio donde realmen
 [[sec-lifecycle-version-number]]
 == Número de versión del paquete
 
-Formalmente, una versión de un paquete R es una secuencia de al menos dos números enteros separados por `+.+` o `+-+`. Por ejemplo, "`1.0`" y "`0.9.1-10`" son versiones válidas, pero "`1`" y "`1.0-devel`" no lo son. Base R ofrece la función `+utils::package_version()+`{empty}footnote:[Podemos llamar a `+package_version()+` directamente aquí, pero en el código del paquete, debes usar el formulario `+utils::package_version()+` y enumerar el paquete de utilidades en `+Imports+`.] para analizar una cadena de versión de paquete en una clase S3 adecuada con el mismo nombre. Esta clase facilita hacer cosas como comparar versiones.
+Formalmente, una versión de un paquete R es una secuencia de al menos dos números enteros separados por `+.+` o `+-+`. Por ejemplo, "`1.0`" y "`0.9.1-10`" son versiones válidas, pero "`1`" y "`1.0-devel`" no lo son. Base R ofrece la función `+package_version()+` para analizar una cadena de versión de paquete en una clase S3 adecuada con el mismo nombre. Esta clase facilita hacer cosas como comparar versiones.
 
 [source,r,cell-code]
 ----
@@ -257,7 +258,7 @@ La realidad es un poco diferente en la comunidad R, debido a la forma en que la 
 
 Si es importante proteger un producto de datos contra cambios en las dependencias de su paquete R, recomendamos el uso de una biblioteca de paquetes específica del proyecto. En particular, nos gusta implementar este enfoque utilizando el https://rstudio.github.io/renv/[paquete renv]. Esto respalda un estilo de vida en el que la biblioteca de paquetes predeterminada de un usuario se administra de la forma habitual, algo desordenada. Pero cualquier proyecto que tenga un requisito específico y más alto de reproducibilidad se gestiona con renv. Esto evita que las actualizaciones de paquetes activadas por el trabajo en el proyecto A rompan el código del proyecto B y también ayuda con la colaboración y la implementación.
 
-Sospechamos que las bibliotecas y herramientas específicas de paquetes como renv están actualmente infrautilizadas en el mundo R. Es decir, muchos usuarios de R todavía usan una sola biblioteca de paquetes. Por lo tanto, los mantenedores de paquetes aún deben tener mucha precaución y cuidado cuando introducen cambios importantes, independientemente de lo que esté sucediendo con el número de versión. En <<sec-lifecycle-stages-and-package>>, describimos cómo los paquetes tidyverse abordan esto, respaldados por herramientas en el paquete de ciclo de vida.
+Sospechamos que las bibliotecas y herramientas específicas de proyectos como renv están actualmente infrautilizadas en el mundo R. Es decir, muchos usuarios de R todavía usan una sola biblioteca de paquetes. Por lo tanto, los mantenedores de paquetes aún deben tener mucha precaución y cuidado cuando introducen cambios importantes, independientemente de lo que esté sucediendo con el número de versión. En <<sec-lifecycle-stages-and-package>>, describimos cómo los paquetes tidyverse abordan esto, respaldados por herramientas en el paquete de ciclo de vida.
 
 Al igual que con las dependencias (<<sec-dependencies-pros-cons>>), encontramos que el extremismo no es una postura muy productiva. La resistencia extrema a los cambios radicales supone un obstáculo importante para el desarrollo y el mantenimiento continuos. El código compatible con versiones anteriores tiende a ser más difícil de trabajar debido a la necesidad de mantener múltiples rutas para admitir la funcionalidad de versiones anteriores. Cuanto más se esfuerce por mantener la compatibilidad con versiones anteriores, más difícil será desarrollar nuevas funciones o corregir viejos errores. Esto, a su vez, puede desalentar la adopción por parte de nuevos usuarios y dificultar la contratación de nuevos contribuyentes. Por otro lado, si realiza cambios importantes constantemente, los usuarios se sentirán muy frustrados con su paquete y decidirán que están mejor sin él. Encuentra un punto medio feliz. Preocúpate por la compatibilidad con versiones anteriores, pero no dejes que eso te paralice.
 

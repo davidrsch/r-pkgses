@@ -61,7 +61,7 @@ Hay muchas otras licencias disponibles. Para obtener una vista de alto nivel del
 
 Todas estas licencias están diseñadas específicamente para aplicarse al código fuente, por lo que si publica un paquete que contiene principalmente datos, debe utilizar un tipo diferente de licencia. Recomendamos una de las dos licencias http://creativecommons.org/[Creative Commons]:
 
-* Si desea que los datos estén disponibles lo más libremente posible, utilice la licencia CC0 con `+use_cc0_license()+`. Esta es una licencia permisiva equivalente a la licencia MIT, pero se aplica a los datos, no al código.footnote:[Si le preocupan las implicaciones de la licencia CC0 con respecto a las citas, es posible que le interese la publicación del blog de Dryad https://blog.datadryad.org%20/2011/10/05/por-que-la-dríada-usa-cc0/[¿Por qué Dryad usa CC0?].]
+* Si desea que los datos estén disponibles lo más libremente posible, utilice la licencia CC0 con `+use_cc0_license()+`. Esta es una licencia permisiva equivalente a la licencia MIT, pero se aplica a los datos, no al código.footnote:[Si le preocupan las implicaciones de la licencia CC0 con respecto a las citas, es posible que le interese la publicación del blog de Dryad link:https://blog.datadryad.org%20/2011/10/05/por-que-la-dríada-usa-cc0/[¿Por qué Dryad usa CC0?].]
 * Si desea solicitar atribución cuando otra persona utiliza sus datos, puede utilizar la licencia CC-BY, con `+use_ccby_license()+`.
 
 === Cambiar Licencia

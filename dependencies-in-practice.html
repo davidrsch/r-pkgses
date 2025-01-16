@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.40">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Hadley Wickham y Jenny Bryan">
 <meta name="description" content="Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.">
@@ -69,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-add8df1384afd63d4428e4d746d5364a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -361,7 +361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./release.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Liberando a CRAN</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Subiendo a CRAN</span></span></a>
   </div>
 </li>
       </ul>
@@ -882,24 +882,19 @@ S3method(count,data.frame)
 ...
 export(count)
 ...</code></pre>
-<p>Ahora imagina que tu paquete implementa un método para <code>count()</code> para una clase de tu “propiedad” (no <code>data.frame</code>). Un buen ejemplo es el paquete dbplyr, que implementa <code>count()</code> para la clase <code>tbl_lazy</code>. Un paquete complementario que implemente un genérico S3 para una nueva clase debe enumerar el paquete proveedor de genéricos en <code>Imports</code>, importar el genérico a su espacio de nombres y exportar su método S3. Aquí hay parte del archivo <code>DESCRIPTION</code> de dbplyr:</p>
-<pre><code>Imports: 
-    ...,
-    dplyr,
-    ...</code></pre>
-<p>En <code>dbplyr/R/verb-count.R</code>, tenemos:</p>
+<p>Ahora imagina que tu paquete implementa un método para <code>count()</code> para una clase que “tu posees” (no <code>data.frame</code>). Un buen ejemplo es el paquete dbplyr, que implementa el genérico <code>count()</code> de dplyr para la clase <code>tbl_lazy</code> de dbplyr.</p>
+<p>En este caso, <code>@export</code> no funcionará porque supone que el genérico <code>count()</code> está incluido o importado en el <code>NAMESPACE</code> de dbplyr, por lo que en su lugar necesitamos usar <code>@exportS3Method</code>, proporcionando el genérico preciso que estamos proporcionando. un método para.</p>
 <div class="cell">
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @importFrom dplyr count</span></span>
-<span><span class="co">#' @export</span></span>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @exportS3Method dplyr::count</span></span>
 <span><span class="va">count.tbl_lazy</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, <span class="va">wt</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">sort</span> <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">name</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span> <span class="va">...</span> <span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>En <code>NAMESPACE</code>, tenemos:</p>
-<pre><code>S3method(count,tbl_lazy)
-...
-importFrom(dplyr,count)</code></pre>
-<p>Dbplyr también proporciona métodos para varios genéricos proporcionados por el paquete base, como <code><a href="https://rdrr.io/r/base/dim.html">dim()</a></code> y <code><a href="https://rdrr.io/r/base/names.html">names()</a></code>. En este caso, no es necesario importar esos genéricos, pero sí es necesario exportar los métodos. En <code>dbplyr/R/tbl_lazy.R</code>, tenemos:</p>
+<pre><code>S3method(dplyr::count,tbl_lazy)</code></pre>
+<p>Esto también funciona para genéricos de paquetes que son dependencias sugeridas, por ejemplo donde el paquete glue implementa un método para testthat que es <code>compare()</code> genérico: glue enumera testthat que solo es una dependencia sugerida, por lo que (a partir de R 3.6.0) R registrará condicionalmente el método <code>compare.glue()</code> cuando ambos testthat y los paquetes de glue estarán cargados.</p>
+<p>dbplyr también proporciona métodos para varios genéricos proporcionados por el paquete base, como <code><a href="https://rdrr.io/r/base/dim.html">dim()</a></code> y <code><a href="https://rdrr.io/r/base/names.html">names()</a></code>; en este caso, aún podemos usar <code>@export</code> ya que los genéricos están disponibles en el paquete <code>NAMESPACE</code>.</p>
+<p>En <code>dbplyr/R/tbl_lazy.R</code>, tenemos:</p>
 <div class="cell">
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @export</span></span>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#' @export</span></span>
 <span><span class="va">dim.tbl_lazy</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="fu">op_vars</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">lazy_query</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -913,42 +908,6 @@ importFrom(dplyr,count)</code></pre>
 <pre><code>S3method(dim,tbl_lazy)
 ...
 S3method(names,tbl_lazy)</code></pre>
-<p>El último caso y el más complicado es cuando su paquete ofrece un método genérico “propiedad” de un paquete que ha enumerado en <code>Suggests</code>. La idea básica es que desea registrar la disponibilidad de su método S3 de forma condicional, cuando se carga su paquete. Si el paquete sugerido está presente, su método S3 debería estar registrado, pero en caso contrario no debería estar registrado.</p>
-<p>Ilustraremos esto con un ejemplo. Dentro de tidyverse, el paquete glue se administra como un paquete de bajo nivel que debe tener dependencias mínimas (<a href="dependencies-mindset-background.html#sec-dependencies-tidyverse" class="quarto-xref"><span>Sección 10.1.3</span></a>). Las funciones de glue generalmente devuelven un vector de caracteres que también tiene la clase S3 <code>"glue"</code>.</p>
-<div class="cell">
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://glue.tidyverse.org/">glue</a></span><span class="op">)</span></span>
-<span><span class="va">name</span> <span class="op">&lt;-</span> <span class="st">"Betty"</span></span>
-<span><span class="op">(</span><span class="va">ret</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">'My name is {name}.'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; My name is Betty.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">ret</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "glue"      "character"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>La motivación para esto es que permite que glue ofrezca métodos especiales para <code><a href="https://rdrr.io/r/base/print.html">print()</a></code>, el operador <code>+</code> y subconjuntos mediante <code>[</code> y <code>[[</code>. Sin embargo, una desventaja es que este atributo de clase complica las comparaciones de cadenas:</p>
-<div class="cell">
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="va">ret</span>, <span class="st">"My name is Betty."</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] FALSE</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span><span class="op">(</span><span class="va">ret</span>, <span class="st">"My name is Betty."</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Attributes: &lt; Modes: list, NULL &gt;"                   </span></span>
-<span><span class="co">#&gt; [2] "Attributes: &lt; Lengths: 1, 0 &gt;"                       </span></span>
-<span><span class="co">#&gt; [3] "Attributes: &lt; names for target but not for current &gt;"</span></span>
-<span><span class="co">#&gt; [4] "Attributes: &lt; current is not list-like &gt;"            </span></span>
-<span><span class="co">#&gt; [5] "target is glue, current is character"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Por lo tanto, para las pruebas, es útil si glue ofrece un método para <code><a href="https://testthat.r-lib.org/reference/compare.html">testthat::compare()</a></code>, que explica por qué esta expectativa tiene éxito:</p>
-<div class="cell">
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/equality-expectations.html">expect_equal</a></span><span class="op">(</span><span class="va">ret</span>, <span class="st">"My name is Betty."</span><span class="op">)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>¡Pero glue no puede incluir la prueba en <code>Imports</code>! Debe ir en <code>Suggests</code>. La solución es registrar el método de forma condicional cuando se carga glue. Aquí hay una versión redactada de la función <code>.onLoad()</code> de glue, donde verá que también registra condicionalmente algunos otros métodos:</p>
-<div class="cell">
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">.onLoad</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">s3_register</span><span class="op">(</span><span class="st">"testthat::compare"</span>, <span class="st">"glue"</span><span class="op">)</span></span>
-<span>  <span class="fu">s3_register</span><span class="op">(</span><span class="st">"waldo::compare_proxy"</span>, <span class="st">"glue"</span><span class="op">)</span></span>
-<span>  <span class="fu">s3_register</span><span class="op">(</span><span class="st">"vctrs::vec_ptype2"</span>, <span class="st">"glue.glue"</span><span class="op">)</span></span>
-<span>  <span class="va">...</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="op">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>La función <code>s3_register()</code> proviene del paquete vctrs. Si no tiene una necesidad orgánica de depender de vctrs, es común (y recomendable) simplemente insertar <a href="https://github.com/r-lib/vctrs/blob/%20main/R/register-s3.R">la fuente <code>s3_register()</code></a> en su propio paquete. No siempre puedes copiar el código de los paquetes de otras personas y pegarlo en el tuyo, pero en este caso puedes hacerlo. Este uso está específicamente permitido por la licencia del código fuente de <code>s3_register()</code>. Esto proporciona una gran transición hacia <a href="license.html" class="quarto-xref"><span>Capítulo 12</span></a>, que tiene que ver con las licencias.</p>
 
 
 </section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><hr>
@@ -1104,8 +1063,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -1216,7 +1173,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
