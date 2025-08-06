@@ -5,7 +5,7 @@
 
 [IMPORTANT]
 ====
-Sus archivos de prueba no deben incluir estas llamadas `+library()+`. También solicitamos explícitamente testthat edición 3, pero en un paquete real esto se declarará en DESCRIPTION.
+Sus archivos de prueba no deben incluir estas llamadas `library()`. También solicitamos explícitamente testthat edición 3, pero en un paquete real esto se declarará en DESCRIPTION.
 
 [source,r,cell-code]
 ----
@@ -26,13 +26,13 @@ ____
 La idea principal es que debemos hacer que sea lo más fácil y obvio posible organizar el mundo en un estado propicio para las pruebas. Describimos varias soluciones específicas a este problema:
 
 * Poner código repetido en una función auxiliar de tipo constructor. Téngalo en cuenta si se demuestra que la construcción es lenta.
-* Si el código repetido tiene efectos secundarios, escriba una función `+local_*()+` personalizada para hacer lo que sea necesario y limpiar después.
+* Si el código repetido tiene efectos secundarios, escriba una función `local++_*++()` personalizada para hacer lo que sea necesario y limpiar después.
 * Si los métodos anteriores son demasiado lentos o incómodos y lo que necesita es bastante estable, guárdelo como un archivo estático y cárguelo.
 
 [[sec-testing-advanced-fixture-helper]]
-=== Crear `+cosas_útiles+` con una función auxiliar
+=== Crear `cosas++_++útiles` con una función auxiliar
 
-¿Es complicado crear una `+useful_thing+`? ¿Se necesitan varias líneas de código, pero no mucho tiempo ni memoria? En ese caso, escriba una función auxiliar para crear una `+useful_thing+` a pedido:
+¿Es complicado crear una `useful++_++thing`? ¿Se necesitan varias líneas de código, pero no mucho tiempo ni memoria? En ese caso, escriba una función auxiliar para crear una `useful++_++thing` a pedido:
 
 [source,r,cell-code]
 ----
@@ -56,13 +56,13 @@ test_that("foofy() does that", {
 })
 ----
 
-¿Dónde debería definirse el asistente `+new_useful_thing()+`? Esto vuelve a lo que describimos en <<sec-tests-files-overview>>. Los ayudantes de prueba se pueden definir debajo de `+R/+`, como cualquier otra utilidad interna de su paquete. Otra ubicación popular es en un archivo auxiliar de prueba, por ejemplo, `+tests/testthat/helper.R+`. Una característica clave de ambas opciones es que los asistentes están disponibles durante el mantenimiento interactivo a través de `+devtools::load_all()+`.
+¿Dónde debería definirse el asistente `new++_++useful++_++thing()`? Esto vuelve a lo que describimos en <<sec-tests-files-overview>>. Los ayudantes de prueba se pueden definir debajo de `R/`, como cualquier otra utilidad interna de su paquete. Otra ubicación popular es en un archivo auxiliar de prueba, por ejemplo, `tests/testthat/helper.R`. Una característica clave de ambas opciones es que los asistentes están disponibles durante el mantenimiento interactivo a través de `devtools::load++_++all()`.
 
-Si es complicado Y costoso crear una `+useful_thing+`, su función auxiliar podría incluso usar la memorización para evitar un nuevo cálculo innecesario. Una vez que tienes una ayuda como `+new_useful_thing()+`, a menudo descubres que tiene usos más allá de las pruebas, por ejemplo, detrás de escena en una viñeta. A veces incluso te das cuenta de que debes definirlo debajo de `+R/+` y exportarlo y documentarlo, para que puedas usarlo libremente en documentación y pruebas.
+Si es complicado Y costoso crear una `useful++_++thing`, su función auxiliar podría incluso usar la memorización para evitar un nuevo cálculo innecesario. Una vez que tienes una ayuda como `new++_++useful++_++thing()`, a menudo descubres que tiene usos más allá de las pruebas, por ejemplo, detrás de escena en una viñeta. A veces incluso te das cuenta de que debes definirlo debajo de `R/` y exportarlo y documentarlo, para que puedas usarlo libremente en documentación y pruebas.
 
-=== Crear (y destruir) una `+cosa_útil+` "`local`"
+=== Crear (y destruir) una `cosa++_++útil` "`local`"
 
-SHasta ahora, nuestro ejemplo de `+useful_thing+` era un objeto R normal, que se limpia automáticamente al final de cada prueba. ¿Qué pasa si la creación de algo útil tiene un efecto secundario en el sistema de archivos local, en un recurso remoto, en las opciones de sesión de R, en las variables de entorno o similares? Entonces su función auxiliar debería crear una `+useful_thing+` *y limpiarla después*. En lugar de un simple constructor `+new_useful_thing()+`, escribirás una función personalizada al estilo de las funciones `+local_*()+` de withr:
+SHasta ahora, nuestro ejemplo de `useful++_++thing` era un objeto R normal, que se limpia automáticamente al final de cada prueba. ¿Qué pasa si la creación de algo útil tiene un efecto secundario en el sistema de archivos local, en un recurso remoto, en las opciones de sesión de R, en las variables de entorno o similares? Entonces su función auxiliar debería crear una `useful++_++thing` *y limpiarla después*. En lugar de un simple constructor `new++_++useful++_++thing()`, escribirás una función personalizada al estilo de las funciones `local++_*++()` de withr:
 
 [source,r,cell-code]
 ----
@@ -90,14 +90,14 @@ test_that("foofy() does that", {
 })
 ----
 
-¿Dónde debería definirse el asistente `+local_useful_thing()+`? Se aplican todos los consejos dados anteriormente para `+new_useful_thing()+`: defínalo debajo de `+R/+` o en un archivo auxiliar de prueba.
+¿Dónde debería definirse el asistente `local++_++useful++_++thing()`? Se aplican todos los consejos dados anteriormente para `new++_++useful++_++thing()`: defínalo debajo de `R/` o en un archivo auxiliar de prueba.
 
-Para obtener más información sobre cómo escribir ayudas personalizadas como `+local_useful_thing()+`, consulte la https://testthat.r-lib.org/articles/test-fixtures.html[viñeta de testthat en dispositivos de prueba].
+Para obtener más información sobre cómo escribir ayudas personalizadas como `local++_++useful++_++thing()`, consulte la https://testthat.r-lib.org/articles/test-fixtures.html[viñeta de testthat en dispositivos de prueba].
 
 [[sec-testing-advanced-concrete-fixture]]
-=== Almacenar una `+cosa_útil+` concreta de forma persistente
+=== Almacenar una `cosa++_++útil` concreta de forma persistente
 
-Si crear una `+useful_thing+` es costosa, en términos de tiempo o memoria, tal vez no necesites volver a crearla para cada ejecución de prueba. Puede crear `+useful_thing+` una vez, almacenarlo como un dispositivo de prueba estático y cargarlo en las pruebas que lo necesiten. Aquí hay un boceto de cómo podría verse esto:
+Si crear una `useful++_++thing` es costosa, en términos de tiempo o memoria, tal vez no necesites volver a crearla para cada ejecución de prueba. Puede crear `useful++_++thing` una vez, almacenarlo como un dispositivo de prueba estático y cargarlo en las pruebas que lo necesiten. Aquí hay un boceto de cómo podría verse esto:
 
 [source,r,cell-code]
 ----
@@ -129,15 +129,15 @@ Ahora podemos revisar una lista de archivos anterior, que abordaba exactamente e
     └── testthat.R
 ....
 
-Esto muestra archivos de prueba estáticos almacenados en `+tests/testthat/fixtures/+`, pero también observe el script R complementario, `+make-useful-things.R+`. A partir del análisis de datos, todos sabemos que no existe un script que se ejecute solo una vez. El refinamiento y la iteración son inevitables. Esto también es válido para objetos de prueba como `+useful_thing1.rds+`. Recomendamos encarecidamente guardar el código R utilizado para crear los objetos de prueba, para que puedan volver a crearse según sea necesario.
+Esto muestra archivos de prueba estáticos almacenados en `tests/testthat/fixtures/`, pero también observe el script R complementario, `make-useful-things.R`. A partir del análisis de datos, todos sabemos que no existe un script que se ejecute solo una vez. El refinamiento y la iteración son inevitables. Esto también es válido para objetos de prueba como `useful++_++thing1.rds`. Recomendamos encarecidamente guardar el código R utilizado para crear los objetos de prueba, para que puedan volver a crearse según sea necesario.
 
 == Construyendo sus propias herramientas de prueba
 
-Volvamos al tema de la duplicación en su código de prueba. Le recomendamos que tenga una mayor tolerancia a la repetición en el código de prueba, con el fin de hacer que sus pruebas sean obvias. Pero todavía hay un límite en cuanto a la cantidad de repetición que se puede tolerar. Hemos cubierto técnicas como cargar objetos estáticos con `+test_path()+`, escribir un constructor como `+new_useful_thing()+` o implementar un dispositivo de prueba como `+local_useful_thing()+`. Hay incluso más tipos de ayudas de prueba que pueden resultar útiles en determinadas situaciones.
+Volvamos al tema de la duplicación en su código de prueba. Le recomendamos que tenga una mayor tolerancia a la repetición en el código de prueba, con el fin de hacer que sus pruebas sean obvias. Pero todavía hay un límite en cuanto a la cantidad de repetición que se puede tolerar. Hemos cubierto técnicas como cargar objetos estáticos con `test++_++path()`, escribir un constructor como `new++_++useful++_++thing()` o implementar un dispositivo de prueba como `local++_++useful++_++thing()`. Hay incluso más tipos de ayudas de prueba que pueden resultar útiles en determinadas situaciones.
 
 === Ayudante definido dentro de una prueba
 
-Considere esta prueba para la función `+str_trunc()+` en stringr:
+Considere esta prueba para la función `str++_++trunc()` en stringr:
 
 [source,r,cell-code]
 ----
@@ -177,9 +177,9 @@ test_that("truncations work for all sides", {
 })
 ----
 
-Un asistente hiperlocal como `+trunc()+` es particularmente útil cuando le permite encajar todos los negocios importantes para cada expectativa en una línea. Luego, sus expectativas se pueden leer casi como una tabla entre lo real y lo esperado, para un conjunto de casos de uso relacionados. Arriba, es muy fácil ver cómo cambia el resultado a medida que truncamos la entrada desde la derecha, la izquierda y el centro.
+Un asistente hiperlocal como `trunc()` es particularmente útil cuando le permite encajar todos los negocios importantes para cada expectativa en una línea. Luego, sus expectativas se pueden leer casi como una tabla entre lo real y lo esperado, para un conjunto de casos de uso relacionados. Arriba, es muy fácil ver cómo cambia el resultado a medida que truncamos la entrada desde la derecha, la izquierda y el centro.
 
-Tenga en cuenta que esta técnica debe utilizarse con extrema moderación. Un asistente como `+trunc()+` es otro lugar donde puedes introducir un error, por lo que es mejor mantener dichos asistentes extremadamente breves y simples.
+Tenga en cuenta que esta técnica debe utilizarse con extrema moderación. Un asistente como `trunc()` es otro lugar donde puedes introducir un error, por lo que es mejor mantener dichos asistentes extremadamente breves y simples.
 
 === Expectativas personalizadas
 
@@ -198,13 +198,13 @@ expect_proj_file <- function(...) {
 }
 ----
 
-`+expect_usethis_error()+` comprueba que un error tenga la clase `+"usethis_error"+`. `+expect_proj_file()+` es un contenedor simple alrededor de `+file_exists()+` que busca el archivo en el proyecto actual. Son funciones muy simples, pero la gran cantidad de repeticiones y la expresividad de sus nombres las hacen sentir justificadas.
+`expect++_++usethis++_++error()` comprueba que un error tenga la clase `"usethis++_++error"`. `expect++_++proj++_++file()` es un contenedor simple alrededor de `file++_++exists()` que busca el archivo en el proyecto actual. Son funciones muy simples, pero la gran cantidad de repeticiones y la expresividad de sus nombres las hacen sentir justificadas.
 
 Es algo complicado crear una expectativa personalizada adecuada, es decir, una que se comporte como las expectativas integradas en testthat. Lo remitimos a la viñeta https://testthat.r-lib.org/articles/custom-expectation.html[Expectativas personalizadas] si desea obtener más información al respecto.
 
 Por último, puede resultar útil saber qué prueba pone a disposición información específica cuando se está ejecutando:
 
-* La variable de entorno `+TESTTHAT+` está establecida en `+"true"+`. `+testthat::is_testing()+` es un atajo:
+* La variable de entorno `TESTTHAT` está establecida en `"true"`. `testthat::is++_++testing()` es un atajo:
 +
 [source,r,cell-code]
 ----
@@ -212,7 +212,7 @@ is_testing <- function() {
   Sys.getenv("TESTTHAT")
 }
 ----
-* El paquete bajo prueba está disponible como la variable de entorno `+TESTTHAT_PKG+` y `+testthat::testing_package()+` es un acceso directo:
+* El paquete bajo prueba está disponible como la variable de entorno `TESTTHAT++_++PKG` y `testthat::testing++_++package()` es un acceso directo:
 +
 [source,r,cell-code]
 ----
@@ -236,9 +236,9 @@ A pesar de todas las técnicas que hemos cubierto hasta ahora, siguen existiendo
 
 A veces es imposible realizar una prueba: es posible que no tenga conexión a Internet o que no tenga acceso a las credenciales necesarias. Desafortunadamente, otra razón probable se desprende de esta simple regla: cuantas más plataformas utilice para probar su código, más probable será que no pueda ejecutar todas sus pruebas, todo el tiempo. En resumen, hay ocasiones en las que, en lugar de reprobar, simplemente quieres saltarte una prueba.
 
-==== `+testthat::skip()+`
+==== `testthat::skip()`
 
-Aquí usamos `+testthat::skip()+` para escribir un skipper personalizado hipotético, `+skip_if_no_api()+`:
+Aquí usamos `testthat::skip()` para escribir un skipper personalizado hipotético, `skip++_++if++_++no++_++api()`:
 
 [source,r,cell-code]
 ----
@@ -254,9 +254,9 @@ test_that("foo api returns bar when given baz", {
 })
 ----
 
-`+skip_if_no_api()+` es otro ejemplo más de ayuda de prueba y los consejos ya dados sobre dónde definirlo se aplican aquí también.
+`skip++_++if++_++no++_++api()` es otro ejemplo más de ayuda de prueba y los consejos ya dados sobre dónde definirlo se aplican aquí también.
 
-Los `+skip()+` y los motivos asociados se informan en línea a medida que se ejecutan las pruebas y también se indican claramente en el resumen:
+Los `skip()` y los motivos asociados se informan en línea a medida que se ejecutan las pruebas y también se indican claramente en el resumen:
 
 [source,r,cell-code]
 ----
@@ -280,7 +280,7 @@ devtools::test()
 #> 🥳
 ----
 
-Es probable que aparezca algo como `+skip_if_no_api()+` muchas veces en su conjunto de pruebas. Esta es otra ocasión en la que resulta tentador SECAR las cosas, elevando `+skip()+` al nivel superior del archivo. Sin embargo, todavía nos inclinamos por llamar a `+skip_if_no_api()+` en cada prueba donde sea necesario.
+Es probable que aparezca algo como `skip++_++if++_++no++_++api()` muchas veces en su conjunto de pruebas. Esta es otra ocasión en la que resulta tentador SECAR las cosas, elevando `skip()` al nivel superior del archivo. Sin embargo, todavía nos inclinamos por llamar a `skip++_++if++_++no++_++api()` en cada prueba donde sea necesario.
 
 [source,r,cell-code]
 ----
@@ -303,11 +303,11 @@ test_that("foo api returns bar when given baz", {...})
 test_that("foo api returns an errors when given qux", {...})
 ----
 
-Dentro del ámbito del código de nivel superior en archivos de prueba, tener un `+skip()+` al principio de un archivo de prueba es una de las situaciones más benignas. Pero una vez que un archivo de prueba no cabe completamente en su pantalla, crea una conexión implícita pero fácil de pasar por alto entre `+skip()+` y las pruebas individuales.
+Dentro del ámbito del código de nivel superior en archivos de prueba, tener un `skip()` al principio de un archivo de prueba es una de las situaciones más benignas. Pero una vez que un archivo de prueba no cabe completamente en su pantalla, crea una conexión implícita pero fácil de pasar por alto entre `skip()` y las pruebas individuales.
 
-==== Funciones `+skip()+` incorporadas
+==== Funciones `skip()` incorporadas
 
-De manera similar a las expectativas integradas de test, existe una familia de funciones `+skip()+` que anticipan algunas situaciones comunes. Estas funciones a menudo le liberan de la necesidad de escribir un patrón personalizado. A continuación se muestran algunos ejemplos de las funciones `+skip()+` más útiles:
+De manera similar a las expectativas integradas de test, existe una familia de funciones `skip()` que anticipan algunas situaciones comunes. Estas funciones a menudo le liberan de la necesidad de escribir un patrón personalizado. A continuación se muestran algunos ejemplos de las funciones `skip()` más útiles:
 
 [source,r,cell-code]
 ----
@@ -350,7 +350,7 @@ Dado que la mayoría de los paquetes de R no necesitan la realización de mockin
 * httptest2: https://enpiar.com/httptest2/
 * webfakes: https://webfakes.r-lib.org
 
-Tenga en cuenta también que, en el momento de escribir este artículo, parece probable que el paquete testthat reintroduzca algunas capacidades de mocking (después de haber salido previamente del negocio de mocking una vez). La versión v3.1.7 tiene dos nuevas funciones experimentales, `+testthat::with_mocked_bindings()+` y `+testthat::local_mocked_bindings()+`.
+Tenga en cuenta también que, en el momento de escribir este artículo, parece probable que el paquete testthat reintroduzca algunas capacidades de mocking (después de haber salido previamente del negocio de mocking una vez). La versión v3.1.7 tiene dos nuevas funciones experimentales, `testthat::with++_++mocked++_++bindings()` y `testthat::local++_++mocked++_++bindings()`.
 
 === Secretos
 
@@ -362,14 +362,14 @@ Por supuesto, aún querrá poder probar su paquete con el servicio real que incl
 
 == Consideraciones especiales para paquetes CRAN
 
-CRAN ejecuta `+R CMD check+` en todos los paquetes aportados, tanto al momento del envío como de forma regular después de la aceptación. Esta verificación incluye, entre otras, la prueba que realiza las pruebas. Discutimos el desafío general de preparar su paquete para enfrentar todos los "`sabores`" de cheques de CRAN en <<sec-cran-flavors-services>>. Aquí nos centramos en consideraciones específicas de CRAN para su conjunto de pruebas.
+CRAN ejecuta `R CMD check` en todos los paquetes aportados, tanto al momento del envío como de forma regular después de la aceptación. Esta verificación incluye, entre otras, la prueba que realiza las pruebas. Discutimos el desafío general de preparar su paquete para enfrentar todos los "`sabores`" de cheques de CRAN en <<sec-cran-flavors-services>>. Aquí nos centramos en consideraciones específicas de CRAN para su conjunto de pruebas.
 
 Cuando un paquete entra en conflicto con la Política de repositorio de CRAN (https://cran.r-project.org/web/packages/policies.html), el conjunto de pruebas suele ser el culpable (aunque no siempre). Si su paquete está destinado a CRAN, esto debería influir en cómo escribe sus pruebas y cómo (o si) se ejecutarán en CRAN.
 
 [[sec-testing-advanced-skip-on-cran]]
 === Saltar una prueba
 
-Si una prueba específica simplemente no es apropiada para ser ejecutada por CRAN, incluya `+skip_on_cran()+` desde el principio.
+Si una prueba específica simplemente no es apropiada para ser ejecutada por CRAN, incluya `skip++_++on++_++cran()` desde el principio.
 
 [source,r,cell-code]
 ----
@@ -379,26 +379,26 @@ test_that("some long-running thing works", {
 })
 ----
 
-Debajo del capó, `+skip_on_cran()+` consulta la variable de entorno `+NOT_CRAN+`. Dicha prueba solo se ejecutará cuando `+NOT_CRAN+` se haya definido explícitamente como `+"true"+`. Esta variable la establecen devtools y testthat, lo que permite que esas pruebas se ejecuten en entornos donde espera tener éxito (y donde puede tolerar y solucionar fallas ocasionales).
+Debajo del capó, `skip++_++on++_++cran()` consulta la variable de entorno `NOT++_++CRAN`. Dicha prueba solo se ejecutará cuando `NOT++_++CRAN` se haya definido explícitamente como `"true"`. Esta variable la establecen devtools y testthat, lo que permite que esas pruebas se ejecuten en entornos donde espera tener éxito (y donde puede tolerar y solucionar fallas ocasionales).
 
-En particular, los flujos de trabajo de GitHub Actions que recomendamos en <<sec-sw-dev-practices-gha>> *ejecutarán* pruebas con `+NOT_CRAN = "true"+`. Para ciertos tipos de funcionalidad, no existe una forma práctica de probarlas en CRAN y sus propias comprobaciones, en GitHub Actions o un servicio de integración continua equivalente, son su mejor método de control de calidad.
+En particular, los flujos de trabajo de GitHub Actions que recomendamos en <<sec-sw-dev-practices-gha>> *ejecutarán* pruebas con `NOT++_++CRAN = "true"`. Para ciertos tipos de funcionalidad, no existe una forma práctica de probarlas en CRAN y sus propias comprobaciones, en GitHub Actions o un servicio de integración continua equivalente, son su mejor método de control de calidad.
 
 Incluso hay casos raros en los que tiene sentido mantener las pruebas fuera de su paquete por completo. El equipo de tidymodels utiliza esta estrategia para pruebas de tipo integración de todo su ecosistema que serían imposibles de alojar dentro de un paquete CRAN individual.
 
 === Velocidad
 
-Sus pruebas deben ejecutarse relativamente rápido; idealmente, menos de un minuto en total. Utilice `+skip_on_cran()+` en una prueba que inevitablemente sea de larga duración.
+Sus pruebas deben ejecutarse relativamente rápido; idealmente, menos de un minuto en total. Utilice `skip++_++on++_++cran()` en una prueba que inevitablemente sea de larga duración.
 
 === Reproducibilidad
 
-Tenga cuidado al probar cosas que probablemente sean variables en las máquinas CRAN. Es arriesgado probar cuánto tiempo lleva algo (porque las máquinas CRAN a menudo están muy cargadas) o probar código paralelo (debido a que CRAN ejecuta múltiples pruebas de paquetes en paralelo, no siempre habrá múltiples núcleos disponibles). La precisión numérica también puede variar entre plataformas, así que use `+expect_equal()+` a menos que tenga una razón específica para usar `+expect_identical()+`.
+Tenga cuidado al probar cosas que probablemente sean variables en las máquinas CRAN. Es arriesgado probar cuánto tiempo lleva algo (porque las máquinas CRAN a menudo están muy cargadas) o probar código paralelo (debido a que CRAN ejecuta múltiples pruebas de paquetes en paralelo, no siempre habrá múltiples núcleos disponibles). La precisión numérica también puede variar entre plataformas, así que use `expect++_++equal()` a menos que tenga una razón específica para usar `expect++_++identical()`.
 
 [[sec-testing-advanced-flaky-tests]]
 === Pruebas inestables
 
 Debido a la escala a la que CRAN verifica los paquetes, básicamente no hay margen para una prueba que es "`simplemente inestable`", es decir, que a veces falla por razones incidentales. CRAN no procesa los resultados de las pruebas de su paquete como usted lo hace, donde puede inspeccionar cada falla y ejercer un juicio humano sobre qué tan preocupante es.
 
-Probablemente sea una buena idea eliminar las pruebas inestables, ¡sólo por tu propio bien! Pero si tiene pruebas valiosas y bien escritas que son propensas a fallas molestas ocasionales, definitivamente coloque `+skip_on_cran()+` al principio.
+Probablemente sea una buena idea eliminar las pruebas inestables, ¡sólo por tu propio bien! Pero si tiene pruebas valiosas y bien escritas que son propensas a fallas molestas ocasionales, definitivamente coloque `skip++_++on++_++cran()` al principio.
 
 El ejemplo clásico es cualquier prueba que acceda a un sitio web o API web. Dado que cualquier recurso web en el mundo experimentará un tiempo de inactividad ocasional, es mejor no permitir que dichas pruebas se ejecuten en CRAN. La Política de repositorio de CRAN dice:
 
@@ -408,9 +408,9 @@ ____
 
 A menudo, hacer que tal falla sea "`elegante`" iría en contra del comportamiento que realmente desea en la práctica, es decir, querría que su usuario recibiera un error si su solicitud falla. Por eso suele ser más práctico probar dicha funcionalidad en otro lugar.
 
-Recuerde que las pruebas instantáneas (<<sec-testing-basics>>), de forma predeterminada, también se omiten en CRAN. Normalmente se utilizan estas pruebas para controlar, por ejemplo, cómo se ven varios mensajes informativos. Pequeños cambios en el formato de los mensajes son algo sobre lo que desea recibir una alerta, pero no indican un defecto importante en su paquete. Esta es la motivación para el comportamiento predeterminado `+skip_on_cran()+` de las pruebas instantáneas.
+Recuerde que las pruebas instantáneas (<<sec-testing-basics>>), de forma predeterminada, también se omiten en CRAN. Normalmente se utilizan estas pruebas para controlar, por ejemplo, cómo se ven varios mensajes informativos. Pequeños cambios en el formato de los mensajes son algo sobre lo que desea recibir una alerta, pero no indican un defecto importante en su paquete. Esta es la motivación para el comportamiento predeterminado `skip++_++on++_++cran()` de las pruebas instantáneas.
 
-Finalmente, las pruebas inestables causan problemas a quienes mantienen sus dependencias. Cuando se actualizan los paquetes de los que depende, CRAN ejecuta `+R CMD check+` en todas las dependencias inversas, incluido su paquete. Si su paquete tiene pruebas inestables, su paquete puede ser la razón por la que otro paquete no pasa las comprobaciones entrantes de CRAN y puede retrasar su liberación.
+Finalmente, las pruebas inestables causan problemas a quienes mantienen sus dependencias. Cuando se actualizan los paquetes de los que depende, CRAN ejecuta `R CMD check` en todas las dependencias inversas, incluido su paquete. Si su paquete tiene pruebas inestables, su paquete puede ser la razón por la que otro paquete no pasa las comprobaciones entrantes de CRAN y puede retrasar su liberación.
 
 === Higiene del sistema de archivos y procesos
 

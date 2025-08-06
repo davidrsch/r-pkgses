@@ -42,7 +42,7 @@ Hay tres requisitos formales.:
 . Debe comenzar con una letra.
 . No puede terminar con un punto.
 
-Desafortunadamente, esto significa que no puede usar guiones ni guiones bajos, es decir, `+-+` o `+_+`, en el nombre de su paquete. Recomendamos no utilizar puntos en los nombres de los paquetes, debido a asociaciones confusas con extensiones de archivos y métodos S3.
+Desafortunadamente, esto significa que no puede usar guiones ni guiones bajos, es decir, `-` o `++_++`, en el nombre de su paquete. Recomendamos no utilizar puntos en los nombres de los paquetes, debido a asociaciones confusas con extensiones de archivos y métodos S3.
 
 ==== Cosas para considerar
 
@@ -60,7 +60,7 @@ Si planeas compartir tu paquete con otras personas, es importante encontrar un b
 ** r2d3 proporciona utilidades para trabajar con visualizaciones D3.
 ** forcats es un anagrama de factores, que utilizamos para datos **cat**egóricos.
 * Utilice abreviaturas, como las siguientes:
-** Rcpp = R + C++ (más más)
+** Rcpp = R {plus} C{plus}{plus} (más más)
 ** brms = Bayesian Regression Models using Stan (Modelos de regresión bayesiana usando Stan)
 * Agregue una R adicional, por ejemplo:
 ** stringr proporciona herramientas de cadenas de caracteres (string en inglés).
@@ -73,7 +73,7 @@ Nick Tierney presenta una tipología divertida de nombres de paquetes en su publ
 
 ==== Utilice el paquete available
 
-Es imposible cumplir con todas las sugerencias anteriores simultáneamente, por lo que deberá hacer algunas concesiones. El https://cran.r-project.org/package=available[paquete available] tiene una función llamada `+available()+` que le ayuda a evaluar el nombre de un paquete potencial desde muchos ángulos:
+Es imposible cumplir con todas las sugerencias anteriores simultáneamente, por lo que deberá hacer algunas concesiones. El https://cran.r-project.org/package=available[paquete available] tiene una función llamada `available()` que le ayuda a evaluar el nombre de un paquete potencial desde muchos ángulos:
 
 [source,r,cell-code]
 ----
@@ -94,40 +94,40 @@ available("doofus")
 #> Sentiment:???
 ----
 
-`+available::available()+` hace lo siguiente:
+`available::available()` hace lo siguiente:
 
 * Comprobaciones de validez.
 * Verifica la disponibilidad en CRAN, Bioconductor y más.
 * Busca en varios sitios web para ayudarle a descubrir significados no deseados. En una sesión interactiva, las URL que ve arriba se abren en las pestañas del navegador.
 * Intenta informar si el nombre tiene un sentimiento positivo o negativo..
 
-`+pak::pkg_name_check()+` es una función alternativa con un propósito similar. Dado que el paquete pak se encuentra en desarrollo más activo que el available, puede surgir como la mejor opción en el futuro.
+`pak::pkg++_++name++_++check()` es una función alternativa con un propósito similar. Dado que el paquete pak se encuentra en desarrollo más activo que el available, puede surgir como la mejor opción en el futuro.
 
 [[sec-creating]]
 === Creación de paquetes
 
 Una vez que haya creado un nombre, hay dos formas de crear el paquete..
 
-* Llamar `+usethis::create_package()+`.
-* En RStudio, haz _File > New Project > New Directory > R Package_. Esto en última instancia llama `+usethis::create_package()+`, así que realmente solo hay una manera.
+* Llamar `usethis::create++_++package()`.
+* En RStudio, haz _File ++>++ New Project ++>++ New Directory ++>++ R Package_. Esto en última instancia llama `usethis::create++_++package()`, así que realmente solo hay una manera.
 
 Esto produce el paquete _funcional_ más pequeño posible, con tres componentes:
 
 [arabic]
-. Un directorio `+R/+`, sobre el cual aprenderá en <<sec-r>>.
-. Un archivo básico `+DESCRIPTION+`, sobre el cual aprenderá en <<sec-description>>.
-. Un archivo `+NAMESPACE+` básico, sobre el que aprenderá en <<sec-dependencies-NAMESPACE-file>>.
+. Un directorio `R/`, sobre el cual aprenderá en <<sec-r>>.
+. Un archivo básico `DESCRIPTION`, sobre el cual aprenderá en <<sec-description>>.
+. Un archivo `NAMESPACE` básico, sobre el que aprenderá en <<sec-dependencies-NAMESPACE-file>>.
 
-También puede incluir un archivo de proyecto de RStudio, `+pkgname.Rproj+`, que hace que su paquete sea fácil de usar con RStudio, como se describe a continuación. Los archivos básicos `+.Rbuildignore+` y `+.gitignore+` también quedan atrás.
+También puede incluir un archivo de proyecto de RStudio, `pkgname.Rproj`, que hace que su paquete sea fácil de usar con RStudio, como se describe a continuación. Los archivos básicos `.Rbuildignore` y `.gitignore` también quedan atrás.
 
 [WARNING]
 ====
-No utilice `+package.skeleton()+` para crear un paquete. Debido a que esta función viene con R, es posible que tenga la tentación de usarla, pero crea un paquete que inmediatamente arroja errores con `+R CMD build+`. Anticipa un proceso de desarrollo diferente al que usamos aquí, por lo que reparar este estado inicial roto simplemente hace que el trabajo sea innecesario para las personas que usan devtools (y, especialmente, roxygen2). Use `+create_package()+`.
+No utilice `package.skeleton()` para crear un paquete. Debido a que esta función viene con R, es posible que tenga la tentación de usarla, pero crea un paquete que inmediatamente arroja errores con `R CMD build`. Anticipa un proceso de desarrollo diferente al que usamos aquí, por lo que reparar este estado inicial roto simplemente hace que el trabajo sea innecesario para las personas que usan devtools (y, especialmente, roxygen2). Use `create++_++package()`.
 ====
 
-=== ¿Dónde deberías crear el paquete, `+create_package()+`?
+=== ¿Dónde deberías crear el paquete, `create++_++package()`?
 
-El argumento principal y único requerido para `+create_package()+` es la `+ruta+`, `+path+` donde vivirá su nuevo paquete:
+El argumento principal y único requerido para `create++_++package()` es la `ruta`, `path` donde vivirá su nuevo paquete:
 
 [source,r,cell-code]
 ----
@@ -136,7 +136,7 @@ create_package("ruta/al/paquete/nombrepqt")
 
 Recuerde que aquí es donde reside su paquete en su forma *fuente* (<<sec-source-package>>), no en su forma *instalada* (<<sec-installed-package>>). Los paquetes instalados se encuentran en una *biblioteca* y analizamos las configuraciones convencionales para bibliotecas en <<sec-library>>.
 
-¿Dónde debería guardar los paquetes fuente? El principio fundamental es que esta ubicación debe ser distinta de donde se encuentran los paquetes instalados. En ausencia de consideraciones externas, un usuario típico debería designar un directorio dentro de su directorio de inicio para los paquetes R (fuente). Discutimos esto con colegas y la fuente de muchos paquetes de tidyverse se encuentra dentro de directorios como `+~/rrr/+`, `+~/documents/tidyverse/+`, `+~/r/packages/+` o `+~/pkg/+`. Algunos de nosotros usamos un directorio para esto, otros dividen los paquetes fuente entre unos pocos directorios según su función de desarrollo (colaborador o no), organización de GitHub (tidyverse o r-lib), etapa de desarrollo (activa o no), etc.
+¿Dónde debería guardar los paquetes fuente? El principio fundamental es que esta ubicación debe ser distinta de donde se encuentran los paquetes instalados. En ausencia de consideraciones externas, un usuario típico debería designar un directorio dentro de su directorio de inicio para los paquetes R (fuente). Discutimos esto con colegas y la fuente de muchos paquetes de tidyverse se encuentra dentro de directorios como `~/rrr/`, `~/documents/tidyverse/`, `~/r/packages/` o `~/pkg/`. Algunos de nosotros usamos un directorio para esto, otros dividen los paquetes fuente entre unos pocos directorios según su función de desarrollo (colaborador o no), organización de GitHub (tidyverse o r-lib), etapa de desarrollo (activa o no), etc.
 
 Lo anterior probablemente refleja que somos principalmente constructores de herramientas. Un investigador académico podría organizar sus archivos en torno a publicaciones individuales, mientras que un científico de datos podría organizarlos en torno a productos e informes de datos. No existe ninguna razón técnica o tradicional particular para un enfoque específico. Siempre que mantenga una distinción clara entre los paquetes fuente e instalados, simplemente elija una estrategia que funcione dentro de su sistema general para la organización de archivos y úsela de manera consistente.
 
@@ -158,7 +158,7 @@ Desde <<sec-source-package>>, ya sabes que un paquete fuente se encuentra en un 
 * Los proyectos son muy "`lanzables`". Es fácil iniciar una nueva instancia de RStudio en un proyecto, con el explorador de archivos y el directorio de trabajo configurados exactamente de la manera que necesita, listos para trabajar..
 * Cada Proyecto está aislado; El código ejecutado en un proyecto no afecta a ningún otro proyecto.
 ** Puede tener varios proyectos de RStudio abiertos a la vez y el código ejecutado en el proyecto A no tiene ningún efecto en la sesión de R ni en el espacio de trabajo del proyecto B.
-* Obtendrá útiles herramientas de navegación de código como `+F2+` para saltar a la definición de una función y `+Ctrl +.+` para buscar funciones o archivos por nombre.
+* Obtendrá útiles herramientas de navegación de código como `F2` para saltar a la definición de una función y `Ctrl {plus}.` para buscar funciones o archivos por nombre.
 * Obtiene útiles atajos de teclado y una interfaz en la que se puede hacer clic para tareas comunes de desarrollo de paquetes, como generar documentación, ejecutar pruebas o verificar el paquete completo.
 +
 .Referencia rápida de métodos abreviados de teclado en RStudio.
@@ -168,9 +168,9 @@ image::images/keyboard-shortcuts.png[images/keyboard-shortcuts]
 [TIP]
 .RStudio
 ====
-Para ver los atajos de teclado más útiles, presione Alt + Shift + K o use _Help > Keyboard Shortcuts Help_. Deberías ver algo como <<fig-keyboard-shortcuts>>.
+Para ver los atajos de teclado más útiles, presione Alt {plus} Shift {plus} K o use _Help ++>++ Keyboard Shortcuts Help_. Deberías ver algo como <<fig-keyboard-shortcuts>>.
 
-RStudio también proporciona la https://docs.posit.co/ide/user/ide/reference/shortcuts.html#command-palette[_Paleta de comandos_] que brinda acceso rápido y con capacidad de búsqueda a todos los comandos del IDE – especialmente útil cuando no recuerdas un atajo de teclado en particular. Se invoca mediante Ctrl + Shift + P (Windows & Linux) o Cmd + Shift + P (macOS).
+RStudio también proporciona la https://docs.posit.co/ide/user/ide/reference/shortcuts.html#command-palette[_Paleta de comandos_] que brinda acceso rápido y con capacidad de búsqueda a todos los comandos del IDE – especialmente útil cuando no recuerdas un atajo de teclado en particular. Se invoca mediante Ctrl {plus} Shift {plus} P (Windows & Linux) o Cmd {plus} Shift {plus} P (macOS).
 
 ====
 
@@ -182,19 +182,19 @@ Siga @https://twitter.com/rstudiotips[rstudiotips] en Twitter para obtener una d
 
 === Cómo conseguir un proyecto RStudio
 
-Si sigue nuestra recomendación de crear nuevos paquetes con `+create_package()+`, cada paquete nuevo también será un proyecto RStudio, si está trabajando desde RStudio.
+Si sigue nuestra recomendación de crear nuevos paquetes con `create++_++package()`, cada paquete nuevo también será un proyecto RStudio, si está trabajando desde RStudio.
 
 Si necesita designar el directorio de un paquete fuente preexistente como un proyecto RStudio, elija una de estas opciones:
 
-* En RStudio, haz _File > New Project > Existing Directory_.
-* Llame a `+create_package()+` con la ruta al paquete fuente R preexistente.
-* Llame a `+usethis::use_rstudio()+`, con el link:#sec-rstudio-project-vs-active-usethis-project[proyecto usethis activo] establecido en un paquete R existente. En la práctica, esto probablemente signifique que solo necesita asegurarse de que su directorio de trabajo esté dentro del directorio del paquete preexistente.
+* En RStudio, haz _File ++>++ New Project ++>++ Existing Directory_.
+* Llame a `create++_++package()` con la ruta al paquete fuente R preexistente.
+* Llame a `usethis::use++_++rstudio()`, con el link:#sec-rstudio-project-vs-active-usethis-project[proyecto usethis activo] establecido en un paquete R existente. En la práctica, esto probablemente signifique que solo necesita asegurarse de que su directorio de trabajo esté dentro del directorio del paquete preexistente.
 
 === ¿Qué caracteriza a un proyecto RStudio?
 
-Un directorio que sea un proyecto RStudio contendrá un archivo `+.Rproj+`. Normalmente, si el directorio se llama "`foo`", el archivo del proyecto es `+foo.Rproj+`. Y si ese directorio también es un paquete R, entonces el nombre del paquete suele ser también "`foo`". El camino de menor resistencia es hacer que todos estos nombres coincidan y NO anidar su paquete dentro de un subdirectorio dentro del Proyecto. Si opta por un flujo de trabajo diferente, sepa que puede sentir que está luchando con las herramientas.
+Un directorio que sea un proyecto RStudio contendrá un archivo `.Rproj`. Normalmente, si el directorio se llama "`foo`", el archivo del proyecto es `foo.Rproj`. Y si ese directorio también es un paquete R, entonces el nombre del paquete suele ser también "`foo`". El camino de menor resistencia es hacer que todos estos nombres coincidan y NO anidar su paquete dentro de un subdirectorio dentro del Proyecto. Si opta por un flujo de trabajo diferente, sepa que puede sentir que está luchando con las herramientas.
 
-Un archivo `+.Rproj+` es solo un archivo de texto. Aquí hay un archivo de proyecto representativo que puede ver en un proyecto iniciado mediante usethis:
+Un archivo `.Rproj` es solo un archivo de texto. Aquí hay un archivo de proyecto representativo que puede ver en un proyecto iniciado mediante usethis:
 
 ....
 Version: 1.0
@@ -216,7 +216,7 @@ PackageInstallArgs: --no-multiarch --with-keep.source
 PackageRoxygenize: rd,collate,namespace
 ....
 
-No es necesario modificar este archivo manualmente. En su lugar, utilice la interfaz disponible a través de _Tools > Project Options_ (<<fig-project-options>>) o _Project Options_ en el menú Proyectos en la esquina superior derecha (<<fig-projects-menu>>).
+No es necesario modificar este archivo manualmente. En su lugar, utilice la interfaz disponible a través de _Tools ++>++ Project Options_ (<<fig-project-options>>) o _Project Options_ en el menú Proyectos en la esquina superior derecha (<<fig-projects-menu>>).
 
 .Opciones de proyecto en RStudio.
 [#fig-project-options]
@@ -228,11 +228,11 @@ image::images/project-options-1.png[images/project-options-1,scaledwidth=35.0%]
 
 === Cómo lanzar un proyecto RStudio
 
-Haga doble clic en el archivo `+foo.Rproj+` en el Finder de macOS o en el Explorador de Windows para iniciar el proyecto foo en RStudio.
+Haga doble clic en el archivo `foo.Rproj` en el Finder de macOS o en el Explorador de Windows para iniciar el proyecto foo en RStudio.
 
-También puede iniciar proyectos desde RStudio a través de _File > Open Project (in New Session)_ o el menú Proyectos en la esquina superior derecha.
+También puede iniciar proyectos desde RStudio a través de _File ++>++ Open Project (in New Session)_ o el menú Proyectos en la esquina superior derecha.
 
-Si utiliza una aplicación de productividad o de inicio, probablemente pueda configurarla para que haga algo agradable con los archivos `+.Rproj+`. Ambos usamos a Alfred para esto. footnote:[Específicamente, configuramos Alfred para favorecer los archivos `+.Rproj+` en sus resultados de búsqueda cuando propone aplicaciones o archivos para abrir. Para registrar el tipo de archivo `+.Rproj+` con Alfred, vaya a _Preferences > Features > Default Results > Advanced_. Arrastre cualquier archivo `+.Rproj+` a este espacio y luego ciérrelo.], que es solo macOS, pero existen herramientas similares para Windows. De hecho, esta es una muy buena razón para utilizar una aplicación de productividad en primer lugar.
+Si utiliza una aplicación de productividad o de inicio, probablemente pueda configurarla para que haga algo agradable con los archivos `.Rproj`. Ambos usamos a Alfred para esto. footnote:[Específicamente, configuramos Alfred para favorecer los archivos `.Rproj` en sus resultados de búsqueda cuando propone aplicaciones o archivos para abrir. Para registrar el tipo de archivo `.Rproj` con Alfred, vaya a _Preferences ++>++ Features ++>++ Default Results ++>++ Advanced_. Arrastre cualquier archivo `.Rproj` a este espacio y luego ciérrelo.], que es solo macOS, pero existen herramientas similares para Windows. De hecho, esta es una muy buena razón para utilizar una aplicación de productividad en primer lugar.
 
 Es muy normal – ¡y productivo! – tener varios proyectos abiertos a la vez.
 
@@ -245,7 +245,7 @@ Notarás que la mayoría de las funciones de usethis no toman una ruta: operan e
 * El uso activo de este proyecto.
 * Directorio de trabajo actual para el proceso R.
 
-Si las cosas parecen raras, llame a `+proj_sitrep()+` para obtener un "`informe de situación`". Éste identificará situaciones peculiares y propondrá formas de volver a un estado más feliz.
+Si las cosas parecen raras, llame a `proj++_++sitrep()` para obtener un "`informe de situación`". Éste identificará situaciones peculiares y propondrá formas de volver a un estado más feliz.
 
 [source,r,cell-code]
 ----
@@ -258,23 +258,23 @@ proj_sitrep()
 
 == Directorio de trabajo y disciplina de ruta de archivo
 
-A medida que desarrolle su paquete, ejecutará código R. Esta será una combinación de llamadas de flujo de trabajo (por ejemplo, `+document()+` o `+test()+`) y llamadas _ad hoc_ que le ayudarán a escribir sus funciones, ejemplos y pruebas. _Recomendamos encarecidamente_ que mantenga el nivel superior de su paquete fuente como directorio de trabajo de su proceso R. Esto generalmente sucederá de forma predeterminada, por lo que esta es realmente una recomendación para evitar flujos de trabajo de desarrollo que requieran que juegue con el directorio de trabajo.
+A medida que desarrolle su paquete, ejecutará código R. Esta será una combinación de llamadas de flujo de trabajo (por ejemplo, `document()` o `test()`) y llamadas _ad hoc_ que le ayudarán a escribir sus funciones, ejemplos y pruebas. _Recomendamos encarecidamente_ que mantenga el nivel superior de su paquete fuente como directorio de trabajo de su proceso R. Esto generalmente sucederá de forma predeterminada, por lo que esta es realmente una recomendación para evitar flujos de trabajo de desarrollo que requieran que juegue con el directorio de trabajo.
 
-Si es totalmente nuevo en el desarrollo de paquetes, no tiene muchas bases para apoyar o resistirse a esta propuesta. Pero aquellos con cierta experiencia pueden encontrar esta recomendación algo molesta. Quizás se pregunte cómo se supone que debe expresar las rutas cuando trabaja en subdirectorios, como `+tests/+`. A medida que sea relevante, le mostraremos cómo explotar los asistentes de creación de rutas, como `+testthat::test_path()+`, que determinan las rutas en el momento de la ejecución.
+Si es totalmente nuevo en el desarrollo de paquetes, no tiene muchas bases para apoyar o resistirse a esta propuesta. Pero aquellos con cierta experiencia pueden encontrar esta recomendación algo molesta. Quizás se pregunte cómo se supone que debe expresar las rutas cuando trabaja en subdirectorios, como `tests/`. A medida que sea relevante, le mostraremos cómo explotar los asistentes de creación de rutas, como `testthat::test++_++path()`, que determinan las rutas en el momento de la ejecución.
 
-La idea básica es que al dejar el directorio de trabajo solo, se le recomienda escribir rutas que transmitan la intención explícitamente ("`leer `+foo.csv+` del directorio de prueba`") en lugar de implícitamente ("`leer `+foo.csv+` del directorio de trabajo actual , que _creo_ será el directorio de prueba`"). Una señal segura de dependencia de rutas implícitas es el jugueteo incesante con su directorio de trabajo, porque está utilizando `+setwd()+` para cumplir manualmente las suposiciones que están implícitas en sus rutas.
+La idea básica es que al dejar el directorio de trabajo solo, se le recomienda escribir rutas que transmitan la intención explícitamente ("`leer `foo.csv` del directorio de prueba`") en lugar de implícitamente ("`leer `foo.csv` del directorio de trabajo actual , que _creo_ será el directorio de prueba`"). Una señal segura de dependencia de rutas implícitas es el jugueteo incesante con su directorio de trabajo, porque está utilizando `setwd()` para cumplir manualmente las suposiciones que están implícitas en sus rutas.
 
 El uso de rutas explícitas puede eliminar toda una clase de dolores de cabeza en las rutas y también hace que el desarrollo diario sea más placentero. Hay dos razones por las que es difícil acertar con los caminos implícitos:
 
 * Recuerde las diferentes formas que puede adoptar un paquete durante el ciclo de desarrollo (<<sec-package-structure-state>>). Estos estados difieren entre sí en términos de qué archivos y carpetas existen y sus posiciones relativas dentro de la jerarquía. Es complicado escribir rutas relativas que funcionen en todos los estados del paquete.
-* Con el tiempo, usted y potencialmente CRAN procesarán su paquete con herramientas integradas como `+R CMD build+`, `+R CMD check+` y `+R CMD INSTALL+`. Es difícil realizar un seguimiento de cuál será el directorio de trabajo en cada etapa de estos procesos.
+* Con el tiempo, usted y potencialmente CRAN procesarán su paquete con herramientas integradas como `R CMD build`, `R CMD check` y `R CMD INSTALL`. Es difícil realizar un seguimiento de cuál será el directorio de trabajo en cada etapa de estos procesos.
 
-Los asistentes de ruta como `+testthat::test_path()+`, `+fs::path_package()+` y el https://rprojroot.r-lib.org[paquete rprojroot] son extremadamente útiles para crear rutas resistentes que resistan en toda la gama de situaciones que surgen durante el desarrollo y el uso. Otra forma de eliminar rutas frágiles es ser riguroso en el uso de métodos adecuados para almacenar datos dentro de su paquete (<<sec-data>>) y apuntar al directorio temporal de la sesión cuando sea apropiado, como para artefactos de prueba efímeros. (<<sec-testing-basics>>).
+Los asistentes de ruta como `testthat::test++_++path()`, `fs::path++_++package()` y el https://rprojroot.r-lib.org[paquete rprojroot] son extremadamente útiles para crear rutas resistentes que resistan en toda la gama de situaciones que surgen durante el desarrollo y el uso. Otra forma de eliminar rutas frágiles es ser riguroso en el uso de métodos adecuados para almacenar datos dentro de su paquete (<<sec-data>>) y apuntar al directorio temporal de la sesión cuando sea apropiado, como para artefactos de prueba efímeros. (<<sec-testing-basics>>).
 
 [[sec-workflow101-load-all]]
-== Prueba de manejo con `+load_all()+`
+== Prueba de manejo con `load++_++all()`
 
-La función `+load_all()+` es posiblemente la parte más importante del flujo de trabajo de devtools.
+La función `load++_++all()` es posiblemente la parte más importante del flujo de trabajo de devtools.
 
 [source,r,cell-code]
 ----
@@ -286,103 +286,103 @@ load_all()
 # ... ahora experimenta con las funciones de tu paquete.
 ----
 
-`+load_all()+` es el paso clave en este ciclo de desarrollo de paquetes de "`hacer espuma, enjuagar y repetir`":
+`load++_++all()` es el paso clave en este ciclo de desarrollo de paquetes de "`hacer espuma, enjuagar y repetir`":
 
 [arabic]
 . Modificar la definición de una función.
-. `+load_all()+`
+. `load++_++all()`
 . Pruebe el cambio ejecutando un pequeño ejemplo o algunas pruebas.
 
-Cuando eres nuevo en el desarrollo de paquetes o en devtools, es fácil pasar por alto la importancia de `+load_all()+` y caer en algunos hábitos incómodos en un flujo de trabajo de análisis de datos.
+Cuando eres nuevo en el desarrollo de paquetes o en devtools, es fácil pasar por alto la importancia de `load++_++all()` y caer en algunos hábitos incómodos en un flujo de trabajo de análisis de datos.
 
-=== Beneficios de `+load_all()+`
+=== Beneficios de `load++_++all()`
 
-Cuando comienza a utilizar un entorno de desarrollo, como RStudio o VS Code, la mayor ventaja es la capacidad de enviar líneas de código desde un script `+.R+` para su ejecución en la consola R. La fluidez de esto es lo que hace que sea tolerable seguir la mejor práctica de considerar el código fuente como real footnote:[Citando la filosofía de uso favorecida por https://ess.r-project.org/Manual/ess.html#Philosophies-for-using-ESS_0028R_0029[Emacs Speaks Statistics] (ESS).] (en lugar de objetos en el espacio de trabajo) y guardar archivos `+.R+` (en lugar de guardar y volver a cargar `+.Rdata+`).
+Cuando comienza a utilizar un entorno de desarrollo, como RStudio o VS Code, la mayor ventaja es la capacidad de enviar líneas de código desde un script `.R` para su ejecución en la consola R. La fluidez de esto es lo que hace que sea tolerable seguir la mejor práctica de considerar el código fuente como real footnote:[Citando la filosofía de uso favorecida por https://ess.r-project.org/Manual/ess.html#Philosophies-for-using-ESS_0028R_0029[Emacs Speaks Statistics] (ESS).] (en lugar de objetos en el espacio de trabajo) y guardar archivos `.R` (en lugar de guardar y volver a cargar `.Rdata`).
 
-`+load_all()+` tiene el mismo significado para el desarrollo de paquetes e, irónicamente, requiere que NO pruebe el código del paquete de la misma manera que el código de script. `+load_all()+` _simula_ el proceso completo para ver el efecto de un cambio en el código fuente, lo cual es bastante complicado footnote:[El método de línea de comando es salir de R, ir al shell, hacer `+R CMD build foo+` en el directorio principal del paquete, luego `+R CMD INSTALL foo_x.y.x.tar.gz+`, reiniciar R y llamar `+library(foo+`).] que no querrás hacerlo muy a menudo. <<fig-load-all>> refuerza que la función `+library()+` solo puede cargar un paquete que ha sido instalado, mientras que `+load_all()+` ofrece una simulación de alta fidelidad de esto, basada en la fuente del paquete actual.
+`load++_++all()` tiene el mismo significado para el desarrollo de paquetes e, irónicamente, requiere que NO pruebe el código del paquete de la misma manera que el código de script. `load++_++all()` _simula_ el proceso completo para ver el efecto de un cambio en el código fuente, lo cual es bastante complicado footnote:[El método de línea de comando es salir de R, ir al shell, hacer `R CMD build foo` en el directorio principal del paquete, luego `R CMD INSTALL foo++_++x.y.x.tar.gz`, reiniciar R y llamar `library(foo`).] que no querrás hacerlo muy a menudo. <<fig-load-all>> refuerza que la función `library()` solo puede cargar un paquete que ha sido instalado, mientras que `load++_++all()` ofrece una simulación de alta fidelidad de esto, basada en la fuente del paquete actual.
 
-.devtools::load_all() vs. library().
+.devtools::load++_++all() vs. library().
 [#fig-load-all]
 image::diagrams/loading.png[diagrams/loading]
 
-Los principales beneficios de `+load_all()+` incluyen:
+Los principales beneficios de `load++_++all()` incluyen:
 
 * Puede iterar rápidamente, lo que fomenta la exploración y el progreso incremental.
 ** Esta aceleración iterativa es especialmente notable en paquetes con código compilado.
 * Puedes desarrollar de forma interactiva bajo un régimen de espacio de nombres que imita con precisión cómo son las cosas cuando alguien usa tu paquete instalado, con las siguientes ventajas adicionales:
-** Puede llamar a sus propias funciones internas directamente, sin usar `+:::+` y sin caer en la tentación de definir temporalmente sus funciones en el espacio de trabajo global.
-** También puede llamar funciones de otros paquetes que haya importado a su `+NAMESPACE+`, sin caer en la tentación de adjuntar estas dependencias a través de `+library()+`.
+** Puede llamar a sus propias funciones internas directamente, sin usar `:::` y sin caer en la tentación de definir temporalmente sus funciones en el espacio de trabajo global.
+** También puede llamar funciones de otros paquetes que haya importado a su `NAMESPACE`, sin caer en la tentación de adjuntar estas dependencias a través de `library()`.
 
-`+load_all()+` elimina la fricción del flujo de trabajo de desarrollo y elimina la tentación de utilizar soluciones alternativas que a menudo conducen a errores en torno a la gestión de espacios de nombres y dependencias.
+`load++_++all()` elimina la fricción del flujo de trabajo de desarrollo y elimina la tentación de utilizar soluciones alternativas que a menudo conducen a errores en torno a la gestión de espacios de nombres y dependencias.
 
-=== Otras formas de llamar `+load_all()+`
+=== Otras formas de llamar `load++_++all()`
 
-Cuando se trabaja en un proyecto que es un paquete, RStudio ofrece varias formas de llamar `+load_all()+`:
+Cuando se trabaja en un proyecto que es un paquete, RStudio ofrece varias formas de llamar `load++_++all()`:
 
-* Atajo de teclado: Cmd+Shift+L (macOS), Ctrl+Shift+L (Windows, Linux)
+* Atajo de teclado: Cmd{plus}Shift{plus}L (macOS), Ctrl{plus}Shift{plus}L (Windows, Linux)
 * Paneles de construcción menú _More …_
-* _Build > Load All_
+* _Build ++>++ Load All_
 
-`+devtools::load_all()+` es una envoltura delgada alrededor de `+pkgload::load_all()+` que agrega un poco de facilidad de uso. Es poco probable que uses `+load_all()+` programáticamente o dentro de otro paquete, pero si lo haces, probablemente deberías usar `+pkgload::load_all()+` directamente.
+`devtools::load++_++all()` es una envoltura delgada alrededor de `pkgload::load++_++all()` que agrega un poco de facilidad de uso. Es poco probable que uses `load++_++all()` programáticamente o dentro de otro paquete, pero si lo haces, probablemente deberías usar `pkgload::load++_++all()` directamente.
 
 [[sec-workflow101-r-cmd-check]]
-== `+check()+` y `+R CMD check+`
+== `check()` y `R CMD check`
 
-Base R proporciona varias herramientas de línea de comandos y "`R CMD check`" es el método oficial para comprobar que un paquete R es válido. Es esencial pasar la verificación `+R CMD check+` si planea enviar su paquete a CRAN, pero *recomendamos encarecidamente* cumplir con este estándar incluso si no tiene intención de publicar su paquete en CRAN. `+R CMD check+` detecta muchos problemas comunes que de otro modo descubrirías por las malas.
+Base R proporciona varias herramientas de línea de comandos y "`R CMD check`" es el método oficial para comprobar que un paquete R es válido. Es esencial pasar la verificación `R CMD check` si planea enviar su paquete a CRAN, pero *recomendamos encarecidamente* cumplir con este estándar incluso si no tiene intención de publicar su paquete en CRAN. `R CMD check` detecta muchos problemas comunes que de otro modo descubrirías por las malas.
 
-Nuestra forma recomendada de ejecutar `+R CMD check+` es en la consola R a través de devtools:
+Nuestra forma recomendada de ejecutar `R CMD check` es en la consola R a través de devtools:
 
 [source,r,cell-code]
 ----
 devtools::check()
 ----
 
-Recomendamos esto porque le permite ejecutar `+R CMD check+` desde R, lo que reduce drásticamente la fricción y aumenta la probabilidad de que `+check()+` sea temprano y con frecuencia. Este énfasis en la fluidez y la retroalimentación rápida es exactamente la misma motivación que se da para `+load_all()+`. En el caso de `+check()+`, realmente está ejecutando `+R CMD check+` por usted. No se trata sólo de una simulación de alta fidelidad, como es el caso de `+load_all()+`.
+Recomendamos esto porque le permite ejecutar `R CMD check` desde R, lo que reduce drásticamente la fricción y aumenta la probabilidad de que `check()` sea temprano y con frecuencia. Este énfasis en la fluidez y la retroalimentación rápida es exactamente la misma motivación que se da para `load++_++all()`. En el caso de `check()`, realmente está ejecutando `R CMD check` por usted. No se trata sólo de una simulación de alta fidelidad, como es el caso de `load++_++all()`.
 
 [TIP]
 .RStudio
 ====
-RStudio expone `+check()+` en el menú _Build_, en el panel _Build_ a través de _Check_ y en los atajos de teclado Ctrl + Shift + E (Windows & Linux) o Cmd + Shift + E (macOS).
+RStudio expone `check()` en el menú _Build_, en el panel _Build_ a través de _Check_ y en los atajos de teclado Ctrl {plus} Shift {plus} E (Windows & Linux) o Cmd {plus} Shift {plus} E (macOS).
 ====
 
-Un error de novato que vemos a menudo en los desarrolladores de nuevos paquetes es trabajar demasiado en su paquete antes de ejecutar "`R CMD check`". Luego, cuando finalmente lo ejecutan, es típico descubrir muchos problemas, lo que puede resultar muy desmoralizador. Es contrario a la intuición, pero la clave para minimizar este dolor es ejecutar `+R CMD check+` con más frecuencia: cuanto antes encuentre un problema, más fácil será solucionarlo.footnote:[Una excelente publicación de blog que aboga por "`si duele, hazlo más a menudo`" es https://martinfowler.com/bliki/FrequencyReducesDifficulty.html[FrequencyReducesDifficulty] de Martin Fowler.]. Modelamos este comportamiento muy intencionalmente en <<sec-whole-game>>.
+Un error de novato que vemos a menudo en los desarrolladores de nuevos paquetes es trabajar demasiado en su paquete antes de ejecutar "`R CMD check`". Luego, cuando finalmente lo ejecutan, es típico descubrir muchos problemas, lo que puede resultar muy desmoralizador. Es contrario a la intuición, pero la clave para minimizar este dolor es ejecutar `R CMD check` con más frecuencia: cuanto antes encuentre un problema, más fácil será solucionarlo.footnote:[Una excelente publicación de blog que aboga por "`si duele, hazlo más a menudo`" es https://martinfowler.com/bliki/FrequencyReducesDifficulty.html[FrequencyReducesDifficulty] de Martin Fowler.]. Modelamos este comportamiento muy intencionalmente en <<sec-whole-game>>.
 
-El límite superior de este enfoque es ejecutar `+R CMD check+` cada vez que realiza un cambio. No ejecutamos `+check()+` manualmente con tanta frecuencia, pero cuando estamos trabajando activamente en un paquete, es típico ejecutar `+check()+` varias veces al día. No juegue con su paquete durante días, semanas o meses, esperando algún hito especial para finalmente ejecutar `+R CMD check+`. Si usas GitHub (<<sec-sw-dev-practices-git-github>>), Le mostraremos cómo configurar las cosas para que `+R CMD check+` se ejecute automáticamente cada vez que realice un push (<<sec-sw-dev-practices-gha>>).
+El límite superior de este enfoque es ejecutar `R CMD check` cada vez que realiza un cambio. No ejecutamos `check()` manualmente con tanta frecuencia, pero cuando estamos trabajando activamente en un paquete, es típico ejecutar `check()` varias veces al día. No juegue con su paquete durante días, semanas o meses, esperando algún hito especial para finalmente ejecutar `R CMD check`. Si usas GitHub (<<sec-sw-dev-practices-git-github>>), Le mostraremos cómo configurar las cosas para que `R CMD check` se ejecute automáticamente cada vez que realice un push (<<sec-sw-dev-practices-gha>>).
 
 [[sec-check-workflow]]
 === Flujo de trabajo
 
-Esto es lo que sucede dentro `+devtools::check()+`:
+Esto es lo que sucede dentro `devtools::check()`:
 
-* Garantiza que la documentación esté actualizada ejecutando `+devtools::document()+`.
-* Empaqueta el paquete antes de revisarlo (<<sec-bundled-package>>). Esta es la mejor práctica para verificar paquetes porque garantiza que la verificación comience desde cero: porque un paquete de paquetes no contiene ninguno de los archivos temporales que pueden acumularse en su paquete fuente, por ejemplo. artefactos como los archivos `+.so+` y `+.o+` que acompañan al código compilado, puede evitar las advertencias falsas que generarán dichos archivos.
-* Establece la variable de entorno `+NOT_CRAN+` en `+"true"+`. Esto le permite omitir selectivamente pruebas en CRAN. Consulte `+?testthat::skip_on_cran+` y <<sec-testing-advanced-skip-on-cran>> para obtener más detalles.
+* Garantiza que la documentación esté actualizada ejecutando `devtools::document()`.
+* Empaqueta el paquete antes de revisarlo (<<sec-bundled-package>>). Esta es la mejor práctica para verificar paquetes porque garantiza que la verificación comience desde cero: porque un paquete de paquetes no contiene ninguno de los archivos temporales que pueden acumularse en su paquete fuente, por ejemplo. artefactos como los archivos `.so` y `.o` que acompañan al código compilado, puede evitar las advertencias falsas que generarán dichos archivos.
+* Establece la variable de entorno `NOT++_++CRAN` en `"true"`. Esto le permite omitir selectivamente pruebas en CRAN. Consulte `?testthat::skip++_++on++_++cran` y <<sec-testing-advanced-skip-on-cran>> para obtener más detalles.
 
 El flujo de trabajo para comprobar un paquete es sencillo, pero tedioso:
 
 [arabic]
-. Ejecute `+devtools::check()+`, o presione Ctrl/Cmd + Shift + E.
+. Ejecute `devtools::check()`, o presione Ctrl/Cmd {plus} Shift {plus} E.
 . Arregle el primer problema.
 . Repita hasta que no haya más problemas.
 
-`+R CMD check+` devuelve tres tipos de mensajes:
+`R CMD check` devuelve tres tipos de mensajes:
 
-* `+ERROR+` (errores): Problemas graves que debes solucionar independientemente de si envías o no a CRAN.
-* `+WARNING+` (advertencias): Problemas probables que debes solucionar si planeas enviar a CRAN (y es una buena idea investigar incluso si no lo estás haciendo).
-* `+NOTE+` (notas): Problemas leves o, en algunos casos, simplemente una observación. Si realiza un envío a CRAN, debe esforzarse por eliminar todas las NOTAS, incluso si son falsos positivos. Si no tiene NOTAS, no se requiere intervención humana y el proceso de envío del paquete será más sencillo. Si no es posible eliminar una "`NOTA`", deberá describir por qué está bien en los comentarios de envío, como se describe en <<sec-release-process>>. Si no realiza el envío a CRAN, lea atentamente cada NOTA. Si es fácil eliminar las NOTAS, vale la pena, para que puedas seguir esforzándote por conseguir un resultado totalmente limpio. Pero si eliminar una NOTA tendrá un impacto negativo neto en su paquete, es razonable simplemente tolerarlo. Asegúrese de que eso no le lleve a ignorar otras cuestiones que realmente deberían abordarse.
+* `ERROR` (errores): Problemas graves que debes solucionar independientemente de si envías o no a CRAN.
+* `WARNING` (advertencias): Problemas probables que debes solucionar si planeas enviar a CRAN (y es una buena idea investigar incluso si no lo estás haciendo).
+* `NOTE` (notas): Problemas leves o, en algunos casos, simplemente una observación. Si realiza un envío a CRAN, debe esforzarse por eliminar todas las NOTAS, incluso si son falsos positivos. Si no tiene NOTAS, no se requiere intervención humana y el proceso de envío del paquete será más sencillo. Si no es posible eliminar una "`NOTA`", deberá describir por qué está bien en los comentarios de envío, como se describe en <<sec-release-process>>. Si no realiza el envío a CRAN, lea atentamente cada NOTA. Si es fácil eliminar las NOTAS, vale la pena, para que puedas seguir esforzándote por conseguir un resultado totalmente limpio. Pero si eliminar una NOTA tendrá un impacto negativo neto en su paquete, es razonable simplemente tolerarlo. Asegúrese de que eso no le lleve a ignorar otras cuestiones que realmente deberían abordarse.
 
-`+R CMD check+` consta de docenas de controles individuales y sería abrumador enumerarlos aquí. Consulte nuestra https://r-pkgs.org/R-CMD-check.html[guía solo en línea para verificar `R CMD check] para más detalles.
+`R CMD check` consta de docenas de controles individuales y sería abrumador enumerarlos aquí. Consulte nuestra https://r-pkgs.org/R-CMD-check.html[guía solo en línea para verificar ++`++R CMD check] para más detalles.
 
-=== Antecedentes sobre `+R CMD check+`
+=== Antecedentes sobre `R CMD check`
 
-A medida que acumula experiencia en el desarrollo de paquetes, es posible que desee acceder `+R CMD check+` directamente en algún momento. Recuerde que `+R CMD check+` es algo que debe ejecutar en la terminal, no en la consola R. Puedes ver su documentación así:
+A medida que acumula experiencia en el desarrollo de paquetes, es posible que desee acceder `R CMD check` directamente en algún momento. Recuerde que `R CMD check` es algo que debe ejecutar en la terminal, no en la consola R. Puedes ver su documentación así:
 
 [source,bash]
 ----
 R CMD check --help
 ----
 
-`+R CMD check+` se puede ejecutar en un directorio que contiene un paquete R en formato fuente (<<sec-source-package>>) o, preferiblemente, en un empaquetado (<<sec-bundled-package>>):
+`R CMD check` se puede ejecutar en un directorio que contiene un paquete R en formato fuente (<<sec-source-package>>) o, preferiblemente, en un empaquetado (<<sec-bundled-package>>):
 
 [source,bash]
 ----

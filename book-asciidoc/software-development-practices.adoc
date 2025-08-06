@@ -10,7 +10,7 @@ Notarás que recomendamos utilizar ciertas herramientas:
 * Un entorno de desarrollo integrado (IDE). En <<sec-workflow101-rstudio-projects>> fomentamos el uso de RStudio IDE para el trabajo de desarrollo de paquetes. Eso es lo que documentamos, ya que es lo que usamos y devtools está desarrollado para funcionar especialmente bien con RStudio. Pero incluso si no es RStudio, recomendamos encarecidamente trabajar con un IDE que tenga soporte específico para el desarrollo de paquetes R y R.
 * Control de versiones. Recomendamos encarecidamente el uso de control de versiones formal y, en este momento, Git es la opción obvia. Decimos esto basándonos en la prevalencia general de Git y, específicamente, en su popularidad dentro del ecosistema de paquetes R. En <<sec-sw-dev-practices-git-github>>, explicamos por qué creemos que el control de versiones es tan importante.
 * Control de versiones alojadas. Recomendamos encarecidamente sincronizar sus repositorios Git locales con un servicio alojado y, en este momento, GitHub es la opción obvia, o al menos "`una`". Esto también se trata en <<sec-sw-dev-practices-git-github>>.
-* Integración e implementación continuas, también conocidas como CI/CD (o incluso simplemente CI). Esta terminología proviene del mundo general de la ingeniería de software y puede parecer un tanto grandiosa o intimidante cuando se aplica a su paquete R personal. Todo lo que esto realmente significa es que usted configura tareas específicas de desarrollo de paquetes para que se realicen automáticamente cuando envía un nuevo trabajo a su repositorio alojado. Normalmente querrás ejecutar `+R CMD check+` y reconstruir e implementar el sitio web de tu paquete. En <<sec-sw-dev-practices-ci>>, mostramos cómo hacer esto con GitHub Actions.
+* Integración e implementación continuas, también conocidas como CI/CD (o incluso simplemente CI). Esta terminología proviene del mundo general de la ingeniería de software y puede parecer un tanto grandiosa o intimidante cuando se aplica a su paquete R personal. Todo lo que esto realmente significa es que usted configura tareas específicas de desarrollo de paquetes para que se realicen automáticamente cuando envía un nuevo trabajo a su repositorio alojado. Normalmente querrás ejecutar `R CMD check` y reconstruir e implementar el sitio web de tu paquete. En <<sec-sw-dev-practices-ci>>, mostramos cómo hacer esto con GitHub Actions.
 
 Se podría pensar que estas herramientas de estilo profesional son excesivas para alguien que no se gana la vida desarrollando software. Si bien no recomendamos obligarse a hacer todo lo anterior el primer día de su primer proyecto de "`hola mundo`", en realidad creemos que estas herramientas son ampliamente aplicables para el desarrollo de paquetes R.
 
@@ -30,7 +30,7 @@ Esta recomendación está bien alineada con las prácticas generales actuales en
 * El 94% reporta usar Git. El segundo sistema de control de versiones más utilizado fue SVN, utilizado por el 5% de los encuestados.
 * Para proyectos personales, el 87% de los encuestados afirma utilizar GitHub, seguido de GitLab (21%) y Bitbucket (11%). La clasificación es la misma, aunque menos sesgada para el trabajo profesional: GitHub sigue dominando con un 56%, seguido de GitLab (29%) y Bitbucket (18%).
 
-Incluso podemos aprender un poco sobre los hábitos de los desarrolladores de paquetes R, basándonos en las URL que se encuentran en los archivos `+DESCRIPTION+` de los paquetes CRAN. En marzo de 2023, hay alrededor de 19.000 paquetes en CRAN, de los cuales aproximadamente el 55 % tienen un campo "`URL`" no vacío (más de 10.000). De ellos, el 80% tiene una URL de GitHub (más de 8K), seguido de GitLab (poco más del 1%) y Bitbucket (alrededor del 0,5%).
+Incluso podemos aprender un poco sobre los hábitos de los desarrolladores de paquetes R, basándonos en las URL que se encuentran en los archivos `DESCRIPTION` de los paquetes CRAN. En marzo de 2023, hay alrededor de 19.000 paquetes en CRAN, de los cuales aproximadamente el 55 % tienen un campo "`URL`" no vacío (más de 10.000). De ellos, el 80% tiene una URL de GitHub (más de 8K), seguido de GitLab (poco más del 1%) y Bitbucket (alrededor del 0,5%).
 
 La prevalencia de Git/GitHub, tanto dentro de la comunidad R como más allá, debería ayudarle a sentirse seguro de que la adopción tendrá beneficios tangibles. Además, la gran popularidad de estas herramientas significa que hay muchos recursos disponibles para aprender a usar Git y GitHub y para despegarsefootnote:[Presentamos GitHub aquí, para el control de versiones alojadas, porque es lo que usamos y lo que tiene el mejor soporte en devtools. Sin embargo, todos los principios generales e incluso algunos detalles son válidos para plataformas alternativas, como Gitlab y Bitbucket.].
 
@@ -40,7 +40,7 @@ Concluimos esta sección con algunos ejemplos de por qué Git/GitHub puede ser v
 
 * Comunicación con los usuarios: los problemas de GitHub son adecuados para recibir informes de errores y solicitudes de funciones. A diferencia del correo electrónico enviado al responsable, otras personas pueden acceder a estas conversaciones y realizar búsquedas.
 * Colaboración: las solicitudes de extracción de GitHub son una forma muy sencilla para que los contribuyentes externos ayuden a corregir errores y agregar funciones.
-* Distribución: Funciones como `+devtools::install_github("r-lib/devtools")+` y `+pak::pak("r-lib/devtools")+` permiten a las personas instalar fácilmente la versión de desarrollo de su paquete, según un repositorio de fuentes. De manera más general, cualquiera puede instalar su paquete desde cualquier referencia de Git válida, como una rama, un SHA específico, una solicitud de extracción o una etiqueta.
+* Distribución: Funciones como `devtools::install++_++github("r-lib/devtools")` y `pak::pak("r-lib/devtools")` permiten a las personas instalar fácilmente la versión de desarrollo de su paquete, según un repositorio de fuentes. De manera más general, cualquiera puede instalar su paquete desde cualquier referencia de Git válida, como una rama, un SHA específico, una solicitud de extracción o una etiqueta.
 * Sitio web: GitHub Pages es una de las formas más sencillas de ofrecer un sitio web para su paquete (<<sec-website-deployment>>).
 * Integración continua: este es en realidad el tema de la siguiente sección, así que sigue leyendo para obtener más información.
 
@@ -51,7 +51,7 @@ Como dijimos en la introducción, la integración y el despliegue continuos se a
 
 [arabic]
 . Alojas tu paquete fuente en una plataforma como GitHub. El punto clave es que el repositorio alojado proporciona la estructura formal para integrar el trabajo de múltiples contribuyentes. A veces, varios desarrolladores tienen permiso para enviar (así es como se administran los paquetes tidyverse y r-lib). En otros casos, sólo el responsable principal tiene permiso de inserción. En cualquiera de los modelos, los contribuyentes externos pueden proponer cambios mediante una solicitud de extracción.
-. Configura una o más tareas de desarrollo para que se ejecuten automáticamente cuando ocurren ciertos eventos en el repositorio alojado, como una solicitud de inserción o extracción. Por ejemplo, para un paquete R, es extremadamente valioso configurar una ejecución automática de `+R CMD check+`. Esto le ayuda a descubrir roturas rápidamente, cuando es más fácil de diagnosticar y reparar, y es de gran ayuda para evaluar si acepta una contribución externa.
+. Configura una o más tareas de desarrollo para que se ejecuten automáticamente cuando ocurren ciertos eventos en el repositorio alojado, como una solicitud de inserción o extracción. Por ejemplo, para un paquete R, es extremadamente valioso configurar una ejecución automática de `R CMD check`. Esto le ayuda a descubrir roturas rápidamente, cuando es más fácil de diagnosticar y reparar, y es de gran ayuda para evaluar si acepta una contribución externa.
 
 En general, el uso del control de versiones alojado y la integración continua pueden hacer que el desarrollo avance más fluida y rápidamente.
 
@@ -60,11 +60,11 @@ Incluso para un desarrollador en solitario, ejecutar "`R CMD check`" de forma re
 [[sec-sw-dev-practices-gha]]
 === Acciones de GitHub
 
-TLa forma más sencilla de empezar a utilizar CI es alojar su paquete en GitHub y utilizar su servicio complementario, GitHub Actions (GHA). Luego puede utilizar varias funciones de usethis para configurar los llamados flujos de trabajo GHA. usethis copia los archivos de configuración del flujo de trabajo de https://github.com/r-lib/actions/#readme[`+r-lib/actions+`], que es donde el equipo de tidyverse mantiene la infraestructura de GHA útil para la comunidad R.
+TLa forma más sencilla de empezar a utilizar CI es alojar su paquete en GitHub y utilizar su servicio complementario, GitHub Actions (GHA). Luego puede utilizar varias funciones de usethis para configurar los llamados flujos de trabajo GHA. usethis copia los archivos de configuración del flujo de trabajo de https://github.com/r-lib/actions/#readme[`r-lib/actions`], que es donde el equipo de tidyverse mantiene la infraestructura de GHA útil para la comunidad R.
 
-=== `+R CMD check+` a través de GHA
+=== `R CMD check` a través de GHA
 
-Si solo usa CI para una cosa, debería ser ejecutar "`R CMD check`". Si llama a `+usethis::use_github_action()+` sin argumentos, puede elegir entre algunos de los flujos de trabajo más útiles. Así es como se ve ese menú al momento de escribir este artículo:
+Si solo usa CI para una cosa, debería ser ejecutar "`R CMD check`". Si llama a `usethis::use++_++github++_++action()` sin argumentos, puede elegir entre algunos de los flujos de trabajo más útiles. Así es como se ve ese menú al momento de escribir este artículo:
 
 [source,r,cell-code]
 ----
@@ -79,7 +79,7 @@ Which action do you want to add? (0 to exit)
 Selection: 
 ----
 
-`+check-standard+` es muy recomendable, especialmente para cualquier paquete que esté (o aspire a estar) en CRAN. Ejecuta `+R CMD check+` en algunas combinaciones de sistema operativo y versión R. Esto aumenta sus posibilidades de detectar rápidamente código que depende de las idiosincrasias de una plataforma específica, al tiempo que sigue siendo fácil hacer que el código sea más portátil.
+`check-standard` es muy recomendable, especialmente para cualquier paquete que esté (o aspire a estar) en CRAN. Ejecuta `R CMD check` en algunas combinaciones de sistema operativo y versión R. Esto aumenta sus posibilidades de detectar rápidamente código que depende de las idiosincrasias de una plataforma específica, al tiempo que sigue siendo fácil hacer que el código sea más portátil.
 
 Después de hacer esa selección, verá algunos mensajes como este:
 
@@ -95,9 +95,9 @@ Después de hacer esa selección, verá algunos mensajes como este:
 
 Las cosas clave que suceden aquí son:
 
-* Se escribe un nuevo archivo de flujo de trabajo de GHA en `+.github/workflows/R-CMD-check.yaml+`. Los flujos de trabajo de GHA se especifican mediante archivos YAML. El mensaje revela la fuente de YAML y ofrece un enlace para obtener más información.
+* Se escribe un nuevo archivo de flujo de trabajo de GHA en `.github/workflows/R-CMD-check.yaml`. Los flujos de trabajo de GHA se especifican mediante archivos YAML. El mensaje revela la fuente de YAML y ofrece un enlace para obtener más información.
 * Se pueden realizar algunas adiciones útiles a varios archivos "`ignorados`".
-* Se agrega una insignia que informa el resultado de `+R CMD check+` a su archivo README, si se creó con usethis y tiene una insignia identificable "`área de estacionamiento`". De lo contrario, se le proporcionará un texto que podrá copiar y pegar.
+* Se agrega una insignia que informa el resultado de `R CMD check` a su archivo README, si se creó con usethis y tiene una insignia identificable "`área de estacionamiento`". De lo contrario, se le proporcionará un texto que podrá copiar y pegar.
 
 Confirme estos cambios de archivos y envíelos a GitHub. Si visita la sección "`Acciones`" de su repositorio, debería ver que se ha iniciado una ejecución de flujo de trabajo de GHA. A su debido tiempo, su éxito (o fracaso) se informará allí, en su insignia README y en sus notificaciones de GitHub (dependiendo de su configuración personal).
 
@@ -105,13 +105,13 @@ Confirme estos cambios de archivos y envíelos a GitHub. Si visita la sección "
 
 === Otros usos de GHA
 
-Como lo sugiere el menú interactivo, `+usethis::use_github_action()+` le brinda acceso a flujos de trabajo prediseñados distintos de `+R CMD check+`. Además de las opciones destacadas, puede usarlo para configurar cualquiera de los flujos de trabajo de ejemplo en https://github.com/r-lib/actions/tree/v2-branch/examples#readme[`+r-lib/actions+`] pasando el nombre del flujo de trabajo. Por ejemplo:
+Como lo sugiere el menú interactivo, `usethis::use++_++github++_++action()` le brinda acceso a flujos de trabajo prediseñados distintos de `R CMD check`. Además de las opciones destacadas, puede usarlo para configurar cualquiera de los flujos de trabajo de ejemplo en https://github.com/r-lib/actions/tree/v2-branch/examples#readme[`r-lib/actions`] pasando el nombre del flujo de trabajo. Por ejemplo:
 
-* `+use_github_action("test-coverage")+` configura un flujo de trabajo para rastrear la cobertura de prueba de su paquete, como se describe en <<sec-testing-design-coverage>>.
+* `use++_++github++_++action("test-coverage")` configura un flujo de trabajo para rastrear la cobertura de prueba de su paquete, como se describe en <<sec-testing-design-coverage>>.
 
 Dado que GHA le permite ejecutar código arbitrario, hay muchas otras cosas para las que puede usarlo:
 
-* Construir el sitio web de su paquete e implementar el sitio renderizado en GitHub Pages, como se describe en <<sec-website-deployment>>. Véase también `+?usethis::use_pkgdown_github_pages()+`.
+* Construir el sitio web de su paquete e implementar el sitio renderizado en GitHub Pages, como se describe en <<sec-website-deployment>>. Véase también `?usethis::use++_++pkgdown++_++github++_++pages()`.
 * Volver a publicar el sitio web de un libro cada vez que se realiza un cambio en la fuente. (¡Como lo hacemos con este libro!).
 
-Si los flujos de trabajo de ejemplo no cubren su caso de uso exacto, también puede desarrollar su propio flujo de trabajo. Incluso en este caso, los flujos de trabajo de ejemplo suelen resultar útiles como inspiración. El repositorio https://github.com/r-lib/actions/#readme[`+r-lib/actions+`] también contiene importantes bloques de construcción de nivel inferior, como acciones para instalar R o instalar todos los dependencias indicadas en un archivo `+DESCRIPTION+`.
+Si los flujos de trabajo de ejemplo no cubren su caso de uso exacto, también puede desarrollar su propio flujo de trabajo. Incluso en este caso, los flujos de trabajo de ejemplo suelen resultar útiles como inspiración. El repositorio https://github.com/r-lib/actions/#readme[`r-lib/actions`] también contiene importantes bloques de construcción de nivel inferior, como acciones para instalar R o instalar todos los dependencias indicadas en un archivo `DESCRIPTION`.

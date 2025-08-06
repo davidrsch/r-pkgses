@@ -19,24 +19,24 @@ Todo el contenido ha sido completamente revisado y actualizado. Muchos capítulo
 * El nuevo <<sec-package-within>>, "`El paquete interno`", demuestra cómo extraer lógica reutilizable de scripts de análisis de datos y colocarla en un paquete.
 * Las secciones "`Organización de funciones`" y "`Estilo de código`", de <<sec-r>>, "`Código R`", se han eliminado en favor de una guía de estilo en línea, https://style.tidyverse.org/. La guía de estilo está emparejada con el nuevo paquete de estilo <<styler>> que puede aplicar automáticamente muchas de las reglas.
 * La cobertura de las pruebas se ha ampliado en tres capítulos: <<sec-testing-basics>> para los conceptos básicos de las pruebas, <<sec-testing-design>> para el diseño del conjunto de pruebas y <<sec-testing-advanced>> para varios temas avanzados.
-* El material sobre el archivo `+NAMESPACE+` y las relaciones de dependencia se ha reorganizado en dos capítulos: <<sec-dependencies-mindset-background>> proporciona un contexto técnico para pensar en las dependencias y <<sec-dependencies-in-practice>> brinda instrucciones prácticas para usar diferentes tipos de dependencias en diferentes entornos.
+* El material sobre el archivo `NAMESPACE` y las relaciones de dependencia se ha reorganizado en dos capítulos: <<sec-dependencies-mindset-background>> proporciona un contexto técnico para pensar en las dependencias y <<sec-dependencies-in-practice>> brinda instrucciones prácticas para usar diferentes tipos de dependencias en diferentes entornos.
 * La nueva <<sec-license>>, "`Licencias`", amplía el contenido anterior sobre licencias en su propio capítulo.
-* Se ha eliminado el capítulo sobre C/C++. No tenía suficiente información para ser útil y, desde la primera edición del libro, han surgido otros recursos que son mejores recursos de aprendizaje.
+* Se ha eliminado el capítulo sobre C/C{plus}{plus}. No tenía suficiente información para ser útil y, desde la primera edición del libro, han surgido otros recursos que son mejores recursos de aprendizaje.
 * Se ha eliminado el capítulo "`Otros componentes`".
 * El capítulo sobre Git/GitHub se ha replanteado en torno al tema más general de las prácticas de desarrollo de software (<<sec-sw-dev-practices>>). Esto ya no incluye instrucciones paso a paso para tareas básicas. El uso de Git/GitHub se ha disparado desde la primera edición, acompañado de una explosión de recursos de aprendizaje, tanto generales como específicos de R (por ejemplo, el sitio web https://happygitwithr.com/index.html[Happy Git y GitHub para el usuaRio]). Git/GitHub todavía ocupa un lugar destacado en todo el libro, especialmente en <<sec-sw-dev-practices>>.
-* El muy breve capítulo `+inst+` se ha combinado en <<sec-misc>>, con todos los demás directorios que pueden ser importantes en contextos específicos, pero que no son de misión crítica para todos los paquetes.
+* El muy breve capítulo `inst` se ha combinado en <<sec-misc>>, con todos los demás directorios que pueden ser importantes en contextos específicos, pero que no son de misión crítica para todos los paquetes.
 
 == Agradecimientos
 
 Desde que se publicó la primera edición de Paquetes de R, los paquetes que respaldan los flujos de trabajo descritos aquí han experimentado un amplio desarrollo. El trío original de devtools, roxygen2 y testthat se ha expandido para incluir los paquetes creados por el "`desacoplamiento consciente`" de devtools, como se describe en <<sec-setup-usage>>. La mayoría de estos paquetes se originan en Hadley Wickham (HW), debido a sus raíces devtools. Hay muchos otros contribuyentes importantes, muchos de los cuales ahora sirven como mantenedores:
 
-* devtools: HW, https://github.com/wch[Winston Chang], https://github.com/jimhester[Jim Hester] (mantenedor, >= v1.13.5), https://github.com/jennybc[Jennifer Bryan] (mantenedor >= v2.4.3)
-* usethis: HW, https://github.com/jennybc[Jennifer Bryan] (mantenedor >= v1.5.0), Malcolm Barrett
+* devtools: HW, https://github.com/wch[Winston Chang], https://github.com/jimhester[Jim Hester] (mantenedor, ++>++= v1.13.5), https://github.com/jennybc[Jennifer Bryan] (mantenedor ++>++= v2.4.3)
+* usethis: HW, https://github.com/jennybc[Jennifer Bryan] (mantenedor ++>++= v1.5.0), Malcolm Barrett
 * roxygen2: HW (mantenedor), https://github.com/klutometis[Peter Danenburg], https://github.com/mjaeugster[Manuel Eugster]
 * testthat: HW (mantenedor)
 * desc: https://github.com/gaborcsardi[Gábor Csárdi] (mantenedor), https://github.com/krlmlr[Kirill Müller], https://github.com/jimhester[Jim Hester]
-* pkgbuild: HW, https://github.com/jimhester[Jim Hester], https://github.com/gaborcsardi[Gábor Csárdi] (mantenedor >= v1.2.1)
-* pkgload: HW, https://github.com/jimhester[Jim Hester], https://github.com/wch[Winston Chang], https://github.com/lionel-[Lionel Henry] (mantenedor >= v1.2.4)
+* pkgbuild: HW, https://github.com/jimhester[Jim Hester], https://github.com/gaborcsardi[Gábor Csárdi] (mantenedor ++>++= v1.2.1)
+* pkgload: HW, https://github.com/jimhester[Jim Hester], https://github.com/wch[Winston Chang], https://github.com/lionel-[Lionel Henry] (mantenedor ++>++= v1.2.4)
 * rcmdcheck: https://github.com/gaborcsardi[Gábor Csárdi] (mantenedor)
 * remotes: HW, https://github.com/jimhester[Jim Hester], https://github.com/gaborcsardi[Gábor Csárdi] (mantenedor), https://github.com/wch[Winston Chang], https://github.com/mtmorgan[Martin Morgan], https://github.com/dtenenba[Dan Tenenbaum]
 * revdepcheck: HW, https://github.com/gaborcsardi[Gábor Csárdi] (mantenedor)
@@ -70,9 +70,9 @@ https://github.com/aaelony[@aaelony], https://github.com/aaronwolen[@aaronwolen]
 
 == Convenciones
 
-A lo largo de este libro, escribimos `+fun()+` para referirnos a funciones, `+var+` para referirnos a variables y argumentos de funciones, y `+path/+` para rutas.
+A lo largo de este libro, escribimos `fun()` para referirnos a funciones, `var` para referirnos a variables y argumentos de funciones, y `path/` para rutas.
 
-Los bloques de código más grandes entremezclan entrada y salida. El resultado se comenta de modo que, si tiene una versión electrónica del libro, por ejemplo, https://r-pkgs.org, puedes copiar y pegar ejemplos fácilmente en R. Los comentarios de salida tienen el formato `+#>+` para distinguirlos de los comentarios normales.
+Los bloques de código más grandes entremezclan entrada y salida. El resultado se comenta de modo que, si tiene una versión electrónica del libro, por ejemplo, https://r-pkgs.org, puedes copiar y pegar ejemplos fácilmente en R. Los comentarios de salida tienen el formato `#++>++` para distinguirlos de los comentarios normales.
 
 == Colofón
 
@@ -107,14 +107,14 @@ devtools::session_info()
 #> ─ Session info ───────────────────────────────────────────────────
 #>  setting  value
 #>  version  R version 4.4.0 (2024-04-24)
-#>  os       Ubuntu 24.04.1 LTS
+#>  os       Ubuntu 24.04.2 LTS
 #>  system   x86_64, linux-gnu
 #>  ui       X11
 #>  language (EN)
 #>  collate  C.UTF-8
 #>  ctype    C.UTF-8
 #>  tz       UTC
-#>  date     2025-01-16
+#>  date     2025-08-06
 #>  pandoc   3.1.11 @ /opt/hostedtoolcache/pandoc/3.1.11/x64/ (via rmarkdown)
 #> 
 #> ─ Packages ───────────────────────────────────────────────────────
@@ -189,6 +189,7 @@ devtools::session_info()
 #>  P xfun          0.44    2024-05-15 [?] RSPM (R 4.4.0)
 #>  P xml2          1.3.6   2023-12-04 [?] RSPM (R 4.4.0)
 #>  P xtable        1.8-4   2019-04-21 [?] RSPM (R 4.4.0)
+#>  P yaml          2.3.8   2023-12-11 [?] RSPM (R 4.4.0)
 #> 
 #>  [1] /home/runner/work/r-pkgses/r-pkgses/renv/library/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu
 #>  [2] /home/runner/.cache/R/renv/sandbox/linux-ubuntu-noble/R-4.4/x86_64-pc-linux-gnu/3df92652

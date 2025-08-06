@@ -30,12 +30,12 @@ Como se menciona en <<sec-intro-phil>>, devtools es un '`metapaquete`' que abarc
 
 ¿Cuál es nuestro enfoque recomendado para usar devtools y sus paquetes constituyentes? Varía, dependiendo de tu intención:
 
-* Si está utilizando las funciones de forma interactiva para ayudarle a desarrollar su paquete, debe pensar en devtools como el proveedor de sus funciones favoritas para el desarrollo de paquetes. En este caso, debe adjuntar devtools con `+library(devtools)+` y llamar a las funciones sin calificación (por ejemplo, `+load_all()+`).
+* Si está utilizando las funciones de forma interactiva para ayudarle a desarrollar su paquete, debe pensar en devtools como el proveedor de sus funciones favoritas para el desarrollo de paquetes. En este caso, debe adjuntar devtools con `library(devtools)` y llamar a las funciones sin calificación (por ejemplo, `load++_++all()`).
 * Si está utilizando funciones de devtools y amigos dentro del código del paquete que está escribiendo, NO debe depender de devtools, sino que debe acceder a las funciones a través del paquete que es su hogar principal.
-** devtools rara vez debería aparecer en el rol de `+pkg+` en una llamada calificada del formato `+pkg::fcn()+`. En cambio, `+pkg+` debería ser el paquete donde se define `+fcn()+`. Por ejemplo, si está creando una función en su paquete en la que necesita consultar el estado de la sesión R del usuario, use `+sessioninfo::session_info()+` en su paquete en lugar de `+devtools::session_info()+`.
-* Si encuentra errores, intente informarlos en el paquete que es el hogar principal de una función. La ayuda para `+devtools::fcn()+` generalmente indica cuándo devtools está reexportando una función de otro paquete.
+** devtools rara vez debería aparecer en el rol de `pkg` en una llamada calificada del formato `pkg::fcn()`. En cambio, `pkg` debería ser el paquete donde se define `fcn()`. Por ejemplo, si está creando una función en su paquete en la que necesita consultar el estado de la sesión R del usuario, use `sessioninfo::session++_++info()` en su paquete en lugar de `devtools::session++_++info()`.
+* Si encuentra errores, intente informarlos en el paquete que es el hogar principal de una función. La ayuda para `devtools::fcn()` generalmente indica cuándo devtools está reexportando una función de otro paquete.
 
-El paquete usethis es el único paquete constituyente que más personas pueden conocer y que pueden utilizar directamente. Contiene las funciones que actúan sobre los archivos y carpetas de un proyecto de R, especialmente para cualquier proyecto que también sea un paquete de R. devtools facilita el acceso a las funciones usethis de forma interactiva, ya que cuando llama a `+library(devtools)+`, usethis también se adjunta. Luego puede usar cualquier función en usethis sin calificación, por ejemplo, simplemente llame a `+use_testthat()+`. Si elige especificar el espacio de nombres, como cuando trabaja con un estilo más programático, asegúrese de calificar la llamada con usethis, por ejemplo, `+usethis::use_testthat()+`.
+El paquete usethis es el único paquete constituyente que más personas pueden conocer y que pueden utilizar directamente. Contiene las funciones que actúan sobre los archivos y carpetas de un proyecto de R, especialmente para cualquier proyecto que también sea un paquete de R. devtools facilita el acceso a las funciones usethis de forma interactiva, ya que cuando llama a `library(devtools)`, usethis también se adjunta. Luego puede usar cualquier función en usethis sin calificación, por ejemplo, simplemente llame a `use++_++testthat()`. Si elige especificar el espacio de nombres, como cuando trabaja con un estilo más programático, asegúrese de calificar la llamada con usethis, por ejemplo, `usethis::use++_++testthat()`.
 
 === Configuración de inicio personal
 
@@ -46,7 +46,7 @@ Puede adjuntar herramientas de desarrollo así:
 library(devtools)
 ----
 
-Pero pronto se vuelve irritante adjuntar repetidamente devtools en cada sesión de R. Por lo tanto, recomendamos encarecidamente adjuntarfootnote:[Este es uno de los pocos casos en los que recomendamos usar `+require()+` en lugar de `+library()+`. `+library()+` fallará con un error si no puede adjuntar el paquete y, por lo tanto, abortará la ejecución de su `+.Rprofile+`. Si `+require()+` no puede adjuntar el paquete, emitirá una advertencia pero permitirá que se ejecute el resto de su `+.Rprofile+`. Esto se analiza más a fondo en <<sec-dependencies-attach-vs-load>>.] devtools en su archivo de inicio `+.Rprofile+`, así:
+Pero pronto se vuelve irritante adjuntar repetidamente devtools en cada sesión de R. Por lo tanto, recomendamos encarecidamente adjuntarfootnote:[Este es uno de los pocos casos en los que recomendamos usar `require()` en lugar de `library()`. `library()` fallará con un error si no puede adjuntar el paquete y, por lo tanto, abortará la ejecución de su `.Rprofile`. Si `require()` no puede adjuntar el paquete, emitirá una advertencia pero permitirá que se ejecute el resto de su `.Rprofile`. Esto se analiza más a fondo en <<sec-dependencies-attach-vs-load>>.] devtools en su archivo de inicio `.Rprofile`, así:
 
 [source,r,cell-code]
 ----
@@ -55,14 +55,14 @@ if (interactive()) {
 }
 ----
 
-Para mayor comodidad, la función `+use_devtools()+` crea `+.Rprofile+`, si es necesario, lo abre para editarlo y coloca las líneas de código necesarias en el portapapeles y en la pantalla.
+Para mayor comodidad, la función `use++_++devtools()` crea `.Rprofile`, si es necesario, lo abre para editarlo y coloca las líneas de código necesarias en el portapapeles y en la pantalla.
 
 [WARNING]
 ====
-En general, es una mala idea adjuntar paquetes en `+.Rprofile+`, ya que te invita a crear scripts R que no reflejan todas sus dependencias mediante llamadas explícitas a `+library(foo)+`. Pero devtools es un paquete de flujo de trabajo que simplifica el proceso de desarrollo de paquetes y, por lo tanto, es poco probable que se incluya en algún script de análisis. Tenga en cuenta que todavía nos preocupamos de adjuntar únicamente en sesiones interactivas.
+En general, es una mala idea adjuntar paquetes en `.Rprofile`, ya que te invita a crear scripts R que no reflejan todas sus dependencias mediante llamadas explícitas a `library(foo)`. Pero devtools es un paquete de flujo de trabajo que simplifica el proceso de desarrollo de paquetes y, por lo tanto, es poco probable que se incluya en algún script de análisis. Tenga en cuenta que todavía nos preocupamos de adjuntar únicamente en sesiones interactivas.
 ====
 
-usethis consulta ciertas opciones al, por ejemplo, crear paquetes R _de novo_. Esto le permite especificar valores predeterminados personales para usted como mantenedor de paquetes o para su licencia preferida. A continuación se muestra un ejemplo de un fragmento de código que podría incluirse `+.Rprofile+`:
+usethis consulta ciertas opciones al, por ejemplo, crear paquetes R _de novo_. Esto le permite especificar valores predeterminados personales para usted como mantenedor de paquetes o para su licencia preferida. A continuación se muestra un ejemplo de un fragmento de código que podría incluirse `.Rprofile`:
 
 [source,r,cell-code]
 ----
@@ -92,17 +92,17 @@ pak::pak("r-lib/usethis")
 [[sec-setup-tools]]
 == Cadena de herramientas de construcción de R
 
-Para ser totalmente capaz de crear paquetes R desde el código fuente, también necesitará un compilador y algunas otras herramientas de línea de comandos. Es posible que esto no sea estrictamente necesario hasta que desee crear paquetes que contengan código C o C++. Especialmente si estás usando RStudio, puedes dejar esto a un lado por ahora. El IDE le alertará y le brindará soporte una vez que intente hacer algo que requiera que configure su entorno de desarrollo. Siga leyendo para obtener consejos sobre cómo hacerlo usted mismo.
+Para ser totalmente capaz de crear paquetes R desde el código fuente, también necesitará un compilador y algunas otras herramientas de línea de comandos. Es posible que esto no sea estrictamente necesario hasta que desee crear paquetes que contengan código C o C{plus}{plus}. Especialmente si estás usando RStudio, puedes dejar esto a un lado por ahora. El IDE le alertará y le brindará soporte una vez que intente hacer algo que requiera que configure su entorno de desarrollo. Siga leyendo para obtener consejos sobre cómo hacerlo usted mismo.
 
 === Windows
 
 En Windows, la colección de herramientas necesarias para crear paquetes desde el código fuente se llama Rtools.
 
-Rtools NO es un paquete R. NO se instala con `+install.packages()+`. En su lugar, descárguelo desde https://cran.r-project.org/bin/windows/Rtools/ y ejecute el instalador.
+Rtools NO es un paquete R. NO se instala con `install.packages()`. En su lugar, descárguelo desde https://cran.r-project.org/bin/windows/Rtools/ y ejecute el instalador.
 
 Durante la instalación de Rtools, es posible que vea una ventana que le pide que "`Seleccione tareas adicionales`".
 
-* _No_ seleccione la casilla "`Edit the system PATH`". devtools y RStudio deberían colocar Rtools en el `+PATH+` automáticamente cuando sea necesario.
+* _No_ seleccione la casilla "`Edit the system PATH`". devtools y RStudio deberían colocar Rtools en el `PATH` automáticamente cuando sea necesario.
 * Seleccione la casilla "`Save version information to registry`". Debe estar seleccionado de forma predeterminada.
 
 === macOS
@@ -120,17 +120,17 @@ Alternativamente, puede instalar la versión actual completa de https://itunes.a
 
 === Linux
 
-Asegúrese de haber instalado no solo R, sino también las herramientas de desarrollo de R. Por ejemplo, en Ubuntu (y Debian) necesitas instalar el paquete `+r-base-dev+` con:
+Asegúrese de haber instalado no solo R, sino también las herramientas de desarrollo de R. Por ejemplo, en Ubuntu (y Debian) necesitas instalar el paquete `r-base-dev` con:
 
 ....
 sudo apt install r-base-dev
 ....
 
-En Fedora y RedHat, las herramientas de desarrollo (llamadas `+R-core-devel+`) se instalarán automáticamente cuando instales con R con `+sudo dnf install R+`.
+En Fedora y RedHat, las herramientas de desarrollo (llamadas `R-core-devel`) se instalarán automáticamente cuando instales con R con `sudo dnf install R`.
 
 == Verificar la preparación del sistema
 
-Puede solicitar un "`informe de situación de desarrollo (paquete)`" con `+devtools::dev_sitrep()+`:
+Puede solicitar un "`informe de situación de desarrollo (paquete)`" con `devtools::dev++_++sitrep()`:
 
 [source,r,cell-code]
 ----

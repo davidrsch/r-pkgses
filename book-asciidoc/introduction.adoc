@@ -7,13 +7,13 @@ En R, la unidad fundamental de código compartible es el paquete. Un paquete agr
 
 Si estás leyendo este libro, ya sabes cómo trabajar con paquetes de las siguientes maneras:
 
-* Los instala desde CRAN con `+install.packages("x")+`.
-* Los usas en R con `+library("x")+` o `+library(x)+`.
-* Obtienes ayuda con ellos con `+package?x+` y `+help(package = "x")+`.
+* Los instala desde CRAN con `install.packages("x")`.
+* Los usas en R con `library("x")` o `library(x)`.
+* Obtienes ayuda con ellos con `package?x` y `help(package = "x")`.
 
 El objetivo de este libro es enseñarle cómo desarrollar paquetes para que pueda escribir los suyos propios, no sólo utilizar los de otras personas. ¿Por qué escribir un paquete? Una razón de peso es que tienes un código que quieres compartir con otros. Agrupar su código en un paquete facilita su uso para otras personas porque, al igual que usted, ellos ya saben cómo utilizar los paquetes. Si su código está en un paquete, cualquier usuario de R puede descargarlo, instalarlo y aprender a usarlo fácilmente.
 
-Pero los paquetes son útiles incluso si nunca compartes tu código. Como dice Hilary Parker en su https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/[introducción a los paquetes]: "`En serio, no tiene por qué tratarse de compartir tu código (¡aunque eso es un beneficio adicional!). Se trata de ahorrar tiempo`". Organizar el código en un paquete le facilita la vida porque los paquetes vienen con convenciones. Por ejemplo, pones código R en `+R/+`, pones pruebas en `+tests/+` y pones datos en `+data/+`. Estas convenciones son útiles porque:
+Pero los paquetes son útiles incluso si nunca compartes tu código. Como dice Hilary Parker en su https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/[introducción a los paquetes]: "`En serio, no tiene por qué tratarse de compartir tu código (¡aunque eso es un beneficio adicional!). Se trata de ahorrar tiempo`". Organizar el código en un paquete le facilita la vida porque los paquetes vienen con convenciones. Por ejemplo, pones código R en `R/`, pones pruebas en `tests/` y pones datos en `data/`. Estas convenciones son útiles porque:
 
 * Ahorran tiempo — no es necesario pensar en la mejor manera de organizar un proyecto, simplemente puede seguir una plantilla.
 * Las convenciones estandarizadas conducen a herramientas estandarizadas — si acepta las convenciones del paquete de R, obtendrá muchas herramientas de forma gratuita.
@@ -48,15 +48,15 @@ El resto del libro está diseñado para leerse según sea necesario. Elija entre
 
 Primero cubrimos los componentes clave del paquete: <<sec-r>> analiza dónde reside su código y cómo organizarlo, <<sec-data>> le muestra cómo incluir datos en su paquete y <<sec-misc>> cubre algunos archivos y directorios menos importantes que hay que discutirlo en alguna parte.
 
-A continuación, profundizaremos en los metadatos del paquete, comenzando con `+DESCRIPTION+` en <<sec-description>>. Luego profundizaremos en las dependencias. En <<sec-dependencies-mindset-background>>, cubriremos los costos y beneficios de asumir dependencias y brindaremos algunos antecedentes técnicos sobre los espacios de nombres de los paquetes y la ruta de búsqueda. En <<sec-dependencies-in-practice>>, nos centramos en cuestiones prácticas, como cómo utilizar diferentes tipos de dependencias en diferentes partes de su paquete. Aquí también hablamos de las funciones de exportación, que es lo que hace posible que otros paquetes y proyectos dependan de su paquete. Terminaremos esta parte echando un vistazo a las licencias en <<sec-license>>.
+A continuación, profundizaremos en los metadatos del paquete, comenzando con `DESCRIPTION` en <<sec-description>>. Luego profundizaremos en las dependencias. En <<sec-dependencies-mindset-background>>, cubriremos los costos y beneficios de asumir dependencias y brindaremos algunos antecedentes técnicos sobre los espacios de nombres de los paquetes y la ruta de búsqueda. En <<sec-dependencies-in-practice>>, nos centramos en cuestiones prácticas, como cómo utilizar diferentes tipos de dependencias en diferentes partes de su paquete. Aquí también hablamos de las funciones de exportación, que es lo que hace posible que otros paquetes y proyectos dependan de su paquete. Terminaremos esta parte echando un vistazo a las licencias en <<sec-license>>.
 
 Para garantizar que su paquete funcione según lo diseñado (y continúe funcionando a medida que realiza cambios), es esencial probar su código, por lo que los siguientes tres capítulos cubren el arte y la ciencia de las pruebas. <<sec-testing-basics>> le ayuda a comenzar con los conceptos básicos de las pruebas con el paquete testthat. <<sec-testing-design>> te enseña cómo diseñar y organizar pruebas de la forma más eficaz. Luego terminamos nuestra cobertura de pruebas en <<sec-testing-advanced>>, que le enseña habilidades avanzadas para afrontar situaciones desafiantes.
 
-Si desea que otras personas (¡incluido usted en el futuro!) comprendan cómo utilizar las funciones de su paquete, deberá documentarlas. <<sec-man>> le ayuda a empezar a utilizar roxygen2 para documentar las funciones de su paquete. La documentación de funciones solo es útil si sabe qué función buscar, por lo que a continuación en <<sec-vignettes>> analizaremos las viñetas, que le ayudarán a documentar el paquete en su conjunto. Terminaremos la documentación con una discusión sobre otros archivos de maquetación importantes como `+README.md+` y `+NEWS.md+` en <<sec-other-markdown>>, y creando un sitio web de paquete con pkgdown en <<sec-website>>.
+Si desea que otras personas (¡incluido usted en el futuro!) comprendan cómo utilizar las funciones de su paquete, deberá documentarlas. <<sec-man>> le ayuda a empezar a utilizar roxygen2 para documentar las funciones de su paquete. La documentación de funciones solo es útil si sabe qué función buscar, por lo que a continuación en <<sec-vignettes>> analizaremos las viñetas, que le ayudarán a documentar el paquete en su conjunto. Terminaremos la documentación con una discusión sobre otros archivos de maquetación importantes como `README.md` y `NEWS.md` en <<sec-other-markdown>>, y creando un sitio web de paquete con pkgdown en <<sec-website>>.
 
 El libro concluye volviendo a considerar las prácticas de desarrollo, como el beneficio de utilizar el control de versiones y la integración continua (<<sec-sw-dev-practices>>). Concluiremos analizando el ciclo de vida (<<sec-lifecycle>>) de un paquete, incluido su lanzamiento en CRAN (<<sec-release>>).
 
-Hay mucho que aprender, pero no se sienta abrumado. Comience con un subconjunto mínimo de funciones útiles (por ejemplo, ¡solo un directorio `+R/+`!) y acumule con el tiempo. Parafraseando al monje zen Shunryu Suzuki: "`Cada paquete es perfecto tal como está — y necesitaría una pequeña mejora`".
+Hay mucho que aprender, pero no se sienta abrumado. Comience con un subconjunto mínimo de funciones útiles (por ejemplo, ¡solo un directorio `R/`!) y acumule con el tiempo. Parafraseando al monje zen Shunryu Suzuki: "`Cada paquete es perfecto tal como está — y necesitaría una pequeña mejora`".
 
 == ¿Qué no hay aquí?
 

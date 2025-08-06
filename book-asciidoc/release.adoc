@@ -5,7 +5,7 @@
 
 Hemos estado señalando inquietudes específicas de CRAN a lo largo del libro, en nuestro recorrido por las distintas partes de un paquete, como pruebas y ejemplos. En este capítulo, nos centramos en el proceso real de publicar un paquete en CRAN, por primera vez o como una actualización.
 
-La expresión más concreta de nuestro proceso de lanzamiento es la lista de verificación producida por `+usethis::use_release_issue()+`, que abre una edición de GitHub que contiene una lista de tareas pendientes. Esta lista de verificación evoluciona constantemente y responde a algunas características del paquete, así que no se sorprenda si ve algo un poco diferente de lo que mostramos aquí. Las preocupaciones principales son bastante eternas y usaremos esta lista de verificación para ayudar a estructurar este capítulo.
+La expresión más concreta de nuestro proceso de lanzamiento es la lista de verificación producida por `usethis::use++_++release++_++issue()`, que abre una edición de GitHub que contiene una lista de tareas pendientes. Esta lista de verificación evoluciona constantemente y responde a algunas características del paquete, así que no se sorprenda si ve algo un poco diferente de lo que mostramos aquí. Las preocupaciones principales son bastante eternas y usaremos esta lista de verificación para ayudar a estructurar este capítulo.
 
 Pero primero: tenga en cuenta que se arrepentirá profundamente si aborda la preparación de su paquete para CRAN como una actividad separada que realiza _después_ de completar el desarrollo planificado para una versión. Este consejo es extremadamente relevante aquí:
 
@@ -13,24 +13,24 @@ ____
 Si te duele, hazlo con más frecuencia. – Martin Fowlerfootnote:[La publicación del blog de Fowler "`FrequencyReducesDifficulty`" es una excelente lectura sobre este tema, https://martinfowler.com/bliki/FrequencyReducesDifficulty.html.]
 ____
 
-En el contexto actual, interprete que esto significa que debe ejecutar `+R CMD check+` con regularidad, preferiblemente en múltiples plataformas, y abordar rápidamente cualquier problema que surja. Recuerde que nuestra forma preferida de hacer esto es a través de `+devtools::check()+` (<<sec-workflow101-r-cmd-check>>).
+En el contexto actual, interprete que esto significa que debe ejecutar `R CMD check` con regularidad, preferiblemente en múltiples plataformas, y abordar rápidamente cualquier problema que surja. Recuerde que nuestra forma preferida de hacer esto es a través de `devtools::check()` (<<sec-workflow101-r-cmd-check>>).
 
-¿Por qué querrías hacer algo que te resulta doloroso con más frecuencia? Porque conduce a menos dolor en general. Primero, resolver 5 problemas es más de 5 veces más difícil que resolver 1. Es desmoralizador verse bloqueado por varios errores y la posibilidad de que se produzcan interacciones desagradables entre ellos hace que cada uno de ellos sea más difícil de aislar y corregir. En segundo lugar, la retroalimentación rápida tiende a reducir el número total de errores. Una vez que aprenda alguna lección de la manera más difícil, es poco probable que cometa el mismo error docenas de veces en otras partes de su paquete. ¡Finalmente, la práctica hace la perfección! Con una mayor exposición, mejorará en la interpretación y respuesta a los problemas que surjan en `+R CMD check+`.
+¿Por qué querrías hacer algo que te resulta doloroso con más frecuencia? Porque conduce a menos dolor en general. Primero, resolver 5 problemas es más de 5 veces más difícil que resolver 1. Es desmoralizador verse bloqueado por varios errores y la posibilidad de que se produzcan interacciones desagradables entre ellos hace que cada uno de ellos sea más difícil de aislar y corregir. En segundo lugar, la retroalimentación rápida tiende a reducir el número total de errores. Una vez que aprenda alguna lección de la manera más difícil, es poco probable que cometa el mismo error docenas de veces en otras partes de su paquete. ¡Finalmente, la práctica hace la perfección! Con una mayor exposición, mejorará en la interpretación y respuesta a los problemas que surjan en `R CMD check`.
 
 Otra reacción natural es: ¿por qué no elimino este dolor por completo al no publicar mi paquete en CRAN? Para ciertos tipos de paquetes, esta puede ser la decisión correcta. Un ejemplo de ello es un paquete personal de funciones auxiliares. Otro ejemplo es un paquete que admite una organización específica, siempre que también tenga un método razonable para distribuir ese paquete a sus usuarios. La razón principal para tener su paquete en CRAN es darle mayor alcance. La gran mayoría de los usuarios de R sólo instalan paquetes de CRAN, ya sea por política personal o de la empresa o simplemente por falta de conocimiento sobre las alternativas. CRAN proporciona visibilidad, facilidad de instalación y un sello de autenticidad. El proceso de envío de CRAN puede ser frustrante, pero tiene muchas ventajas y este capítulo pretende hacerlo lo más sencillo posible.
 
-El proceso de liberación que describimos aquí se utiliza mejor como una lista de verificación previa al vuelo, que complementa sus esfuerzos continuos para mantener su paquete pasando la `+R CMD check+` de manera limpia y compatible con CRAN. Hay dos grandes descubrimientos que a menudo surgen con el proceso de lanzamiento de CRAN:
+El proceso de liberación que describimos aquí se utiliza mejor como una lista de verificación previa al vuelo, que complementa sus esfuerzos continuos para mantener su paquete pasando la `R CMD check` de manera limpia y compatible con CRAN. Hay dos grandes descubrimientos que a menudo surgen con el proceso de lanzamiento de CRAN:
 
-* Si ha estado haciendo la vista gorda ante las ADVERTENCIAS y ERRORES de `+R CMD check+`, realmente tiene que estudiarlos y eliminarlos ahora. Incluso deberías eliminar tantas NOTAS como sea posible.
-* Incluso si su paquete pasa limpiamente la `+R CMD check+` en su máquina, puede resultar revelador cuando abandona este entorno acogedor y familiar y, en cambio, es verificado en un servidor remoto, configurado por otra persona, ejecutando un sistema completamente diferente. Sistema operativo. Por eso es tan valioso utilizar un servicio de integración continua como GitHub Actions (<<sec-sw-dev-practices-gha>>) para comprobar periódicamente su paquete en macOS, Windows y Linux.
+* Si ha estado haciendo la vista gorda ante las ADVERTENCIAS y ERRORES de `R CMD check`, realmente tiene que estudiarlos y eliminarlos ahora. Incluso deberías eliminar tantas NOTAS como sea posible.
+* Incluso si su paquete pasa limpiamente la `R CMD check` en su máquina, puede resultar revelador cuando abandona este entorno acogedor y familiar y, en cambio, es verificado en un servidor remoto, configurado por otra persona, ejecutando un sistema completamente diferente. Sistema operativo. Por eso es tan valioso utilizar un servicio de integración continua como GitHub Actions (<<sec-sw-dev-practices-gha>>) para comprobar periódicamente su paquete en macOS, Windows y Linux.
 
 Estos son los pasos principales en el proceso de liberación:
 
 [arabic]
 . Determine el tipo de versión, que dicta el número de versión.
 . Si el paquete ya está en CRAN: realice la debida diligencia sobre los resultados de CRAN existentes. Si se trata de una primera versión: confirme que cumple con las políticas de CRAN.
-. Actualice los archivos de documentación, como `+README.md+` y `+NEWS.md+`.
-. Doble `+check()+` para que su paquete se transmita limpiamente en múltiples sistemas operativos y en la versión publicada y en desarrollo de R.
+. Actualice los archivos de documentación, como `README.md` y `NEWS.md`.
+. Doble `check()` para que su paquete se transmita limpiamente en múltiples sistemas operativos y en la versión publicada y en desarrollo de R.
 . Realice comprobaciones de dependencia inversa, si otros paquetes dependen del suyo.
 . Envíe el paquete a CRAN y espere la aceptación.
 . Cree una versión de GitHub y prepárese para la próxima versión incrementando el número de versión.
@@ -38,7 +38,7 @@ Estos son los pasos principales en el proceso de liberación:
 
 == Decidir el tipo de lanzamiento
 
-Cuando llame a `+use_release_issue()+`, se le preguntará qué tipo de lanzamiento desea realizar.
+Cuando llame a `use++_++release++_++issue()`, se le preguntará qué tipo de lanzamiento desea realizar.
 
 [source,r,cell-code]
 ----
@@ -56,7 +56,7 @@ Selection:
 
 La pregunta inmediata parece bastante mecánica: ¿qué componente del número de versión desea incrementar? Pero recuerde que analizamos las diferencias sustanciales en los tipos de lanzamiento en <<sec-lifecycle-release-type>>.
 
-En nuestro flujo de trabajo, este número de versión planificada se registra en la edición de GitHub que contiene la lista de verificación de lanzamiento, pero en realidad no incrementamos la versión en `+DESCRIPTION+` hasta más adelante en el proceso (<<sec-release-process>>). Sin embargo, es importante declarar el tipo de versión por adelantado, porque el proceso (y, por lo tanto, la lista de verificación) se ve diferente, por ejemplo, para una versión de parche versus una versión principal.
+En nuestro flujo de trabajo, este número de versión planificada se registra en la edición de GitHub que contiene la lista de verificación de lanzamiento, pero en realidad no incrementamos la versión en `DESCRIPTION` hasta más adelante en el proceso (<<sec-release-process>>). Sin embargo, es importante declarar el tipo de versión por adelantado, porque el proceso (y, por lo tanto, la lista de verificación) se ve diferente, por ejemplo, para una versión de parche versus una versión principal.
 
 [[sec-release-initial]]
 == Lanzamiento inicial de CRAN: consideraciones especiales
@@ -67,18 +67,18 @@ Afortunadamente, la comunidad mantiene listas de "`errores`" comunes para los nu
 
 Primer lanzamiento
 
-* [ ] `+usethis::use_news_md()+`
-* [ ] `+usethis::use_cran_comments()+`
-* [ ] Actualice (aspiracional) de las instrucciones de instalación en `+README+`
-* [ ] Revisar `+Title:+` y `+Description:+`
-* [ ] Verifique que todas las funciones exportadas tengan `+@returns+` y `+@examples+`
-* [ ] Compruebe que `+Authors@R:+` incluya un titular de derechos de autor (rol '`cph`')
+* [ ] `usethis::use++_++news++_++md()`
+* [ ] `usethis::use++_++cran++_++comments()`
+* [ ] Actualice (aspiracional) de las instrucciones de instalación en `README`
+* [ ] Revisar `Title:` y `Description:`
+* [ ] Verifique que todas las funciones exportadas tengan `@returns` y `@examples`
+* [ ] Compruebe que `Authors@R:` incluya un titular de derechos de autor (rol '`cph`')
 * [ ] Verifique la licencia de los archivos incluidos
 * [ ] Revisar https://github.com/DavisVaughan/extrachecks
 
-Si aún no tiene un archivo `+NEWS.md+`, le recomendamos que cree uno ahora con `+usethis::use_news_md()+`. Eventualmente querrás este archivo y esto anticipa el hecho de que la descripción de tu eventual versión de GitHub (<<sec-release-post-acceptance>>) se extrae de `+NEWS.md+`.
+Si aún no tiene un archivo `NEWS.md`, le recomendamos que cree uno ahora con `usethis::use++_++news++_++md()`. Eventualmente querrás este archivo y esto anticipa el hecho de que la descripción de tu eventual versión de GitHub (<<sec-release-post-acceptance>>) se extrae de `NEWS.md`.
 
-`+usethis::use_cran_comments()+` inicia un archivo para contener los comentarios de envío de su paquete. Al principio es muy básico, por ejemplo:
+`usethis::use++_++cran++_++comments()` inicia un archivo para contener los comentarios de envío de su paquete. Al principio es muy básico, por ejemplo:
 
 ....
 ## R CMD check results
@@ -92,9 +92,9 @@ En versiones posteriores, este archivo deja de tener sentido; por ejemplo, es do
 
 Recomendamos encarecidamente que su paquete tenga un archivo README (<<sec-readme>>). Si es así, este es un buen momento para consultar las instrucciones de instalación que se proporcionan allí. Es posible que deba cambiar las instrucciones para instalarlo desde GitHub a instalarlo desde CRAN, en anticipación a la aceptación de su paquete.
 
-Los campos `+Title+` y `+Description+` de `+DESCRIPTION+` son verdaderos puntos críticos durante la revisión humana de CRAN. Revise detenidamente los consejos proporcionados en <<sec-description-title-and-description>>. Compruebe también que `+Authors@R+` incluya un titular de derechos de autor, indicado por la función '`cph`'. Los dos escenarios más comunes son que agrega '`cph`' a sus otros roles (probablemente '`cre`' y '`aut`') o que agrega su empleador a `+Authors@R:+` con '`cph`' y, tal vez, '`fnd`' role. (Cuando acredita a un financiador a través del rol '`fnd`', se reconoce en el pie de página de su sitio web pkgdown). Este también es un buen momento para asegurarse de que la dirección de correo electrónico del mantenedor sea apropiada. Ésta es la única manera en que CRAN puede comunicarse con usted. Si hay problemas y no pueden comunicarse con usted, eliminarán su paquete de CRAN. Asegúrese de que esta dirección de correo electrónico esté disponible por un tiempo y que no esté muy filtrada.
+Los campos `Title` y `Description` de `DESCRIPTION` son verdaderos puntos críticos durante la revisión humana de CRAN. Revise detenidamente los consejos proporcionados en <<sec-description-title-and-description>>. Compruebe también que `Authors@R` incluya un titular de derechos de autor, indicado por la función '`cph`'. Los dos escenarios más comunes son que agrega '`cph`' a sus otros roles (probablemente '`cre`' y '`aut`') o que agrega su empleador a `Authors@R:` con '`cph`' y, tal vez, '`fnd`' role. (Cuando acredita a un financiador a través del rol '`fnd`', se reconoce en el pie de página de su sitio web pkgdown). Este también es un buen momento para asegurarse de que la dirección de correo electrónico del mantenedor sea apropiada. Ésta es la única manera en que CRAN puede comunicarse con usted. Si hay problemas y no pueden comunicarse con usted, eliminarán su paquete de CRAN. Asegúrese de que esta dirección de correo electrónico esté disponible por un tiempo y que no esté muy filtrada.
 
-Verifique que cada una de sus funciones exportadas documente su valor de retorno (con la etiqueta `+@returns+`, <<sec-man-returns>>) y tenga una sección `+@examples+` (<<sec-man-examples>>). Si tiene ejemplos que no se pueden ejecutar en CRAN, es absolutamente necesario utilizar las técnicas en <<sec-man-examples-dependencies-conditional-execution>> para expresar las condiciones previas relevantes correctamente. No tome atajos, como no tener ejemplos, comentar sus ejemplos o poner todos sus ejemplos dentro de `+\dontrun{}+`.
+Verifique que cada una de sus funciones exportadas documente su valor de retorno (con la etiqueta `@returns`, <<sec-man-returns>>) y tenga una sección `@examples` (<<sec-man-examples>>). Si tiene ejemplos que no se pueden ejecutar en CRAN, es absolutamente necesario utilizar las técnicas en <<sec-man-examples-dependencies-conditional-execution>> para expresar las condiciones previas relevantes correctamente. No tome atajos, como no tener ejemplos, comentar sus ejemplos o poner todos sus ejemplos dentro de `++\++dontrun++{++}`.
 
 Si tiene código de terceros incrustado en su paquete, verifique que cumple y declara correctamente su licencia (<<sec-code-you-bundle>>).
 
@@ -115,45 +115,45 @@ Ahora pasamos a los elementos principales de la lista de verificación para una 
 * [ ] Verifique los resultados actuales de la verificación CRAN
 * [ ] Compruebe si se debe avanzar algún proceso de desaprobación, como se describe en https://lifecycle.r-lib.org/articles/communicate.html#gradual-deprecation[Desaprobación gradual]
 * [ ] https://style.tidyverse.org/news.html#news-release[Pulir NEWS]
-* [ ] `+urlchecker::url_check()+`
-* [ ] `+devtools::build_readme()+`
+* [ ] `urlchecker::url++_++check()`
+* [ ] `devtools::build++_++readme()`
 
 Estos primeros elementos confirman que su paquete se mantiene al día con su entorno y consigo mismo. El primer elemento, "`Verificar los resultados actuales de la verificación de CRAN`", será un hipervínculo a los resultados de la verificación de CRAN para la versión del paquete que se encuentra actualmente en CRAN. Si hay ADVERTENCIAS, ERRORES o NOTAS allí, debe investigar y determinar qué está pasando. Ocasionalmente puede haber un problema intermitente en CRAN, pero en términos generales, cualquier resultado que no sea "`OK`" es algo que debe abordar con la versión que está preparando. Es posible que descubra que su paquete se encuentra en un estado disfuncional debido a cambios en la base R, las políticas de CRAN, las herramientas de CRAN o los paquetes de los que depende.
 
-Si está en el proceso de desaprobar una función o un argumento, una versión menor o mayor es un buen momento para considerar avanzar ese proceso como se describe en <<sec-lifecycle-stages-and-package>>. Este también es un buen momento para mirar todas las viñetas de `+NEWS+` que se han acumulado desde el último lanzamiento ("`Pulir noticias`"). Incluso si ha sido diligente al anotar todos los cambios dignos de noticia, es probable que estas viñetas se beneficien de alguna reorganización y edición para lograr coherencia y claridad (<<sec-news>>).
+Si está en el proceso de desaprobar una función o un argumento, una versión menor o mayor es un buen momento para considerar avanzar ese proceso como se describe en <<sec-lifecycle-stages-and-package>>. Este también es un buen momento para mirar todas las viñetas de `NEWS` que se han acumulado desde el último lanzamiento ("`Pulir noticias`"). Incluso si ha sido diligente al anotar todos los cambios dignos de noticia, es probable que estas viñetas se beneficien de alguna reorganización y edición para lograr coherencia y claridad (<<sec-news>>).
 
-Otra comprobación muy importante es ejecutar `+urlchecker::url_check()+`. Las comprobaciones de URL de CRAN se describen en https://cran.r-project.org/web/packages/URL_checks.html y se implementan mediante código que se incluye con el propio R. Sin embargo, estos controles no se exponen de una manera muy útil. El paquete urlchecker se creó para solucionar este problema y expone la lógica de verificación de URL de CRAN en la función `+url_check()+`. Los principales problemas que surgen tienden a ser las URL que ya no funcionan o las URL que utilizan la redirección. Obviamente, deberás actualizar o eliminar cualquier URL que ya no exista. La redirección, sin embargo, es más complicada. Si el código de estado es "`301 movido permanentemente`", la opinión de CRAN es que su paquete debe usar la URL redirigida. El problema es que muchas personas no siguen https://www.rfc-editor.org/rfc/rfc7231#section-6.4.2[RFC7231] al pie de la letra y utilizan este tipo de redirección incluso cuando tienen una intención diferente, es decir, su intención es proporcionar una URL estable y fácil de usar que luego redirige a algo menos fácil de usar o más volátil. Si una URL legítima que desea utilizar no cumple con las comprobaciones de CRAN, tendrá que elegir entre un par de opciones poco atractivas. Podría intentar explicar la situación a CRAN, pero esto requiere una revisión humana y, por lo tanto, no se recomienda. O puede convertir dichas URL en texto textual sin hipervínculos. Tenga en cuenta también que aunque urlchecker utiliza el mismo _código_ que CRAN, sus resultados locales aún pueden diferir de los de CRAN, debido a diferencias en otras condiciones ambientales, como variables de entorno y capacidades del sistema.
+Otra comprobación muy importante es ejecutar `urlchecker::url++_++check()`. Las comprobaciones de URL de CRAN se describen en https://cran.r-project.org/web/packages/URL_checks.html y se implementan mediante código que se incluye con el propio R. Sin embargo, estos controles no se exponen de una manera muy útil. El paquete urlchecker se creó para solucionar este problema y expone la lógica de verificación de URL de CRAN en la función `url++_++check()`. Los principales problemas que surgen tienden a ser las URL que ya no funcionan o las URL que utilizan la redirección. Obviamente, deberás actualizar o eliminar cualquier URL que ya no exista. La redirección, sin embargo, es más complicada. Si el código de estado es "`301 movido permanentemente`", la opinión de CRAN es que su paquete debe usar la URL redirigida. El problema es que muchas personas no siguen https://www.rfc-editor.org/rfc/rfc7231#section-6.4.2[RFC7231] al pie de la letra y utilizan este tipo de redirección incluso cuando tienen una intención diferente, es decir, su intención es proporcionar una URL estable y fácil de usar que luego redirige a algo menos fácil de usar o más volátil. Si una URL legítima que desea utilizar no cumple con las comprobaciones de CRAN, tendrá que elegir entre un par de opciones poco atractivas. Podría intentar explicar la situación a CRAN, pero esto requiere una revisión humana y, por lo tanto, no se recomienda. O puede convertir dichas URL en texto textual sin hipervínculos. Tenga en cuenta también que aunque urlchecker utiliza el mismo _código_ que CRAN, sus resultados locales aún pueden diferir de los de CRAN, debido a diferencias en otras condiciones ambientales, como variables de entorno y capacidades del sistema.
 
-Si tiene un archivo `+README.Rmd+`, también querrá reconstruir el archivo estático `+README.md+` con la versión actual de su paquete. La mejor función para usar para esto es https://devtools.r-lib.org/reference/build_rmd.html[`+devtools::build_readme()+`], porque se garantiza que renderizará `+README.Rmd+` contra el código fuente actual de su paquete.
+Si tiene un archivo `README.Rmd`, también querrá reconstruir el archivo estático `README.md` con la versión actual de su paquete. La mejor función para usar para esto es https://devtools.r-lib.org/reference/build_rmd.html[`devtools::build++_++readme()`], porque se garantiza que renderizará `README.Rmd` contra el código fuente actual de su paquete.
 
-== Doble `+R CMD check+`
+== Doble `R CMD check`
 
-A continuación vienen un par de elementos relacionados con la `+R CMD check+`. Recuerde que esta no debería ser la primera vez que ejecuta `+R CMD check+` desde la versión anterior. Con suerte, está ejecutando `+R CMD check+` con frecuencia durante el desarrollo local y está utilizando un servicio de integración continua, como GitHub Actions. Este pretende ser un recordatorio final de último momento para comprobar que todo sigue bien:
+A continuación vienen un par de elementos relacionados con la `R CMD check`. Recuerde que esta no debería ser la primera vez que ejecuta `R CMD check` desde la versión anterior. Con suerte, está ejecutando `R CMD check` con frecuencia durante el desarrollo local y está utilizando un servicio de integración continua, como GitHub Actions. Este pretende ser un recordatorio final de último momento para comprobar que todo sigue bien:
 
-* [ ] `+devtools::check(remote = TRUE, manual = TRUE)+`. Esto sucede en su máquina de desarrollo principal, presumiblemente con la versión actual de R, y con algunas comprobaciones adicionales que generalmente se desactivan para acelerar el desarrollo diario.
-* [ ] `+devtools::check_win_devel()+`. Esto envía su paquete para que lo verifiquen con el servicio win-builder de CRAN, con la última versión de desarrollo de R (también conocido como r-devel). Debería recibir un correo electrónico en unos 30 minutos con un enlace a los resultados de la verificación. Es una buena idea verificar su paquete con r-devel, porque la base R y `+R CMD check+` están en constante evolución. La política de CRAN exige la verificación con r-devel y se realizará como parte de las verificaciones entrantes de CRAN. No tiene sentido saltarse este paso y esperar lo mejor.
+* [ ] `devtools::check(remote = TRUE, manual = TRUE)`. Esto sucede en su máquina de desarrollo principal, presumiblemente con la versión actual de R, y con algunas comprobaciones adicionales que generalmente se desactivan para acelerar el desarrollo diario.
+* [ ] `devtools::check++_++win++_++devel()`. Esto envía su paquete para que lo verifiquen con el servicio win-builder de CRAN, con la última versión de desarrollo de R (también conocido como r-devel). Debería recibir un correo electrónico en unos 30 minutos con un enlace a los resultados de la verificación. Es una buena idea verificar su paquete con r-devel, porque la base R y `R CMD check` están en constante evolución. La política de CRAN exige la verificación con r-devel y se realizará como parte de las verificaciones entrantes de CRAN. No tiene sentido saltarse este paso y esperar lo mejor.
 
 Tenga en cuenta que la brevedad de esta lista refleja implícitamente que los paquetes de tidyverse se verifican después de cada envío a través de GitHub Actions, en múltiples sistemas operativos y versiones de R (incluida la versión de desarrollo), y que la mayor parte del equipo de tidyverse desarrolla principalmente en macOS. CRAN espera que usted "`haga todos los esfuerzos razonables`" para que su paquete funcione en todas las principales plataformas R y los paquetes que no funcionan en al menos dos normalmente no serán aceptados.
 
 La siguiente subsección (<<sec-cran-flavors-services>>) es de lectura opcional con más detalles sobre todas las plataformas que le interesan a CRAN y cómo puede acceder a ellas. Si sus controles continuos son más limitados que los nuestros, es posible que desee compensarlo con controles previos al envío más exhaustivos. También puede necesitar este conocimiento para solucionar un problema concreto que surja en las comprobaciones de CRAN, ya sea para un envío entrante o para un paquete que ya está en CRAN.
 
-Al ejecutar `+R CMD check+` para un envío CRAN, debe solucionar cualquier problema que aparezca:
+Al ejecutar `R CMD check` para un envío CRAN, debe solucionar cualquier problema que aparezca:
 
 * Debe corregir todos los "`ERRORES`" y "`ADVERTENCIAS`". CRAN no aceptará un paquete que contenga errores o advertencias.
-* Eliminar tantas `+NOTAS+` como sea posible. Cada "`NOTA`" requiere supervisión humana, lo que crea fricciones tanto para usted como para CRAN. Si hay notas que no cree que sean importantes, casi siempre es más fácil arreglarlas (incluso si la solución es un poco complicada) que persuadir a CRAN de que están bien. Consulte nuestra https://r-pkgs.org/R-CMD-check.html[guía solo en línea sobre `+R CMD check+`] para obtener detalles sobre cómo solucionar problemas individuales.
-* Si no puede eliminar una `+NOTA+`, inclúyala en `+cran-comments.md+` y explique por qué cree que es falsa. Analizaremos este archivo con más detalle en <<sec-release-cran-comments>>.
+* Eliminar tantas `NOTAS` como sea posible. Cada "`NOTA`" requiere supervisión humana, lo que crea fricciones tanto para usted como para CRAN. Si hay notas que no cree que sean importantes, casi siempre es más fácil arreglarlas (incluso si la solución es un poco complicada) que persuadir a CRAN de que están bien. Consulte nuestra https://r-pkgs.org/R-CMD-check.html[guía solo en línea sobre `R CMD check`] para obtener detalles sobre cómo solucionar problemas individuales.
+* Si no puede eliminar una `NOTA`, inclúyala en `cran-comments.md` y explique por qué cree que es falsa. Analizaremos este archivo con más detalle en <<sec-release-cran-comments>>.
 +
 Tenga en cuenta que siempre habrá una "`NOTA`" cuando envíe su paquete por primera vez. Esto le recuerda a CRAN que se trata de un envío nuevo y que necesitarán realizar algunas comprobaciones adicionales. No puede eliminar esta "`NOTA`", así que simplemente mencione en "`cran-comments.md`" que este es su primer envío.
 
 [[sec-cran-flavors-services]]
 === CRAN consulta sabores y servicios relacionados
 
-CRAN ejecuta `+R CMD check+` en todos los paquetes contribuidos al momento del envío y de forma regular, en múltiples plataformas o lo que ellos llaman "`sabores`". Puede ver los tipos de cheques actuales de CRAN aquí: https://cran.r-project.org/web/checks/check_flavors.html. Hay varias combinaciones de:
+CRAN ejecuta `R CMD check` en todos los paquetes contribuidos al momento del envío y de forma regular, en múltiples plataformas o lo que ellos llaman "`sabores`". Puede ver los tipos de cheques actuales de CRAN aquí: https://cran.r-project.org/web/checks/check_flavors.html. Hay varias combinaciones de:
 
-* Sistema operativo y CPU: Windows, macOS (x86_64, arm64), Linux (varias distribuciones)
+* Sistema operativo y CPU: Windows, macOS (x86++_++64, arm64), Linux (varias distribuciones)
 * Versión R: r-devel, r-release, r-oldrel
-* Compiladores C, C++, FORTRAN
-* Configuración regional, en el sentido de la variable de entorno `+LC_CTYPE+` (se trata de qué lenguaje humano está en uso y codificación de caracteres)
+* Compiladores C, C{plus}{plus}, FORTRAN
+* Configuración regional, en el sentido de la variable de entorno `LC++_++CTYPE` (se trata de qué lenguaje humano está en uso y codificación de caracteres)
 
 Es casi seguro que los tipos de verificación de CRAN incluyen plataformas distintas a su(s) entorno(s) de desarrollo preferido, por lo que eventualmente necesitará hacer un esfuerzo explícito para verificar y, tal vez, solucionar problemas de su paquete en estos otros tipos.
 
@@ -164,29 +164,29 @@ No sería práctico que los desarrolladores de paquetes individuales mantuvieran
 +
 Puede utilizar R-hub a través de una interfaz web (https://builder.r-hub.io) o, como recomendamos, a través del https://r-hub.github.io%20/rubo/[paquete Rhub R].
 +
-`+rhub::check_for_cran()+` es una buena opción para un paquete CRAN típico y es moralmente similar al flujo de trabajo de GHA configurado por `+usethis::use_github_action("check-standard")+`. Sin embargo, a diferencia de GHA, R-hub actualmente no cubre macOS, sólo Windows y Linux.
+`rhub::check++_++for++_++cran()` es una buena opción para un paquete CRAN típico y es moralmente similar al flujo de trabajo de GHA configurado por `usethis::use++_++github++_++action("check-standard")`. Sin embargo, a diferencia de GHA, R-hub actualmente no cubre macOS, sólo Windows y Linux.
 +
-Rhub también le ayuda a acceder a algunos de los tipos de cheques más exóticos y ofrece controles especializados relevantes para paquetes con código compilado, como `+rhub::check_with_sanitizers()+`.
+Rhub también le ayuda a acceder a algunos de los tipos de cheques más exóticos y ofrece controles especializados relevantes para paquetes con código compilado, como `rhub::check++_++with++_++sanitizers()`.
 * El generador de macOS es un servicio mantenido por el personal de CRAN que crea los archivos binarios de macOS para los paquetes de CRAN. Esta es una adición relativamente nueva a la lista y verifica paquetes con "`la misma configuración y paquetes disponibles que la máquina de compilación CRAN M1`".
 +
-Puede enviar su paquete usando la interfaz web (https://mac.r-project.org/macbuilder/submit.html) o con `+devtools::check_mac_release()+`.
+Puede enviar su paquete usando la interfaz web (https://mac.r-project.org/macbuilder/submit.html) o con `devtools::check++_++mac++_++release()`.
 
 [[sec-release-revdep-checks]]
 == Comprobaciones de dependencia inversa
 
-* [ ] `+revdepcheck::revdep_check(num_workers = 4)+`
+* [ ] `revdepcheck::revdep++_++check(num++_++workers = 4)`
 
 Este elemento inofensivo de la lista de verificación puede representar en realidad una cantidad considerable de esfuerzo. En un nivel alto, la verificación de sus dependencias inversas ("`revdeps`") se divide en:
 
-* Forme una lista de sus dependencias inversas. Estos son paquetes CRAN que enumeran su paquete en sus campos `+Depends+`, `+Imports+`, `+Suggests+` o `+LinkingTo+`.
-* Ejecute `+R CMD check+` en cada uno.
+* Forme una lista de sus dependencias inversas. Estos son paquetes CRAN que enumeran su paquete en sus campos `Depends`, `Imports`, `Suggests` o `LinkingTo`.
+* Ejecute `R CMD check` en cada uno.
 * Asegúrese de no haber roto el paquete de otra persona con los cambios planificados en su paquete.
 
-Cada uno de estos pasos puede requerir mucho trabajo y juicio. Por lo tanto, si no tiene dependencias inversas, debería alegrarse de poder omitir este paso. Si solo tiene un par de dependencias inversas, probablemente pueda hacerlo "`a mano`", es decir, descargar el código fuente de cada paquete y ejecutar `+R CMD check+`.
+Cada uno de estos pasos puede requerir mucho trabajo y juicio. Por lo tanto, si no tiene dependencias inversas, debería alegrarse de poder omitir este paso. Si solo tiene un par de dependencias inversas, probablemente pueda hacerlo "`a mano`", es decir, descargar el código fuente de cada paquete y ejecutar `R CMD check`.
 
 Aquí explicamos formas de realizar comprobaciones de dependencia inversa a escala, que es el problema al que nos enfrentamos. Algunos de los paquetes mantenidos por nuestro equipo tienen miles de dependencias inversas e incluso algunos de los paquetes de nivel inferior tienen cientos. Tenemos que abordar esto de forma automatizada y esta sección será de gran utilidad para otros mantenedores en el mismo barco.
 
-Todas nuestras herramientas de dependencia inversa se concentran en el paquete revdepcheck (https://revdepcheck.r-lib.org/). Tenga en cuenta que, al menos en el momento de escribir este artículo, el paquete revdepcheck no está en CRAN. Puedes instalarlo desde Github a través de `+devtools::install_github("r-lib/revdepcheck")+` o `+pak::pak("r-lib/revdepcheck")+`.
+Todas nuestras herramientas de dependencia inversa se concentran en el paquete revdepcheck (https://revdepcheck.r-lib.org/). Tenga en cuenta que, al menos en el momento de escribir este artículo, el paquete revdepcheck no está en CRAN. Puedes instalarlo desde Github a través de `devtools::install++_++github("r-lib/revdepcheck")` o `pak::pak("r-lib/revdepcheck")`.
 
 Haga esto cuando esté listo para realizar comprobaciones de revdep por primera vez:
 
@@ -195,14 +195,14 @@ Haga esto cuando esté listo para realizar comprobaciones de revdep por primera 
 usethis::use_revdep()
 ----
 
-Esto realiza una configuración única en los archivos `+.gitignore+` y `+.Rbuildignore+` de su paquete. La comprobación de Revdep creará algunas carpetas bastante grandes debajo de `+revdep/+`, por lo que definitivamente querrás configurar estos archivos ignorados. También verá este recordatorio para realizar verificaciones de revdep de esta manera, como sugiere el elemento de la lista de verificación:
+Esto realiza una configuración única en los archivos `.gitignore` y `.Rbuildignore` de su paquete. La comprobación de Revdep creará algunas carpetas bastante grandes debajo de `revdep/`, por lo que definitivamente querrás configurar estos archivos ignorados. También verá este recordatorio para realizar verificaciones de revdep de esta manera, como sugiere el elemento de la lista de verificación:
 
 [source,r,cell-code]
 ----
 revdepcheck::revdep_check(num_workers = 4)
 ----
 
-Esto ejecuta `+⁠R CMD check⁠+` en todas sus dependencias inversas, con nuestra recomendación de utilizar 4 trabajadores paralelos para acelerar las cosas. La salida se parece a esto:
+Esto ejecuta `⁠R CMD check⁠` en todas sus dependencias inversas, con nuestra recomendación de utilizar 4 trabajadores paralelos para acelerar las cosas. La salida se parece a esto:
 
 ....
 > revdepcheck::revdep_check(num_workers = 4)
@@ -232,33 +232,33 @@ Writing failures to 'revdep/failures.md'
 Writing CRAN report to 'revdep/cran.md'
 ....
 
-Para minimizar los falsos positivos, `+revdep_check()+` ejecuta `+⁠R CMD check⁠+` dos veces por revdep: una vez con la versión publicada de su paquete actualmente en CRAN y otra vez con la versión de desarrollo local, es decir, con su versión candidata. ¿Por qué dos cheques? Porque a veces el revdep ya está fallando en la `+R CMD check+` y sería incorrecto culpar a la versión planificada por la falla. `+revdep_check()+` informa los paquetes que no se pueden verificar y, lo más importante, aquellos en los que hay los llamados "`cambios a peor`", es decir, donde su versión candidata está asociada con nuevos problemas. Tenga en cuenta también que `+revdep_check()+` siempre funciona con una biblioteca de paquetes temporal e independiente, es decir, no modificará su biblioteca de usuario o sistema predeterminada.
+Para minimizar los falsos positivos, `revdep++_++check()` ejecuta `⁠R CMD check⁠` dos veces por revdep: una vez con la versión publicada de su paquete actualmente en CRAN y otra vez con la versión de desarrollo local, es decir, con su versión candidata. ¿Por qué dos cheques? Porque a veces el revdep ya está fallando en la `R CMD check` y sería incorrecto culpar a la versión planificada por la falla. `revdep++_++check()` informa los paquetes que no se pueden verificar y, lo más importante, aquellos en los que hay los llamados "`cambios a peor`", es decir, donde su versión candidata está asociada con nuevos problemas. Tenga en cuenta también que `revdep++_++check()` siempre funciona con una biblioteca de paquetes temporal e independiente, es decir, no modificará su biblioteca de usuario o sistema predeterminada.
 
 [NOTE]
 .equipo tidyverse
 ====
-De hecho, utilizamos una función diferente para nuestras comprobaciones de dependencia inversa: `+revdepcheck::cloud_check()+`. Esto ejecuta las comprobaciones en la nube, masivamente en paralelo, lo que hace posible ejecutar comprobaciones de revdep para paquetes como testthat (con >10,000 revdeps) en solo unas pocas horas.
+De hecho, utilizamos una función diferente para nuestras comprobaciones de dependencia inversa: `revdepcheck::cloud++_++check()`. Esto ejecuta las comprobaciones en la nube, masivamente en paralelo, lo que hace posible ejecutar comprobaciones de revdep para paquetes como testthat (con ++>++10,000 revdeps) en solo unas pocas horas.
 
-`+cloud_check()+` ha cambiado las reglas del juego para nosotros, permitiéndonos ejecutar comprobaciones revdep con más frecuencia. Por ejemplo, incluso hacemos esto ahora cuando evaluamos el impacto de un posible cambio en un paquete (<<sec-lifecycle-breaking-change-definition>>), en lugar de hacerlo justo antes de un lanzamiento.
+`cloud++_++check()` ha cambiado las reglas del juego para nosotros, permitiéndonos ejecutar comprobaciones revdep con más frecuencia. Por ejemplo, incluso hacemos esto ahora cuando evaluamos el impacto de un posible cambio en un paquete (<<sec-lifecycle-breaking-change-definition>>), en lugar de hacerlo justo antes de un lanzamiento.
 
-Al momento de escribir este artículo, `+cloud_check()+` solo está disponible para los mantenedores de paquetes en Posit, pero esperamos ofrecer este servicio a la comunidad R en general en el futuro.
+Al momento de escribir este artículo, `cloud++_++check()` solo está disponible para los mantenedores de paquetes en Posit, pero esperamos ofrecer este servicio a la comunidad R en general en el futuro.
 
 ====
 
-Además de algunos mensajes interactivos, los resultados de la verificación revdep se escriben en la carpeta `+revdep/+`:
+Además de algunos mensajes interactivos, los resultados de la verificación revdep se escriben en la carpeta `revdep/`:
 
-* `+revdep/README.md+`: Este es un resumen de alto nivel dirigido a mantenedores. El nombre del archivo y el formato Markdown son muy intencionados para crear una buena página de inicio para la carpeta `+revdep/+` en GitHub.
-* `+revdep/problems.md+`: enumera los revdeps que parecen estar rotos por su versión candidata.
-* `+revdep/failures.md+`: enumera los revdep que no se pudieron verificar, generalmente debido a un error de instalación, ya sea del propio revdep o de una de sus dependencias.
-* `+revdep/cran.md+`: Este es un resumen de alto nivel dirigido a CRAN. Debes copiar y pegar esto en `+cran-comments.md+` (<<sec-release-cran-comments>>).
-* Otros archivos y carpetas, como `+checks.noindex+`, `+data.sqlite+` y `+library.noindex+`. Estos son para uso interno de revdepcheck y no los discutiremos más.
+* `revdep/README.md`: Este es un resumen de alto nivel dirigido a mantenedores. El nombre del archivo y el formato Markdown son muy intencionados para crear una buena página de inicio para la carpeta `revdep/` en GitHub.
+* `revdep/problems.md`: enumera los revdeps que parecen estar rotos por su versión candidata.
+* `revdep/failures.md`: enumera los revdep que no se pudieron verificar, generalmente debido a un error de instalación, ya sea del propio revdep o de una de sus dependencias.
+* `revdep/cran.md`: Este es un resumen de alto nivel dirigido a CRAN. Debes copiar y pegar esto en `cran-comments.md` (<<sec-release-cran-comments>>).
+* Otros archivos y carpetas, como `checks.noindex`, `data.sqlite` y `library.noindex`. Estos son para uso interno de revdepcheck y no los discutiremos más.
 
 La forma más sencilla de tener una idea de estos diferentes archivos es consultar los últimos resultados de revdep para algunos paquetes tidyverse, como https://github.com/tidyverse/dplyr/tree/main/revdep[dplyr] o https://github.com/tidyverse/tidyr/tree/main/revdep[tidyr].
 
 Los resultados de la verificación revdep (local, en la nube o CRAN) no son perfectos, porque no es una tarea sencilla. Hay varias razones por las que un resultado puede faltar, ser incorrecto o contradictorio en diferentes ejecuciones.
 
 * Falsos positivos: a veces revdepcheck informa que un paquete se ha roto, pero en realidad todo está bien (o, al menos, no peor que antes). Esto ocurre más comúnmente debido a pruebas inestables que fallan aleatoriamente (<<sec-testing-advanced-skip-on-cran>>), como las solicitudes HTTP. Esto también puede suceder porque la instancia se queda sin espacio en disco u otros recursos, por lo que la primera verificación con la versión CRAN tiene éxito y la segunda verificación con la versión dev falla. A veces es obvio que el problema no está relacionado con su paquete.
-* Falsos negativos: a veces se ha roto un paquete, pero no lo detectas. Para nosotros, esto suele suceder cuando `+cloud_check()+` no puede verificar un revdep porque no se puede instalar, generalmente debido a que falta un requisito del sistema (por ejemplo, Java). Estos se informan por separado como "`no se pudo probar`", pero aún se incluyen en `+problems.md+`, porque aún podría tratarse de una rotura directa causada por su paquete. Por ejemplo, si elimina una función exportada que utiliza otro paquete, la instalación fallará.
+* Falsos negativos: a veces se ha roto un paquete, pero no lo detectas. Para nosotros, esto suele suceder cuando `cloud++_++check()` no puede verificar un revdep porque no se puede instalar, generalmente debido a que falta un requisito del sistema (por ejemplo, Java). Estos se informan por separado como "`no se pudo probar`", pero aún se incluyen en `problems.md`, porque aún podría tratarse de una rotura directa causada por su paquete. Por ejemplo, si elimina una función exportada que utiliza otro paquete, la instalación fallará.
 
 En general, estas diferencias son menos preocupantes ahora que las propias comprobaciones de revdep de CRAN están bien automatizadas, por lo que las nuevas fallas normalmente no involucran a un humano.
 
@@ -273,24 +273,24 @@ Si la verificación revdep revela roturas, debe examinar cada falla y determinar
 
 Si su actualización romperá otro paquete (independientemente del motivo), debe informar al mantenedor, para que él lo escuche primero de usted, en lugar de CRAN. La mejor manera de hacerlo es con un parche que actualice su paquete para que funcione bien con el suyo, tal vez en forma de solicitud de extracción. Esto puede suponer una cantidad decente de trabajo y ciertamente no es factible para todos los mantenedores. Pero resolver algunos de ellos puede ser una buena manera de enfrentar el dolor que causa el cambio radical y reconsiderar si los beneficios superan los costos. En la mayoría de los casos, es probable que un cambio que afecte a los revdeps también rompa el código menos visible que se encuentra fuera de los paquetes CRAN, como scripts, informes y aplicaciones Shiny.
 
-Si decide continuar, funciones como `+revdepcheck::revdep_maintainers()+` y `+revdepcheck::revdep_email()+` pueden ayudarle a notificar a los mantenedores de revdep _en masa_. Asegúrese de que el correo electrónico incluya un enlace a la documentación que describa los cambios importantes más comunes y cómo solucionarlos. Debe informar a los mantenedores cuándo planea enviar su versión a CRAN (recomendamos avisar con al menos dos semanas de anticipación), para que puedan enviar su versión actualizada antes de eso. Cuando llegue la fecha de lanzamiento, vuelva a ejecutar sus comprobaciones para ver cuántos problemas se han resuelto. Explique cualquier falla restante en `+cran-comments.md+` como se demuestra en <<sec-release-cran-comments>>. Los dos casos más comunes son que no puede verificar un paquete porque no puede instalarlo localmente o un cambio legítimo en la API que el mantenedor aún no ha abordado. Siempre que haya avisado con suficiente antelación, CRAN aceptará su actualización, incluso si daña otros paquetes.
+Si decide continuar, funciones como `revdepcheck::revdep++_++maintainers()` y `revdepcheck::revdep++_++email()` pueden ayudarle a notificar a los mantenedores de revdep _en masa_. Asegúrese de que el correo electrónico incluya un enlace a la documentación que describa los cambios importantes más comunes y cómo solucionarlos. Debe informar a los mantenedores cuándo planea enviar su versión a CRAN (recomendamos avisar con al menos dos semanas de anticipación), para que puedan enviar su versión actualizada antes de eso. Cuando llegue la fecha de lanzamiento, vuelva a ejecutar sus comprobaciones para ver cuántos problemas se han resuelto. Explique cualquier falla restante en `cran-comments.md` como se demuestra en <<sec-release-cran-comments>>. Los dos casos más comunes son que no puede verificar un paquete porque no puede instalarlo localmente o un cambio legítimo en la API que el mantenedor aún no ha abordado. Siempre que haya avisado con suficiente antelación, CRAN aceptará su actualización, incluso si daña otros paquetes.
 
 [NOTE]
 .equipo tidyverse
 ====
-Últimamente, el equipo de tidyverse está tratando de cumplir con los mantenedores de revdep a más de la mitad del camino en términos de lidiar con cambios importantes. Por ejemplo, en el problema de GitHub https://github.com/tidyverse/dplyr/issues/6262[tidyverse/dplyr#6262], los mantenedores de dplyr rastrearon cientos de solicitudes de extracción en el período previo al lanzamiento de dplyr v1. .1.0. A medida que se crean los RP, también es útil agregar enlaces a ellos. A medida que los mantenedores de revdep fusionan los RP, se pueden marcar como resueltos. Si algunos RP todavía están en proceso cuando llega la fecha de envío anunciada, la situación se puede resumir en `+cran-comments.md+`, como fue el caso de https://github.%20com/tidyverse/dplyr/blob/c7e9cd72fd86309d72f2c522157cfac38f45453b/cran-comments.md[dplyr v1.1.0].
+Últimamente, el equipo de tidyverse está tratando de cumplir con los mantenedores de revdep a más de la mitad del camino en términos de lidiar con cambios importantes. Por ejemplo, en el problema de GitHub https://github.com/tidyverse/dplyr/issues/6262[tidyverse/dplyr#6262], los mantenedores de dplyr rastrearon cientos de solicitudes de extracción en el período previo al lanzamiento de dplyr v1. .1.0. A medida que se crean los RP, también es útil agregar enlaces a ellos. A medida que los mantenedores de revdep fusionan los RP, se pueden marcar como resueltos. Si algunos RP todavía están en proceso cuando llega la fecha de envío anunciada, la situación se puede resumir en `cran-comments.md`, como fue el caso de https://github.%20com/tidyverse/dplyr/blob/c7e9cd72fd86309d72f2c522157cfac38f45453b/cran-comments.md[dplyr v1.1.0].
 ====
 
 [[sec-release-cran-comments]]
 == Actualizar comentarios para CRAN
 
-* [ ] Actualizar `+cran-comments.md+`
+* [ ] Actualizar `cran-comments.md`
 
-Usamos el archivo `+cran-comments.md+` para registrar comentarios sobre un envío, principalmente solo los resultados de `+R CMD check+` y controles revdep. Si está realizando un cambio específico a solicitud de CRAN, posiblemente dentro de una fecha límite, también tendría sentido mencionarlo. Nos gusta realizar un seguimiento de este archivo en Git, para poder ver cómo cambia con el tiempo. También debería aparecer en `+.Rbuildignore+`, ya que no debería aparecer en su paquete. Cuando esté listo para enviar, `+devtools::submit_cran()+` (<<sec-release-process>>) incorpora el contenido de `+cran-comments.md+` cuando carga su envío.
+Usamos el archivo `cran-comments.md` para registrar comentarios sobre un envío, principalmente solo los resultados de `R CMD check` y controles revdep. Si está realizando un cambio específico a solicitud de CRAN, posiblemente dentro de una fecha límite, también tendría sentido mencionarlo. Nos gusta realizar un seguimiento de este archivo en Git, para poder ver cómo cambia con el tiempo. También debería aparecer en `.Rbuildignore`, ya que no debería aparecer en su paquete. Cuando esté listo para enviar, `devtools::submit++_++cran()` (<<sec-release-process>>) incorpora el contenido de `cran-comments.md` cuando carga su envío.
 
-El público objetivo de estos comentarios es el personal de CRAN, aunque no hay garantía de que lean los comentarios (o cuando en el proceso de envío los lean). Por ejemplo, si su paquete rompe otros paquetes, probablemente recibirá un correo electrónico automático al respecto, incluso si lo ha explicado en los comentarios. A veces, un humano de CRAN lee los comentarios, queda satisfecho y acepta su paquete de todos modos, sin ninguna otra acción por su parte. En otras ocasiones, su paquete puede quedarse atascado en la cola hasta que copie `+cran-comments.md+` y lo pegue en un intercambio de correo electrónico para avanzar. En cualquier caso, vale la pena mantener estos comentarios en su propio archivo controlado por versión.
+El público objetivo de estos comentarios es el personal de CRAN, aunque no hay garantía de que lean los comentarios (o cuando en el proceso de envío los lean). Por ejemplo, si su paquete rompe otros paquetes, probablemente recibirá un correo electrónico automático al respecto, incluso si lo ha explicado en los comentarios. A veces, un humano de CRAN lee los comentarios, queda satisfecho y acepta su paquete de todos modos, sin ninguna otra acción por su parte. En otras ocasiones, su paquete puede quedarse atascado en la cola hasta que copie `cran-comments.md` y lo pegue en un intercambio de correo electrónico para avanzar. En cualquier caso, vale la pena mantener estos comentarios en su propio archivo controlado por versión.
 
-Aquí hay un `+cran-comments.md+` bastante típico de una versión reciente de forcats. Tenga en cuenta que los resultados de la `+R CMD check+` son limpios, es decir, no hay nada que deba explicarse o justificarse, y hay un resumen conciso del proceso revdep.
+Aquí hay un `cran-comments.md` bastante típico de una versión reciente de forcats. Tenga en cuenta que los resultados de la `R CMD check` son limpios, es decir, no hay nada que deba explicarse o justificarse, y hay un resumen conciso del proceso revdep.
 
 [source,md]
 ----
@@ -316,12 +316,12 @@ We failed to check 3 packages
 * SCpubr       (NA)
 ----
 
-Este diseño está diseñado para que sea fácil de leer y fácil de comparar con los resultados de la `+R CMD check+` vistos por los mantenedores de CRAN. Incluye dos secciones:
+Este diseño está diseñado para que sea fácil de leer y fácil de comparar con los resultados de la `R CMD check` vistos por los mantenedores de CRAN. Incluye dos secciones:
 
 [arabic]
-. Verificar resultados: Siempre afirmamos que no hubo errores ni advertencias (¡y nos aseguramos de que sea cierto!). Idealmente también podemos decir que no hubo notas. Pero si no, las `+NOTES+` se presentan en una lista con viñetas. Para cada `+NOTA+`, incluimos el mensaje de `+R CMD check+` y una breve descripción de por qué creemos que está bien.
+. Verificar resultados: Siempre afirmamos que no hubo errores ni advertencias (¡y nos aseguramos de que sea cierto!). Idealmente también podemos decir que no hubo notas. Pero si no, las `NOTES` se presentan en una lista con viñetas. Para cada `NOTA`, incluimos el mensaje de `R CMD check` y una breve descripción de por qué creemos que está bien.
 +
-A continuación se explica cómo se explica una `+NOTA+` para el paquete de datos nycflights13:
+A continuación se explica cómo se explica una `NOTA` para el paquete de datos nycflights13:
 +
 [source,md]
 ----
@@ -336,23 +336,23 @@ A continuación se explica cómo se explica una `+NOTA+` para el paquete de dato
 
   This is a data package that will be rarely updated.
 ----
-. Dependencias inversas: si hay revdeps, aquí es donde pegamos el contenido de `+revdep/cran.md+` (<<sec-release-revdep-checks>>). Si no hay revdeps, le recomendamos que mantenga esta sección, pero diga algo como: "`Actualmente no hay dependencias posteriores para este paquete`".
+. Dependencias inversas: si hay revdeps, aquí es donde pegamos el contenido de `revdep/cran.md` (<<sec-release-revdep-checks>>). Si no hay revdeps, le recomendamos que mantenga esta sección, pero diga algo como: "`Actualmente no hay dependencias posteriores para este paquete`".
 
 [[sec-release-process]]
 == El proceso de envío
 
-* [ ] `+usethis::use_version('minor')+` (o '`patch`' o '`major`')
-* [ ] `+devtools::submit_cran()+`
+* [ ] `usethis::use++_++version('minor')` (o '`patch`' o '`major`')
+* [ ] `devtools::submit++_++cran()`
 * [ ] Aprobar correo electrónico
 
-Cuando esté realmente listo para enviar, es hora de aumentar el número de versión en DESCRIPCIÓN. Este elemento de la lista de verificación reflejará el tipo de lanzamiento declarado al inicio de este proceso (parche, menor o mayor), en la llamada inicial a `+use_release_issue()+`.
+Cuando esté realmente listo para enviar, es hora de aumentar el número de versión en DESCRIPCIÓN. Este elemento de la lista de verificación reflejará el tipo de lanzamiento declarado al inicio de este proceso (parche, menor o mayor), en la llamada inicial a `use++_++release++_++issue()`.
 
-Le recomendamos que envíe su paquete a CRAN llamando a `+devtools::submit_cran()+`. Esta función de conveniencia resume algunos pasos:
+Le recomendamos que envíe su paquete a CRAN llamando a `devtools::submit++_++cran()`. Esta función de conveniencia resume algunos pasos:
 
-* Crea el paquete (<<sec-bundled-package>>) con `+pkgbuild::build(manual = TRUE)+`, que finalmente llama a `+R CMD build+`.
-* Publica el archivo `+*.tar.gz+` resultante en el formulario de envío oficial de CRAN (https://cran.r-project.org/submit.html), completando su nombre y correo electrónico desde `+DESCRIPCIÓN+` y sus comentarios de envío. de `+cran-comments.md+`.
+* Crea el paquete (<<sec-bundled-package>>) con `pkgbuild::build(manual = TRUE)`, que finalmente llama a `R CMD build`.
+* Publica el archivo `++*++.tar.gz` resultante en el formulario de envío oficial de CRAN (https://cran.r-project.org/submit.html), completando su nombre y correo electrónico desde `DESCRIPCIÓN` y sus comentarios de envío. de `cran-comments.md`.
 * Confirma que el envío fue exitoso y le recuerda que revise su correo electrónico para ver el enlace de confirmación.
-* Escribe los detalles del envío en un archivo local `+CRAN-SUBMISSION+`, que registra la versión del paquete, SHA y la hora del envío. Esta información la utiliza más adelante `+usethis::use_github_release()+` para crear una versión de GitHub una vez que su paquete haya sido aceptado. `+CRAN-SUBMISSION+` se agregará a `+.Rbuildignore+`. Generalmente no ignoramos este archivo, pero tampoco lo confirmamos. Es una nota efímera que existe durante el intervalo entre la presentación y (con suerte) la aceptación.
+* Escribe los detalles del envío en un archivo local `CRAN-SUBMISSION`, que registra la versión del paquete, SHA y la hora del envío. Esta información la utiliza más adelante `usethis::use++_++github++_++release()` para crear una versión de GitHub una vez que su paquete haya sido aceptado. `CRAN-SUBMISSION` se agregará a `.Rbuildignore`. Generalmente no ignoramos este archivo, pero tampoco lo confirmamos. Es una nota efímera que existe durante el intervalo entre la presentación y (con suerte) la aceptación.
 
 Después de una carga exitosa, debería recibir un correo electrónico de CRAN en unos minutos. Este correo electrónico le notifica a usted, como mantenedor, del envío y proporciona un enlace de confirmación. Parte de lo que esto hace es confirmar que la dirección de correo electrónico del mantenedor es correcta. En el enlace de confirmación, deberá volver a confirmar que ha seguido las políticas de CRAN y que desea enviar el paquete. Si no completa este paso, ¡su paquete en realidad no se envía a CRAN!
 
@@ -362,7 +362,7 @@ Una vez que su paquete ingresa al sistema de CRAN, se verifica automáticamente 
 
 Hay al menos tres formas de que falle el envío de CRAN:
 
-* No pasa `+R CMD check+`. Este es un resultado automatizado.
+* No pasa `R CMD check`. Este es un resultado automatizado.
 * La revisión humana determina que el paquete infringe las políticas de CRAN. Esto se aplica principalmente a los envíos iniciales, pero a veces el personal de CRAN decide participar en una revisión _ad hoc_ de actualizaciones de paquetes existentes que no superan las comprobaciones automáticas.
 * Las comprobaciones de dependencia inversa sugieren que hay "`cambios a peor`". Este es un resultado automatizado.
 
@@ -370,9 +370,9 @@ Los fracasos son frustrantes y la retroalimentación puede ser cortante y franca
 
 Espere hasta que pueda centrar su atención en los problemas técnicos que se han planteado. Lea atentamente los resultados de las comprobaciones o los correos electrónicos e investigue los hallazgos. A menos que crea firmemente que se merece la discusión, no responda el correo electrónico. En cambio:
 
-* Solucione los problemas identificados y realice los cambios recomendados. Vuelva a ejecutar `+devtools::check()+` en cualquier plataforma relevante para asegurarse de no introducir accidentalmente ningún problema nuevo.
+* Solucione los problemas identificados y realice los cambios recomendados. Vuelva a ejecutar `devtools::check()` en cualquier plataforma relevante para asegurarse de no introducir accidentalmente ningún problema nuevo.
 * Aumente la versión de parche de su paquete. Sí, esto significa que puede haber lagunas en los números de versión publicada. Esto no es gran cosa.
-* Agregue una sección "`Resubmission`" en la parte superior de `+cran-comments.md+`. Esto debería identificar claramente que el paquete es un reenvío y enumerar los cambios que realizó.
+* Agregue una sección "`Resubmission`" en la parte superior de `cran-comments.md`. Esto debería identificar claramente que el paquete es un reenvío y enumerar los cambios que realizó.
 +
 [source,md]
 ----
@@ -385,9 +385,9 @@ This is a resubmission. In this version I have:
   and LICENSE files.
 ----
 * Si es necesario, actualice las secciones de resultados de verificación y revisión.
-* Ejecute `+devtools::submit_cran()+` para volver a enviar el paquete.
+* Ejecute `devtools::submit++_++cran()` para volver a enviar el paquete.
 
-Si su análisis indica que el error inicial fue un falso positivo, responda al correo electrónico de CRAN con una explicación concisa. Para nosotros, este escenario surge principalmente con respecto a los controles de revdep. Es extremadamente raro que veamos fallas en las ejecuciones iniciales de `+R CMD check+` de CRAN y, cuando sucede, a menudo es legítima. Por otro lado, para paquetes con una gran cantidad de revdeps, es inevitable que un subconjunto de estos paquetes tenga algunas pruebas inestables o ejemplos frágiles. Por lo tanto, es bastante común ver fallas de revdep que no tienen nada que ver con la actualización del paquete propuesta. En este caso, lo adecuado es enviar un correo electrónico de respuesta a CRAN explicando por qué cree que se trata de falsos positivos.
+Si su análisis indica que el error inicial fue un falso positivo, responda al correo electrónico de CRAN con una explicación concisa. Para nosotros, este escenario surge principalmente con respecto a los controles de revdep. Es extremadamente raro que veamos fallas en las ejecuciones iniciales de `R CMD check` de CRAN y, cuando sucede, a menudo es legítima. Por otro lado, para paquetes con una gran cantidad de revdeps, es inevitable que un subconjunto de estos paquetes tenga algunas pruebas inestables o ejemplos frágiles. Por lo tanto, es bastante común ver fallas de revdep que no tienen nada que ver con la actualización del paquete propuesta. En este caso, lo adecuado es enviar un correo electrónico de respuesta a CRAN explicando por qué cree que se trata de falsos positivos.
 
 [[sec-release-post-acceptance]]
 == Celebrando el éxito
@@ -395,16 +395,16 @@ Si su análisis indica que el error inicial fue un falso positivo, responda al c
 Ahora pasamos a la sección más feliz de la lista de verificación.
 
 * [ ] Aceptada 🎉
-* [ ] `+git push+`
-* [ ] `+usethis::use_github_release()+`
-* [ ] `+usethis::use_dev_version()+`
-* [ ] `+git push+`
+* [ ] `git push`
+* [ ] `usethis::use++_++github++_++release()`
+* [ ] `usethis::use++_++dev++_++version()`
+* [ ] `git push`
 * [ ] Terminar la publicación del blog, compartir en las redes sociales, etc.
 * [ ] Agregar enlace a la publicación del blog en el menú de noticias de pkgdown
 
-CRAN le notificará por correo electrónico una vez que su paquete sea aceptado. Aquí es cuando enviamos por primera vez a GitHub con el nuevo número de versión, es decir, esperamos hasta que esté seguro de que esta versión realmente se lanzará en CRAN. A continuación, creamos una versión de GitHub correspondiente a esta versión de CRAN, usando `+usethis::use_github_release()+`. Una versión de GitHub es básicamente una etiqueta de Git glorificada. El único aspecto de las versiones de GitHub que aprovechamos regularmente son las notas de la versión. `+usethis::use_github_release()+` crea notas de la versión a partir de las viñetas `+NEWS+` relevantes para la versión actual. Tenga en cuenta que `+usethis::use_github_release()+` depende crucialmente del archivo `+CRAN-SUBMISSION+` que fue escrito por `+devtools::submit_cran()+`: así es como sabe qué SHA etiquetar. Después de la creación exitosa de la versión de GitHub, `+use_github_release()+` elimina este archivo temporal.
+CRAN le notificará por correo electrónico una vez que su paquete sea aceptado. Aquí es cuando enviamos por primera vez a GitHub con el nuevo número de versión, es decir, esperamos hasta que esté seguro de que esta versión realmente se lanzará en CRAN. A continuación, creamos una versión de GitHub correspondiente a esta versión de CRAN, usando `usethis::use++_++github++_++release()`. Una versión de GitHub es básicamente una etiqueta de Git glorificada. El único aspecto de las versiones de GitHub que aprovechamos regularmente son las notas de la versión. `usethis::use++_++github++_++release()` crea notas de la versión a partir de las viñetas `NEWS` relevantes para la versión actual. Tenga en cuenta que `usethis::use++_++github++_++release()` depende crucialmente del archivo `CRAN-SUBMISSION` que fue escrito por `devtools::submit++_++cran()`: así es como sabe qué SHA etiquetar. Después de la creación exitosa de la versión de GitHub, `use++_++github++_++release()` elimina este archivo temporal.
 
-Ahora nos preparamos para la próxima versión incrementando el número de versión una vez más, esta vez a una versión de desarrollo usando `+usethis::use_dev_version()+`. Tiene sentido enviar inmediatamente este estado a GitHub para que, por ejemplo, cualquier rama nueva o solicitud de extracción tenga claramente una versión de desarrollo como base.
+Ahora nos preparamos para la próxima versión incrementando el número de versión una vez más, esta vez a una versión de desarrollo usando `usethis::use++_++dev++_++version()`. Tiene sentido enviar inmediatamente este estado a GitHub para que, por ejemplo, cualquier rama nueva o solicitud de extracción tenga claramente una versión de desarrollo como base.
 
 Una vez que CRAN acepta el paquete, se crean archivos binarios para macOS y Windows. También se verificará en el panel de tipos de verificación CRAN. Estos procesos se desarrollan a lo largo de unos días, después de la aceptación, y a veces descubren errores que no fueron detectados por las comprobaciones entrantes menos exhaustivas. Es una buena idea visitar la página de inicio de CRAN de su paquete unos días después del lanzamiento y asegurarse de que todo parezca estar bien. <<fig-cran-checks>> resalta dónde están vinculados estos resultados desde una página de inicio de CRAN.
 
@@ -412,13 +412,13 @@ Una vez que CRAN acepta el paquete, se crean archivos binarios para macOS y Wind
 [#fig-cran-checks]
 image::images/cran-checks-usethis.png[images/cran-checks-usethis]
 
-Si hay un problema, prepare una versión de parche para solucionarlo y envíelo utilizando el mismo proceso que antes. Si esto significa que va a realizar un segundo envío menos de una semana después del anterior, explique la situación en `+cran-comments.md+`. Lograr que un paquete se establezca en CRAN puede llevar un par de rondas, aunque la orientación de este capítulo tiene como objetivo maximizar las posibilidades de éxito en el primer intento. Las versiones futuras, iniciadas por usted, deben tener un intervalo de al menos uno o dos meses, de acuerdo con la política de CRAN.
+Si hay un problema, prepare una versión de parche para solucionarlo y envíelo utilizando el mismo proceso que antes. Si esto significa que va a realizar un segundo envío menos de una semana después del anterior, explique la situación en `cran-comments.md`. Lograr que un paquete se establezca en CRAN puede llevar un par de rondas, aunque la orientación de este capítulo tiene como objetivo maximizar las posibilidades de éxito en el primer intento. Las versiones futuras, iniciadas por usted, deben tener un intervalo de al menos uno o dos meses, de acuerdo con la política de CRAN.
 
 Una vez que los binarios de su paquete estén creados y hayan pasado las comprobaciones de los distintos tipos de CRAN, es hora de la parte divertida: dar a conocer su paquete. Esto adopta diferentes formas, según el tipo de liberación. Si este es su lanzamiento inicial (o, al menos, el primer lanzamiento para el que realmente desea atraer usuarios), es especialmente importante correr la voz. Nadie utilizará su nuevo y útil paquete si no sabe que existe. Hay varios lugares para anunciar su paquete, como Twitter, Mastodon, LinkedIn, comunidades de Slack, etc. Asegúrese de utilizar etiquetas relevantes, como el hashtag #rstats. Si tienes un blog, es una gran idea escribir una publicación sobre tu lanzamiento.
 
-Al presentar un paquete, la sensación debería ser bastante similar a escribir su `+README+` o una viñeta de "`Introducción`". Asegúrese de describir lo que hace el paquete, para que las personas que no lo hayan usado antes puedan entender por qué debería importarles. Para los paquetes existentes, tendemos a escribir publicaciones de blog para versiones menores y principales, pero no para una versión de parche. En todos los casos, encontramos que estas publicaciones de blog son más efectivas cuando incluyen muchos ejemplos, es decir, "`muestre, no cuente`". Para actualizaciones de paquetes, recuerde que la existencia de un archivo completo `+NEWS+` lo libera de la necesidad de enumerar hasta el último cambio en la publicación de su blog. En su lugar, puede centrarse en los cambios más importantes y vincular a las notas de la versión completas, para aquellos que quieran conocer los detalles sangrientos.
+Al presentar un paquete, la sensación debería ser bastante similar a escribir su `README` o una viñeta de "`Introducción`". Asegúrese de describir lo que hace el paquete, para que las personas que no lo hayan usado antes puedan entender por qué debería importarles. Para los paquetes existentes, tendemos a escribir publicaciones de blog para versiones menores y principales, pero no para una versión de parche. En todos los casos, encontramos que estas publicaciones de blog son más efectivas cuando incluyen muchos ejemplos, es decir, "`muestre, no cuente`". Para actualizaciones de paquetes, recuerde que la existencia de un archivo completo `NEWS` lo libera de la necesidad de enumerar hasta el último cambio en la publicación de su blog. En su lugar, puede centrarse en los cambios más importantes y vincular a las notas de la versión completas, para aquellos que quieran conocer los detalles sangrientos.
 
-Si escribe un blog sobre su paquete, es bueno capturarlo como otra documentación más en su sitio web de pkgdown. Un sitio típico de pkgdown tiene un elemento de "`News`" en la barra de navegación superior, que enlaza con un "`Changelog`" que se crea a partir de `+NEWS.md+`. Este menú desplegable es un lugar común para insertar enlaces a cualquier publicación de blog sobre el paquete. Puedes lograr esto teniendo YAML como este en tu archivo de configuración `+_pkgdown.yml+`:
+Si escribe un blog sobre su paquete, es bueno capturarlo como otra documentación más en su sitio web de pkgdown. Un sitio típico de pkgdown tiene un elemento de "`News`" en la barra de navegación superior, que enlaza con un "`Changelog`" que se crea a partir de `NEWS.md`. Este menú desplegable es un lugar común para insertar enlaces a cualquier publicación de blog sobre el paquete. Puedes lograr esto teniendo YAML como este en tu archivo de configuración `++_++pkgdown.yml`:
 
 [source,yaml]
 ----

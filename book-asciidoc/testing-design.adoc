@@ -5,7 +5,7 @@
 
 [IMPORTANT]
 ====
-Sus archivos de prueba no deben incluir estas llamadas `+library()+`. También solicitamos explícitamente testthat edición 3, pero en un paquete real esto se declarará en DESCRIPTION.
+Sus archivos de prueba no deben incluir estas llamadas `library()`. También solicitamos explícitamente testthat edición 3, pero en un paquete real esto se declarará en DESCRIPTION.
 
 [source,r,cell-code]
 ----
@@ -37,8 +37,8 @@ En cierto sentido técnico, el objetivo es una cobertura de prueba del 100%; sin
 
 Usamos covr regularmente, de dos maneras diferentes:
 
-* Uso local e interactivo. Usamos principalmente `+devtools::test_coverage_active_file()+` y `+devtools::test_coverage()+`, para explorar la cobertura de un archivo individual o del paquete completo, respectivamente.
-* Uso automático y remoto a través de GitHub Actions (GHA). Cubrimos la integración continua y GHA más a fondo en <<sec-sw-dev-practices>>, pero al menos mencionaremos aquí que `+usethis::use_github_action("test-coverage")+` configura un flujo de trabajo de GHA que monitorea constantemente la cobertura de su prueba. La cobertura de la prueba puede ser una métrica especialmente útil al evaluar una solicitud de extracción (ya sea propia o de un colaborador externo). Un cambio propuesto que esté bien cubierto por pruebas tiene menos riesgo de fusionarse.
+* Uso local e interactivo. Usamos principalmente `devtools::test++_++coverage++_++active++_++file()` y `devtools::test++_++coverage()`, para explorar la cobertura de un archivo individual o del paquete completo, respectivamente.
+* Uso automático y remoto a través de GitHub Actions (GHA). Cubrimos la integración continua y GHA más a fondo en <<sec-sw-dev-practices>>, pero al menos mencionaremos aquí que `usethis::use++_++github++_++action("test-coverage")` configura un flujo de trabajo de GHA que monitorea constantemente la cobertura de su prueba. La cobertura de la prueba puede ser una métrica especialmente útil al evaluar una solicitud de extracción (ya sea propia o de un colaborador externo). Un cambio propuesto que esté bien cubierto por pruebas tiene menos riesgo de fusionarse.
 
 [[sec-testing-design-principles]]
 == Principios de alto nivel para realizar pruebas
@@ -50,7 +50,7 @@ En secciones posteriores, ofrecemos estrategias concretas sobre cómo manejar di
 * Es más importante que el código de prueba sea obvio que, por ejemplo, lo más SECO posible.
 * Sin embargo, el flujo de trabajo interactivo no debería "`filtrarse`" ni socavar el conjunto de pruebas.
 
-Escribir buenas pruebas para una base de código a menudo resulta más desafiante que escribir el código en primer lugar. Esto puede resultar un poco sorprendente si eres nuevo en el desarrollo de paquetes y te preocupa estar haciéndolo mal. ¡No te preocupes, no lo eres! Las pruebas presentan muchos desafíos y maniobras únicos, que tienden a tener mucho menos tiempo en las comunidades de programación que las estrategias para escribir el "`código principal`", es decir, el contenido debajo de `+R/+`. Como resultado, se requiere un esfuerzo más deliberado para desarrollar sus habilidades y gustos en torno a las pruebas.
+Escribir buenas pruebas para una base de código a menudo resulta más desafiante que escribir el código en primer lugar. Esto puede resultar un poco sorprendente si eres nuevo en el desarrollo de paquetes y te preocupa estar haciéndolo mal. ¡No te preocupes, no lo eres! Las pruebas presentan muchos desafíos y maniobras únicos, que tienden a tener mucho menos tiempo en las comunidades de programación que las estrategias para escribir el "`código principal`", es decir, el contenido debajo de `R/`. Como resultado, se requiere un esfuerzo más deliberado para desarrollar sus habilidades y gustos en torno a las pruebas.
 
 Muchos de los paquetes mantenidos por nuestro equipo violan algunos de los consejos que encontrará aquí. Hay (al menos) dos razones para ello:
 
@@ -67,25 +67,25 @@ Todas las pruebas deben esforzarse por ser herméticas: una prueba debe contener
 Del libro Ingeniería de software en Google, https://abseil.io/resources/swe-book/html/ch11.html[Capítulo 11]
 ____
 
-Recuerde este consejo que se encuentra en <<sec-code-r-landscape>>, que cubre el "`código principal`" de su paquete, es decir, todo lo que está debajo de `+R/+`:
+Recuerde este consejo que se encuentra en <<sec-code-r-landscape>>, que cubre el "`código principal`" de su paquete, es decir, todo lo que está debajo de `R/`:
 
 ____
-Los archivos `+.R+` debajo de `+R/+` deberían consistir casi en su totalidad en definiciones de funciones. Cualquier otro código de nivel superior es sospechoso y debe revisarse cuidadosamente para detectar una posible conversión en una función.
+Los archivos `.R` debajo de `R/` deberían consistir casi en su totalidad en definiciones de funciones. Cualquier otro código de nivel superior es sospechoso y debe revisarse cuidadosamente para detectar una posible conversión en una función.
 ____
 
 Tenemos consejos análogos para sus archivos de prueba:
 
 ____
-Los archivos `+test-*.R+` debajo de `+tests/testthat/+` deberían consistir casi en su totalidad en llamadas a `+test_that()+`. Cualquier otro código de nivel superior es sospechoso y se debe considerar cuidadosamente su reubicación en llamadas a `+test_that()+` o en otros archivos que reciben un tratamiento especial dentro de un paquete R o desde testthat.
+Los archivos `test-++*++.R` debajo de `tests/testthat/` deberían consistir casi en su totalidad en llamadas a `test++_++that()`. Cualquier otro código de nivel superior es sospechoso y se debe considerar cuidadosamente su reubicación en llamadas a `test++_++that()` o en otros archivos que reciben un tratamiento especial dentro de un paquete R o desde testthat.
 ____
 
-Eliminar (o al menos minimizar) el código de nivel superior fuera de `+test_that()+` tendrá el efecto beneficioso de hacer que sus pruebas sean más herméticas. Este es básicamente el análogo de prueba del consejo general de programación de que es aconsejable evitar el intercambio de estado no estructurado.
+Eliminar (o al menos minimizar) el código de nivel superior fuera de `test++_++that()` tendrá el efecto beneficioso de hacer que sus pruebas sean más herméticas. Este es básicamente el análogo de prueba del consejo general de programación de que es aconsejable evitar el intercambio de estado no estructurado.
 
-La lógica en el nivel superior de un archivo de prueba tiene un alcance incómodo: los objetos o funciones definidos aquí tienen lo que se podría llamar "`alcance del archivo de prueba`", si las definiciones aparecen antes de la primera llamada a `+test_that()+`. Si el código de nivel superior se intercala entre las llamadas `+test_that()+`, puedes incluso crear un "`alcance parcial del archivo de prueba`".
+La lógica en el nivel superior de un archivo de prueba tiene un alcance incómodo: los objetos o funciones definidos aquí tienen lo que se podría llamar "`alcance del archivo de prueba`", si las definiciones aparecen antes de la primera llamada a `test++_++that()`. Si el código de nivel superior se intercala entre las llamadas `test++_++that()`, puedes incluso crear un "`alcance parcial del archivo de prueba`".
 
 Al escribir pruebas, puede resultar conveniente confiar en estos objetos con ámbito de archivo, especialmente al principio de la vida de un conjunto de pruebas, por ejemplo, cuando cada archivo de prueba cabe en una pantalla. Pero encontramos que confiar implícitamente en objetos en el entorno principal de una prueba tiende a hacer que un conjunto de pruebas sea más difícil de entender y mantener con el tiempo.
 
-Considere un archivo de prueba con código de nivel superior esparcido a su alrededor, fuera de `+test_that()+`:
+Considere un archivo de prueba con código de nivel superior esparcido a su alrededor, fuera de `test++_++that()`:
 
 [source,r,cell-code]
 ----
@@ -106,7 +106,7 @@ test_that("foofy2() does that", {
 })
 ----
 
-Recomendamos reubicar la lógica de ámbito de archivo a un ámbito más limitado o más amplio. Así es como se vería usar un alcance limitado, es decir, alinear todo dentro de las llamadas `+test_that()+`:
+Recomendamos reubicar la lógica de ámbito de archivo a un ámbito más limitado o más amplio. Así es como se vería usar un alcance limitado, es decir, alinear todo dentro de las llamadas `test++_++that()`:
 
 [source,r,cell-code]
 ----
@@ -134,7 +134,7 @@ A continuación, analizaremos técnicas para mover la lógica de ámbito de arch
 [[sec-testing-design-self-contained]]
 === Pruebas autónomas
 
-Cada prueba `+test_that()+` tiene su propio entorno de ejecución, lo que la hace algo autónoma. Por ejemplo, un objeto R que crea dentro de una prueba no existe después de que finaliza la prueba:
+Cada prueba `test++_++that()` tiene su propio entorno de ejecución, lo que la hace algo autónoma. Por ejemplo, un objeto R que crea dentro de una prueba no existe después de que finaliza la prueba:
 
 [source,r,cell-code]
 ----
@@ -151,13 +151,13 @@ exists("thingy")
 #> [1] FALSE
 ----
 
-El objeto `+thingy+` vive y muere completamente dentro de los límites de `+test_that()+`. Sin embargo, testthat no sabe cómo limpiar después de acciones que afectan otros aspectos del panorama de R:
+El objeto `thingy` vive y muere completamente dentro de los límites de `test++_++that()`. Sin embargo, testthat no sabe cómo limpiar después de acciones que afectan otros aspectos del panorama de R:
 
 * El sistema de archivos: crear y eliminar archivos, cambiar el directorio de trabajo, etc.
-* La ruta de búsqueda: `+library()+`, `+attach()+`.
-* Opciones globales, como `+options()+` y `+par()+`, y variables de entorno.
+* La ruta de búsqueda: `library()`, `attach()`.
+* Opciones globales, como `options()` y `par()`, y variables de entorno.
 
-Observe cómo llamadas como `+library()+`, `+options()+` y `+Sys.setenv()+` tienen un efecto persistente _después_ de una prueba, incluso cuando se ejecutan dentro de `+test_that()+`:
+Observe cómo llamadas como `library()`, `options()` y `Sys.setenv()` tienen un efecto persistente _después_ de una prueba, incluso cuando se ejecutan dentro de `test++_++that()`:
 
 [source,r,cell-code]
 ----
@@ -203,16 +203,16 @@ test_that("side-by-side diffs work", {
 })
 ----
 
-Esta prueba requiere que el ancho de visualización se establezca en 20 columnas, que es considerablemente menor que el ancho predeterminado. `+withr::local_options(width = 20)+` establece la opción `+width+` en 20 y, al final de la prueba, restaura la opción a su valor original. withr también es agradable de usar durante el desarrollo interactivo: las acciones diferidas aún se capturan en el entorno global y se pueden ejecutar explícitamente a través de `+withr::deferred_run()+` o implícitamente reiniciando R.
+Esta prueba requiere que el ancho de visualización se establezca en 20 columnas, que es considerablemente menor que el ancho predeterminado. `withr::local++_++options(width = 20)` establece la opción `width` en 20 y, al final de la prueba, restaura la opción a su valor original. withr también es agradable de usar durante el desarrollo interactivo: las acciones diferidas aún se capturan en el entorno global y se pueden ejecutar explícitamente a través de `withr::deferred++_++run()` o implícitamente reiniciando R.
 
-Recomendamos incluir withr en `+Suggests+`, si solo lo vas a usar en tus pruebas, o en `+Imports+`, si también lo usas debajo de `+R/+`. Llame a las funciones withr como lo hicimos anteriormente, por ejemplo, como `+withr::local_whatever()+`, en cualquier caso. Consulte <<sec-dependencies-imports-vs-depends>> y <<sec-dependencies-in-suggests-in-tests>> para obtener más información.
+Recomendamos incluir withr en `Suggests`, si solo lo vas a usar en tus pruebas, o en `Imports`, si también lo usas debajo de `R/`. Llame a las funciones withr como lo hicimos anteriormente, por ejemplo, como `withr::local++_++whatever()`, en cualquier caso. Consulte <<sec-dependencies-imports-vs-depends>> y <<sec-dependencies-in-suggests-in-tests>> para obtener más información.
 
 [TIP]
 ====
-La forma más sencilla de agregar un paquete a DESCRIPCIÓN es con, por ejemplo, `+usethis::use_package("withr", type = "Suggests")+`. Para los paquetes de tidyverse, withr se considera una "`dependencia libre`", es decir, tidyverse usa withr tan ampliamente que no dudamos en usarlo siempre que sea útil.
+La forma más sencilla de agregar un paquete a DESCRIPCIÓN es con, por ejemplo, `usethis::use++_++package("withr", type = "Suggests")`. Para los paquetes de tidyverse, withr se considera una "`dependencia libre`", es decir, tidyverse usa withr tan ampliamente que no dudamos en usarlo siempre que sea útil.
 ====
 
-withr tiene un gran conjunto de funciones `+local_*()+` / `+with_*()+` preimplementadas que deberían manejar la mayoría de sus necesidades de prueba, así que verifique allí antes de escribir las suyas. Si no existe nada que satisfaga sus necesidades, `+withr::defer()+` es la forma general de programar alguna acción al final de una prueba.footnote:[`+on.exit()+` de Base R es otra alternativa, pero requiere más de tu parte. Debe capturar el estado original y escribir el código de restauración usted mismo. También recuerde hacer `+on.exit(..., add = TRUE)+` si hay _alguna_ posibilidad de que se pueda agregar una segunda llamada `+on.exit()+` en la prueba. Probablemente también quieras establecer el valor predeterminado `+after = FALSE+`.]
+withr tiene un gran conjunto de funciones `local++_*++()` / `with++_*++()` preimplementadas que deberían manejar la mayoría de sus necesidades de prueba, así que verifique allí antes de escribir las suyas. Si no existe nada que satisfaga sus necesidades, `withr::defer()` es la forma general de programar alguna acción al final de una prueba.footnote:[`on.exit()` de Base R es otra alternativa, pero requiere más de tu parte. Debe capturar el estado original y escribir el código de restauración usted mismo. También recuerde hacer `on.exit(..., add = TRUE)` si hay _alguna_ posibilidad de que se pueda agregar una segunda llamada `on.exit()` en la prueba. Probablemente también quieras establecer el valor predeterminado `after = FALSE`.]
 
 Así es como solucionaríamos los problemas en el ejemplo anterior usando withr: _Detrás de escena, revertimos los cambios de paisaje, así que podemos intentar esto nuevamente._
 
@@ -244,7 +244,7 @@ Sys.getenv("envvar_whatever")
 #> [1] ""
 ----
 
-testthat se apoya en gran medida en withr para hacer que los entornos de ejecución de pruebas sean lo más reproducibles y autónomos posible. En testthat 3e, `+testthat::local_reproducible_output()+` es implícitamente parte de cada prueba `+test_that()+`.
+testthat se apoya en gran medida en withr para hacer que los entornos de ejecución de pruebas sean lo más reproducibles y autónomos posible. En testthat 3e, `testthat::local++_++reproducible++_++output()` es implícitamente parte de cada prueba `test++_++that()`.
 
 [source,r,cell-code]
 ----
@@ -256,7 +256,7 @@ test_that("something specific happens", {
 })
 ----
 
-`+local_reproducible_output()+` establece temporalmente varias opciones y variables de entorno en valores favorables para las pruebas, por ejemplo, suprime la salida en color, desactiva las comillas elegantes, establece el ancho de la consola y establece `+LC_COLLATE = "C"+`. Por lo general, puedes disfrutar pasivamente de los beneficios de `+local_reproducible_output()+`. Pero es posible que desee llamarlo explícitamente al replicar resultados de pruebas de forma interactiva o si desea anular la configuración predeterminada en una prueba específica.
+`local++_++reproducible++_++output()` establece temporalmente varias opciones y variables de entorno en valores favorables para las pruebas, por ejemplo, suprime la salida en color, desactiva las comillas elegantes, establece el ancho de la consola y establece `LC++_++COLLATE = "C"`. Por lo general, puedes disfrutar pasivamente de los beneficios de `local++_++reproducible++_++output()`. Pero es posible que desee llamarlo explícitamente al replicar resultados de pruebas de forma interactiva o si desea anular la configuración predeterminada en una prueba específica.
 
 === Plan para el fracaso de la prueba
 
@@ -274,7 +274,7 @@ La mayoría de nosotros no trabajamos con una base de código del tamaño de Goo
 
 Cuando realizamos verificaciones de dependencia inversa, que a menudo involucran cientos o miles de paquetes CRAN, tenemos que inspeccionar las fallas de las pruebas para determinar si los cambios en nuestros paquetes son los culpables. Como resultado, nos enfrentamos regularmente con pruebas fallidas en paquetes de otras personas, lo que nos deja con muchas opiniones sobre prácticas que crean problemas innecesarios en las pruebas.
 
-El nirvana de solución de problemas de prueba se ve así: en una nueva sesión de R, puede hacer `+devtools::load_all()+` e inmediatamente ejecutar una prueba individual o recorrerla línea por línea. No es necesario buscar código de configuración que deba ejecutarse manualmente primero, que se encuentre en otra parte del archivo de prueba o quizás en un archivo completamente diferente. El código relacionado con las pruebas que se encuentra en una ubicación no convencional provoca un dolor adicional autoinfligido cuando menos lo necesita.
+El nirvana de solución de problemas de prueba se ve así: en una nueva sesión de R, puede hacer `devtools::load++_++all()` e inmediatamente ejecutar una prueba individual o recorrerla línea por línea. No es necesario buscar código de configuración que deba ejecutarse manualmente primero, que se encuentre en otra parte del archivo de prueba o quizás en un archivo completamente diferente. El código relacionado con las pruebas que se encuentra en una ubicación no convencional provoca un dolor adicional autoinfligido cuando menos lo necesita.
 
 Considere este ejemplo extremo y abstracto de una prueba que es difícil de solucionar debido a dependencias implícitas en el código de rango libre:
 
@@ -289,7 +289,7 @@ test_that("f() works", {
 })
 ----
 
-Esta prueba es mucho más fácil de realizar si las dependencias se invocan de la manera normal, es decir, mediante `+::+`, y los objetos de prueba se crean en línea:
+Esta prueba es mucho más fácil de realizar si las dependencias se invocan de la manera normal, es decir, mediante `::`, y los objetos de prueba se crean en línea:
 
 [source,r,cell-code]
 ----
@@ -303,7 +303,7 @@ test_that("f() works", {
 })
 ----
 
-Esta prueba es autosuficiente. El código dentro de `+{... }+` crea explícitamente los objetos o condiciones necesarios y realiza llamadas explícitas a cualquier función auxiliar. Esta prueba no se basa en objetos o dependencias que estén disponibles ambientalmente.
+Esta prueba es autosuficiente. El código dentro de `++{++... }` crea explícitamente los objetos o condiciones necesarios y realiza llamadas explícitas a cualquier función auxiliar. Esta prueba no se basa en objetos o dependencias que estén disponibles ambientalmente.
 
 Las pruebas autosuficientes y autónomas son beneficiosas para todos: es literalmente más seguro diseñar las pruebas de esta manera y también hace que las pruebas sean mucho más fáciles de solucionar para los humanos más adelante.
 
@@ -334,7 +334,7 @@ test_that("subtraction works", {
 #> Test passed
 ----
 
-En la vida real, `+useful_thing+` suele ser un objeto más complicado cuya creación de instancias resulta de alguna manera engorrosa. Observe cómo aparece `+useful_thing <- 3+` en más de un lugar. La sabiduría convencional dice que deberíamos SECAR este código. Es tentador simplemente mover la definición de `+useful_thing+` fuera de las pruebas:
+En la vida real, `useful++_++thing` suele ser un objeto más complicado cuya creación de instancias resulta de alguna manera engorrosa. Observe cómo aparece `useful++_++thing ++<++- 3` en más de un lugar. La sabiduría convencional dice que deberíamos SECAR este código. Es tentador simplemente mover la definición de `useful++_++thing` fuera de las pruebas:
 
 [source,r,cell-code]
 ----
@@ -365,36 +365,36 @@ Your test code will be executed in two different settings:
 ** Modificación de pruebas para adaptarse al cambio.
 ** Fallo en la prueba de depuración
 * Ejecuciones de pruebas automatizadas, que se logra con funciones como:
-** Archivo único: `+devtools::test_active_file()+`, `+testthat::test_file()+`
-** Paquete completo: `+devtools::test()+`, `+devtools::check()+`
+** Archivo único: `devtools::test++_++active++_++file()`, `testthat::test++_++file()`
+** Paquete completo: `devtools::test()`, `devtools::check()`
 
 La prueba automatizada de todo su paquete es lo que tiene prioridad. En última instancia, este es el objetivo de sus pruebas. Sin embargo, la experiencia interactiva es claramente importante para los humanos que realizan este trabajo. Por lo tanto, es importante encontrar un flujo de trabajo agradable, pero también asegurarse de no manipular nada para una conveniencia interactiva que realmente comprometa la salud del conjunto de pruebas.
 
-Estos dos modos de ejecución de pruebas no deberían entrar en conflicto entre sí. Si percibe tensión entre estos dos modos, esto puede indicar que no está aprovechando al máximo algunas de las características de testthat y la forma en que está diseñado para funcionar con `+devtools::load_all()+`.
+Estos dos modos de ejecución de pruebas no deberían entrar en conflicto entre sí. Si percibe tensión entre estos dos modos, esto puede indicar que no está aprovechando al máximo algunas de las características de testthat y la forma en que está diseñado para funcionar con `devtools::load++_++all()`.
 
-Cuando trabaje en sus pruebas, use `+load_all()+`, tal como lo hace cuando trabaja debajo de `+R/+`. Por defecto, `+load_all()+` hace todas estas cosas:
+Cuando trabaje en sus pruebas, use `load++_++all()`, tal como lo hace cuando trabaja debajo de `R/`. Por defecto, `load++_++all()` hace todas estas cosas:
 
 * Simula la reconstrucción, reinstalación y recarga de su paquete.
 * Hace que todo el espacio de nombres de su paquete esté disponible, incluidas funciones y objetos no exportados y cualquier cosa que haya importado de otro paquete.
-* Adjunta testthat, es decir, `+biblioteca(testthat)+`.
-* Ejecuta archivos auxiliares de prueba, es decir, ejecuta `+test/testthat/helper.R+` (más sobre esto a continuación).
+* Adjunta testthat, es decir, `biblioteca(testthat)`.
+* Ejecuta archivos auxiliares de prueba, es decir, ejecuta `test/testthat/helper.R` (más sobre esto a continuación).
 
-Esto elimina la necesidad de realizar llamadas a `+library()+` debajo de `+tests/testthat/+`, para la gran mayoría de los paquetes de R. Claramente, cualquier instancia de "`biblioteca (prueba que)`" ya no es necesaria. Del mismo modo, cualquier instancia de adjuntar una de sus dependencias a través de `+library(somePkg)+` es innecesaria. En sus pruebas, si necesita llamar funciones desde algúnPkg, hágalo tal como lo hace debajo de `+R/+`. Si ha importado la función a su espacio de nombres, use `+fun()+`. Si no lo ha hecho, utilice `+somePkg::fun()+`. Es justo decir que `+library(somePkg)+` en las pruebas debería ser tan raro como tomar una dependencia a través de `+Depends+`, es decir, casi siempre hay una alternativa mejor.
+Esto elimina la necesidad de realizar llamadas a `library()` debajo de `tests/testthat/`, para la gran mayoría de los paquetes de R. Claramente, cualquier instancia de "`biblioteca (prueba que)`" ya no es necesaria. Del mismo modo, cualquier instancia de adjuntar una de sus dependencias a través de `library(somePkg)` es innecesaria. En sus pruebas, si necesita llamar funciones desde algúnPkg, hágalo tal como lo hace debajo de `R/`. Si ha importado la función a su espacio de nombres, use `fun()`. Si no lo ha hecho, utilice `somePkg::fun()`. Es justo decir que `library(somePkg)` en las pruebas debería ser tan raro como tomar una dependencia a través de `Depends`, es decir, casi siempre hay una alternativa mejor.
 
-Las llamadas innecesarias a `+library(somePkg)+` en archivos de prueba tienen un verdadero inconveniente, porque en realidad cambian el panorama de R. `+library()+` altera la ruta de búsqueda. Esto significa que las circunstancias bajo las cuales está realizando la prueba pueden no reflejar necesariamente las circunstancias bajo las cuales se utilizará su paquete. Esto hace que sea más fácil crear errores de prueba sutiles, que tendrás que solucionar en el futuro.
+Las llamadas innecesarias a `library(somePkg)` en archivos de prueba tienen un verdadero inconveniente, porque en realidad cambian el panorama de R. `library()` altera la ruta de búsqueda. Esto significa que las circunstancias bajo las cuales está realizando la prueba pueden no reflejar necesariamente las circunstancias bajo las cuales se utilizará su paquete. Esto hace que sea más fácil crear errores de prueba sutiles, que tendrás que solucionar en el futuro.
 
-Otra función que casi nunca debería aparecer debajo de `+tests/testhat/+` es `+source()+`. Hay varios archivos especiales con una función oficial en los flujos de trabajo de prueba (ver más abajo), sin mencionar toda la maquinaria del paquete R, que brindan mejores formas de hacer que funciones, objetos y otra lógica estén disponibles en sus pruebas.
+Otra función que casi nunca debería aparecer debajo de `tests/testhat/` es `source()`. Hay varios archivos especiales con una función oficial en los flujos de trabajo de prueba (ver más abajo), sin mencionar toda la maquinaria del paquete R, que brindan mejores formas de hacer que funciones, objetos y otra lógica estén disponibles en sus pruebas.
 
 [[sec-tests-files-overview]]
 == Archivos relevantes para las pruebas
 
 Aquí revisamos qué archivos de paquetes son especialmente relevantes para las pruebas y, de manera más general, las mejores prácticas para interactuar con el sistema de archivos de sus pruebas.
 
-=== Ocultar a simple vista: archivos debajo de `+R/+`
+=== Ocultar a simple vista: archivos debajo de `R/`
 
-¡Las funciones más importantes a las que necesitarás acceder desde tus pruebas son claramente las que están en tu paquete! Aquí estamos hablando de todo lo que se define debajo de `+R/+`. Las funciones y otros objetos definidos por su paquete siempre están disponibles durante las pruebas, independientemente de si se exportan o no. Para el trabajo interactivo, `+devtools::load_all()+` se encarga de esto. Durante las pruebas automatizadas, testthat se encarga de esto internamente.
+¡Las funciones más importantes a las que necesitarás acceder desde tus pruebas son claramente las que están en tu paquete! Aquí estamos hablando de todo lo que se define debajo de `R/`. Las funciones y otros objetos definidos por su paquete siempre están disponibles durante las pruebas, independientemente de si se exportan o no. Para el trabajo interactivo, `devtools::load++_++all()` se encarga de esto. Durante las pruebas automatizadas, testthat se encarga de esto internamente.
 
-Esto implica que los ayudantes de prueba pueden definirse absolutamente debajo de `+R/+` y usarse libremente en sus pruebas. Podría tener sentido reunir dichos ayudantes en un archivo claramente marcado, como uno de estos:
+Esto implica que los ayudantes de prueba pueden definirse absolutamente debajo de `R/` y usarse libremente en sus pruebas. Podría tener sentido reunir dichos ayudantes en un archivo claramente marcado, como uno de estos:
 
 ....
 .                              
@@ -408,7 +408,7 @@ Esto implica que los ayudantes de prueba pueden definirse absolutamente debajo d
     └── ...
 ....
 
-Por ejemplo, el paquete dbplyr usa https://github.com/tidyverse/dbplyr/blob/e8bfa760a465cd7d8fa45cc53d4435ee1fbd2361/R/testthat.R[`+R/testthat.R+`] para definir un par de ayudas para facilitar las comparaciones y las expectativas. que involucra objetos `+tbl+`, que se utiliza para representar tablas de bases de datos.
+Por ejemplo, el paquete dbplyr usa https://github.com/tidyverse/dbplyr/blob/e8bfa760a465cd7d8fa45cc53d4435ee1fbd2361/R/testthat.R[`R/testthat.R`] para definir un par de ayudas para facilitar las comparaciones y las expectativas. que involucra objetos `tbl`, que se utiliza para representar tablas de bases de datos.
 
 [source,r,cell-code]
 ----
@@ -436,9 +436,9 @@ expect_equal_tbls <- function(results, ref = NULL, ...) {
 }
 ----
 
-=== `+tests/testthat.R+`
+=== `tests/testthat.R`
 
-Recuerde la configuración de prueba inicial descrita en <<sec-tests-mechanics-workflow>>: El archivo estándar `+tests/testthat.R+` tiene este aspecto:
+Recuerde la configuración de prueba inicial descrita en <<sec-tests-mechanics-workflow>>: El archivo estándar `tests/testthat.R` tiene este aspecto:
 
 [source,r,cell-code]
 ----
@@ -448,13 +448,13 @@ library(pkg)
 test_check("pkg")
 ----
 
-Repetimos el consejo de no editar `+tests/testthat.R+`. Se ejecuta durante `+R CMD check+` (y, por lo tanto, `+devtools::check()+`), pero no se usa en la mayoría de los otros escenarios de ejecución de pruebas (como `+devtools::test()+` o `+devtools: :test_active_file()+` o durante el desarrollo interactivo). No adjunte sus dependencias aquí con `+library()+`. Llámelos en sus pruebas de la misma manera que lo hace debajo de `+R/+` (<<sec-dependencies-in-imports-in-tests>>, <<sec-dependencies-in-suggests-in-tests>>).
+Repetimos el consejo de no editar `tests/testthat.R`. Se ejecuta durante `R CMD check` (y, por lo tanto, `devtools::check()`), pero no se usa en la mayoría de los otros escenarios de ejecución de pruebas (como `devtools::test()` o `devtools: :test++_++active++_++file()` o durante el desarrollo interactivo). No adjunte sus dependencias aquí con `library()`. Llámelos en sus pruebas de la misma manera que lo hace debajo de `R/` (<<sec-dependencies-in-imports-in-tests>>, <<sec-dependencies-in-suggests-in-tests>>).
 
 === Pruebe esos archivos auxiliares
 
-Otro tipo de archivo que siempre ejecuta `+load_all()+` y al comienzo de las pruebas automatizadas es un archivo auxiliar, definido como cualquier archivo debajo de `+tests/testthat/+` que comienza con `+helper+`. Los archivos auxiliares son un arma poderosa en la batalla para eliminar el código que flota en el nivel superior de los archivos de prueba. Los archivos auxiliares son un excelente ejemplo de lo que queremos decir cuando recomendamos mover dicho código a un alcance más amplio. Los objetos o funciones definidos en un archivo auxiliar están disponibles para todas sus pruebas.
+Otro tipo de archivo que siempre ejecuta `load++_++all()` y al comienzo de las pruebas automatizadas es un archivo auxiliar, definido como cualquier archivo debajo de `tests/testthat/` que comienza con `helper`. Los archivos auxiliares son un arma poderosa en la batalla para eliminar el código que flota en el nivel superior de los archivos de prueba. Los archivos auxiliares son un excelente ejemplo de lo que queremos decir cuando recomendamos mover dicho código a un alcance más amplio. Los objetos o funciones definidos en un archivo auxiliar están disponibles para todas sus pruebas.
 
-Si tiene solo uno de esos archivos, probablemente debería llamarlo `+helper.R+`. Si organiza sus ayudantes en varios archivos, puede incluir un sufijo con información adicional. A continuación se muestran ejemplos de cómo podrían verse dichos archivos:
+Si tiene solo uno de esos archivos, probablemente debería llamarlo `helper.R`. Si organiza sus ayudantes en varios archivos, puede incluir un sufijo con información adicional. A continuación se muestran ejemplos de cómo podrían verse dichos archivos:
 
 ....
 .                              
@@ -469,7 +469,7 @@ Si tiene solo uno de esos archivos, probablemente debería llamarlo `+helper.R+`
     └── testthat.R
 ....
 
-Muchos desarrolladores utilizan archivos auxiliares para definir funciones auxiliares de prueba personalizadas, que describimos en detalle en <<sec-testing-advanced>>. En comparación con la definición de ayudantes debajo de `+R/+`, algunas personas encuentran que `+tests/testthat/helper.R+` deja más claro que estas utilidades son específicamente para probar el paquete. Esta ubicación también parece más natural si sus ayudantes confían en las funciones de prueba. Por ejemplo, https://github.com/r-lib/usethis/blob/main/tests/testthat/helper.R[usethis] y https://github.com/tidyverse/vroom/%20blob/main/tests/testthat/helper.R[vroom] ambos tienen archivos `+tests/testthat/helper.R+` bastante extensos que definen muchos ayudantes de prueba personalizados. Aquí hay dos ayudantes de uso muy simples que verifican que el proyecto actualmente activo (generalmente un proyecto de prueba efímero) tenga un archivo o carpeta específica:
+Muchos desarrolladores utilizan archivos auxiliares para definir funciones auxiliares de prueba personalizadas, que describimos en detalle en <<sec-testing-advanced>>. En comparación con la definición de ayudantes debajo de `R/`, algunas personas encuentran que `tests/testthat/helper.R` deja más claro que estas utilidades son específicamente para probar el paquete. Esta ubicación también parece más natural si sus ayudantes confían en las funciones de prueba. Por ejemplo, https://github.com/r-lib/usethis/blob/main/tests/testthat/helper.R[usethis] y https://github.com/tidyverse/vroom/%20blob/main/tests/testthat/helper.R[vroom] ambos tienen archivos `tests/testthat/helper.R` bastante extensos que definen muchos ayudantes de prueba personalizados. Aquí hay dos ayudantes de uso muy simples que verifican que el proyecto actualmente activo (generalmente un proyecto de prueba efímero) tenga un archivo o carpeta específica:
 
 [source,r,cell-code]
 ----
@@ -477,11 +477,11 @@ expect_proj_file <- function(...) expect_true(file_exists(proj_path(...)))
 expect_proj_dir <- function(...) expect_true(dir_exists(proj_path(...)))
 ----
 
-Un archivo auxiliar también es una buena ubicación para el código de configuración necesario para sus efectos secundarios. Este es un caso en el que `+tests/testthat/helper.R+` es claramente más apropiado que un archivo debajo de `+R/+`. Por ejemplo, en un paquete de envoltura de API, `+helper.R+` es un buen lugar para (intentar) autenticarse con las credenciales de prueba footnote:[googledrive hace esto en https://github.com/tidyverse/googledrive/blob/906680f84b2cec2e4553978c9711be8d42ba33f7/tests/testthat/helper.R#L1-L10.].
+Un archivo auxiliar también es una buena ubicación para el código de configuración necesario para sus efectos secundarios. Este es un caso en el que `tests/testthat/helper.R` es claramente más apropiado que un archivo debajo de `R/`. Por ejemplo, en un paquete de envoltura de API, `helper.R` es un buen lugar para (intentar) autenticarse con las credenciales de prueba footnote:[googledrive hace esto en https://github.com/tidyverse/googledrive/blob/906680f84b2cec2e4553978c9711be8d42ba33f7/tests/testthat/helper.R#L1-L10.].
 
 === Testthat archivos de configuración
 
-Testthat tiene un tipo de archivo especial más: archivos de configuración, definidos como cualquier archivo debajo de `+test/testthat/+` que comienza con `+setup+`. A continuación se muestra un ejemplo de cómo podría verse:
+Testthat tiene un tipo de archivo especial más: archivos de configuración, definidos como cualquier archivo debajo de `test/testthat/` que comienza con `setup`. A continuación se muestra un ejemplo de cómo podría verse:
 
 ....
 .                              
@@ -497,14 +497,14 @@ Testthat tiene un tipo de archivo especial más: archivos de configuración, def
 
 Un archivo de instalación se maneja casi exactamente como un archivo auxiliar, pero con dos grandes diferencias:
 
-* Los archivos de instalación no se ejecutan con `+devtools::load_all()+`.
+* Los archivos de instalación no se ejecutan con `devtools::load++_++all()`.
 * Los archivos de instalación suelen contener el código de desmontaje correspondiente.
 
 Los archivos de configuración son buenos para la configuración de pruebas globales diseñada para la ejecución de pruebas en entornos remotos o no interactivos. Por ejemplo, puede desactivar el comportamiento dirigido a un usuario interactivo, como enviar mensajes o escribir en el portapapeles.
 
-Si alguna parte de su configuración debe revertirse después de la ejecución de la prueba, también debe incluir el código de desmontaje necesario en `+setup.R+`{empty}footnote:[Un enfoque heredado (que todavía funciona, pero ya no se recomienda) es colocar el código de desmontaje en `+tests/testthat/teardown.R+`.]. Recomendamos mantener el código de desmontaje junto con el código de configuración, en `+setup.R+`, porque esto hace que sea más fácil garantizar que permanezcan sincronizados. El entorno artificial `+teardown_env()+` existe como un identificador mágico para usar en `+withr::defer()+` y `+withr::local_*()+` / `+withr::with_*()+`.
+Si alguna parte de su configuración debe revertirse después de la ejecución de la prueba, también debe incluir el código de desmontaje necesario en `setup.R`{empty}footnote:[Un enfoque heredado (que todavía funciona, pero ya no se recomienda) es colocar el código de desmontaje en `tests/testthat/teardown.R`.]. Recomendamos mantener el código de desmontaje junto con el código de configuración, en `setup.R`, porque esto hace que sea más fácil garantizar que permanezcan sincronizados. El entorno artificial `teardown++_++env()` existe como un identificador mágico para usar en `withr::defer()` y `withr::local++_*++()` / `withr::with++_*++()`.
 
-Aquí hay un ejemplo de `+setup.R+` del paquete reprex, donde desactivamos la funcionalidad de vista previa HTML y del portapapeles durante las pruebas:
+Aquí hay un ejemplo de `setup.R` del paquete reprex, donde desactivamos la funcionalidad de vista previa HTML y del portapapeles durante las pruebas:
 
 [source,r,cell-code]
 ----
@@ -513,7 +513,7 @@ op <- options(reprex.clipboard = FALSE, reprex.html_preview = FALSE)
 withr::defer(options(op), teardown_env())
 ----
 
-Dado que aquí solo estamos modificando opciones, podemos ser aún más concisos y usar la función prediseñada `+withr::local_options()+` y pasar `+teardown_env()+` como `+.local_envir+`:
+Dado que aquí solo estamos modificando opciones, podemos ser aún más concisos y usar la función prediseñada `withr::local++_++options()` y pasar `teardown++_++env()` como `.local++_++envir`:
 
 [source,r,cell-code]
 ----
@@ -527,17 +527,17 @@ withr::local_options(
 
 testthat solo ejecuta automáticamente archivos donde ambos son verdaderos:
 
-* El archivo es hijo directo de `+tests/testthat/+`
+* El archivo es hijo directo de `tests/testthat/`
 * El nombre del archivo comienza con una de las cadenas específicas:
-** `+helper+`
-** `+setup+`
-** `+test+`
+** `helper`
+** `setup`
+** `test`
 
-Está bien tener otros archivos o directorios en `+tests/testthat/+`, pero testthat no hará nada automáticamente con ellos (aparte del directorio `+_snaps+`, que contiene instantáneas).
+Está bien tener otros archivos o directorios en `tests/testthat/`, pero testthat no hará nada automáticamente con ellos (aparte del directorio `++_++snaps`, que contiene instantáneas).
 
 === Almacenamiento de datos de prueba
 
-Muchos paquetes contienen archivos que contienen datos de prueba. ¿Dónde deberían almacenarse? La mejor ubicación es en algún lugar debajo de `+tests/testthat/+`, a menudo en un subdirectorio, para mantener todo ordenado. A continuación se muestra un ejemplo, donde `+useful_thing1.rds+` y `+useful_thing2.rds+` contienen objetos utilizados en los archivos de prueba.
+Muchos paquetes contienen archivos que contienen datos de prueba. ¿Dónde deberían almacenarse? La mejor ubicación es en algún lugar debajo de `tests/testthat/`, a menudo en un subdirectorio, para mantener todo ordenado. A continuación se muestra un ejemplo, donde `useful++_++thing1.rds` y `useful++_++thing2.rds` contienen objetos utilizados en los archivos de prueba.
 
 ....
 .
@@ -554,7 +554,7 @@ Muchos paquetes contienen archivos que contienen datos de prueba. ¿Dónde deber
     └── testthat.R
 ....
 
-Luego, en sus pruebas, utilice `+testthat::test_path()+` para crear una ruta de archivo sólida para dichos archivos.
+Luego, en sus pruebas, utilice `testthat::test++_++path()` para crear una ruta de archivo sólida para dichos archivos.
 
 [source,r,cell-code]
 ----
@@ -564,17 +564,17 @@ test_that("foofy() does this", {
 })
 ----
 
-`+testthat::test_path()+` es extremadamente útil, porque produce la ruta correcta en los dos modos importantes de ejecución de pruebas:
+`testthat::test++_++path()` es extremadamente útil, porque produce la ruta correcta en los dos modos importantes de ejecución de pruebas:
 
 * Desarrollo y mantenimiento de pruebas interactivas, donde el directorio de trabajo presumiblemente está configurado en el nivel superior del paquete.
-* Pruebas automatizadas, donde el directorio de trabajo generalmente se establece en algo debajo de `+tests/+`.
+* Pruebas automatizadas, donde el directorio de trabajo generalmente se establece en algo debajo de `tests/`.
 
 [[sec-tests-files-where-write]]
 === Dónde escribir archivos durante la prueba
 
 Si es fácil evitar escribir archivos de sus pruebas, ese es definitivamente el mejor plan. Pero hay muchas ocasiones en las que realmente debes escribir archivos.
 
-*Solo debes escribir archivos dentro del directorio temporal de la sesión.* No escribas en el directorio `+tests/+` de tu paquete. No escriba en el directorio de trabajo actual. No escriba en el directorio de inicio del usuario. Aunque esté escribiendo en el directorio temporal de la sesión, aún debe limpiarlo, es decir, eliminar cualquier archivo que haya escrito.
+*Solo debes escribir archivos dentro del directorio temporal de la sesión.* No escribas en el directorio `tests/` de tu paquete. No escriba en el directorio de trabajo actual. No escriba en el directorio de inicio del usuario. Aunque esté escribiendo en el directorio temporal de la sesión, aún debe limpiarlo, es decir, eliminar cualquier archivo que haya escrito.
 
 La mayoría de los desarrolladores de paquetes no quieren escuchar esto porque suena como una molestia. Pero no es tan complicado una vez que te familiarizas con algunas técnicas y desarrollas algunos hábitos nuevos. Un alto nivel de disciplina en el sistema de archivos también elimina varios errores de prueba y hará que su vida con CRAN funcione mejor.
 
@@ -591,6 +591,6 @@ test_that("can read from file name with utf-8 path", {
 })
 ----
 
-`+withr::local_tempfile()+` crea un archivo dentro del directorio temporal de la sesión cuya vida útil está vinculada al entorno "`local`", en este caso, el entorno de ejecución de una prueba individual. Es un contenedor alrededor de `+base::tempfile()+` y pasa, por ejemplo, el argumento `+pattern+`, por lo que tienes cierto control sobre el nombre del archivo. Opcionalmente, puede proporcionar "`líneas`" para completar el archivo en el momento de la creación o puede escribir en el archivo de todas las formas habituales en los pasos posteriores. Finalmente, sin ningún esfuerzo especial por tu parte, el archivo temporal se eliminará automáticamente al finalizar la prueba.
+`withr::local++_++tempfile()` crea un archivo dentro del directorio temporal de la sesión cuya vida útil está vinculada al entorno "`local`", en este caso, el entorno de ejecución de una prueba individual. Es un contenedor alrededor de `base::tempfile()` y pasa, por ejemplo, el argumento `pattern`, por lo que tienes cierto control sobre el nombre del archivo. Opcionalmente, puede proporcionar "`líneas`" para completar el archivo en el momento de la creación o puede escribir en el archivo de todas las formas habituales en los pasos posteriores. Finalmente, sin ningún esfuerzo especial por tu parte, el archivo temporal se eliminará automáticamente al finalizar la prueba.
 
-A veces necesitas aún más control sobre el nombre del archivo. En ese caso, puede usar `+withr::local_tempdir()+` para crear un directorio temporal que se elimina automáticamente y escribir archivos con nombres intencionales dentro de este directorio.
+A veces necesitas aún más control sobre el nombre del archivo. En ese caso, puede usar `withr::local++_++tempdir()` para crear un directorio temporal que se elimina automáticamente y escribir archivos con nombres intencionales dentro de este directorio.

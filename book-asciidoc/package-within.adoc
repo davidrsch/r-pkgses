@@ -11,13 +11,13 @@ Tenga en cuenta que los encabezados de las secciones incorporan el alfabeto fon�
 
 == Alfa: un código que funciona
 
-Consideremos `+data-cleaning.R+`, un script de análisis de datos ficticio para un grupo que recopila informes de personas que fueron a nadar:
+Consideremos `data-cleaning.R`, un script de análisis de datos ficticio para un grupo que recopila informes de personas que fueron a nadar:
 
 ____
 ¿Dónde nadaste y qué calor hacía afuera?
 ____
 
-Sus datos generalmente vienen como un archivo CSV, como `+swim.csv+`:
+Sus datos generalmente vienen como un archivo CSV, como `swim.csv`:
 
 ....
 name,where,temp
@@ -28,7 +28,7 @@ Dale,beach,85
 Evan,seaside,31
 ....
 
-`+data-cleaning.R+` comienza leyendo `+swim.csv+` en un data frame o marco de datos:
+`data-cleaning.R` comienza leyendo `swim.csv` en un data frame o marco de datos:
 
 [source,r,cell-code]
 ----
@@ -45,7 +45,7 @@ infile <- "swim.csv"
 #> 5 Evan  seaside   31
 ....
 
-Luego clasifican cada observación en inglés americano ("`EE.UU.`") o británico ("`Reino Unido`"), según la palabra elegida para describir el lugar arenoso donde se unen el océano y la tierra. La columna `+where+` se utiliza para construir la nueva columna `+english+`.
+Luego clasifican cada observación en inglés americano ("`EE.UU.`") o británico ("`Reino Unido`"), según la palabra elegida para describir el lugar arenoso donde se unen el océano y la tierra. La columna `where` se utiliza para construir la nueva columna `english`.
 
 [source,r,cell-code]
 ----
@@ -69,18 +69,18 @@ dat
 #> 5 Evan  seaside 31.0      UK
 ----
 
-Finalmente, estos datos limpios (¿más limpios?) se vuelven a escribir en un archivo CSV. Les gusta capturar una marca de tiempo en el nombre del archivo cuando hacen esto.footnote:[`+Sys.time()+` devuelve un objeto de clase `+POSIXct+`, por lo tanto, cuando llamamos a `+format()+`, en realidad estamos usando `+format.POSIXct()+`. Lea la ayuda de https://rdrr.io/r/base/strptime.html[`+?format.POSIXct+`] si no esta familiarizado con este formato de caracteres.].
+Finalmente, estos datos limpios (¿más limpios?) se vuelven a escribir en un archivo CSV. Les gusta capturar una marca de tiempo en el nombre del archivo cuando hacen esto.footnote:[`Sys.time()` devuelve un objeto de clase `POSIXct`, por lo tanto, cuando llamamos a `format()`, en realidad estamos usando `format.POSIXct()`. Lea la ayuda de https://rdrr.io/r/base/strptime.html[`?format.POSIXct`] si no esta familiarizado con este formato de caracteres.].
 
 [source,r,cell-code]
 ----
 now <- Sys.time()
 timestamp <- format(now, "%Y-%B-%d_%H-%M-%S")
 (outfile <- paste0(timestamp, "_", sub("(.*)([.]csv$)", "\\1_clean\\2", infile)))
-#> [1] "2025-January-16_13-42-51_swim_clean.csv"
+#> [1] "2025-August-06_22-02-57_swim_clean.csv"
 write.csv(dat, file = outfile, quote = FALSE, row.names = FALSE)
 ----
 
-Aquí está `+data-cleaning.R+` en su totalidad:
+Aquí está `data-cleaning.R` en su totalidad:
 
 [source,r,cell-code]
 ----
@@ -145,17 +145,17 @@ write_csv(dat, outfile_path(infile))
 
 Los cambios clave a tener en cuenta son:
 
-* Estamos usando funciones de los paquetes tidyverse (específicamente de readr y dplyr) y las ponemos a disposición con `+library(tidyverse)+`.
-* El mapa entre diferentes palabras de `+playa+` y si se consideran inglés de EE. UU. o Reino Unido ahora está aislado en una tabla de búsqueda, lo que nos permite crear la columna `+english+` de una sola vez con `+left_join()+`. Esta tabla de búsqueda hace que el mapeo sea más fácil de comprender y sería mucho más fácil ampliarlo en el futuro con nuevas palabras `+playa+`.
-* `+f_to_c()+`, `+timestamp()+`, y `+outfile_path()+` son nuevas funciones auxiliares que mantienen la lógica para convertir temperaturas y formar el nombre del archivo de salida con marca de tiempo.
+* Estamos usando funciones de los paquetes tidyverse (específicamente de readr y dplyr) y las ponemos a disposición con `library(tidyverse)`.
+* El mapa entre diferentes palabras de `playa` y si se consideran inglés de EE. UU. o Reino Unido ahora está aislado en una tabla de búsqueda, lo que nos permite crear la columna `english` de una sola vez con `left++_++join()`. Esta tabla de búsqueda hace que el mapeo sea más fácil de comprender y sería mucho más fácil ampliarlo en el futuro con nuevas palabras `playa`.
+* `f++_++to++_++c()`, `timestamp()`, y `outfile++_++path()` son nuevas funciones auxiliares que mantienen la lógica para convertir temperaturas y formar el nombre del archivo de salida con marca de tiempo.
 
-Cada vez es más fácil reconocer los bits reutilizables de este script, es decir, los bits que no tienen nada que ver con un archivo de entrada específico, como `+swim.csv+`. Este tipo de refactorización a menudo ocurre naturalmente en el camino hacia la creación de su propio paquete, pero si no es así, es una buena idea hacerlo intencionalmente.
+Cada vez es más fácil reconocer los bits reutilizables de este script, es decir, los bits que no tienen nada que ver con un archivo de entrada específico, como `swim.csv`. Este tipo de refactorización a menudo ocurre naturalmente en el camino hacia la creación de su propio paquete, pero si no es así, es una buena idea hacerlo intencionalmente.
 
 == Charlie: un archivo separado para funciones auxiliares
 
 Un siguiente paso típico es mover los datos y la lógica reutilizables del script de análisis a uno o más archivos separados. Este es un movimiento de apertura convencional, si desea utilizar estos mismos archivos auxiliares en múltiples análisis.
 
-Aquí está el contenido de `+beach-lookup-table.csv+`:
+Aquí está el contenido de `beach-lookup-table.csv`:
 
 ....
 where,english
@@ -165,7 +165,7 @@ seashore,UK
 seaside,UK
 ....
 
-Aquí está el contenido de `+cleaning-helpers.R+`:
+Aquí está el contenido de `cleaning-helpers.R`:
 
 [source,r,cell-code]
 ----
@@ -192,7 +192,7 @@ outfile_path <- function(infile) {
 }
 ----
 
-Hemos agregado algunas funciones auxiliares de alto nivel, `+localize_beach()+` y `+celsify_temp()+`, A los ayudantes preexistentes (`+f_to_c()+`, `+timestamp()+`, y `+outfile_path()+`).
+Hemos agregado algunas funciones auxiliares de alto nivel, `localize++_++beach()` y `celsify++_++temp()`, A los ayudantes preexistentes (`f++_++to++_++c()`, `timestamp()`, y `outfile++_++path()`).
 
 Aquí está la próxima versión del script de limpieza de datos, ahora que hemos eliminado las funciones auxiliares (y la tabla de búsqueda).
 
@@ -219,15 +219,15 @@ Supongamos que el grupo está de acuerdo en que nuestras decisiones de diseño s
 
 Si bien este primer intento de crear un paquete terminará en un fracaso, sigue siendo útil analizar algunos errores comunes para iluminar lo que sucede detrás de escena.
 
-Estos son los pasos más simples que puede seguir en un intento de convertir `+cleaning-helpers.R+` en un paquete en condiciones:
+Estos son los pasos más simples que puede seguir en un intento de convertir `cleaning-helpers.R` en un paquete en condiciones:
 
-* Utilice `+usethis::create_package("ruta/a/delta")+` para crear un scaffolding de un nuevo paquete R, con el nombre "`delta`".
+* Utilice `usethis::create++_++package("ruta/a/delta")` para crear un scaffolding de un nuevo paquete R, con el nombre "`delta`".
 ** ¡Este es un buen primer paso!
-* Copie `+cleaning-helpers.R+` en el nuevo paquete, específicamente, para `+R/cleaning-helpers.R+`.
+* Copie `cleaning-helpers.R` en el nuevo paquete, específicamente, para `R/cleaning-helpers.R`.
 ** Esto es moralmente correcto, pero mecánicamente incorrecto en varios sentidos, como veremos pronto.
-* Copie `+beach-lookup-table.csv+` en el nuevo paquete. ¿Pero donde? Probemos el nivel superior del paquete fuente.
+* Copie `beach-lookup-table.csv` en el nuevo paquete. ¿Pero donde? Probemos el nivel superior del paquete fuente.
 ** Esto no va a terminar bien. Los archivos de datos de envío en un paquete es un tema especial, que se trata en <<sec-data>>.
-* Instale este paquete, quizás usando `+devtools::install()+` o mediante Ctrl + Shift + B (Windows y Linux) o Cmd + Shift + B en RStudio.
+* Instale este paquete, quizás usando `devtools::install()` o mediante Ctrl {plus} Shift {plus} B (Windows y Linux) o Cmd {plus} Shift {plus} B en RStudio.
 ** A pesar de todos los problemas identificados anteriormente, ¡esto realmente funciona! Lo cual es interesante, porque podemos (intentar) usarlo y ver qué sucede.
 
 Aquí está la próxima versión del script de limpieza de datos que espera que se ejecute después de instalar exitosamente este paquete (al que llamamos "`delta`").
@@ -280,7 +280,7 @@ write_csv(dat, outfile_path(infile))
 #> Error in outfile_path(infile) : could not find function "outfile_path"
 ----
 
-¡Ninguna de las funciones auxiliares está realmente disponible para su uso, aunque llame a `+library(delta)+`! A diferencia de `+source()+`, al enviar un archivo de funciones auxiliares, adjuntar un paquete no volca sus funciones en el espacio de trabajo global. De forma predeterminada, las funciones de un paquete son sólo para uso interno. Necesita exportar `+localize_beach()+`, `+celsify_temp()+` y `+outfile_path()+` para que sus usuarios puedan llamarlos. En el flujo de trabajo de devtools, logramos esto poniendo `+@export+` en el comentario especial de roxygen encima de cada función (la administración del espacio de nombres se trata en <<sec-dependencies-NAMESPACE-workflow>>), así:
+¡Ninguna de las funciones auxiliares está realmente disponible para su uso, aunque llame a `library(delta)`! A diferencia de `source()`, al enviar un archivo de funciones auxiliares, adjuntar un paquete no volca sus funciones en el espacio de trabajo global. De forma predeterminada, las funciones de un paquete son sólo para uso interno. Necesita exportar `localize++_++beach()`, `celsify++_++temp()` y `outfile++_++path()` para que sus usuarios puedan llamarlos. En el flujo de trabajo de devtools, logramos esto poniendo `@export` en el comentario especial de roxygen encima de cada función (la administración del espacio de nombres se trata en <<sec-dependencies-NAMESPACE-workflow>>), así:
 
 [source,r,cell-code]
 ----
@@ -290,7 +290,7 @@ celsify_temp <- function(dat) {
 }
 ----
 
-Después de agregar la etiqueta `+@export+` a `+localize_beach()+`, `+celsify_temp()+` y `+outfile_path()+`, ejecuta `+devtools::document()+` para (re)generar el archivo `+NAMESPACE+`, y reinstale el paquete delta. Ahora, cuando vuelves a ejecutar el script de limpieza de datos, ¡funciona!
+Después de agregar la etiqueta `@export` a `localize++_++beach()`, `celsify++_++temp()` y `outfile++_++path()`, ejecuta `devtools::document()` para (re)generar el archivo `NAMESPACE`, y reinstale el paquete delta. Ahora, cuando vuelves a ejecutar el script de limpieza de datos, ¡funciona!
 
 Corrección: _más o menos_ funciona _a veces_. Específicamente, funciona si y sólo si el directorio de trabajo está configurado en el nivel superior del paquete fuente. Desde cualquier otro directorio de trabajo, sigue apareciendo un error:
 
@@ -302,11 +302,11 @@ dat <- dat %>%
 #> Error: 'beach-lookup-table.csv' does not exist in current working directory ('/Users/jenny/tmp').
 ----
 
-No se puede encontrar la tabla de búsqueda consultada dentro de `+localize_beach()+`. Uno no simplemente volca archivos CSV en el código fuente de un paquete R y espera que las cosas "`simplemente funcionen`". Arreglaremos esto en nuestra próxima versión del paquete (<<sec-data>> tiene una cobertura completa sobre cómo incluir datos en un paquete).
+No se puede encontrar la tabla de búsqueda consultada dentro de `localize++_++beach()`. Uno no simplemente volca archivos CSV en el código fuente de un paquete R y espera que las cosas "`simplemente funcionen`". Arreglaremos esto en nuestra próxima versión del paquete (<<sec-data>> tiene una cobertura completa sobre cómo incluir datos en un paquete).
 
-Antes de abandonar este experimento inicial, maravillémonos también del hecho de que haya podido instalar, adjuntar y, hasta cierto punto, utilizar un paquete fundamentalmente roto. ¡`+devtools::load_all()+` también funciona bien! Este es un recordatorio aleccionador de que debería ejecutar `+R CMD check+`, probablemente a través de `+devtools::check()+`, muy a menudo durante el desarrollo. Esto le alertará rápidamente sobre muchos problemas que la simple instalación y uso no revelan.
+Antes de abandonar este experimento inicial, maravillémonos también del hecho de que haya podido instalar, adjuntar y, hasta cierto punto, utilizar un paquete fundamentalmente roto. ¡`devtools::load++_++all()` también funciona bien! Este es un recordatorio aleccionador de que debería ejecutar `R CMD check`, probablemente a través de `devtools::check()`, muy a menudo durante el desarrollo. Esto le alertará rápidamente sobre muchos problemas que la simple instalación y uso no revelan.
 
-De hecho, `+check()+` falla para este paquete y ves esto:
+De hecho, `check()` falla para este paquete y ves esto:
 
 ....
  * installing *source* package ‘delta’ ...
@@ -320,18 +320,18 @@ De hecho, `+check()+` falla para este paquete y ves esto:
  * removing ‘/Users/jenny/rrr/delta.Rcheck/delta’
 ....
 
-¿¡¿Qué quieres decir con "`no hay ningún paquete llamado '`tidyverse`'`"?!? ¡Lo estamos usando, sin problemas, en nuestro script principal! Además, ya hemos instalado y utilizado este paquete, ¿por qué `+R CMD check+` no puede encontrarlo?
+¿¡¿Qué quieres decir con "`no hay ningún paquete llamado '`tidyverse`'`"?!? ¡Lo estamos usando, sin problemas, en nuestro script principal! Además, ya hemos instalado y utilizado este paquete, ¿por qué `R CMD check` no puede encontrarlo?
 
-Este error es lo que sucede cuando el rigor de "`R CMD check`" cumple con la primera línea de `+R/cleaning-helpers.R+`:
+Este error es lo que sucede cuando el rigor de "`R CMD check`" cumple con la primera línea de `R/cleaning-helpers.R`:
 
 [source,r,cell-code]
 ----
 library(tidyverse)
 ----
 
-_No_ es así como declaras que tu paquete depende de otro paquete (el tidyverse, en este caso). Así _tampoco_ es cómo haces que las funciones de otro paquete estén disponibles para usar en el tuyo. Las dependencias deben declararse en `+DESCRIPTION+` (y eso no es todo). Como no declaramos dependencias, `+R CMD check+` nos toma la palabra e intenta instalar nuestro paquete solo con los paquetes base disponibles, lo que significa que esta llamada a `+library(tidyverse)+` falla. Una instalación "`normal`" tiene éxito, simplemente porque tidyverse está disponible en su biblioteca habitual, lo que oculta este error en particular.
+_No_ es así como declaras que tu paquete depende de otro paquete (el tidyverse, en este caso). Así _tampoco_ es cómo haces que las funciones de otro paquete estén disponibles para usar en el tuyo. Las dependencias deben declararse en `DESCRIPTION` (y eso no es todo). Como no declaramos dependencias, `R CMD check` nos toma la palabra e intenta instalar nuestro paquete solo con los paquetes base disponibles, lo que significa que esta llamada a `library(tidyverse)` falla. Una instalación "`normal`" tiene éxito, simplemente porque tidyverse está disponible en su biblioteca habitual, lo que oculta este error en particular.
 
-Para revisar, copiar `+cleaning-helpers.R+` a `+R/cleaning-helpers.R+`, sin modificaciones adicionales, fue problemático en (al menos) las siguientes maneras:
+Para revisar, copiar `cleaning-helpers.R` a `R/cleaning-helpers.R`, sin modificaciones adicionales, fue problemático en (al menos) las siguientes maneras:
 
 * No tiene en cuenta las funciones exportadas y no exportadas.
 * El archivo CSV que contiene nuestra tabla de búsqueda no se puede encontrar en el paquete instalado.
@@ -341,7 +341,7 @@ Para revisar, copiar `+cleaning-helpers.R+` a `+R/cleaning-helpers.R+`, sin modi
 
 Estamos listos para crear la versión mínima de este paquete que realmente funcione.
 
-Aquí está la nueva versión de `+R/cleaning-helpers.R+`{empty}footnote:[Poner todo en un solo archivo, con este nombre, no es lo ideal, pero técnicamente está permitido. Discutimos cómo organizar y nombrar los archivos debajo de `+R/+` en <<sec-code-organising>>.]:
+Aquí está la nueva versión de `R/cleaning-helpers.R`{empty}footnote:[Poner todo en un solo archivo, con este nombre, no es lo ideal, pero técnicamente está permitido. Discutimos cómo organizar y nombrar los archivos debajo de `R/` en <<sec-code-organising>>.]:
 
 [source,r,cell-code]
 ----
@@ -374,11 +374,11 @@ outfile_path <- function(infile) {
 }
 ----
 
-Hemos vuelto a definir `+lookup_table+` con código R, ya que el intento inicial de leerlo desde CSV creó algún tipo de error en la ruta del archivo. Esto está bien para datos pequeños, internos y estáticos, pero recuerde consultar <<sec-data>> para conocer técnicas más generales para almacenar datos en un paquete.
+Hemos vuelto a definir `lookup++_++table` con código R, ya que el intento inicial de leerlo desde CSV creó algún tipo de error en la ruta del archivo. Esto está bien para datos pequeños, internos y estáticos, pero recuerde consultar <<sec-data>> para conocer técnicas más generales para almacenar datos en un paquete.
 
-Todas las llamadas a funciones de tidyverse ahora se han calificado con el nombre del paquete específico que realmente proporciona la función, por ejemplo. `+dplyr::mutate()+`. Hay otras formas de acceder a funciones en otro paquete, explicadas en <<sec-dependencies-in-imports>>, pero esta es la opción predeterminada que recomendamos. También es nuestra fuerte recomendación que nadie dependa del metapaquete tidyverse en un paquetefootnote:[La publicación del blog https://www.tidyverse.org/blog/2018/06/tidyverse-not-for-packages/[El tidyverse es para EDA&#44; no para paquetes] detalla esto.]. En cambio, es mejor identificar los paquetes específicos que realmente utiliza. En este caso, el paquete sólo utiliza dplyr.
+Todas las llamadas a funciones de tidyverse ahora se han calificado con el nombre del paquete específico que realmente proporciona la función, por ejemplo. `dplyr::mutate()`. Hay otras formas de acceder a funciones en otro paquete, explicadas en <<sec-dependencies-in-imports>>, pero esta es la opción predeterminada que recomendamos. También es nuestra fuerte recomendación que nadie dependa del metapaquete tidyverse en un paquetefootnote:[La publicación del blog https://www.tidyverse.org/blog/2018/06/tidyverse-not-for-packages/[El tidyverse es para EDA&#44; no para paquetes] detalla esto.]. En cambio, es mejor identificar los paquetes específicos que realmente utiliza. En este caso, el paquete sólo utiliza dplyr.
 
-La llamada `+library(tidyverse)+` desapareció y en su lugar declaramos el uso de dplyr en el campo `+Imports+` de `+DESCRIPTION+`:
+La llamada `library(tidyverse)` desapareció y en su lugar declaramos el uso de dplyr en el campo `Imports` de `DESCRIPTION`:
 
 ....
 Package: echo
@@ -387,11 +387,11 @@ Imports:
     dplyr
 ....
 
-Esto, junto con el uso de llamadas calificadas para espacios de nombres, como `+dplyr::left_join()+`, constituye una forma válida de utilizar otro paquete dentro del suyo. Los metadatos transmitidos a través de `+DESCRIPTION+` están cubiertos en <<sec-description>>.
+Esto, junto con el uso de llamadas calificadas para espacios de nombres, como `dplyr::left++_++join()`, constituye una forma válida de utilizar otro paquete dentro del suyo. Los metadatos transmitidos a través de `DESCRIPTION` están cubiertos en <<sec-description>>.
 
-Todas las funciones orientadas al usuario tienen una etiqueta `+@export+` en su comentario de roxygen, lo que significa que `+devtools::document()+` las agrega correctamente al archivo `+NAMESPACE+`. Tenga en cuenta que `+f_to_c()+` actualmente solo se usa internamente, dentro de `+celsify_temp()+`, por lo que no se exporta (lo mismo ocurre con `+timestamp()+`).
+Todas las funciones orientadas al usuario tienen una etiqueta `@export` en su comentario de roxygen, lo que significa que `devtools::document()` las agrega correctamente al archivo `NAMESPACE`. Tenga en cuenta que `f++_++to++_++c()` actualmente solo se usa internamente, dentro de `celsify++_++temp()`, por lo que no se exporta (lo mismo ocurre con `timestamp()`).
 
-Esta versión del paquete se puede instalar, usar y técnicamente pasa la verificación `+R CMD check+`, aunque con 1 advertencia y 1 nota.
+Esta versión del paquete se puede instalar, usar y técnicamente pasa la verificación `R CMD check`, aunque con 1 advertencia y 1 nota.
 
 ....
 * checking for missing documentation entries ... WARNING
@@ -408,7 +408,7 @@ Undefined global functions or variables:
   english temp
 ....
 
-La nota "`sin enlace visible`" es una peculiaridad del uso de dplyr y nombres de variables sin comillas dentro de un paquete, donde el uso de nombres de variables simples (`+english+` y `+temp+`) parece sospechoso. Puede agregar cualquiera de estas líneas a cualquier archivo debajo de `+R/+` para eliminar esta nota (como el archivo de documentación a nivel de paquete descrito en <<sec-man-package-doc>>):
+La nota "`sin enlace visible`" es una peculiaridad del uso de dplyr y nombres de variables sin comillas dentro de un paquete, donde el uso de nombres de variables simples (`english` y `temp`) parece sospechoso. Puede agregar cualquiera de estas líneas a cualquier archivo debajo de `R/` para eliminar esta nota (como el archivo de documentación a nivel de paquete descrito en <<sec-man-package-doc>>):
 
 [source,r,cell-code]
 ----
@@ -419,7 +419,7 @@ utils::globalVariables(c("english", "temp"))
 english <- temp <- NULL
 ----
 
-Estamos viendo que puede resultar complicado programar en torno a un paquete como dplyr, que hace un uso intensivo de evaluación no estándar. Detrás de escena, esa es la técnica que permite a los usuarios finales de dplyr usar nombres de variables simples (sin comillas). Paquetes como dplyr priorizan la experiencia del usuario final típico, a costa de hacer que sea más difícil depender de ellos. Las dos opciones que se muestran arriba para suprimir la nota "`sin enlace visible`" representan soluciones de nivel básico. Para un tratamiento más sofisticado de estos temas, ver `+vignette("in-packages", package = "dplyr")+` y `+vignette("programming", package = "dplyr")+`.
+Estamos viendo que puede resultar complicado programar en torno a un paquete como dplyr, que hace un uso intensivo de evaluación no estándar. Detrás de escena, esa es la técnica que permite a los usuarios finales de dplyr usar nombres de variables simples (sin comillas). Paquetes como dplyr priorizan la experiencia del usuario final típico, a costa de hacer que sea más difícil depender de ellos. Las dos opciones que se muestran arriba para suprimir la nota "`sin enlace visible`" representan soluciones de nivel básico. Para un tratamiento más sofisticado de estos temas, ver `vignette("in-packages", package = "dplyr")` y `vignette("programming", package = "dplyr")`.
 
 La advertencia sobre la documentación faltante se debe a que las funciones exportadas no se han documentado adecuadamente. Esta es una preocupación válida y algo que absolutamente debes abordar en un paquete real. Ya has visto cómo crear archivos de ayuda con comentarios de roxygen en <<sec-whole-game-document>> y cubrimos este tema a fondo en <<sec-man>>.
 
@@ -450,13 +450,13 @@ outfile_path <- function(infile) {
 }
 ----
 
-El hecho de que capturemos `+now <- Sys.time()+` fuera de la definición de `+outfile_path()+` probablemente ha estado molestando a algunos lectores por un tiempo. `+now+` refleja el instante en el tiempo en el que ejecutamos `+now <- Sys.time()+`. En el enfoque inicial, se asignó `+now+` cuando `+source()+`d `+cleaning-helpers.R+`. Eso no es ideal, pero probablemente fue un error bastante inofensivo, porque el archivo auxiliar sería `+source()+`d poco antes de que escribiéramos el archivo de salida.
+El hecho de que capturemos `now ++<++- Sys.time()` fuera de la definición de `outfile++_++path()` probablemente ha estado molestando a algunos lectores por un tiempo. `now` refleja el instante en el tiempo en el que ejecutamos `now ++<++- Sys.time()`. En el enfoque inicial, se asignó `now` cuando `source()`d `cleaning-helpers.R`. Eso no es ideal, pero probablemente fue un error bastante inofensivo, porque el archivo auxiliar sería `source()`d poco antes de que escribiéramos el archivo de salida.
 
-Pero este enfoque es bastante devastador en el contexto de un paquete. `+now <- Sys.time()+` es ejecutado *cuando se construye el paquete*footnote:[Aquí nos referimos a cuándo se compila el código del paquete, que podría ser cuando se crea el binario (para macOS o Windows; <<sec-structure-binary>>) o cuando el paquete se instala desde la fuente (<<sec-installed-package>>).]. Y nunca más. Es muy fácil asumir que el código de su paquete se vuelve a evaluar cuando se adjunta o utiliza el paquete. Pero no lo es. Sí, el código _dentro de sus funciones_ se ejecuta absolutamente cada vez que se llaman. Pero sus funciones, y cualquier otro objeto creado en el código de nivel superior debajo de `+R/+`, se definen exactamente una vez, en el momento de la compilación.
+Pero este enfoque es bastante devastador en el contexto de un paquete. `now ++<++- Sys.time()` es ejecutado *cuando se construye el paquete*footnote:[Aquí nos referimos a cuándo se compila el código del paquete, que podría ser cuando se crea el binario (para macOS o Windows; <<sec-structure-binary>>) o cuando el paquete se instala desde la fuente (<<sec-installed-package>>).]. Y nunca más. Es muy fácil asumir que el código de su paquete se vuelve a evaluar cuando se adjunta o utiliza el paquete. Pero no lo es. Sí, el código _dentro de sus funciones_ se ejecuta absolutamente cada vez que se llaman. Pero sus funciones, y cualquier otro objeto creado en el código de nivel superior debajo de `R/`, se definen exactamente una vez, en el momento de la compilación.
 
-Al definir `+now+` con el código de nivel superior debajo de `+R/+`, hemos condenado a nuestro paquete a marcar la hora de todos sus archivos de salida con la misma hora (incorrecta). La solución es asegurarse de que la llamada `+Sys.time()+` se realice en tiempo de ejecución.
+Al definir `now` con el código de nivel superior debajo de `R/`, hemos condenado a nuestro paquete a marcar la hora de todos sus archivos de salida con la misma hora (incorrecta). La solución es asegurarse de que la llamada `Sys.time()` se realice en tiempo de ejecución.
 
-Veamos nuevamente partes de `+R/cleaning-helpers.R+`:
+Veamos nuevamente partes de `R/cleaning-helpers.R`:
 
 [source,r,cell-code]
 ----
@@ -475,9 +475,9 @@ outfile_path <- function(infile) {
 }
 ----
 
-Hay cuatro asignaciones `+<-+` de nivel superior en este extracto. Las definiciones de nivel superior del marco de datos `+lookup_table+` y las funciones `+timestamp()+` y `+outfile_path()+` son correctas. Es apropiado que se definan exactamente una vez, en el momento de la construcción. La definición de nivel superior de `+now+`, que luego se usa dentro de `+outfile_path()+`, es lamentable.
+Hay cuatro asignaciones `++<++-` de nivel superior en este extracto. Las definiciones de nivel superior del marco de datos `lookup++_++table` y las funciones `timestamp()` y `outfile++_++path()` son correctas. Es apropiado que se definan exactamente una vez, en el momento de la construcción. La definición de nivel superior de `now`, que luego se usa dentro de `outfile++_++path()`, es lamentable.
 
-Aquí hay mejores versiones de `+outfile_path()+`:
+Aquí hay mejores versiones de `outfile++_++path()`:
 
 [source,r,cell-code]
 ----
@@ -499,15 +499,15 @@ Esto ilustra que es necesario tener una mentalidad diferente al definir objetos 
 [[sec-package-within-side-effects]]
 == Golf: efectos secundarios
 
-Las marcas de tiempo ahora reflejan la hora actual, pero el grupo plantea una nueva preocupación. Tal como están las cosas, las marcas de tiempo reflejan quién ha realizado la limpieza de datos y en qué parte del mundo se encuentran. El corazón de la estrategia de marca de tiempo es esta cadena de formatofootnote:[`+Sys.time()+` devuelve un objeto de clase `+POSIXct+`, por lo tanto, cuando llamamos a `+format()+`, en realidad estamos usando `+format.POSIXct()+`. Lea la ayuda para https://rdrr.io/r/base/strptime.html[`+?format.POSIXct+`] si no está familiarizado con dichas cadenas de formato.]:
+Las marcas de tiempo ahora reflejan la hora actual, pero el grupo plantea una nueva preocupación. Tal como están las cosas, las marcas de tiempo reflejan quién ha realizado la limpieza de datos y en qué parte del mundo se encuentran. El corazón de la estrategia de marca de tiempo es esta cadena de formatofootnote:[`Sys.time()` devuelve un objeto de clase `POSIXct`, por lo tanto, cuando llamamos a `format()`, en realidad estamos usando `format.POSIXct()`. Lea la ayuda para https://rdrr.io/r/base/strptime.html[`?format.POSIXct`] si no está familiarizado con dichas cadenas de formato.]:
 
 [source,r,cell-code]
 ----
 format(Sys.time(), "%Y-%B-%d_%H-%M-%S")
-#> [1] "2025-January-16_13-42-51"
+#> [1] "2025-August-06_22-02-57"
 ----
 
-Esto formatea `+Sys.time()+` de tal manera que incluya el nombre del mes (no el número) y la hora local.footnote:[Claramente sería mejor formatear de acuerdo con ISO 8601, que codifica el mes por número, pero por favor, hazme el favor para que este ejemplo sea más obvio.].
+Esto formatea `Sys.time()` de tal manera que incluya el nombre del mes (no el número) y la hora local.footnote:[Claramente sería mejor formatear de acuerdo con ISO 8601, que codifica el mes por número, pero por favor, hazme el favor para que este ejemplo sea más obvio.].
 
 <<tbl-timestamps>> muestra lo que sucede cuando varios colegas hipotéticos producen una marca de tiempo de este tipo limpiando algunos datos exactamente en el mismo instante.
 
@@ -517,19 +517,19 @@ Esto formatea `+Sys.time()+` de tal manera que incluya el nombre del mes (no el 
 
 [width="99%",cols="<27%,<35%,<15%,<23%",options="header",]
 |===
-|location |timestamp |LC_TIME |tz
-|Rome, Italy |2020-September-05_00-30-00 |it_IT.UTF-8 |Europe/Rome
-|Warsaw, Poland |2020-September-05_00-30-00 |pl_PL.UTF-8 |Europe/Warsaw
-|Sao Paulo, Brazil |2020-September-04_19-30-00 |pt_BR.UTF-8 |America/Sao_Paulo
-|Greenwich, England |2020-September-04_23-30-00 |en_GB.UTF-8 |Europe/London
-|"`Computer World!`" |2020-September-04_22-30-00 |C |UTC
+|location |timestamp |LC++_++TIME |tz
+|Rome, Italy |2020-September-05++_++00-30-00 |it++_++IT.UTF-8 |Europe/Rome
+|Warsaw, Poland |2020-September-05++_++00-30-00 |pl++_++PL.UTF-8 |Europe/Warsaw
+|Sao Paulo, Brazil |2020-September-04++_++19-30-00 |pt++_++BR.UTF-8 |America/Sao++_++Paulo
+|Greenwich, England |2020-September-04++_++23-30-00 |en++_++GB.UTF-8 |Europe/London
+|"`Computer World!`" |2020-September-04++_++22-30-00 |C |UTC
 |===
 
 ====
 
 Tenga en cuenta que los nombres de los meses varían, al igual que la hora e incluso la fecha. La opción más segura es formar marcas de tiempo con respecto a una ubicación y zona horaria fijas (presumiblemente las opciones no geográficas representadas por "`Computer World!`" arriba).
 
-Investiga un poco y descubre que puede forzar una determinada configuración regional a través de `+Sys.setlocale()+` y forzar una determinada zona horaria configurando la variable de entorno TZ. Específicamente, configuramos el componente LC_TIME de la configuración regional en "`C`" y la zona horaria en "`UTC`" (Tiempo universal coordinado). Aquí está tu primer intento de mejorar. `+timestamp()+`:
+Investiga un poco y descubre que puede forzar una determinada configuración regional a través de `Sys.setlocale()` y forzar una determinada zona horaria configurando la variable de entorno TZ. Específicamente, configuramos el componente LC++_++TIME de la configuración regional en "`C`" y la zona horaria en "`UTC`" (Tiempo universal coordinado). Aquí está tu primer intento de mejorar. `timestamp()`:
 
 [source,r,cell-code]
 ----
@@ -540,7 +540,7 @@ timestamp <- function(time = Sys.time()) {
 }
 ----
 
-Pero su colega brasileña nota que las fechas y horas se imprimen de manera diferente, antes y después de usar `+outfile_path()+` de su paquete:
+Pero su colega brasileña nota que las fechas y horas se imprimen de manera diferente, antes y después de usar `outfile++_++path()` de su paquete:
 
 Antes:
 
@@ -552,7 +552,7 @@ format(Sys.time(), "%Y-%B-%d_%H-%M-%S")
 ....
 #> Warning in (function (category = "LC_ALL", locale = "") : OS
 #> reports request to set locale to "pt_BR.UTF-8" cannot be honored
-#> [1] "2025-January-16_10-42-52"
+#> [1] "2025-August-06_19-02-58"
 ....
 
 Después:
@@ -560,15 +560,15 @@ Después:
 [source,r,cell-code]
 ----
 outfile_path("INFILE.csv")
-#> [1] "2025-January-16_13-42-51_INFILE_clean.csv"
+#> [1] "2025-August-06_22-02-57_INFILE_clean.csv"
 
 format(Sys.time(), "%Y-%B-%d_%H-%M-%S")
-#> [1] "2025-January-16_13-42-52"
+#> [1] "2025-August-06_22-02-58"
 ----
 
-Observe que el nombre de su mes cambió de portugués a inglés y que la hora claramente se informa en una zona horaria diferente. Las llamadas a `+Sys.setlocale()+` y `+Sys.setenv()+` dentro de `+timestamp()+` han realizado cambios persistentes (y muy sorprendentes) en su sesión de R. Este tipo de efecto secundario es muy indeseable y extremadamente difícil de rastrear y depurar, especialmente en entornos más complicados.
+Observe que el nombre de su mes cambió de portugués a inglés y que la hora claramente se informa en una zona horaria diferente. Las llamadas a `Sys.setlocale()` y `Sys.setenv()` dentro de `timestamp()` han realizado cambios persistentes (y muy sorprendentes) en su sesión de R. Este tipo de efecto secundario es muy indeseable y extremadamente difícil de rastrear y depurar, especialmente en entornos más complicados.
 
-Aquí hay mejores versiones de `+timestamp()+`:
+Aquí hay mejores versiones de `timestamp()`:
 
 [source,r,cell-code]
 ----
@@ -594,7 +594,7 @@ timestamp <- function(time = Sys.time()) {
 }
 ----
 
-Estos muestran varios métodos para limitar el alcance de nuestros cambios a LC_TIME y la zona horaria. Una buena regla general es hacer que el alcance de dichos cambios sea lo más limitado y práctico posible. El argumento `+tz+` de `+format()+` es la forma más quirúrgica de tratar con la zona horaria, pero no existe nada similar para LC_TIME. Realizamos la modificación local temporal usando el paquete withr, que proporciona un conjunto de herramientas muy flexible para cambios de estado temporales. Esto (y `+base::on.exit()+`) se analizan con más detalle en <<sec-code-r-landscape>>. Tenga en cuenta que si usa withr como lo hacemos arriba, deberá incluirlo en `+DESCRIPTION+` en `+Imports+` (<<sec-dependencies-in-practice>>, <<sec-dependencies-tidyverse>>).
+Estos muestran varios métodos para limitar el alcance de nuestros cambios a LC++_++TIME y la zona horaria. Una buena regla general es hacer que el alcance de dichos cambios sea lo más limitado y práctico posible. El argumento `tz` de `format()` es la forma más quirúrgica de tratar con la zona horaria, pero no existe nada similar para LC++_++TIME. Realizamos la modificación local temporal usando el paquete withr, que proporciona un conjunto de herramientas muy flexible para cambios de estado temporales. Esto (y `base::on.exit()`) se analizan con más detalle en <<sec-code-r-landscape>>. Tenga en cuenta que si usa withr como lo hacemos arriba, deberá incluirlo en `DESCRIPTION` en `Imports` (<<sec-dependencies-in-practice>>, <<sec-dependencies-tidyverse>>).
 
 Esto subraya un punto de la sección anterior: es necesario adoptar una mentalidad diferente al definir funciones dentro de un paquete. Intente evitar realizar cambios en el estado general del usuario. Si dichos cambios son inevitables, asegúrese de revertirlos (si es posible) o documentarlos explícitamente (si están relacionados con el propósito principal de la función).
 
@@ -618,7 +618,7 @@ Cada vez que revises un análisis similar, puedes intentar mejorar un poco tu ju
 
 Escribir código de paquete es un poco diferente a escribir scripts en R y es natural sentir cierta incomodidad al realizar este ajuste. Estos son los errores más comunes que nos hacen tropezar a muchos de nosotros al principio:
 
-* El código del paquete requiere nuevas formas de trabajar con funciones en otros paquetes. El archivo `+DESCRIPCIÓN+` es la forma principal de declarar dependencias; no hacemos esto a través `+library(somepackage)+`.
+* El código del paquete requiere nuevas formas de trabajar con funciones en otros paquetes. El archivo `DESCRIPCIÓN` es la forma principal de declarar dependencias; no hacemos esto a través `library(somepackage)`.
 * Si desea que los datos o archivos estén disponibles de forma persistente, existen métodos de almacenamiento y recuperación específicos del paquete. No puedes simplemente poner archivos en el paquete y esperar lo mejor.
 * Es necesario ser explícito sobre qué funciones están orientadas al usuario y cuáles son ayudas internas. De forma predeterminada, las funciones no se exportan para que otras personas las utilicen.
 * Se requiere un nuevo nivel de disciplina para garantizar que el código se ejecute en el momento previsto (tiempo de compilación versus tiempo de ejecución) y que no haya efectos secundarios no deseados.

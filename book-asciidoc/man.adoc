@@ -3,16 +3,16 @@
 :description: Aprenda a crear un paquete, la unidad fundamental de contenido compartible, reutilizable, y código R reproducible.
 :lang: es
 
-En este capítulo, aprenderá sobre la documentación de funciones, a la que los usuarios acceden con `+?algunafunción+` o `+help("algunafunción")+`. Base R proporciona una forma estándar de documentar un paquete donde cada función está documentada en un *tema*, un archivo `+.Rd+` ("`documentación R`") en el directorio `+man/+`. Los archivos `+.Rd+` utilizan una sintaxis personalizada, basada libremente en LaTeX, y se pueden representar en HTML, texto sin formato o pdf, según sea necesario, para verlos en diferentes contextos.
+En este capítulo, aprenderá sobre la documentación de funciones, a la que los usuarios acceden con `?algunafunción` o `help("algunafunción")`. Base R proporciona una forma estándar de documentar un paquete donde cada función está documentada en un *tema*, un archivo `.Rd` ("`documentación R`") en el directorio `man/`. Los archivos `.Rd` utilizan una sintaxis personalizada, basada libremente en LaTeX, y se pueden representar en HTML, texto sin formato o pdf, según sea necesario, para verlos en diferentes contextos.
 
-En el ecosistema devtools, no editamos archivos `+.Rd+` directamente con nuestras propias manos. En su lugar, incluimos "`comentarios de roxygen`" con formato especial encima del código fuente para cada funciónfootnote:[El nombre "`roxygen`" es un guiño al generador de documentación Doxygen, que inspiró el desarrollo de un paquete R llamado roxygen. Luego, ese concepto original se reinició como roxygen2, similar a ggplot2.]. Luego usamos el https://roxygen2.r-lib.org/index.html[paquete roxygen2] para generar los archivos `+.Rd+` a partir de estos comentarios especialesfootnote:[El archivo NAMESPACE también se genera a partir de estos comentarios de roxygen. O, mejor dicho, _puede_ serlo y ese es el flujo de trabajo preferido de devtools (<<sec-dependencies-NAMESPACE-workflow>>).] . Hay algunas ventajas al usar roxygen2 :
+En el ecosistema devtools, no editamos archivos `.Rd` directamente con nuestras propias manos. En su lugar, incluimos "`comentarios de roxygen`" con formato especial encima del código fuente para cada funciónfootnote:[El nombre "`roxygen`" es un guiño al generador de documentación Doxygen, que inspiró el desarrollo de un paquete R llamado roxygen. Luego, ese concepto original se reinició como roxygen2, similar a ggplot2.]. Luego usamos el https://roxygen2.r-lib.org/index.html[paquete roxygen2] para generar los archivos `.Rd` a partir de estos comentarios especialesfootnote:[El archivo NAMESPACE también se genera a partir de estos comentarios de roxygen. O, mejor dicho, _puede_ serlo y ese es el flujo de trabajo preferido de devtools (<<sec-dependencies-NAMESPACE-workflow>>).] . Hay algunas ventajas al usar roxygen2 :
 
 * El código y la documentación están ubicados en el mismo lugar. Cuando modifica su código, es fácil recordar que también debe actualizar su documentación.
-* Puede utilizar Markdown, en lugar de tener que aprender un lenguaje de marcado único que sólo se aplica a archivos `+.Rd+`. Además del formato, la función de hipervínculos automáticos hace que sea mucho más fácil crear documentación con muchos enlaces.
-* Hay una gran cantidad de texto estándar `+.Rd+` que está automatizado.
+* Puede utilizar Markdown, en lugar de tener que aprender un lenguaje de marcado único que sólo se aplica a archivos `.Rd`. Además del formato, la función de hipervínculos automáticos hace que sea mucho más fácil crear documentación con muchos enlaces.
+* Hay una gran cantidad de texto estándar `.Rd` que está automatizado.
 * roxygen2 proporciona una serie de herramientas para compartir contenido entre temas de documentación e incluso entre temas y viñetas.
 
-En este capítulo nos centraremos en documentar funciones, pero las mismas ideas se aplican a documentar conjuntos de datos (<<sec-documenting-data>>), clases, genéricos y paquetes. Puede obtener más información sobre esos temas importantes en `+vignette("rd-other", package = "roxygen2")+`.
+En este capítulo nos centraremos en documentar funciones, pero las mismas ideas se aplican a documentar conjuntos de datos (<<sec-documenting-data>>), clases, genéricos y paquetes. Puede obtener más información sobre esos temas importantes en `vignette("rd-other", package = "roxygen2")`.
 
 == conceptos básicos de roxygen2
 
@@ -21,9 +21,9 @@ Para comenzar, analizaremos el flujo de trabajo básico de roxygen2 y analizarem
 [[sec-man-workflow]]
 === El flujo de trabajo de documentación
 
-A diferencia de testthat, no hay un movimiento de apertura obvio para declarar que vas a utilizar roxygen2 para la documentación. Esto se debe a que el uso de roxygen2 es puramente una cuestión de su flujo de trabajo de desarrollo. No tiene ningún efecto, por ejemplo, sobre cómo se comprueba o construye un paquete. Creemos que el enfoque de roxygen es la mejor manera de generar archivos `+.Rd+`, pero oficialmente R solo se preocupa por los archivos en sí, no por cómo surgieron.
+A diferencia de testthat, no hay un movimiento de apertura obvio para declarar que vas a utilizar roxygen2 para la documentación. Esto se debe a que el uso de roxygen2 es puramente una cuestión de su flujo de trabajo de desarrollo. No tiene ningún efecto, por ejemplo, sobre cómo se comprueba o construye un paquete. Creemos que el enfoque de roxygen es la mejor manera de generar archivos `.Rd`, pero oficialmente R solo se preocupa por los archivos en sí, no por cómo surgieron.
 
-Su flujo de trabajo de documentación realmente comienza cuando comienza a agregar comentarios de roxygen encima de sus funciones. Las líneas de comentarios de Roxygen siempre comienzan con `+#'+`, el `+#+` habitual para un comentario, seguido inmediatamente por una comilla simple `+'+`:
+Su flujo de trabajo de documentación realmente comienza cuando comienza a agregar comentarios de roxygen encima de sus funciones. Las líneas de comentarios de Roxygen siempre comienzan con `#'`, el `#` habitual para un comentario, seguido inmediatamente por una comilla simple `'`:
 
 [source,r,cell-code]
 ----
@@ -43,10 +43,10 @@ add <- function(x, y) {
 [TIP]
 .RStudio
 ====
-Por lo general, primero escribe su función y luego su documentación. Una vez que exista la definición de la función, coloque el cursor en algún lugar de ella y haga _Código > Insertar esqueleto de Roxygen_ para obtener una gran ventaja en el comentario de roxygen.
+Por lo general, primero escribe su función y luego su documentación. Una vez que exista la definición de la función, coloque el cursor en algún lugar de ella y haga _Código ++>++ Insertar esqueleto de Roxygen_ para obtener una gran ventaja en el comentario de roxygen.
 ====
 
-Una vez que tenga al menos un comentario de roxygen, ejecute `+devtools::document()+` para generar (o actualizar) los archivos `+.Rd+` de su paquetefootnote:[La ejecución de `+devtools::document()+` también afecta a otro campo en `+DESCRIPTION+`, que se ve así: `+RoxygenNote: 7.2.1+`. Esto registra qué versión de roxygen2 se usó por última vez en un paquete, lo que facilita que devtools (y sus paquetes subyacentes) hagan una suposición inteligente sobre cuándo volver a `+document()+` un paquete y cuándo dejarlo en paz. En un entorno colaborativo, esto también reduce los cambios molestos en los archivos `+.Rd+`, al hacer que la versión relevante de roxygen2 sea muy visible.]. En el fondo, esto finalmente se llama `+roxygen2::roxygenise()+`. El bloque roxygen anterior genera un archivo `+man/add.Rd+` que se ve así:
+Una vez que tenga al menos un comentario de roxygen, ejecute `devtools::document()` para generar (o actualizar) los archivos `.Rd` de su paquetefootnote:[La ejecución de `devtools::document()` también afecta a otro campo en `DESCRIPTION`, que se ve así: `RoxygenNote: 7.2.1`. Esto registra qué versión de roxygen2 se usó por última vez en un paquete, lo que facilita que devtools (y sus paquetes subyacentes) hagan una suposición inteligente sobre cuándo volver a `document()` un paquete y cuándo dejarlo en paz. En un entorno colaborativo, esto también reduce los cambios molestos en los archivos `.Rd`, al hacer que la versión relevante de roxygen2 sea muy visible.]. En el fondo, esto finalmente se llama `roxygen2::roxygenise()`. El bloque roxygen anterior genera un archivo `man/add.Rd` que se ve así:
 
 [source,text]
 ----
@@ -78,21 +78,21 @@ add(10, 1)
 [TIP]
 .RStudio
 ====
-También puede ejecutar `+devtools::document()+` con el método abreviado de teclado Ctrl/Cmd + Shift + D o mediante el menú o panel _Construir_.
+También puede ejecutar `devtools::document()` con el método abreviado de teclado Ctrl/Cmd {plus} Shift {plus} D o mediante el menú o panel _Construir_.
 ====
 
-Si ha usado LaTeX antes, esto debería resultarle vagamente familiar ya que el formato `+.Rd+` se basa libremente en LaTeX. Si está interesado en el formato `+.Rd+`, puede leer más en https://cran.r-project.org/doc/manuals/R-exts.html#Rd-format[Escribir extensiones R]. Pero generalmente nunca necesitarás mirar archivos `+.Rd+`, excepto para enviarlos al repositorio Git de tu paquete.
+Si ha usado LaTeX antes, esto debería resultarle vagamente familiar ya que el formato `.Rd` se basa libremente en LaTeX. Si está interesado en el formato `.Rd`, puede leer más en https://cran.r-project.org/doc/manuals/R-exts.html#Rd-format[Escribir extensiones R]. Pero generalmente nunca necesitarás mirar archivos `.Rd`, excepto para enviarlos al repositorio Git de tu paquete.
 
-¿Cómo se corresponde este archivo `+.Rd+` con la documentación que ves en R? Cuando ejecuta `+?add+`, `+help("add")+` o `+example("add")+`, R busca un archivo `+.Rd+` que contenga `+\alias{add}+`. Luego analiza el archivo, lo convierte a HTML y lo muestra. <<fig-rendered-help-topic-add>> muestra cómo se vería este tema de ayuda en RStudio:
+¿Cómo se corresponde este archivo `.Rd` con la documentación que ves en R? Cuando ejecuta `?add`, `help("add")` o `example("add")`, R busca un archivo `.Rd` que contenga `++\++alias++{++add}`. Luego analiza el archivo, lo convierte a HTML y lo muestra. <<fig-rendered-help-topic-add>> muestra cómo se vería este tema de ayuda en RStudio:
 
 .Tema de ayuda representado en HTML.
 [#fig-rendered-help-topic-add]
 image::images/man-add.png[images/man-add]
 
 [WARNING]
-.`+R CMD check+` warning
+.`R CMD check` warning
 ====
-Debe documentar todas las funciones y conjuntos de datos exportados. De lo contrario, recibirá esta advertencia de `+R CMD check+`:
+Debe documentar todas las funciones y conjuntos de datos exportados. De lo contrario, recibirá esta advertencia de `R CMD check`:
 
 ....
 W  checking for missing documentation entries (614ms)
@@ -103,32 +103,32 @@ W  checking for missing documentation entries (614ms)
   All user-level objects in a package should have documentation entries.
 ....
 
-Por el contrario, probablemente no desees documentar funciones no exportadas. Si desea utilizar comentarios de roxygen para la documentación interna, incluya la etiqueta `+@noRd+` para suprimir la creación del archivo `+.Rd+`.
+Por el contrario, probablemente no desees documentar funciones no exportadas. Si desea utilizar comentarios de roxygen para la documentación interna, incluya la etiqueta `@noRd` para suprimir la creación del archivo `.Rd`.
 
 ====
 
-Este también es un buen momento para explicar algo que quizás hayas notado en tu archivo `+DESCRIPTION+`:
+Este también es un buen momento para explicar algo que quizás hayas notado en tu archivo `DESCRIPTION`:
 
 ....
 Roxygen: list(markdown = TRUE)
 ....
 
-devtools/usethis incluye esto de forma predeterminada al iniciar un archivo `+DESCRIPTION+` y le avisa a roxygen2 de que su paquete usa sintaxis de markdown en sus comentarios de roxygen.footnote:[Esto es parte de la explicación prometida en <<sec-description-custom-fields>>, donde también aclaramos que, con nuestras convenciones actuales, este campo realmente debería llamarse `+Config/Needs/roxygen+`, en su lugar. de `+Roxigen+`. Le recomendamos encarecidamente que utilice Markdown en todos los paquetes nuevos y que migre los paquetes más antiguos pero que se mantienen activamente a la sintaxis Markdown. En este caso, puede llamar a `+usethis::use_roxygen_md()+` para actualizar `+DESCRIPTION+` y recibir un recordatorio sobre el paquete roxygen2md, que puede ayudar con la conversión.]
+devtools/usethis incluye esto de forma predeterminada al iniciar un archivo `DESCRIPTION` y le avisa a roxygen2 de que su paquete usa sintaxis de markdown en sus comentarios de roxygen.footnote:[Esto es parte de la explicación prometida en <<sec-description-custom-fields>>, donde también aclaramos que, con nuestras convenciones actuales, este campo realmente debería llamarse `Config/Needs/roxygen`, en su lugar. de `Roxigen`. Le recomendamos encarecidamente que utilice Markdown en todos los paquetes nuevos y que migre los paquetes más antiguos pero que se mantienen activamente a la sintaxis Markdown. En este caso, puede llamar a `usethis::use++_++roxygen++_++md()` para actualizar `DESCRIPTION` y recibir un recordatorio sobre el paquete roxygen2md, que puede ayudar con la conversión.]
 
-El proceso de búsqueda de ayuda predeterminado busca dentro de los paquetes *instalados*, por lo que para ver la documentación de su paquete durante el desarrollo, devtools anula las funciones de ayuda habituales con versiones modificadas que saben consultar el paquete *fuente* actual. Para activar estas anulaciones, necesitarás ejecutar `+devtools::load_all()+` al menos una vez. Si siente que sus ediciones en los comentarios de roxygen no están teniendo efecto, verifique que haya regenerado los archivos `+.Rd+` con `+devtools::document()+` y que haya cargado su paquete. Cuando llama a `+?Función+`, debería ver "`Representación de documentación de desarrollo …`".
+El proceso de búsqueda de ayuda predeterminado busca dentro de los paquetes *instalados*, por lo que para ver la documentación de su paquete durante el desarrollo, devtools anula las funciones de ayuda habituales con versiones modificadas que saben consultar el paquete *fuente* actual. Para activar estas anulaciones, necesitarás ejecutar `devtools::load++_++all()` al menos una vez. Si siente que sus ediciones en los comentarios de roxygen no están teniendo efecto, verifique que haya regenerado los archivos `.Rd` con `devtools::document()` y que haya cargado su paquete. Cuando llama a `?Función`, debería ver "`Representación de documentación de desarrollo …`".
 
 En resumen, hay cuatro pasos en el flujo de trabajo básico de roxygen2:
 
 [arabic]
-. Agregue comentarios de roxygen2 a sus archivos `+.R+`.
-. Ejecute `+devtools::document()+` o presione Ctrl/Cmd + Shift + D para convertir los comentarios de roxygen2 en archivos `+.Rd+`.
-. Obtenga una vista previa de la documentación con `+?función+`.
+. Agregue comentarios de roxygen2 a sus archivos `.R`.
+. Ejecute `devtools::document()` o presione Ctrl/Cmd {plus} Shift {plus} D para convertir los comentarios de roxygen2 en archivos `.Rd`.
+. Obtenga una vista previa de la documentación con `?función`.
 . Enjuague y repita hasta que la documentación tenga el aspecto deseado.
 
 [[sec-man-roxygen-comments]]
 === comentarios, bloques y etiquetas de roxygen2
 
-Ahora que comprende el flujo de trabajo básico, entraremos en más detalles sobre la sintaxis. Los comentarios de roxygen2 comienzan con `+#'+` y todos los comentarios de roxygen2 que preceden a una función se denominan colectivamente *bloque*. Los bloques se dividen en *etiquetas*, que se parecen a `+@tagName tagValue+`, y el contenido de una etiqueta se extiende desde el final del nombre de la etiqueta hasta el inicio de la siguiente etiqueta footnote:[O el final del bloque, si es la última etiqueta.]. Un bloque puede contener texto antes de la primera etiqueta que se denomina *introducción*. De forma predeterminada, cada bloque genera un único *tema* de documentación, es decir, un único archivo `+.Rd+`footnote:[el nombre del archivo se deriva automáticamente del objeto que estás documentando.] en el directorio `+man/+`.
+Ahora que comprende el flujo de trabajo básico, entraremos en más detalles sobre la sintaxis. Los comentarios de roxygen2 comienzan con `#'` y todos los comentarios de roxygen2 que preceden a una función se denominan colectivamente *bloque*. Los bloques se dividen en *etiquetas*, que se parecen a `@tagName tagValue`, y el contenido de una etiqueta se extiende desde el final del nombre de la etiqueta hasta el inicio de la siguiente etiqueta footnote:[O el final del bloque, si es la última etiqueta.]. Un bloque puede contener texto antes de la primera etiqueta que se denomina *introducción*. De forma predeterminada, cada bloque genera un único *tema* de documentación, es decir, un único archivo `.Rd`footnote:[el nombre del archivo se deriva automáticamente del objeto que estás documentando.] en el directorio `man/`.
 
 A lo largo de este capítulo, le mostraremos comentarios de roxygen2 de paquetes tidyverse reales, centrándonos en https://stringr.tidyverse.org[stringr], ya que las funciones allí tienden a ser bastante sencillas, lo que lleva a documentación comprensible con relativamente poco contexto. Adjuntamos stringr aquí para que sus funciones tengan un hipervínculo en el libro renderizado (más sobre esto en la sección <<sec-man-key-md-features>>).
 
@@ -137,7 +137,7 @@ A lo largo de este capítulo, le mostraremos comentarios de roxygen2 de paquetes
 library(stringr)
 ----
 
-Aquí hay un primer ejemplo simple: la documentación para `+str_unique()+`.
+Aquí hay un primer ejemplo simple: la documentación para `str++_++unique()`.
 
 [source,r,cell-code]
 ----
@@ -164,17 +164,17 @@ str_unique <- function(string, ...) {
 }
 ----
 
-Aquí la introducción incluye el título ("`Eliminar cadenas duplicadas`") y una descripción básica de lo que hace la función. La introducción va seguida de cinco etiquetas: dos `+@param+`s, una `+@returns+`, una `+@seealso+`, una `+@examples+` y una `+@export+`.
+Aquí la introducción incluye el título ("`Eliminar cadenas duplicadas`") y una descripción básica de lo que hace la función. La introducción va seguida de cinco etiquetas: dos `@param`s, una `@returns`, una `@seealso`, una `@examples` y una `@export`.
 
-Tenga en cuenta que el bloque tiene una longitud de línea intencional (generalmente la misma que se usa para el código R circundante) y la segunda línea y las siguientes de la etiqueta larga `+@param+` tienen sangría, lo que hace que todo el bloque sea más fácil de escanear. Puedes obtener más consejos de estilo de roxygen2 en la https://style.tidyverse.org/documentation.html[guía de estilo de tidyverse].
+Tenga en cuenta que el bloque tiene una longitud de línea intencional (generalmente la misma que se usa para el código R circundante) y la segunda línea y las siguientes de la etiqueta larga `@param` tienen sangría, lo que hace que todo el bloque sea más fácil de escanear. Puedes obtener más consejos de estilo de roxygen2 en la https://style.tidyverse.org/documentation.html[guía de estilo de tidyverse].
 
 [TIP]
 .RStudio
 ====
-Puede resultar molesto administrar manualmente la longitud de línea de los comentarios de roxygen, así que asegúrese de probar _Code > Reflow Comment_ (Ctrl/Cmd+Shift+/).
+Puede resultar molesto administrar manualmente la longitud de línea de los comentarios de roxygen, así que asegúrese de probar _Code ++>++ Reflow Comment_ (Ctrl/Cmd{plus}Shift{plus}/).
 ====
 
-Tenga en cuenta también que el orden en que aparecen las etiquetas en sus comentarios de roxygen (o incluso en archivos `+.Rd+` escritos a mano) no dicta el orden en la documentación representada. El orden de presentación se determina mediante herramientas dentro de la base R.
+Tenga en cuenta también que el orden en que aparecen las etiquetas en sus comentarios de roxygen (o incluso en archivos `.Rd` escritos a mano) no dicta el orden en la documentación representada. El orden de presentación se determina mediante herramientas dentro de la base R.
 
 Las siguientes secciones profundizan en las etiquetas más importantes. Comenzamos con la introducción, que proporciona el título, la descripción y los detalles. Luego cubrimos las entradas (los argumentos de la función), las salidas (el valor de retorno) y los ejemplos. A continuación, analizamos enlaces y referencias cruzadas y terminamos con técnicas para compartir documentación entre temas.
 
@@ -190,7 +190,7 @@ En su mayor parte, el conocimiento general de Markdown y R Markdown es suficient
 #' I like `thisfunction()`, because it's great.
 ----
 
-*Corchetes para una función con enlace automático*: incluya texto como `+alguna función()+` y `+algún paquete::alguna función()+` entre corchetes para obtener un enlace automático a la documentación de esa función. Asegúrese de incluir los paréntesis finales, porque tiene un buen estilo y hace que la función se formatee como código, es decir, no es necesario agregar comillas invertidas. Ejemplo:
+*Corchetes para una función con enlace automático*: incluya texto como `alguna función()` y `algún paquete::alguna función()` entre corchetes para obtener un enlace automático a la documentación de esa función. Asegúrese de incluir los paréntesis finales, porque tiene un buen estilo y hace que la función se formatee como código, es decir, no es necesario agregar comillas invertidas. Ejemplo:
 
 [source,r,cell-code]
 ----
@@ -198,11 +198,11 @@ En su mayor parte, el conocimiento general de Markdown y R Markdown es suficient
 #' o incluso nuestra propia [función anterior()].
 ----
 
-*Viñetas*: si hace referencia a una viñeta con una llamada en línea a `+vignette("some-topic")+`, tiene un doble propósito. Primero, este es literalmente el código R que ejecutaría para ver una viñeta localmente. ¡Pero espera hay mas! En muchos contextos renderizados, esto se convierte automáticamente en un hipervínculo a esa misma viñeta en un sitio web pkgdown. Aquí lo usamos para vincular algunas viñetas muy relevantesfootnote:[Estas llamadas incluyen una especificación explícita de `+package = "algúnpaquete"+`, ya que no se puede inferir del contexto, es decir, el contexto es un libro en cuarto, no la documentación del paquete.]:
+*Viñetas*: si hace referencia a una viñeta con una llamada en línea a `vignette("some-topic")`, tiene un doble propósito. Primero, este es literalmente el código R que ejecutaría para ver una viñeta localmente. ¡Pero espera hay mas! En muchos contextos renderizados, esto se convierte automáticamente en un hipervínculo a esa misma viñeta en un sitio web pkgdown. Aquí lo usamos para vincular algunas viñetas muy relevantesfootnote:[Estas llamadas incluyen una especificación explícita de `package = "algúnpaquete"`, ya que no se puede inferir del contexto, es decir, el contexto es un libro en cuarto, no la documentación del paquete.]:
 
-* `+vignette("rd-formatting", package = "roxygen2")+`
-* `+vignette("reuse", package = "roxygen2")+`
-* `+vignette("linking", package = "pkgdown")+`
+* `vignette("rd-formatting", package = "roxygen2")`
+* `vignette("reuse", package = "roxygen2")`
+* `vignette("linking", package = "pkgdown")`
 
 *Listas*: Las listas con viñetas rompen el temido "`muro de texto`" y pueden hacer que su documentación sea más fácil de escanear. Puedes usarlos en la descripción de la función o de un argumento y también para el valor de retorno. No es necesario incluir una línea en blanco antes de la lista, pero eso también está permitido.
 
@@ -217,7 +217,7 @@ En su mayor parte, el conocimiento general de Markdown y R Markdown es suficient
 
 La introducción proporciona un título, una descripción y, opcionalmente, detalles de la función. Si bien es posible utilizar etiquetas explícitas en la introducción, normalmente utilizamos etiquetas implícitas cuando es posible:
 
-* El *título* está tomado de la primera frase. Debe escribirse en mayúsculas y minúsculas, no terminar en punto y estar seguido de una línea en blanco. El título se muestra en varios índices de funciones (por ejemplo, `+help(package = "algúnpaquete")+`) y es lo que el usuario normalmente verá cuando explore múltiples funciones.
+* El *título* está tomado de la primera frase. Debe escribirse en mayúsculas y minúsculas, no terminar en punto y estar seguido de una línea en blanco. El título se muestra en varios índices de funciones (por ejemplo, `help(package = "algúnpaquete")`) y es lo que el usuario normalmente verá cuando explore múltiples funciones.
 * La *descripción* está tomada del siguiente párrafo. Se muestra en la parte superior de la documentación y debe describir brevemente las características más importantes de la función.
 * *Detalles* adicionales son cualquier cosa después de la descripción. Los detalles son opcionales, pero pueden tener cualquier longitud, por lo que son útiles si desea profundizar en algún aspecto importante de la función. Tenga en cuenta que, aunque los detalles aparecen justo después de la descripción en la introducción, aparecen mucho más tarde en la documentación renderizada.
 
@@ -229,26 +229,26 @@ Al escribir el título, es útil pensar en cómo aparecerá en el índice de ref
 
 Cuando escribimos este capítulo, encontramos que los títulos de las funciones de stringr eran algo decepcionantes. Pero proporcionan un útil estudio de caso negativo:
 
-* `+str_detect()+`: Detecta la presencia o ausencia de un patrón en una cadena
-* `+str_extract()+`: Extrae patrones coincidentes de una cadena
-* `+str_locate()+`: Localiza la posición de los patrones en una cadena
-* `+str_match()+`: Extrae grupos coincidentes de una cadena
+* `str++_++detect()`: Detecta la presencia o ausencia de un patrón en una cadena
+* `str++_++extract()`: Extrae patrones coincidentes de una cadena
+* `str++_++locate()`: Localiza la posición de los patrones en una cadena
+* `str++_++match()`: Extrae grupos coincidentes de una cadena
 
 Hay mucha repetición ("`pattern`", "`from a string`") y el verbo usado para el nombre de la función se repite en el título, por lo que si aún no comprende la función, es poco probable que el título le ayude mucho. ¡Esperamos haber mejorado esos títulos cuando leas esto!
 
 En cambio, estos títulos de dplyr son mucho mejoresfootnote:[Como todos los ejemplos, es posible que estos hayan cambiado un poco desde que escribimos este libro, porque nos esforzamos constantemente por hacerlo mejor. Podrías comparar lo que hay en el libro con lo que usamos ahora y considerar si crees que es una mejora.]:
 
-* `+mutate()+`: Crear, modificar y eliminar columnas
-* `+summarise()+`: Resume cada grupo en una fila
-* `+filtro()+`: Mantiene las filas que coinciden con una condición
-* `+select()+`: Mantener o eliminar columnas usando sus nombres y tipos
-* `+arrange()+`: Ordena filas usando valores de columna
+* `mutate()`: Crear, modificar y eliminar columnas
+* `summarise()`: Resume cada grupo en una fila
+* `filtro()`: Mantiene las filas que coinciden con una condición
+* `select()`: Mantener o eliminar columnas usando sus nombres y tipos
+* `arrange()`: Ordena filas usando valores de columna
 
 Aquí intentamos describir de manera sucinta lo que hace la función, asegurándonos de describir si afecta a filas, columnas o grupos. Hacemos nuestro mejor esfuerzo para usar sinónimos, en lugar de repetir el nombre de la función, para darle a la gente otra oportunidad de comprender la intención de la función.
 
 === Descripción
 
-El propósito de la descripción es resumir el objetivo de la función, generalmente en un solo párrafo. Esto puede ser un desafío para funciones simples, porque puede parecer que simplemente estás repitiendo el título de la función. Si puedes, intenta encontrar una redacción ligeramente diferente. Está bien si esto te parece un poco repetitivo; A menudo resulta útil para los usuarios ver lo mismo expresado de dos maneras diferentes. Es un poco de trabajo extra, pero el esfuerzo extra a menudo vale la pena. Aquí está la descripción de `+str_detect()+`:
+El propósito de la descripción es resumir el objetivo de la función, generalmente en un solo párrafo. Esto puede ser un desafío para funciones simples, porque puede parecer que simplemente estás repitiendo el título de la función. Si puedes, intenta encontrar una redacción ligeramente diferente. Está bien si esto te parece un poco repetitivo; A menudo resulta útil para los usuarios ver lo mismo expresado de dos maneras diferentes. Es un poco de trabajo extra, pero el esfuerzo extra a menudo vale la pena. Aquí está la descripción de `str++_++detect()`:
 
 [source,r,cell-code]
 ----
@@ -259,7 +259,7 @@ El propósito de la descripción es resumir el objetivo de la función, generalm
 #' `grepl(pattern, string)`.
 ----
 
-Si desea más de un párrafo, debe usar una etiqueta `+@description+` explícita para evitar que el segundo párrafo (y los siguientes) se conviertan en `+@details+`. Aquí hay una `+@description+` de dos párrafos de `+str_view()+`:
+Si desea más de un párrafo, debe usar una etiqueta `@description` explícita para evitar que el segundo párrafo (y los siguientes) se conviertan en `@details`. Aquí hay una `@description` de dos párrafos de `str++_++view()`:
 
 [source,r,cell-code]
 ----
@@ -274,7 +274,7 @@ Si desea más de un párrafo, debe usar una etiqueta `+@description+` explícita
 #' possible, matches and unusual whitespace are coloured blue and `NA`s red.
 ----
 
-Aquí hay otro ejemplo de `+str_like()+`, que tiene una lista con viñetas en `+@description+`:
+Aquí hay otro ejemplo de `str++_++like()`, que tiene una lista con viñetas en `@description`:
 
 [source,r,cell-code]
 ----
@@ -290,13 +290,13 @@ Aquí hay otro ejemplo de `+str_like()+`, que tiene una lista con viñetas en `+
 #' * The match is case insensitive by default.
 ----
 
-Básicamente, si vas a incluir una línea vacía en tu descripción, necesitarás usar una etiqueta `+@description+` explícita.
+Básicamente, si vas a incluir una línea vacía en tu descripción, necesitarás usar una etiqueta `@description` explícita.
 
 Finalmente, a menudo es particularmente difícil escribir una buena descripción si acabas de escribir la función, porque el propósito a menudo parece muy obvio. Haz tu mejor esfuerzo y vuelve más tarde, cuando hayas olvidado exactamente qué hace la función. Una vez que haya vuelto a derivar lo que hace la función, podrá escribir una mejor descripción.
 
 === Detalles
 
-Los `+@details+` son solo cualquier detalle o explicación adicional que crea que su función necesita. La mayoría de las funciones no necesitan detalles, pero algunas funciones necesitan muchos. Si tiene mucha información que transmitir, es una buena idea utilizar títulos de markdown informativos para dividir los detalles en secciones manejablesfootnote:[En el código anterior, es posible que veas el uso de `+@section title:+` que se usaba para crear secciones antes de que roxygen2 tuviera soporte completo para markdown. Si los ha usado en el pasado, ahora puede convertirlos en títulos de markdown.]. Aquí hay un ejemplo de `+dplyr::mutate()+`. Hemos omitido algunos de los detalles para que este ejemplo sea breve, pero aún así deberías tener una idea de cómo usamos los títulos para dividir el contenido en partes que se pueden leer:
+Los `@details` son solo cualquier detalle o explicación adicional que crea que su función necesita. La mayoría de las funciones no necesitan detalles, pero algunas funciones necesitan muchos. Si tiene mucha información que transmitir, es una buena idea utilizar títulos de markdown informativos para dividir los detalles en secciones manejablesfootnote:[En el código anterior, es posible que veas el uso de `@section title:` que se usaba para crear secciones antes de que roxygen2 tuviera soporte completo para markdown. Si los ha usado en el pasado, ahora puede convertirlos en títulos de markdown.]. Aquí hay un ejemplo de `dplyr::mutate()`. Hemos omitido algunos de los detalles para que este ejemplo sea breve, pero aún así deberías tener una idea de cómo usamos los títulos para dividir el contenido en partes que se pueden leer:
 
 [source,r,cell-code]
 ----
@@ -326,9 +326,9 @@ Este es un buen momento para recordarnos que, aunque un título como "`Funciones
 
 == Argumentos
 
-Para la mayoría de las funciones, la mayor parte de su trabajo se destinará a documentar cómo cada argumento afecta el resultado de la función. Para este propósito, usará `+@param+` (abreviatura de parámetro, sinónimo de argumento) seguido del nombre del argumento y una descripción de su acción.
+Para la mayoría de las funciones, la mayor parte de su trabajo se destinará a documentar cómo cada argumento afecta el resultado de la función. Para este propósito, usará `@param` (abreviatura de parámetro, sinónimo de argumento) seguido del nombre del argumento y una descripción de su acción.
 
-La máxima prioridad es proporcionar un resumen sucinto de las entradas permitidas y lo que hace el parámetro. Por ejemplo, así es como `+str_detect()+` documenta el `+string+`:
+La máxima prioridad es proporcionar un resumen sucinto de las entradas permitidas y lo que hace el parámetro. Por ejemplo, así es como `str++_++detect()` documenta el `string`:
 
 [source,r,cell-code]
 ----
@@ -336,7 +336,7 @@ La máxima prioridad es proporcionar un resumen sucinto de las entradas permitid
 #'  coercible to one.
 ----
 
-Y aquí están tres de los argumentos de `+str_flatten()+`:
+Y aquí están tres de los argumentos de `str++_++flatten()`:
 
 [source,r,cell-code]
 ----
@@ -346,9 +346,9 @@ Y aquí están tres de los argumentos de `+str_flatten()+`:
 #'   will be `NA` if any element of `string` is `NA`.
 ----
 
-Tenga en cuenta que `+@param collapse+` y `+@param na.rm+` describen sus argumentos predeterminados. Esta suele ser una buena práctica porque el uso de la función (que muestra los valores predeterminados) y la descripción del argumento suelen estar bastante separados en la documentación representada. Pero hay desventajas. La principal es que esta duplicación significa que necesitarás realizar actualizaciones en dos lugares si cambias el valor predeterminado; Creemos que esta pequeña cantidad de trabajo extra vale la pena para facilitar la vida del usuario.
+Tenga en cuenta que `@param collapse` y `@param na.rm` describen sus argumentos predeterminados. Esta suele ser una buena práctica porque el uso de la función (que muestra los valores predeterminados) y la descripción del argumento suelen estar bastante separados en la documentación representada. Pero hay desventajas. La principal es que esta duplicación significa que necesitarás realizar actualizaciones en dos lugares si cambias el valor predeterminado; Creemos que esta pequeña cantidad de trabajo extra vale la pena para facilitar la vida del usuario.
 
-Si un argumento tiene un conjunto fijo de posibles parámetros, debes enumerarlos. Si son simples, puedes enumerarlos en una oración, como en `+str_trim()+`:
+Si un argumento tiene un conjunto fijo de posibles parámetros, debes enumerarlos. Si son simples, puedes enumerarlos en una oración, como en `str++_++trim()`:
 
 [source,r,cell-code]
 ----
@@ -356,7 +356,7 @@ Si un argumento tiene un conjunto fijo de posibles parámetros, debes enumerarlo
 #'   `"both"` (the default).
 ----
 
-Si necesitan más explicaciones, puedes usar una lista con viñetas, como en `+str_wrap()+`:
+Si necesitan más explicaciones, puedes usar una lista con viñetas, como en `str++_++wrap()`:
 
 [source,r,cell-code]
 ----
@@ -369,14 +369,14 @@ La documentación para la mayoría de los argumentos será relativamente breve, 
 
 === Múltiples argumentos
 
-Si el comportamiento de varios argumentos está estrechamente relacionado, puede documentarlos juntos separando los nombres con comas (sin espacios). Por ejemplo, `+x+` e `+y+` son intercambiables en `+str_equal()+`, por lo que se documentan juntos:
+Si el comportamiento de varios argumentos está estrechamente relacionado, puede documentarlos juntos separando los nombres con comas (sin espacios). Por ejemplo, `x` e `y` son intercambiables en `str++_++equal()`, por lo que se documentan juntos:
 
 [source,r,cell-code]
 ----
 #' @param x,y Un par de vectores de caracteres.
 ----
 
-En `+str_sub()+`, `+start+` y `+end+` definen el rango de caracteres a reemplazar. Pero en lugar de proporcionar ambos, puede usar simplemente `+start+` si pasa una matriz de dos columnas. Por eso tiene sentido documentarlos juntos:
+En `str++_++sub()`, `start` y `end` definen el rango de caracteres a reemplazar. Pero en lugar de proporcionar ambos, puede usar simplemente `start` si pasa una matriz de dos columnas. Por eso tiene sentido documentarlos juntos:
 
 [source,r,cell-code]
 ----
@@ -388,7 +388,7 @@ En `+str_sub()+`, `+start+` y `+end+` definen el rango de caracteres a reemplaza
 #'   and `end`, or `start` and `length`.
 ----
 
-En `+str_wrap()+`, `+indent+` y `+exdent+` definen la sangría para la primera línea y todas las líneas posteriores, respectivamente:
+En `str++_++wrap()`, `indent` y `exdent` definen la sangría para la primera línea y todas las líneas posteriores, respectivamente:
 
 [source,r,cell-code]
 ----
@@ -398,9 +398,9 @@ En `+str_wrap()+`, `+indent+` y `+exdent+` definen la sangría para la primera l
 
 === Heredar argumentos
 
-Si su paquete contiene muchas funciones estrechamente relacionadas, es común que tengan argumentos que compartan el mismo nombre y significado. Sería molesto y propenso a errores copiar y pegar la misma documentación `+@param+` en cada función, por lo que roxygen2 proporciona `+@inheritParams+` que le permite heredar documentación de argumentos de otra función, posiblemente incluso en otro paquete.
+Si su paquete contiene muchas funciones estrechamente relacionadas, es común que tengan argumentos que compartan el mismo nombre y significado. Sería molesto y propenso a errores copiar y pegar la misma documentación `@param` en cada función, por lo que roxygen2 proporciona `@inheritParams` que le permite heredar documentación de argumentos de otra función, posiblemente incluso en otro paquete.
 
-stringr usa `+@inheritParams+` ampliamente porque la mayoría de las funciones tienen argumentos `+string+` y `+pattern+`. La documentación detallada y definitiva pertenece a `+str_detect()+`:
+stringr usa `@inheritParams` ampliamente porque la mayoría de las funciones tienen argumentos `string` y `pattern`. La documentación detallada y definitiva pertenece a `str++_++detect()`:
 
 [source,r,cell-code]
 ----
@@ -422,9 +422,9 @@ stringr usa `+@inheritParams+` ampliamente porque la mayoría de las funciones t
 #'   `boundary("character")`.
 ----
 
-Luego, las otras funciones stringr usan `+@inheritParams str_detect+` para obtener esta documentación detallada para `+string+` y `+pattern+` sin tener que duplicar ese texto.
+Luego, las otras funciones stringr usan `@inheritParams str++_++detect` para obtener esta documentación detallada para `string` y `pattern` sin tener que duplicar ese texto.
 
-`+@inheritParams+` solo hereda documentos para los argumentos que la función realmente usa y que aún no están documentados, por lo que puedes documentar algunos argumentos localmente y heredar otros. `+str_match()+` usa esto para heredar la documentación estándar de `+str_detect()+` para el argumento `+string+`, mientras proporciona su propia documentación especializada para `+pattern+`:
+`@inheritParams` solo hereda documentos para los argumentos que la función realmente usa y que aún no están documentados, por lo que puedes documentar algunos argumentos localmente y heredar otros. `str++_++match()` usa esto para heredar la documentación estándar de `str++_++detect()` para el argumento `string`, mientras proporciona su propia documentación especializada para `pattern`:
 
 [source,r,cell-code]
 ----
@@ -436,21 +436,21 @@ Luego, las otras funciones stringr usan `+@inheritParams str_detect+` para obten
 
 Ahora que hemos analizado los valores predeterminados y la herencia, podemos plantear un dilema más. A veces existe tensión entre brindar información detallada sobre un argumento (valores aceptables, valor predeterminado, cómo se usa el argumento, etc.) y hacer que la documentación se pueda reutilizar en otras funciones (que pueden diferir en algunos detalles). Esto puede motivarlo a evaluar si realmente vale la pena que funciones relacionadas manejen la misma entrada de diferentes maneras o si la estandarización sería beneficiosa.
 
-Puede heredar documentación de una función en otro paquete usando la notación estándar `+::+`, es decir, `+@inheritParams anotherpackage::function+`. Esto introduce una pequeña molestia: ahora la documentación de su paquete ya no es independiente y la versión de "`otro paquete`" puede afectar los documentos generados. Tenga cuidado con las diferencias falsas introducidas por los contribuyentes que ejecutan `+devtools::document()+` con una versión instalada diferente del paquete heredado.
+Puede heredar documentación de una función en otro paquete usando la notación estándar `::`, es decir, `@inheritParams anotherpackage::function`. Esto introduce una pequeña molestia: ahora la documentación de su paquete ya no es independiente y la versión de "`otro paquete`" puede afectar los documentos generados. Tenga cuidado con las diferencias falsas introducidas por los contribuyentes que ejecutan `devtools::document()` con una versión instalada diferente del paquete heredado.
 
 [[sec-man-returns]]
 == Valor de retorno
 
-La salida de una función es tan importante como sus entradas. Documentar el resultado es el trabajo de la etiqueta `+@returns+`{empty}footnote:[Por razones históricas, también puedes usar `+@return+`, pero ahora preferimos `+@returns+` porque se lee de forma más natural.]. Aquí la prioridad es describir la "`forma`" general del resultado, es decir, qué tipo de objeto es y sus dimensiones (si eso tiene sentido). Por ejemplo, si su función devuelve un vector, puede describir su tipo y longitud, o si su función devuelve un marco de datos, puede describir los nombres y tipos de las columnas y el número esperado de filas.
+La salida de una función es tan importante como sus entradas. Documentar el resultado es el trabajo de la etiqueta `@returns`{empty}footnote:[Por razones históricas, también puedes usar `@return`, pero ahora preferimos `@returns` porque se lee de forma más natural.]. Aquí la prioridad es describir la "`forma`" general del resultado, es decir, qué tipo de objeto es y sus dimensiones (si eso tiene sentido). Por ejemplo, si su función devuelve un vector, puede describir su tipo y longitud, o si su función devuelve un marco de datos, puede describir los nombres y tipos de las columnas y el número esperado de filas.
 
-La documentación `+@returns+` para funciones en stringr es sencilla porque casi todas las funciones devuelven algún tipo de vector con la misma longitud que una de las entradas. Por ejemplo, así es como `+str_like()+` describe su salida:
+La documentación `@returns` para funciones en stringr es sencilla porque casi todas las funciones devuelven algún tipo de vector con la misma longitud que una de las entradas. Por ejemplo, así es como `str++_++like()` describe su salida:
 
 [source,r,cell-code]
 ----
 #' @returns A logical vector the same length as `string`.
 ----
 
-Un caso más complicado es la documentación conjunta de `+str_locate()+` y `+str_locate_all()+`footnote:[Volveremos sobre cómo documentar múltiples funciones en un tema en <<sec-man-multiple-functions>>.]. `+str_locate()+` devuelve una matriz de números enteros y `+str_locate_all()+` devuelve una lista de matrices, por lo que el texto necesita describir lo que determina las filas y columnas.
+Un caso más complicado es la documentación conjunta de `str++_++locate()` y `str++_++locate++_++all()`footnote:[Volveremos sobre cómo documentar múltiples funciones en un tema en <<sec-man-multiple-functions>>.]. `str++_++locate()` devuelve una matriz de números enteros y `str++_++locate++_++all()` devuelve una lista de matrices, por lo que el texto necesita describir lo que determina las filas y columnas.
 
 [source,r,cell-code]
 ----
@@ -468,7 +468,7 @@ Un caso más complicado es la documentación conjunta de `+str_locate()+` y `+st
 #'   [stringi::stri_locate()] for the underlying implementation.
 ----
 
-En otros casos, puede ser más fácil descubrir qué resaltar pensando en el conjunto de funciones y en qué se diferencian. Por ejemplo, la mayoría de las funciones de dplyr devuelven un marco de datos, por lo que decir simplemente `+@returns Un marco de datos+` no es muy útil. En cambio, intentamos identificar exactamente qué hace que cada función sea diferente. Decidimos que tiene sentido describir cada función en términos de cómo afecta las filas, las columnas, los grupos y los atributos. Por ejemplo, esto describe el valor de retorno de `+dplyr::filter()+`:
+En otros casos, puede ser más fácil descubrir qué resaltar pensando en el conjunto de funciones y en qué se diferencian. Por ejemplo, la mayoría de las funciones de dplyr devuelven un marco de datos, por lo que decir simplemente `@returns Un marco de datos` no es muy útil. En cambio, intentamos identificar exactamente qué hace que cada función sea diferente. Decidimos que tiene sentido describir cada función en términos de cómo afecta las filas, las columnas, los grupos y los atributos. Por ejemplo, esto describe el valor de retorno de `dplyr::filter()`:
 
 [source,r,cell-code]
 ----
@@ -481,7 +481,7 @@ En otros casos, puede ser más fácil descubrir qué resaltar pensando en el con
 #' * Data frame attributes are preserved.
 ----
 
-`+@returns+` también es un buen lugar para describir cualquier advertencia o error importante que el usuario pueda ver. Por ejemplo, `+readr::read_csv()+` menciona lo que sucede si hay algún problema de análisis:
+`@returns` también es un buen lugar para describir cualquier advertencia o error importante que el usuario pueda ver. Por ejemplo, `readr::read++_++csv()` menciona lo que sucede si hay algún problema de análisis:
 
 [source,r,cell-code]
 ----
@@ -498,33 +498,33 @@ Para su envío inicial de CRAN, todas las funciones deben documentar su valor de
 [[sec-man-examples]]
 == Ejemplos
 
-Describir lo que hace una función es genial, pero _mostrar_ cómo funciona es aún mejor. Esa es la función de la etiqueta `+@examples+`, que utiliza código R ejecutable para demostrar lo que puede hacer una función. A diferencia de otras partes de la documentación donde nos hemos centrado principalmente en lo que debes escribir, aquí daremos brevemente algunos consejos de contenido y luego nos centraremos principalmente en las mecánicas.
+Describir lo que hace una función es genial, pero _mostrar_ cómo funciona es aún mejor. Esa es la función de la etiqueta `@examples`, que utiliza código R ejecutable para demostrar lo que puede hacer una función. A diferencia de otras partes de la documentación donde nos hemos centrado principalmente en lo que debes escribir, aquí daremos brevemente algunos consejos de contenido y luego nos centraremos principalmente en las mecánicas.
 
 El principal dilema con los ejemplos es que debes cumplir conjuntamente dos requisitos:
 
 * Su código de ejemplo debe ser legible y realista. Algunos ejemplos son la documentación que usted proporciona para el beneficio del usuario, es decir, un ser humano real, que trabaja interactivamente, tratando de realizar su trabajo real con su paquete.
-* Su código de ejemplo debe ejecutarse sin errores y sin efectos secundarios en muchos contextos no interactivos sobre los cuales tiene control limitado o nulo, como cuando CRAN ejecuta `+R CMD check+` o cuando el sitio web de su paquete se crea a través de GitHub Actions.
+* Su código de ejemplo debe ejecutarse sin errores y sin efectos secundarios en muchos contextos no interactivos sobre los cuales tiene control limitado o nulo, como cuando CRAN ejecuta `R CMD check` o cuando el sitio web de su paquete se crea a través de GitHub Actions.
 
 Resulta que a menudo existe tensión entre estos objetivos y necesitará encontrar una manera de hacer que sus ejemplos sean lo más útiles posible para los usuarios, y al mismo tiempo satisfacer los requisitos de CRAN (si ese es su objetivo) u otra infraestructura automatizada.
 
 La mecánica de los ejemplos es compleja porque nunca deben producir errores y se ejecutan en cuatro situaciones diferentes:
 
-* Utilizando interactivamente la función `+ejemplo()+`.
-* Durante `+R CMD check+` su computadora u otra computadora que controle (por ejemplo, en GitHub Actions).
-* Durante `+R CMD check+` ejecutada por CRAN.
+* Utilizando interactivamente la función `ejemplo()`.
+* Durante `R CMD check` su computadora u otra computadora que controle (por ejemplo, en GitHub Actions).
+* Durante `R CMD check` ejecutada por CRAN.
 * Cuando se está creando su sitio web pkgdown, a menudo a través de GitHub Actions o similar.
 
-Después de discutir qué poner en sus ejemplos, hablaremos sobre cómo mantener sus ejemplos autónomos, cómo mostrar errores si es necesario, manejar dependencias, ejecutar ejemplos condicionalmente y alternativas a la etiqueta `+@examples+` para incluir código de ejemplo.
+Después de discutir qué poner en sus ejemplos, hablaremos sobre cómo mantener sus ejemplos autónomos, cómo mostrar errores si es necesario, manejar dependencias, ejecutar ejemplos condicionalmente y alternativas a la etiqueta `@examples` para incluir código de ejemplo.
 
 [TIP]
 .RStudio
 ====
-Al preparar scripts `+.R+` o informes `+.Rmd+`/`+.qmd+`, es útil usar Ctrl/Cmd + Enter o el botón _Ejecutar_ para enviar una línea de código R a la consola para su ejecución. Afortunadamente, puedes usar el mismo flujo de trabajo para ejecutar y desarrollar los `+@examples+` en tus comentarios de roxygen. Recuerde hacer `+devtools::load_all()+` con frecuencia para permanecer sincronizado con el código fuente del paquete.
+Al preparar scripts `.R` o informes `.Rmd`/`.qmd`, es útil usar Ctrl/Cmd {plus} Enter o el botón _Ejecutar_ para enviar una línea de código R a la consola para su ejecución. Afortunadamente, puedes usar el mismo flujo de trabajo para ejecutar y desarrollar los `@examples` en tus comentarios de roxygen. Recuerde hacer `devtools::load++_++all()` con frecuencia para permanecer sincronizado con el código fuente del paquete.
 ====
 
 === Contenido
 
-Utilice ejemplos para mostrar primero el funcionamiento básico de la función y luego resaltar las propiedades particularmente importantes. Por ejemplo, `+str_detect()+` comienza mostrando algunas variaciones simples y luego resalta una característica que es fácil pasar por alto: además de pasar un vector de cadenas y un patrón, también puedes pasar una cadena y un vector de patrones.
+Utilice ejemplos para mostrar primero el funcionamiento básico de la función y luego resaltar las propiedades particularmente importantes. Por ejemplo, `str++_++detect()` comienza mostrando algunas variaciones simples y luego resalta una característica que es fácil pasar por alto: además de pasar un vector de cadenas y un patrón, también puedes pasar una cadena y un vector de patrones.
 
 [source,r,cell-code]
 ----
@@ -540,7 +540,7 @@ Utilice ejemplos para mostrar primero el funcionamiento básico de la función y
 
 Intente concentrarse en las características más importantes sin meterse en los detalles de cada caso extremo: si hace que los ejemplos sean demasiado largos, al usuario le resultará difícil encontrar la aplicación clave que está buscando. Si te encuentras escribiendo ejemplos muy extensos, puede ser una señal de que deberías escribir una viñeta.
 
-No existen formas formales de dividir los ejemplos en secciones, pero puede utilizar comentarios de sección que utilicen muchos `+---+` para crear un desglose visual. Aquí hay un ejemplo de `+tidyr::chop()+`:
+No existen formas formales de dividir los ejemplos en secciones, pero puede utilizar comentarios de sección que utilicen muchos `---` para crear un desglose visual. Aquí hay un ejemplo de `tidyr::chop()`:
 
 [source,r,cell-code]
 ----
@@ -559,7 +559,7 @@ No existen formas formales de dividir los ejemplos en secciones, pero puede util
 #' df %>% unchop(y, keep_empty = TRUE)
 ----
 
-Esfuércese por mantener los ejemplos centrados en la función específica que está documentando. Si puede expresar su punto con un conjunto de datos integrado familiar, como `+mtcars+`, hágalo. Si necesita realizar muchas configuraciones para crear un conjunto de datos u objeto para usar en el ejemplo, puede ser una señal de que necesita crear un conjunto de datos de paquete o incluso una función auxiliar. Consulte <<sec-data>>, <<sec-data-example-path-helper>> y <<sec-testing-advanced-fixture-helper>> para obtener ideas. Facilitar la escritura (y lectura) de ejemplos mejorará enormemente la calidad de su documentación.
+Esfuércese por mantener los ejemplos centrados en la función específica que está documentando. Si puede expresar su punto con un conjunto de datos integrado familiar, como `mtcars`, hágalo. Si necesita realizar muchas configuraciones para crear un conjunto de datos u objeto para usar en el ejemplo, puede ser una señal de que necesita crear un conjunto de datos de paquete o incluso una función auxiliar. Consulte <<sec-data>>, <<sec-data-example-path-helper>> y <<sec-testing-advanced-fixture-helper>> para obtener ideas. Facilitar la escritura (y lectura) de ejemplos mejorará enormemente la calidad de su documentación.
 
 Además, recuerde que los ejemplos no son pruebas. Los ejemplos deben centrarse en el uso auténtico y típico para el que ha diseñado y que desea fomentar. El conjunto de pruebas es el lugar más apropiado para ejercitar exhaustivamente todos los argumentos y explorar casos extremos extraños y patológicos.
 
@@ -567,19 +567,19 @@ Además, recuerde que los ejemplos no son pruebas. Los ejemplos deben centrarse 
 
 Sus ejemplos deben ser autónomos. Por ejemplo, esto significa:
 
-* Si modifica `+options()+`, restablezcalas al final del ejemplo.
-* Si crea un archivo, créelo en algún lugar de `+tempdir()+` y asegúrese de eliminarlo al final del ejemplo.
+* Si modifica `options()`, restablezcalas al final del ejemplo.
+* Si crea un archivo, créelo en algún lugar de `tempdir()` y asegúrese de eliminarlo al final del ejemplo.
 * No cambie el directorio de trabajo.
 * No escribir en el portapapeles (a menos que un usuario esté presente para dar algún tipo de consentimiento).
 
-Esto se superpone mucho con nuestras recomendaciones para pruebas (consulte la sección <<sec-testing-design-self-contained>>) e incluso con las funciones de R en su paquete (consulte la sección <<sec-code-r-landscape>>). Sin embargo, debido a la forma en que se ejecutan los ejemplos durante la "`verificación R CMD`", las herramientas disponibles para hacer que los ejemplos sean autónomos son mucho más limitadas. Desafortunadamente, no puedes usar el paquete withr o incluso `+on.exit()+` para programar una limpieza, como restaurar opciones o eliminar un archivo. En su lugar, deberás hacerlo a mano. Si puede evitar hacer algo que luego debe deshacerse, esa es la mejor manera de hacerlo y esto es especialmente cierto en el caso de los ejemplos.
+Esto se superpone mucho con nuestras recomendaciones para pruebas (consulte la sección <<sec-testing-design-self-contained>>) e incluso con las funciones de R en su paquete (consulte la sección <<sec-code-r-landscape>>). Sin embargo, debido a la forma en que se ejecutan los ejemplos durante la "`verificación R CMD`", las herramientas disponibles para hacer que los ejemplos sean autónomos son mucho más limitadas. Desafortunadamente, no puedes usar el paquete withr o incluso `on.exit()` para programar una limpieza, como restaurar opciones o eliminar un archivo. En su lugar, deberás hacerlo a mano. Si puede evitar hacer algo que luego debe deshacerse, esa es la mejor manera de hacerlo y esto es especialmente cierto en el caso de los ejemplos.
 
 Estas restricciones a menudo están en tensión con una buena documentación, si estás tratando de documentar una función que de alguna manera cambia el estado del mundo. Por ejemplo, tienes que "`mostrar tu trabajo`", es decir, todo tu código, lo que significa que tus usuarios verán toda la configuración y el desmontaje, incluso si no es típico de un uso auténtico. Si le resulta difícil seguir las reglas, esta podría ser otra señal para cambiar a una viñeta (consulte <<sec-vignettes>>).
 
 [WARNING]
 .Envío a CRAN
 ====
-Muchas de estas restricciones también se mencionan en la [política del repositorio de CRAN] (https://cran.r-project.org/web/packages/policies.html), que debe cumplir al realizar envíos a CRAN. Utilice buscar en la página para localizar "`malicioso o antisocial`" y ver los detalles.
+Muchas de estas restricciones también se mencionan en la ++[++política del repositorio de CRAN++]++ (https://cran.r-project.org/web/packages/policies.html), que debe cumplir al realizar envíos a CRAN. Utilice buscar en la página para localizar "`malicioso o antisocial`" y ver los detalles.
 ====
 
 Además, desea que sus ejemplos envíen al usuario a una caminata corta, no a una caminata larga. Los ejemplos deben ejecutarse relativamente rápido para que los usuarios puedan ver rápidamente los resultados, no lleva mucho tiempo crear su sitio web, las verificaciones automatizadas se realizan rápidamente y no consume recursos informáticos cuando se envían a CRAN.
@@ -593,11 +593,11 @@ Todos los ejemplos deben ejecutarse en menos de 10 minutos.
 [[sec-man-examples-errors]]
 === Errores
 
-Sus ejemplos no pueden arrojar ningún error, así que no incluya código defectuoso que pueda fallar por razones fuera de su control. En particular, es mejor evitar el acceso a sitios web, porque la `+R CMD check+` fallará cada vez que el sitio web no funcione.
+Sus ejemplos no pueden arrojar ningún error, así que no incluya código defectuoso que pueda fallar por razones fuera de su control. En particular, es mejor evitar el acceso a sitios web, porque la `R CMD check` fallará cada vez que el sitio web no funcione.
 
 ¿Qué puede hacer si desea incluir código que cause un error con fines didácticos? Hay dos opciones básicas:
 
-* Puedes ajustar el código en `+try()+` para que se muestre el error, pero no detenga la ejecución de los ejemplos. Por ejemplo, `+dplyr::bind_cols()+` usa `+try()+` para mostrarle lo que sucede si intenta vincular dos marcos de datos con diferentes números de filas:
+* Puedes ajustar el código en `try()` para que se muestre el error, pero no detenga la ejecución de los ejemplos. Por ejemplo, `dplyr::bind++_++cols()` usa `try()` para mostrarle lo que sucede si intenta vincular dos marcos de datos con diferentes números de filas:
 +
 [source,r,cell-code]
 ----
@@ -606,7 +606,7 @@ Sus ejemplos no pueden arrojar ningún error, así que no incluya código defect
 #' # Row sizes must be compatible when column-binding
 #' try(bind_cols(tibble(x = 1:3), tibble(y = 1:2)))
 ----
-* Puedes ajustar el código en `+\dontrun{}+`{empty}footnote:[Solías poder usar `+\donttest{}+` para un propósito similar, pero ya no lo recomendamos porque CRAN establece un indicador especial que hace que el código se ejecute de todos modos.], de modo que nunca se ejecute mediante `+example()+`. El ejemplo anterior se vería así si usara `+\dontrun{}+` en lugar de `+try()+`.
+* Puedes ajustar el código en `++\++dontrun++{++}`{empty}footnote:[Solías poder usar `++\++donttest++{++}` para un propósito similar, pero ya no lo recomendamos porque CRAN establece un indicador especial que hace que el código se ejecute de todos modos.], de modo que nunca se ejecute mediante `example()`. El ejemplo anterior se vería así si usara `++\++dontrun++{++}` en lugar de `try()`.
 +
 [source,r,cell-code]
 ----
@@ -616,18 +616,18 @@ Sus ejemplos no pueden arrojar ningún error, así que no incluya código defect
 #' }
 ----
 
-Generalmente recomendamos usar `+try()+` para que el lector pueda ver un ejemplo del error en acción.
+Generalmente recomendamos usar `try()` para que el lector pueda ver un ejemplo del error en acción.
 
 [WARNING]
 .Envío a CRAN
 ====
-Para el envío CRAN inicial de su paquete, todas las funciones deben tener al menos un ejemplo y el código de ejemplo no puede estar incluido dentro de `+\dontrun{}+`. Si el código solo se puede ejecutar bajo condiciones específicas, utilice las técnicas siguientes para expresar esas condiciones previas.
+Para el envío CRAN inicial de su paquete, todas las funciones deben tener al menos un ejemplo y el código de ejemplo no puede estar incluido dentro de `++\++dontrun++{++}`. Si el código solo se puede ejecutar bajo condiciones específicas, utilice las técnicas siguientes para expresar esas condiciones previas.
 ====
 
 [[sec-man-examples-dependencies-conditional-execution]]
 === Dependencias y ejecución condicional
 
-Una fuente adicional de errores en los ejemplos es el uso de dependencias externas: en sus ejemplos sólo puede usar paquetes de los que su paquete depende formalmente (es decir, que aparecen en `+Imports+` o `+Sugests+`). Además, el código de ejemplo se ejecuta en el entorno del usuario, no en el entorno del paquete, por lo que tendrás que adjuntar explícitamente la dependencia con `+library()+` o hacer referencia a cada función con `+::+`. Por ejemplo, dbplyr es un paquete de extensión dplyr, por lo que todos sus ejemplos comienzan con `+library(dplyr)+`:
+Una fuente adicional de errores en los ejemplos es el uso de dependencias externas: en sus ejemplos sólo puede usar paquetes de los que su paquete depende formalmente (es decir, que aparecen en `Imports` o `Sugests`). Además, el código de ejemplo se ejecuta en el entorno del usuario, no en el entorno del paquete, por lo que tendrás que adjuntar explícitamente la dependencia con `library()` o hacer referencia a cada función con `::`. Por ejemplo, dbplyr es un paquete de extensión dplyr, por lo que todos sus ejemplos comienzan con `library(dplyr)`:
 
 [source,r,cell-code]
 ----
@@ -651,8 +651,8 @@ En el pasado, recomendábamos usar únicamente código de paquetes sugeridos den
 
 Ya no creemos que ese enfoque sea una buena idea porque:
 
-* Nuestra política es esperar que los paquetes sugeridos se instalen al ejecutar `+R CMD check+`footnote:[Esto es ciertamente cierto para CRAN y es cierto en la mayoría de los otros escenarios de verificación automatizada, como nuestros flujos de trabajo de GitHub Actions.] y esto informa lo que hacemos en ejemplos, pruebas y viñetas.
-* El coste de poner código de ejemplo dentro de `+{… }+` es alto: ya no se pueden ver resultados intermedios, como cuando los ejemplos se muestran en el sitio web del paquete. El coste de no instalar un paquete es bajo: los usuarios normalmente pueden reconocer el error asociado y resolverlo ellos mismos, es decir, instalando el paquete que falta.
+* Nuestra política es esperar que los paquetes sugeridos se instalen al ejecutar `R CMD check`footnote:[Esto es ciertamente cierto para CRAN y es cierto en la mayoría de los otros escenarios de verificación automatizada, como nuestros flujos de trabajo de GitHub Actions.] y esto informa lo que hacemos en ejemplos, pruebas y viñetas.
+* El coste de poner código de ejemplo dentro de `++{++… }` es alto: ya no se pueden ver resultados intermedios, como cuando los ejemplos se muestran en el sitio web del paquete. El coste de no instalar un paquete es bajo: los usuarios normalmente pueden reconocer el error asociado y resolverlo ellos mismos, es decir, instalando el paquete que falta.
 
 En otros casos, su código de ejemplo puede depender de algo más que un paquete. Por ejemplo, si sus ejemplos se refieren a una API web, probablemente solo desee ejecutarlos para un usuario autenticado y nunca desee que dicho código se ejecute en CRAN. En este caso, realmente necesitas una ejecución condicional. La solución básica es expresar esto explícitamente:
 
@@ -664,9 +664,9 @@ En otros casos, su código de ejemplo puede depender de algo más que un paquete
 #' }
 ----
 
-La condición podría ser bastante general, como `+interactive()+`, o muy específica, como una función de predicado personalizada proporcionada por su paquete. Pero este uso de `+if()+` todavía sufre el inconveniente resaltado anteriormente, donde los ejemplos renderizados no muestran claramente lo que sucede dentro del bloque `+{... }+`.
+La condición podría ser bastante general, como `interactive()`, o muy específica, como una función de predicado personalizada proporcionada por su paquete. Pero este uso de `if()` todavía sufre el inconveniente resaltado anteriormente, donde los ejemplos renderizados no muestran claramente lo que sucede dentro del bloque `++{++... }`.
 
-La etiqueta `+@examplesIf+` es una excelente alternativa a `+@examples+` en este caso:
+La etiqueta `@examplesIf` es una excelente alternativa a `@examples` en este caso:
 
 [source,r,cell-code]
 ----
@@ -677,12 +677,12 @@ La etiqueta `+@examplesIf+` es una excelente alternativa a `+@examples+` en este
 
 Esto se parece casi al fragmento de arriba, pero tiene varias ventajas:
 
-* Los usuarios en realidad no verán la maquinaria `+if() {... }+` cuando lean su documentación desde R o en un sitio web de pkgdown. Los usuarios sólo ven código realista.
+* Los usuarios en realidad no verán la maquinaria `if() ++{++... }` cuando lean su documentación desde R o en un sitio web de pkgdown. Los usuarios sólo ven código realista.
 * El código de ejemplo se muestra completamente en pkgdown.
 * El código de ejemplo se ejecuta cuando debería y no se ejecuta cuando no debería.
-* Esto no va en contra de la prohibición de CRAN de poner todo el código de ejemplo dentro de `+\dontrun{}+`.
+* Esto no va en contra de la prohibición de CRAN de poner todo el código de ejemplo dentro de `++\++dontrun++{++}`.
 
-Por ejemplo, https://googledrive.tidyverse.org/reference/index.html[googledrive] usa `+@examplesIf+` en casi todas las funciones, protegido por `+googledrive::drive_has_token()+`. Así es como comienzan los ejemplos de `+googledrive::drive_publish()+`:
+Por ejemplo, https://googledrive.tidyverse.org/reference/index.html[googledrive] usa `@examplesIf` en casi todas las funciones, protegido por `googledrive::drive++_++has++_++token()`. Así es como comienzan los ejemplos de `googledrive::drive++_++publish()`:
 
 [source,r,cell-code]
 ----
@@ -700,14 +700,14 @@ El código de ejemplo no se ejecuta en CRAN porque no hay ningún token. Se ejec
 
 === Mezclar ejemplos y texto
 
-Una alternativa a los ejemplos es usar bloques de código R Markdown en otras partes de tus comentarios de roxygen, ya sea `+\'\'\'R+` si solo quieres mostrar algo de código, o `+\'\'\'{r}+` si desea que se ejecute el código. Estas pueden ser técnicas efectivas, pero cada una tiene sus desventajas:
+Una alternativa a los ejemplos es usar bloques de código R Markdown en otras partes de tus comentarios de roxygen, ya sea `++```++R` si solo quieres mostrar algo de código, o `++```{++r}` si desea que se ejecute el código. Estas pueden ser técnicas efectivas, pero cada una tiene sus desventajas:
 
-* El código en los bloques `+\'\'\'R+` nunca se ejecuta; esto significa que es fácil introducir accidentalmente errores de sintaxis u olvidarse de actualizarlo cuando cambia el paquete.
-* El código en los bloques `+\'\'\'{r}+` se ejecuta cada vez que documentas el paquete. Esto tiene la gran ventaja de incluir el resultado en la documentación (a diferencia de los ejemplos), pero el código no puede tardar mucho en ejecutarse o su flujo de trabajo de documentación iterativo se volverá bastante doloroso.
+* El código en los bloques `++```++R` nunca se ejecuta; esto significa que es fácil introducir accidentalmente errores de sintaxis u olvidarse de actualizarlo cuando cambia el paquete.
+* El código en los bloques `++```{++r}` se ejecuta cada vez que documentas el paquete. Esto tiene la gran ventaja de incluir el resultado en la documentación (a diferencia de los ejemplos), pero el código no puede tardar mucho en ejecutarse o su flujo de trabajo de documentación iterativo se volverá bastante doloroso.
 
 == Reutilizar documentación
 
-roxygen2 proporciona una serie de funciones que le permiten reutilizar la documentación en todos los temas. Están documentados en `+vignette("reuse", package = "roxygen2")+`, por lo que aquí nos centraremos en los tres más importantes:
+roxygen2 proporciona una serie de funciones que le permiten reutilizar la documentación en todos los temas. Están documentados en `vignette("reuse", package = "roxygen2")`, por lo que aquí nos centraremos en los tres más importantes:
 
 * Documentar múltiples funciones en un solo tema.
 * Heredar documentación de otro tema.
@@ -716,7 +716,7 @@ roxygen2 proporciona una serie de funciones que le permiten reutilizar la docume
 [[sec-man-multiple-functions]]
 === Múltiples funciones en un tema
 
-De forma predeterminada, cada función tiene su propio tema de documentación, pero si dos funciones están muy relacionadas, puede combinar la documentación de varias funciones en un solo tema. Por ejemplo, tomemos `+str_length()+` y `+str_width()+`, que proporcionan dos formas diferentes de calcular el tamaño de una cadena. Como puede ver en la descripción, ambas funciones están documentadas juntas, porque esto hace que sea más fácil ver en qué se diferencian:
+De forma predeterminada, cada función tiene su propio tema de documentación, pero si dos funciones están muy relacionadas, puede combinar la documentación de varias funciones en un solo tema. Por ejemplo, tomemos `str++_++length()` y `str++_++width()`, que proporcionan dos formas diferentes de calcular el tamaño de una cadena. Como puede ver en la descripción, ambas funciones están documentadas juntas, porque esto hace que sea más fácil ver en qué se diferencian:
 
 [source,r,cell-code]
 ----
@@ -736,7 +736,7 @@ str_length <- function(string) {
 }
 ----
 
-Para fusionar los dos temas, `+str_width()+` usa `+@rdname str_length+` para agregar su documentación a un tema existente:
+Para fusionar los dos temas, `str++_++width()` usa `@rdname str++_++length` para agregar su documentación a un tema existente:
 
 [source,r,cell-code]
 ----
@@ -750,17 +750,17 @@ Esta técnica funciona mejor para funciones que tienen mucho en común, es decir
 
 === Heredar documentación
 
-En otros casos, las funciones de un paquete pueden compartir muchos comportamientos relacionados, pero no están lo suficientemente conectadas como para que desee documentarlas juntas. Hemos discutido `+@inheritParams+` arriba, pero hay tres variaciones que le permiten heredar otras cosas:
+En otros casos, las funciones de un paquete pueden compartir muchos comportamientos relacionados, pero no están lo suficientemente conectadas como para que desee documentarlas juntas. Hemos discutido `@inheritParams` arriba, pero hay tres variaciones que le permiten heredar otras cosas:
 
-* `+@inherit source_function+` heredará todos los componentes compatibles de `+source_function()+`.
-* `+@inheritSection source_function Título de la sección+` heredará la sección única con el título "`Título de la sección`" de `+source_function()+`.
-* `+@inheritDotParams+` genera automáticamente documentación de parámetros para `+...+` para el caso común en el que pasa `+...+` a otra función.
+* `@inherit source++_++function` heredará todos los componentes compatibles de `source++_++function()`.
+* `@inheritSection source++_++function Título de la sección` heredará la sección única con el título "`Título de la sección`" de `source++_++function()`.
+* `@inheritDotParams` genera automáticamente documentación de parámetros para `...` para el caso común en el que pasa `...` a otra función.
 
 Ver https://roxygen2.r-lib.org/articles/reuse.html#inheriting-documentation para más detalles.
 
 === Documentos secundarios
 
-Finalmente, puede reutilizar el mismo documento `+.Rmd+` o `+.md+` en la documentación de la función, `+README.Rmd+`, y viñetas utilizando documentos secundarios de R Markdown. La sintaxis se ve así:
+Finalmente, puede reutilizar el mismo documento `.Rmd` o `.md` en la documentación de la función, `README.Rmd`, y viñetas utilizando documentos secundarios de R Markdown. La sintaxis se ve así:
 
 [source,r,cell-code]
 ----
@@ -768,7 +768,7 @@ Finalmente, puede reutilizar el mismo documento `+.Rmd+` o `+.md+` en la documen
 #' ```
 ----
 
-Esta es una característica que usamos con moderación en tidyverse, pero un lugar donde sí la usamos es en dplyr, porque varias funciones usan la misma sintaxis que `+select()+` y queremos proporcionar toda la información en un solo lugar:
+Esta es una característica que usamos con moderación en tidyverse, pero un lugar donde sí la usamos es en dplyr, porque varias funciones usan la misma sintaxis que `select()` y queremos proporcionar toda la información en un solo lugar:
 
 [source,r,cell-code]
 ----
@@ -778,7 +778,7 @@ Esta es una característica que usamos con moderación en tidyverse, pero un lug
 #' ```
 ----
 
-Luego `+man/rmd/overview.Rmd+` contiene la rebaja repetida:
+Luego `man/rmd/overview.Rmd` contiene la rebaja repetida:
 
 [source,md]
 ----
@@ -799,9 +799,9 @@ Si el archivo Rmd contiene enlaces roxygen (estilo Markdown) a otros temas de ay
 [[sec-man-package-doc]]
 == Tema de ayuda para el paquete
 
-Este capítulo se centra en la documentación de funciones, pero recuerde que puede documentar otras cosas, como se detalla en `+vignette("rd-other", package = "roxygen2")+`. En particular, puede crear un tema de ayuda para el paquete en sí documentando el centinela especial `+"_PACKAGE"+`. El archivo `+.Rd+` resultante extrae automáticamente información analizada de la `+DESCRIPTION+`, incluido el título, la descripción, la lista de autores y las URL útiles. Este tema de ayuda aparece junto con todos los demás temas y también se puede acceder a él con `+package?pkgname+`, por ejemplo, `+package?usethis+`, o incluso simplemente con `+?usethis+`.
+Este capítulo se centra en la documentación de funciones, pero recuerde que puede documentar otras cosas, como se detalla en `vignette("rd-other", package = "roxygen2")`. En particular, puede crear un tema de ayuda para el paquete en sí documentando el centinela especial `"++_++PACKAGE"`. El archivo `.Rd` resultante extrae automáticamente información analizada de la `DESCRIPTION`, incluido el título, la descripción, la lista de autores y las URL útiles. Este tema de ayuda aparece junto con todos los demás temas y también se puede acceder a él con `package?pkgname`, por ejemplo, `package?usethis`, o incluso simplemente con `?usethis`.
 
-Recomendamos llamar a `+usethis::use_package_doc()+` para configurar esta documentación a nivel de paquete en un archivo ficticio `+R/{pkgname}-package.R+`, cuyo contenido se verá así:
+Recomendamos llamar a `usethis::use++_++package++_++doc()` para configurar esta documentación a nivel de paquete en un archivo ficticio `R/++{++pkgname}-package.R`, cuyo contenido se verá así:
 
 [source,r,cell-code]
 ----
@@ -809,7 +809,7 @@ Recomendamos llamar a `+usethis::use_package_doc()+` para configurar esta docume
 "_PACKAGE"
 ----
 
-El archivo `+R/{pkgname}-package.R+` es la razón principal por la que queríamos mencionar aquí `+use_package_doc()+` y la documentación a nivel de paquete. Resulta que hay algunas otras tareas de limpieza de todo el paquete para las cuales este archivo es un hogar muy natural. Por ejemplo, es una ubicación central sensata para directivas de importación, es decir, para importar funciones individuales desde sus dependencias o incluso espacios de nombres completos. En <<sec-dependencies-in-imports-r-code>>, recomendamos importar funciones específicas a través de `+usethis::use_import_from()+` y esta función está diseñada para escribir las etiquetas roxygen asociadas en el paquete `+R/{pkgname}. Archivo R+` creado por `+use_package_doc()+`. Entonces, poniéndolo todo junto, este es un ejemplo mínimo de cómo podría verse el archivo `+R/{pkgname}-package.R+`:
+El archivo `R/++{++pkgname}-package.R` es la razón principal por la que queríamos mencionar aquí `use++_++package++_++doc()` y la documentación a nivel de paquete. Resulta que hay algunas otras tareas de limpieza de todo el paquete para las cuales este archivo es un hogar muy natural. Por ejemplo, es una ubicación central sensata para directivas de importación, es decir, para importar funciones individuales desde sus dependencias o incluso espacios de nombres completos. En <<sec-dependencies-in-imports-r-code>>, recomendamos importar funciones específicas a través de `usethis::use++_++import++_++from()` y esta función está diseñada para escribir las etiquetas roxygen asociadas en el paquete `R/++{++pkgname}. Archivo R` creado por `use++_++package++_++doc()`. Entonces, poniéndolo todo junto, este es un ejemplo mínimo de cómo podría verse el archivo `R/++{++pkgname}-package.R`:
 
 [source,r,cell-code]
 ----
