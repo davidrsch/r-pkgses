@@ -1,6 +1,7 @@
 # Datos {#sec-data}
 
-```{r, echo = FALSE}
+```{r}
+#| echo: false
 source("common.R")
 ```
 
@@ -32,7 +33,8 @@ En este capítulo describimos mecanismos útiles para incluir datos en su paquet
 
 La ubicación más común para los datos del paquete es (¡sorpresa!) `data/`. Recomendamos que cada archivo en este directorio sea un archivo `.rda` creado por `save()` que contenga un único objeto R, con el mismo nombre que el archivo. La forma más sencilla de lograrlo es utilizar `usethis::use_data()`.
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 my_pkg_data <- sample(1000)
 usethis::use_data(my_pkg_data)
 ```
@@ -81,7 +83,8 @@ A menudo, los datos que incluye en `data/` son una versión limpia de datos sin 
 
 Le sugerimos que mantenga este código en uno o más archivos `.R` debajo de `data-raw/`. No lo desea en la versión incluida de su paquete, por lo que esta carpeta debe aparecer en `.Rbuildignore`. usethis tiene una función conveniente que se puede llamar cuando adopta por primera vez la práctica `data-raw/` o cuando agrega un archivo `.R` adicional a la carpeta:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 usethis::use_data_raw()
 
 usethis::use_data_raw("my_pkg_data")
@@ -115,7 +118,8 @@ Tendrás que experimentar con diferentes métodos de compresión y tomar esta de
 
 Los objetos en `data/` siempre se exportan efectivamente (utilizan un mecanismo ligeramente diferente al de `NAMESPACE` pero los detalles no son importantes). Esto significa que deben estar documentados. Documentar datos es como documentar una función con algunas diferencias menores. En lugar de documentar los datos directamente, documenta el nombre del conjunto de datos y lo guarda en `R/`. Por ejemplo, el bloque roxygen2 utilizado para documentar los datos `quién`(`who`) en tidyr se guarda en `R/data.R` y se parece a esto:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 #' Datos sobre tuberculosis de la Organización Mundial de la Salud
 #'
 #' Un subconjunto de datos de un Informe de la Tuberculosis Global de la 
@@ -181,7 +185,8 @@ A continuación se muestran algunos ejemplos de datos de paquetes internos:
 
 La forma más sencilla de crear `R/sysdata.rda` es utilizar `usethis::use_data(internal = TRUE)`:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 internal_this <- ...
 internal_that <- ...
 
@@ -243,7 +248,8 @@ system.file("extdata", "I_do_not_exist.csv", package = "readr")
 
 Si desea forzar un error en este caso, especifique `mustWork = TRUE`:
 
-```{r error = TRUE}
+```{r}
+#| error: true
 system.file("extdata", "I_do_not_exist.csv", package = "readr", mustWork = TRUE)
 ```
 
@@ -253,7 +259,8 @@ El [paquete fs](https://fs.r-lib.org) ofrece `fs::path_package()`. Esto es esenc
 -   Genera errores distintos cuando el paquete no existe versus cuando el archivo no existe dentro del paquete.
 -   Durante el desarrollo, funciona para llamadas interactivas, llamadas desde dentro del espacio de nombres del paquete cargado e incluso para llamadas que se originan en dependencias.
 
-```{r error = TRUE}
+```{r}
+#| error: true
 fs::path_package("extdata", package = "idonotexist")
 
 fs::path_package("extdata", "I_do_not_exist.csv", package = "readr")
@@ -285,7 +292,8 @@ A common theme you've now encountered in multiple places is that devtools and re
 
 Nos gusta ofrecer funciones convenientes que faciliten el acceso a los archivos de ejemplo. Estos son simplemente envoltorios fáciles de usar alrededor de `system.file()` o `fs::path_package()`, pero pueden tener características adicionales, como la capacidad de enumerar los archivos de ejemplo. Aquí está la definición y algunos usos de `readxl::readxl_example()`:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 readxl_example <- function(path = NULL) {
   if (is.null(path)) {
     dir(system.file("extdata", package = "readxl"))
@@ -314,7 +322,8 @@ Una excelente manera de administrar dichos datos es utilizar un *entorno*.[^data
 
 Considere un paquete que pueda almacenar las letras o números favoritos del usuario. Podrías comenzar con un código como este en el archivo siguiente `R/`:
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 favorite_letters <- letters[1:3]
 
 #' Reportar mis letras favoritas
@@ -336,7 +345,8 @@ set_mfl <- function(l = letters[24:26]) {
 
 [^data-2]: Este ejemplo se ejecutará sin errores si define `favorite_letters`, `mfl()` y `set_mfl()` en el espacio de trabajo global y llama a `set_mfl()` en la consola. Pero este código fallará una vez que `favorite_letters`, `mfl()` y `set_mfl()` estén definidos *dentro de un paquete*.
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 mfl()
 #> [1] "a" "b" "c"
 
@@ -349,7 +359,8 @@ Debido a que `favorite_letters` es un vector de caracteres normal, la modificaci
 
 Sin embargo, si mantenemos el estado dentro de un entorno de paquete interno, **podemos** modificar los objetos contenidos en el entorno (e incluso agregar objetos completamente nuevos). Aquí hay una implementación alternativa que utiliza un entorno interno llamado "el".
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 the <- new.env(parent = emptyenv())
 the$favorite_letters <- letters[1:3]
 
@@ -370,7 +381,8 @@ set_mfl2 <- function(l = letters[24:26]) {
 
 Ahora un usuario *puede* registrar sus letras favoritas:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 mfl2()
 #> [1] "a" "b" "c"
 

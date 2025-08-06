@@ -1,11 +1,14 @@
 # Introducción {#sec-intro .unnumbered}
 
-```{r, echo = FALSE}
+```{r}
+#| echo: false
 source("common.R")
 ```
 
-```{r, include = FALSE, eval = FALSE}
-# takes a few seconds
+```{r}
+#| include: false
+#| eval: false
+# demora unos segundos
 x <- tools::CRAN_package_db()
 nrow(x)
 ```

@@ -1,6 +1,7 @@
 # `DESCRIPTION` {#sec-description}
 
-```{r, echo = FALSE}
+```{r}
+#| echo: false
 source("common.R")
 ```
 

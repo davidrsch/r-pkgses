@@ -1,6 +1,7 @@
 # Código R {#sec-r}
 
-```{r, echo = FALSE}
+```{r}
+#| echo: false
 source("common.R")
 ```
 
@@ -27,7 +28,8 @@ Más a menudo, un único archivo `.R` contendrá múltiples definiciones de func
 @tbl-putting-functions-in-files presenta algunos ejemplos de la fuente real del paquete [tidyr](http://tidyr.tidyverse.org/) en la versión 1.1.2.
 Hay algunas desviaciones de las reglas estrictas dadas anteriormente, lo que ilustra que hay mucho margen para juzgar aquí.
 
-```{r include = FALSE}
+```{r}
+#| include: false
 library(tidyverse)
 
 tidyr_separate <- tibble(
@@ -185,7 +187,8 @@ Afortunadamente, una vez que se diagnostica este problema, generalmente no es di
 
 El paquete shinybootstrap2 alguna vez tuvo este código a continuación `R/`:
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 dataTableDependency <- list(
   htmlDependency(
     "datatables", "1.10.2",
@@ -216,7 +219,8 @@ Este problema en particular ahora sería detectado por "R CMD check", debido a l
 El paquete crayon tiene una función, `crayon::show_ansi_colors()`, que muestra una tabla de colores ANSI en la pantalla, básicamente para mostrar qué tipo de estilo es posible.
 En una versión anterior, la función se parecía a esta:
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 show_ansi_colors <- function(colors = num_colors()) {
   if (colors < 8) {
     cat("Los colores no son compatibles")
@@ -278,7 +282,8 @@ Imagine que desea que la función `foo()` en su paquete sea básicamente un alia
 paqueteB.
 Quizás tengas la tentación de hacer esto:
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 foo <- pkgB::blah
 ```
 
@@ -366,7 +371,8 @@ También apreciamos el comportamiento de pila predeterminado de withr (LIFO = ú
 El patrón general es capturar el estado original, programar su eventual restauración "al salir" y luego realizar el cambio de estado.
 Algunos definidores, como `options()` o `par()`, devuelven el valor anterior cuando proporcionas un valor nuevo, lo que lleva a un uso similar al siguiente:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 f <- function(x, y, z) {
   ...                        # width option "as found"
   old <- options(width = 20) # width option is 20
@@ -392,7 +398,8 @@ Notarás que cada ayuda viene en dos formas que son útiles en diferentes situac
 -   `with_*()` Las funciones son mejores para ejecutar pequeños fragmentos de código con un estado modificado temporalmente.
     (Estas funciones están inspiradas en cómo funciona `base::with()`).
 
-    ```{r eval = FALSE}
+    ```{r}
+    #| eval: false
     f <- function(x, sig_digits) {
       # imagina mucho código aquí
       withr::with_options(
@@ -405,7 +412,8 @@ Notarás que cada ayuda viene en dos formas que son útiles en diferentes situac
 
 -   `local_*()` Las funciones son mejores para modificar el estado "desde ahora hasta que la función salga".
 
-    ```{r eval = FALSE}
+    ```{r}
+    #| eval: false
     g <- function(x, sig_digits) {
       withr::local_options(list(digits = sig_digits))
       print(x)
@@ -423,7 +431,8 @@ Se brinda una cobertura más detallada en la viñeta de withr \[Cambiando y rest
 
 Así es como se ve el patrón general "guardar, programar restauración, cambiar" cuando se usa `base::on.exit()`.
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 f <- function(x, y, z) {
   ...
   old <- options(mfrow = c(2, 2), pty = "s")
@@ -434,7 +443,8 @@ f <- function(x, y, z) {
 
 Otros cambios de estado no están disponibles con ese tipo de configurador y debe implementarlos usted mismo.
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 g <- function(a, b, c) {
   ...
   scratch_file <- tempfile()
@@ -471,7 +481,8 @@ Algunos usos comunes de `.onLoad()` y `.onAttach()` son:
     También tenga cuidado de no anular las opciones que el usuario ya haya configurado.
     Aquí hay una versión (altamente redactada) de la función `.onLoad()` de dplyr que establece una opción que controla los informes de progreso:
 
-    ```{r, eval = FALSE}
+    ```{r}
+    #| eval: false
     .onLoad <- function(libname, pkgname) {
       op <- options()
       op.dplyr <- list(
@@ -490,7 +501,8 @@ Algunos usos comunes de `.onLoad()` y `.onAttach()` son:
 
 -   Para mostrar un mensaje informativo cuando se adjunta el paquete. Esto podría aclarar las condiciones de uso o mostrar las capacidades del paquete según las condiciones actuales del sistema. Los mensajes de inicio son un lugar donde debes usar `.onAttach()` en lugar de `.onLoad()`. Para mostrar mensajes de inicio, utilice siempre `packageStartupMessage()`, y no `message()`. (Esto permite que `suppressPackageStartupMessages()` suprima selectivamente los mensajes de inicio del paquete).
 
-```{{r, eval = FALSE}}
+```{r}
+#| eval: false
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage("Welcome to my package")
 }
@@ -570,7 +582,8 @@ W  checking R files for non-ASCII characters ...
 Los infractores más comunes son las comillas simples y dobles "rizadas" o "inteligentes" que se cuelan al copiar y pegar.
 Las funciones `tools::showNonASCII()` y `tools::showNonASCIIfile(file)` le ayudan a encontrar los archivos y líneas infractores.
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 tools::showNonASCIIfile("R/foo.R")
 #> 666: #' If you<e2><80><99>ve copy/pasted quotes, watch out!
 ```

@@ -1,6 +1,7 @@
 # El paquete en el interior de su código {#sec-package-within}
 
-```{r, echo = FALSE}
+```{r}
+#| echo: false
 source("common.R")
 ```
 
@@ -16,6 +17,7 @@ Ideas no utilizadas para pequeñas tareas de limpieza de datos:
 * usando el símbolo de grado correctamente con la secuencia de escape Unicode
 -->
 ```
+
 Esta parte del libro termina de la misma manera que comenzó, con el desarrollo de un pequeño paquete de juguete.
 @sec-whole-game estableció la mecánica básica, el flujo de trabajo y las herramientas para el desarrollo de paquetes, pero no dijo prácticamente nada sobre el código R dentro del paquete.
 Este capítulo se centra principalmente en el código R del paquete y en qué se diferencia del código R en un script.
@@ -42,18 +44,22 @@ Consideremos `data-cleaning.R`, un script de análisis de datos ficticio para un
 
 Sus datos generalmente vienen como un archivo CSV, como `swim.csv`:
 
-```{r echo = FALSE, comment = ''}
+```{r}
+#| echo: false
+#| comment: ''
 writeLines(readLines("package-within-files/alfa/swim.csv"))
 ```
 
 `data-cleaning.R` comienza leyendo `swim.csv` en un data frame o marco de datos:
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 infile <- "swim.csv"
 (dat <- read.csv(infile))
 ```
 
-```{r echo = FALSE}
+```{r}
+#| echo: false
 infile <- "package-within-files/alfa/swim.csv"
 (dat <- read.csv(infile))
 ```
@@ -82,7 +88,8 @@ Les gusta capturar una marca de tiempo en el nombre del archivo cuando hacen est
 [^package-within-1]: `Sys.time()` devuelve un objeto de clase `POSIXct`, por lo tanto, cuando llamamos a `format()`, en realidad estamos usando `format.POSIXct()`.
     Lea la ayuda de [`?format.POSIXct`](https://rdrr.io/r/base/strptime.html) si no esta familiarizado con este formato de caracteres.
 
-```{r include = FALSE}
+```{r}
+#| include: false
 # el código que construye `outfile` es súper simple y asume que `infile` es
 # solo un nombre de fichero
 infile <- "swim.csv"
@@ -95,7 +102,8 @@ timestamp <- format(now, "%Y-%B-%d_%H-%M-%S")
 write.csv(dat, file = outfile, quote = FALSE, row.names = FALSE)
 ```
 
-```{r include = FALSE}
+```{r}
+#| include: false
 # mover y cambiar el nombre del csv de datos limpios
 outfile <- fs::dir_ls(glob = "*swim_clean.csv")
 fs::file_move(outfile, "package-within-files/alfa/swim_clean.csv")
@@ -146,7 +154,9 @@ Este es un movimiento de apertura convencional, si desea utilizar estos mismos a
 
 Aquí está el contenido de `beach-lookup-table.csv`:
 
-```{r echo = FALSE, comment = ''}
+```{r}
+#| echo: false
+#| comment: ''
 writeLines(readLines("package-within-files/charlie/beach-lookup-table.csv"))
 ```
 
@@ -184,7 +194,9 @@ Estos son los pasos más simples que puede seguir en un intento de convertir `cl
 -   Instale este paquete, quizás usando `devtools::install()` o mediante Ctrl + Shift + B (Windows y Linux) o Cmd + Shift + B en RStudio.
     -   A pesar de todos los problemas identificados anteriormente, ¡esto realmente funciona! Lo cual es interesante, porque podemos (intentar) usarlo y ver qué sucede.
 
-```{r eval = FALSE, include = FALSE}
+```{r}
+#| eval: false
+#| include: false
 create_package("package-within-files/delta", open = FALSE)
 # diga sí a la aterradora pregunta del proyecto anidado
 fs::file_copy(
@@ -205,19 +217,22 @@ Aquí está la próxima versión del script de limpieza de datos que espera que 
 
 El único cambio con respecto a nuestro código anterior es que
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 source("cleaning-helpers.R")
 ```
 
 ha sido reemplazado por
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 library(delta)
 ```
 
 Esto es lo que realmente sucede si instala el paquete delta e intenta ejecutar el script de limpieza de datos:
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 library(tidyverse)
 library(delta)
 
@@ -239,7 +254,8 @@ De forma predeterminada, las funciones de un paquete son sólo para uso interno.
 Necesita exportar `localize_beach()`, `celsify_temp()` y `outfile_path()` para que sus usuarios puedan llamarlos.
 En el flujo de trabajo de devtools, logramos esto poniendo `@export` en el comentario especial de roxygen encima de cada función (la administración del espacio de nombres se trata en @sec-dependencies-NAMESPACE-workflow), así:
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 #' @export
 celsify_temp <- function(dat) {
   mutate(dat, temp = if_else(english == "US", f_to_c(temp), temp))
@@ -249,7 +265,9 @@ celsify_temp <- function(dat) {
 Después de agregar la etiqueta `@export` a `localize_beach()`, `celsify_temp()` y `outfile_path()`, ejecuta `devtools::document()` para (re)generar el archivo `NAMESPACE`, y reinstale el paquete delta.
 Ahora, cuando vuelves a ejecutar el script de limpieza de datos, ¡funciona!
 
-```{r eval = FALSE, include = FALSE}
+```{r}
+#| eval: false
+#| include: false
 lines <- readLines("package-within-files/delta/R/cleaning-helpers.R")
 funs <- c("localize_beach", "celsify_temp", "outfile_path")
 fun_locs <- vapply(paste0("^", funs), \(x) grep(x, lines), 1L)
@@ -276,7 +294,8 @@ Corrección: *más o menos* funciona *a veces*.
 Específicamente, funciona si y sólo si el directorio de trabajo está configurado en el nivel superior del paquete fuente.
 Desde cualquier otro directorio de trabajo, sigue apareciendo un error:
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 dat <- dat %>% 
   localize_beach() %>% 
   celsify_temp()
@@ -312,7 +331,8 @@ Además, ya hemos instalado y utilizado este paquete, ¿por qué `R CMD check` n
 
 Este error es lo que sucede cuando el rigor de "R CMD check" cumple con la primera línea de `R/cleaning-helpers.R`:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 library(tidyverse)
 ```
 
@@ -332,7 +352,9 @@ Para revisar, copiar `cleaning-helpers.R` a `R/cleaning-helpers.R`, sin modifica
 
 Estamos listos para crear la versión mínima de este paquete que realmente funcione.
 
-```{r eval = FALSE, include = FALSE}
+```{r}
+#| eval: false
+#| include: false
 create_package("package-within-files/echo", open = FALSE)
 # diga sí a la aterradora pregunta del proyecto anidado
 fs::file_copy(
@@ -400,7 +422,8 @@ Undefined global functions or variables:
 La nota "sin enlace visible" es una peculiaridad del uso de dplyr y nombres de variables sin comillas dentro de un paquete, donde el uso de nombres de variables simples (`english` y `temp`) parece sospechoso.
 Puede agregar cualquiera de estas líneas a cualquier archivo debajo de `R/` para eliminar esta nota (como el archivo de documentación a nivel de paquete descrito en @sec-man-package-doc):
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 # opción 1 (entonces también deberías poner utilidades en Importaciones)
 utils::globalVariables(c("english", "temp"))
 
@@ -422,7 +445,8 @@ Ya has visto cómo crear archivos de ayuda con comentarios de roxygen en @sec-wh
 
 El paquete echo funciona, lo cual es fantástico, pero los miembros del grupo notan algo extraño en las marcas de tiempo:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 Sys.time()
 #> [1] "2023-03-26 22:48:48 PDT"
 
@@ -436,7 +460,8 @@ De hecho, los usuarios afirman que la marca de tiempo nunca parece cambiar en ab
 
 Recuerde cómo formamos la ruta del archivo para los archivos de salida:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 now <- Sys.time()
 timestamp <- function(time) format(time, "%Y-%B-%d_%H-%M-%S")
 outfile_path <- function(infile) {
@@ -487,7 +512,8 @@ La definición de nivel superior de `now`, que luego se usa dentro de `outfile_p
 
 Aquí hay mejores versiones de `outfile_path()`:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 # siempre marca de tiempo como "now"
 outfile_path <- function(infile) {
   ts <- timestamp(Sys.time())
@@ -524,7 +550,8 @@ Esto formatea `Sys.time()` de tal manera que incluya el nombre del mes (no el n�
 
 @tbl-timestamps muestra lo que sucede cuando varios colegas hipotéticos producen una marca de tiempo de este tipo limpiando algunos datos exactamente en el mismo instante.
 
-```{r, include = FALSE}
+```{r}
+#| include: false
 library(tidyverse)
 
 as_if <- function(time = Sys.time(), LC_TIME = NULL, tz = NULL, ...) {
@@ -576,7 +603,8 @@ Específicamente, configuramos el componente LC_TIME de la configuración region
 Aquí está tu primer intento de mejorar.
 `timestamp()`:
 
-```{r include = FALSE}
+```{r}
+#| include: false
 lc_time <- Sys.getlocale("LC_TIME")
 tz <- Sys.getenv("TZ")
 ```
@@ -593,11 +621,13 @@ Pero su colega brasileña nota que las fechas y horas se imprimen de manera dife
 
 Antes:
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 format(Sys.time(), "%Y-%B-%d_%H-%M-%S")
 ```
 
-```{r echo = FALSE}
+```{r}
+#| echo: false
 as_if(LC_TIME = "pt_BR.UTF-8", tz = "America/Sao_Paulo")
 ```
 
@@ -609,7 +639,8 @@ outfile_path("INFILE.csv")
 format(Sys.time(), "%Y-%B-%d_%H-%M-%S")
 ```
 
-```{r include = FALSE}
+```{r}
+#| include: false
 Sys.setlocale("LC_TIME", lc_time)
 if (tz == "") {
   Sys.unsetenv("TZ")
@@ -624,7 +655,8 @@ Este tipo de efecto secundario es muy indeseable y extremadamente difícil de ra
 
 Aquí hay mejores versiones de `timestamp()`:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 # use las funciones withr::local_*() para mantener los cambios locales en timestamp()
 timestamp <- function(time = Sys.time()) {
   withr::local_locale(c("LC_TIME" = "C"))

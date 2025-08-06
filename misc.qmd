@@ -1,6 +1,7 @@
 # Otros componentes {#sec-misc}
 
-```{r, echo = FALSE}
+```{r}
+#| echo: false
 source("common.R")
 ```
 
@@ -86,7 +87,9 @@ citation("tidyverse")
 
 El archivo `inst/CITATION` asociado tiene este aspecto:
 
-```{r, echo = FALSE, comment = ""}
+```{r}
+#| echo: false
+#| comment: ""
 citation <- readLines(system.file("CITATION", package = "tidyverse"))
 cat(citation, sep = "\n")
 ```

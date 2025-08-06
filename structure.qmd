@@ -1,6 +1,7 @@
 # Estructura y estado del paquete {#sec-package-structure-state}
 
-```{r, echo = FALSE}
+```{r}
+#| echo: false
 source("common.R")
 ```
 
@@ -205,13 +206,15 @@ De manera análoga a `.Rbuildignore`, descrito en la sección @sec-rbuildignore,
 
 Finalmente llegamos a un comando familiar para todos los que usan R:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 library(usethis)
 ```
 
 Suponiendo que usethis esté instalado, esta llamada hace que sus funciones estén disponibles para su uso, es decir, ahora podemos hacer:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 create_package("/path/to/my/coolpackage")
 ```
 
@@ -233,7 +236,8 @@ La distinción entre los dos es importante y útil a medida que participa en el 
 
 Puede tener varias bibliotecas en su computadora. De hecho, muchos de ustedes ya lo hacen, especialmente si están en Windows. Puede usar `.libPaths()` para ver qué bibliotecas están actualmente activas. Así es como podría verse esto en Windows:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 # en Windows
 .libPaths()
 #> [1] "C:/Users/jenny/AppData/Local/R/win-library/4.2"
@@ -258,7 +262,8 @@ lapply(.libPaths(), list.dirs, recursive = FALSE, full.names = FALSE)
 
 Aquí hay un aspecto similar en macOS (pero los resultados pueden variar):
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 # en macOS
 .libPaths()
 #> [1] "/Users/jenny/Library/R/arm64/4.2/library"

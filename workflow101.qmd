@@ -1,6 +1,7 @@
 # Flujos de trabajo de desarrollo fundamentales {#sec-workflow101}
 
-```{r, echo = FALSE}
+```{r}
+#| echo: false
 source("common.R")
 ```
 
@@ -108,7 +109,8 @@ También tiene algo de experiencia cambiando el nombre de paquetes; la publicaci
 Es imposible cumplir con todas las sugerencias anteriores simultáneamente, por lo que deberá hacer algunas concesiones.
 El [paquete available](https://cran.r-project.org/package=available) tiene una función llamada `available()` que le ayuda a evaluar el nombre de un paquete potencial desde muchos ángulos:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 library(available)
 
 available("doofus")
@@ -167,7 +169,8 @@ Use `create_package()`.
 
 El argumento principal y único requerido para `create_package()` es la `ruta`, `path` donde vivirá su nuevo paquete:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 create_package("ruta/al/paquete/nombrepqt")
 ```
 
@@ -360,7 +363,8 @@ El uso de este paquete supone que el 95% de las veces todos estos coinciden:
 Si las cosas parecen raras, llame a `proj_sitrep()` para obtener un "informe de situación".
 Éste identificará situaciones peculiares y propondrá formas de volver a un estado más feliz.
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 # Por lo general, estos deberían ser los mismos (o no estar configurados).
 proj_sitrep()
 #> *   directorio de trabajo: '/Users/jenny/rrr/readxl'
@@ -397,7 +401,8 @@ Otra forma de eliminar rutas frágiles es ser riguroso en el uso de métodos ade
 
 La función `load_all()` es posiblemente la parte más importante del flujo de trabajo de devtools.
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 # con devtools adjuntado y
 # el directorio de trabajo configurado en el nivel superior de su paquete fuente ...
 

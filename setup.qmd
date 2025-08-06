@@ -1,6 +1,7 @@
 # Configuración del sistema {#sec-setup}
 
-```{r, echo = FALSE}
+```{r}
+#| echo: false
 source("common.R")
 ```
 
@@ -8,7 +9,8 @@ source("common.R")
 
 Para comenzar, asegúrese de tener la última versión de R (al menos `r paste0(version$major, ".", version$minor)`, que es la versión que se utiliza para generar este libro), luego ejecute el siguiente código para obtener los paquetes que necesitará:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 install.packages(c("devtools", "roxygen2", "testthat", "knitr"))
 ```
 
@@ -48,7 +50,8 @@ Si elige especificar el espacio de nombres, como cuando trabaja con un estilo m�
 
 Puede adjuntar herramientas de desarrollo así:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 library(devtools)
 ```
 
@@ -60,7 +63,8 @@ Por lo tanto, recomendamos encarecidamente adjuntar[^setup-2] devtools en su arc
     Si `require()` no puede adjuntar el paquete, emitirá una advertencia pero permitirá que se ejecute el resto de su `.Rprofile`.
     Esto se analiza más a fondo en @sec-dependencies-attach-vs-load.
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 if (interactive()) {
   suppressMessages(require(devtools))
 }
@@ -78,7 +82,8 @@ usethis consulta ciertas opciones al, por ejemplo, crear paquetes R *de novo*.
 Esto le permite especificar valores predeterminados personales para usted como mantenedor de paquetes o para su licencia preferida.
 A continuación se muestra un ejemplo de un fragmento de código que podría incluirse `.Rprofile`:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 options(
   "Authors@R" = utils::person(
     "Jane", "Doe",
@@ -93,7 +98,8 @@ options(
 El siguiente código muestra cómo instalar las versiones de desarrollo de devtools y utilizarlas.
 En ocasiones, este libro puede describir nuevas funciones que se encuentran en la versión de desarrollo de devtools y paquetes relacionados, pero que aún no se han publicado.
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 devtools::install_github("r-lib/devtools")
 devtools::install_github("r-lib/usethis")
 
@@ -153,7 +159,8 @@ En Fedora y RedHat, las herramientas de desarrollo (llamadas `R-core-devel`) se 
 
 Puede solicitar un "informe de situación de desarrollo (paquete)" con `devtools::dev_sitrep()`:
 
-```{r, eval = FALSE}
+```{r}
+#| eval: false
 devtools::dev_sitrep()
 #> ── R ───────────────────────────────────────────────────────────────────────
 #> • version: 4.1.2

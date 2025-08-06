@@ -1,6 +1,7 @@
 # Todo el juego {#sec-whole-game}
-
-```{r, include = FALSE, R.options = list(tidyverse.quiet = TRUE)}
+```{r}
+#| include: false
+#| R-options: !expr list(tidyverse.quiet = TRUE)
 source("common.R")
 library(glue)
 library(fs)
@@ -92,13 +93,17 @@ Elija deliberadamente dónde crear este paquete en su computadora. Probablemente
 
 Una vez que haya seleccionado dónde crear este paquete, sustituya la ruta elegida por una llamada `create_package()` como esta:
 
-```{r create-package-fake, eval = FALSE}
+```{r}
+#| label: create-package-fake
+#| eval: false
 create_package("~/path/to/regexcite")
 ```
 
 Para la creación de este libro tenemos que trabajar en un directorio temporal, porque el libro está construido de forma no interactiva en la nube. Detrás de escena, estamos ejecutando nuestro propio comando `create_package()`, pero no te sorprendas si nuestra salida difiere un poco de la tuya.
 
-```{r configure, include = FALSE}
+```{r}
+#| label: configure
+#| include: false
 where <- match.arg(
   as.character(where),
   choices = c(NA, "tmp_user", "tmp_session")
@@ -126,14 +131,20 @@ if (!is.null(where)) {
 }
 ```
 
-```{r create-package, eval = create, echo = debug}
+```{r}
+#| label: create-package
+#| eval: !expr create
+#| echo: !expr debug
 withr::with_options(
   list(usethis.description = NULL),
   create_package(pkgpath, open = FALSE, rstudio = TRUE)
 )
 ```
 
-```{r set-proj-and-wd, include = debug, eval = create}
+```{r}
+#| label: set-proj-and-wd
+#| include: !expr debug
+#| eval: !expr create
 (owd <- getwd())
 local_project(pkgpath, setwd = TRUE)
 getwd()
@@ -142,8 +153,11 @@ getwd()
 knitr::opts_knit$set(root.dir = pkgpath)
 ```
 
-```{r sitrep, include = debug, eval = create}
-# no puede estar en trozos arriba, porque knitr
+```{r}
+#| label: sitrep
+#| include: !expr debug
+#| eval: !expr create
+# can't be in chunk above, because knitr
 proj_sitrep()
 ```
 
@@ -151,13 +165,17 @@ Si está trabajando en RStudio, debería encontrarse en una nueva instancia de R
 
 Probablemente necesites llamar a `library(devtools)` nuevamente, porque `create_package()` probablemente te haya llevado a una nueva sesión de R, en tu nuevo paquete.
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 library(devtools)
 ```
 
 ¿Qué hay en este nuevo directorio que también es un paquete R y, probablemente, un proyecto RStudio? Aquí hay una lista (localmente, puede consultar su panel *Files*):
 
-```{r init-show-files, echo = FALSE, eval = create}
+```{r}
+#| label: init-show-files
+#| echo: false
+#| eval: !expr create
 dir_info(all = TRUE) %>% 
   select(path, type) %>%
   knitr::kable()
@@ -181,13 +199,18 @@ En el panel *Files*, vaya a *More (símbolo de engranaje) \> Show Hidden Files* 
 
 El directorio regexcite es un paquete fuente de R y un proyecto RStudio. Ahora lo convertimos también en un repositorio Git, con `use_git()`. (Por cierto, `use_git()` funciona en cualquier proyecto, independientemente de si es un paquete R).
 
-```{r use-git, eval = create}
+```{r}
+#| label: use-git
+#| eval: !expr create
 use_git()
 ```
 
 En una sesión interactiva, se le preguntará si desea enviar algunos archivos aquí y deberá aceptar la oferta. Detrás de escena, también enviaremos esos mismos archivos.
 
-```{r gert-begin, eval = create, include = debug}
+```{r}
+#| label: gert-begin
+#| eval: !expr create
+#| include: !expr debug
 suppressPackageStartupMessages(library(gert))
 git_add(".")
 git_commit("Initial commit")
@@ -195,7 +218,10 @@ git_commit("Initial commit")
 
 Entonces, ¿qué ha cambiado en el paquete? Sólo la creación de un directorio `.git`, que está oculto en la mayoría de los contextos, incluido el explorador de archivos RStudio. Su existencia es evidencia de que efectivamente hemos inicializado un repositorio de Git aquí.
 
-```{r post-git-file-list, echo = FALSE, eval = create}
+```{r}
+#| label: post-git-file-list
+#| echo: false
+#| eval: !expr create
 dir_info(all = TRUE, regexp = "^[.]git$") %>% 
   select(path, type) %>%
   knitr::kable()
@@ -207,7 +233,10 @@ Si está utilizando RStudio, probablemente solicitó permiso para reiniciarse en
 
 Haga clic en Historial (el ícono del reloj en el panel de Git) y, si dio su consentimiento, verá una confirmación inicial realizada a través de `use_git()`:
 
-```{r inspect-first-commit, echo = FALSE, eval = create}
+```{r}
+#| label: inspect-first-commit
+#| echo: false
+#| eval: !expr create
 git_log(max = 1) %>% 
   select(commit, author, message) %>%
   mutate(commit = paste0(substr(commit, 1, 10), "...")) %>%
@@ -247,8 +276,11 @@ strsplit(x, split = ",")[[1]]
 
 La segunda solución, más segura, es la base para la función inaugural de regexcite: `strsplit1()`.
 
-```{cat strsplit1-write, eval = create, class.source = "r"}
-#| engine.opts = list(file = path("R", "strsplit1.R"))
+```{cat}
+#| label: strsplit1-write
+#| eval: !expr create
+#| class-source: r
+#| engine.opts: !expr 'list(file = path("R", "strsplit1.R"))'
 strsplit1 <- function(x, split) {
   strsplit(x, split = split)[[1]]
 }
@@ -268,7 +300,9 @@ La función `strsplit1()` fue tan inspiradora que ahora es una función real en 
 
 El asistente `use_r()` crea y/o abre un script debajo de `R/`. Realmente brilla en un paquete más maduro, cuando se navega entre archivos `.R` y el archivo de prueba asociado. Pero incluso en este caso es útil evitar dejarse llevar demasiado mientras se trabaja en `Untitled4`.
 
-```{r init-strsplit1, eval = create}
+```{r}
+#| label: init-strsplit1
+#| eval: !expr create
 use_r("strsplit1")
 ```
 
@@ -280,20 +314,24 @@ Coloque la definición de `strsplit1()` **y solo la definición de `strsplit1()`
 
 Llame a `load_all()` para que `strsplit1()` esté disponible para la experimentación.
 
-```{r load-all, eval = create}
+```{r}
+#| label: load-all
+#| eval: !expr create
 load_all()
 ```
 
 Ahora llame a `strsplit1(x)` para ver cómo funciona.
 
-```{r, eval = create}
+```{r}
+#| eval: !expr create
 (x <- "alfa,bravo,charlie,delta")
 strsplit1(x, split = ",")
 ```
 
 Tenga en cuenta que `load_all()` ha hecho que la función `strsplit1()` esté disponible, aunque no existe en el entorno global.
 
-```{r, eval = create}
+```{r}
+#| eval: !expr create
 exists("strsplit1", where = globalenv(), inherits = FALSE)
 ```
 
@@ -321,7 +359,10 @@ RStudio expone `load_all()` en el menu *Build*, en el panel *Build* via *More \>
 
 Si estás usando Git, usa tu método preferido para enviar el nuevo archivo `R/strsplit1.R`. Lo hacemos detrás de escena aquí y aquí está la diferencia asociada.
 
-```{r strsplit1-commit, eval = create, include = debug}
+```{r}
+#| label: strsplit1-commit
+#| eval: !expr create
+#| include: !expr debug
 git_add(path("R", "strsplit1.R"))
 git_commit("Add strsplit1()")
 ## Las etiquetas pueden ser útiles para crear enlaces estables al paquete
@@ -333,7 +374,11 @@ git_commit("Add strsplit1()")
 #sha <- (commits(repo)[[1]])@sha
 ```
 
-```{r add-strsplit1-diff, echo = FALSE, eval = create, comment = ""}
+```{r}
+#| label: add-strsplit1-diff
+#| echo: false
+#| eval: !expr create
+#| comment: ''
 cat(git_diff_patch(ref = "HEAD"))
 ```
 
@@ -347,11 +392,18 @@ Tenemos evidencia empírica e informal de que `strsplit1()` funciona. Pero, ¿c�
 
 Tenga en cuenta que `check()` produce una salida bastante voluminosa, optimizada para el consumo interactivo. Lo interceptamos aquí y solo revelamos un resumen. Su salida local `check()` será diferente.
 
-```{r first-check-fake, eval = FALSE}
+```{r}
+#| label: first-check-fake
+#| eval: false
 check()
 ```
 
-```{r first-check, eval = create, warning = TRUE, echo = FALSE, comment = ""}
+```{r}
+#| label: first-check
+#| eval: !expr create
+#| warning: true
+#| echo: false
+#| comment: ''
 shhh_check(error_on = "never")
 ```
 
@@ -392,8 +444,11 @@ Cuando termines, `DESCRIPTION` debería verse similar a esto:
 
 <!-- I'm trying to avoid any syntax highlighting here, while also not trying to do things in a way that's acceptable to O'Reilly who wants "text". -->
 
-```{cat DESCRIPTION-write, eval = create, class.source = "text"}
-#| engine.opts = list(file = "DESCRIPTION")
+```{cat}
+#| label: DESCRIPTION-write
+#| eval: !expr create
+#| class-source: text
+#| engine.opts: !expr 'list(file = "DESCRIPTION")'
 Package: regexcite
 Title: Haga que las expresiones regulares sean más emocionantes
 Version: 0.0.0.9000
@@ -408,7 +463,10 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 ```
 
-```{r commit-description, eval = create, include = debug}
+```{r}
+#| label: commit-description
+#| eval: !expr create
+#| include: !expr debug
 git_add("DESCRIPTION")
 git_commit("Edit DESCRIPTION")
 ```
@@ -426,19 +484,28 @@ License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
 
 Para configurar una licencia válida para el paquete, llame `use_mit_license()`.
 
-```{r use-mit-license, eval = create}
+```{r}
+#| label: use-mit-license
+#| eval: !expr create
 use_mit_license()
 ```
 
 Esto configura correctamente el campo `License` para la licencia MIT, que promete nombrar a los titulares de los derechos de autor y el año en un archivo `LICENSE`. Abra el archivo `LICENSE` recién creado y confirme que se ve así:
 
-```{r reveal-LICENSE, eval = create, echo = FALSE, comment = ""}
+```{r}
+#| label: reveal-LICENSE
+#| eval: !expr create
+#| echo: false
+#| comment: ''
 writeLines(readLines("LICENSE"))
 ```
 
 Al igual que otros asistentes de licencia, `use_mit_license()` también coloca una copia de la licencia completa en `LICENSE.md` y agrega este archivo a `.Rbuildignore`. Se considera una buena práctica incluir una licencia completa en el código fuente de su paquete, como en GitHub, pero CRAN no permite la inclusión de este archivo en un paquete. Puede obtener más información sobre las licencias en @sec-license.
 
-```{r commit-license, eval = create, include = debug}
+```{r}
+#| label: commit-license
+#| eval: !expr create
+#| include: !expr debug
 git_add(c(".Rbuildignore", "DESCRIPTION", "LICENSE", "LICENSE.md"))
 git_commit("Use MIT license")
 ```
@@ -453,8 +520,11 @@ Si usa RStudio, abra `R/strsplit1.R` en el editor de código fuente y coloque el
 
 Si no utiliza RStudio, cree el comentario usted mismo. De todos modos, debes modificarlo para que se vea así:
 
-```{cat strsplit1-with-roxygen-write, eval = create, class.source = "r"}
-#| engine.opts = list(file = path("R", "strsplit1.R"))
+```{cat}
+#| label: strsplit1-with-roxygen-write
+#| eval: !expr create
+#| class-source: r
+#| engine.opts: !expr 'list(file = path("R", "strsplit1.R"))'
 #' dividir una cadena de caracteres
 #'
 #' @param x Un vector de caracteres con un elemento..
@@ -473,14 +543,19 @@ strsplit1 <- function(x, split) {
 
 <!-- TODO: mention how RStudio helps you execute examples here? -->
 
-```{r commit-strsplit1-roxygen-header, eval = create, include = debug}
+```{r}
+#| label: commit-strsplit1-roxygen-header
+#| eval: !expr create
+#| include: !expr debug
 git_add(path("R", "strsplit1.R"))
 git_commit("Agregar encabezado de roxygen al documento strsplit1()")
 ```
 
 ¡Pero aún no hemos terminado! Todavía tenemos que activar la conversión de este nuevo comentario de roxygen en `man/strsplit1.Rd` con `document()`:
 
-```{r document-strsplit1, eval = create}
+```{r}
+#| label: document-strsplit1
+#| eval: !expr create
 document()
 ```
 
@@ -492,7 +567,8 @@ RStudio expone `document()` en el menú *Build*, en el panel *Build* a través d
 
 Ahora debería poder obtener una vista previa de su archivo de ayuda de esta manera:
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 ?strsplit1
 ```
 
@@ -506,13 +582,20 @@ Además de convertir el comentario especial de `strsplit1()` en `man/strsplit1.R
 
 <!-- OK to use this approach here because I actively do not want a copy button. NAMESPACE should be managed by roxygen and I don't want to tempt anyone to edit it by hand. -->
 
-```{r asis = TRUE, echo = FALSE, comment = "", eval = create}
+```{r}
+#| asis: true
+#| echo: false
+#| comment: ''
+#| eval: !expr create
 cat(readLines("NAMESPACE"), sep = "\n")
 ```
 
 La directiva de exportación en `NAMESPACE` es lo que hace que `strsplit1()` esté disponible para un usuario después de adjuntar regexcite a través de `library(regexcite)`. Así como es completamente posible crear archivos `.Rd` "a mano", puedes administrar `NAMESPACE` explícitamente tú mismo. Pero elegimos delegar esto a devtools (y a roxygen2).
 
-```{r commit-namespace, eval = create, include = debug}
+```{r}
+#| label: commit-namespace
+#| eval: !expr create
+#| include: !expr debug
 git_add(c("NAMESPACE", path("man", "strsplit1.Rd")))
 git_commit("Run document()")
 ```
@@ -521,11 +604,18 @@ git_commit("Run document()")
 
 regexcite debería pasar la `R CMD check` limpiamente ahora y para siempre: 0 errores, 0 advertencias, 0 notas.
 
-```{r first-clean-check-fake, eval = FALSE}
+```{r}
+#| label: first-clean-check-fake
+#| eval: false
 check()
 ```
 
-```{r first-clean-check, eval = create, warning = TRUE, echo = FALSE, comment = ""}
+```{r}
+#| label: first-clean-check
+#| eval: !expr create
+#| warning: true
+#| echo: false
+#| comment: ''
 shhh_check(error_on = "never")
 ```
 
@@ -533,11 +623,17 @@ shhh_check(error_on = "never")
 
 Ahora que sabemos que tenemos un producto mínimo viable, instalemos el paquete regexcite en su biblioteca mediante `install()`:
 
-```{r first-install-fake, eval = FALSE}
+```{r}
+#| label: first-install-fake
+#| eval: false
 install()
 ```
 
-```{r first-install, eval = create, echo = FALSE, comment = ""}
+```{r}
+#| label: first-install
+#| eval: !expr create
+#| echo: false
+#| comment: ''
 cat(pretty_install(), sep = "\n")
 ```
 
@@ -549,7 +645,8 @@ RStudio expone una funcionalidad similar en el menu *Build* y en el panel *Build
 
 Una vez completada la instalación, podemos adjuntar y usar regexcite como cualquier otro paquete. Revisemos nuestro pequeño ejemplo desde arriba. Este también es un buen momento para reiniciar su sesión de R y asegurarse de tener un espacio de trabajo limpio.
 
-```{r, eval = create}
+```{r}
+#| eval: !expr create
 library(regexcite)
 
 x <- "alfa,bravo,charlie,delta"
@@ -564,13 +661,18 @@ Hemos probado `strsplit1()` de manera informal, en un solo ejemplo. Podemos form
 
 Primero, declaramos nuestra intención de escribir pruebas unitarias y usar el paquete testthat para esto, a través de `use_testthat()`:
 
-```{r use-testthat, eval = create}
+```{r}
+#| label: use-testthat
+#| eval: !expr create
 use_testthat()
 ```
 
 Esto inicializa la maquinaria de prueba unitaria para su paquete. Añade `Suggests: testthat` a `DESCRIPTION`, crea el directorio `tests/testthat/`, y añade el script `tests/testthat.R`. Notarás que la prueba probablemente se agregó con una versión mínima de 3.0.0 y un segundo campo DESCRIPTION, `Config/testthat/edition: 3`. Hablaremos más sobre esos detalles en @sec-testing-basics.
 
-```{r commit-testthat-init, eval = create, include = debug}
+```{r}
+#| label: commit-testthat-init
+#| eval: !expr create
+#| include: !expr debug
 git_add(c("DESCRIPTION", path("tests", "testthat.R")))
 git_commit("Add testing infrastructure")
 ```
@@ -579,18 +681,25 @@ Sin embargo, ¡todavía depende de USTED escribir las pruebas reales!
 
 El asistente `use_test()` abre y/o crea un archivo de prueba. Puede proporcionar el nombre base del archivo o, si está editando el archivo fuente relevante en RStudio, se generará automáticamente. Para muchos de ustedes, si `R/strsplit1.R` es el archivo activo en RStudio, pueden simplemente llamar a `use_test()`. Sin embargo, dado que este libro no se creó de forma interactiva, debemos proporcionar el nombre base de forma explícita:
 
-```{r test-strsplit1, eval = create}
+```{r}
+#| label: test-strsplit1
+#| eval: !expr create
 use_test("strsplit1")
 ```
 
 Esto crea el archivo `tests/testthat/test-strsplit1.R`. Si ya hubiera existido, `use_test()` simplemente lo habría abierto. Notarás que hay una prueba de ejemplo en el archivo recién creado; elimina ese código y reemplázalo con este contenido:
 
-```{r include = debug, eval = create}
+```{r}
+#| include: !expr debug
+#| eval: !expr create
 test_path <- path("tests", "testthat", "test-strsplit1.R")
 ```
 
-```{cat strsplit1-test-write, eval = create, class.source = "r"}
-#| engine.opts = list(file = test_path)
+```{cat}
+#| label: strsplit1-test-write
+#| eval: !expr create
+#| class-source: r
+#| engine.opts: !expr 'list(file = test_path)'
 test_that("strsplit1() splits a string", {
   expect_equal(strsplit1("a,b,c", split = ","), c("a", "b", "c"))
 })
@@ -598,7 +707,10 @@ test_that("strsplit1() splits a string", {
 
 Esto prueba que `strsplit1()` da el resultado esperado al dividir una cadena de caracteres.
 
-```{r commit-strsplit1-test, eval = create, include = debug}
+```{r}
+#| label: commit-strsplit1-test
+#| eval: !expr create
+#| include: !expr debug
 git_add(test_path)
 git_commit("Test strsplit1()")
 ```
@@ -609,11 +721,14 @@ En el futuro, sus pruebas se ejecutarán principalmente *en masa* y en condicion
 
 <!-- TODO: I have no idea why I have to disable crayon here, but if I don't, I guess raw ANSI escapes. Other chunks seem to work fine with downlig. It would also be nice to not see evidence of progress reporting, but the previous approach to turning that off keeps this chunk from showing any output at all :( The previous approach was `R.options = list(testthat.default_reporter = testthat::ProgressReporter$new(update_interval = Inf))`. -->
 
-```{r, include = FALSE}
+```{r}
+#| include: false
 library(testthat) # suprime mensajes de carga de paquetes
 ```
 
-```{r eval = create, R.options = list(crayon.enabled = FALSE)}
+```{r}
+#| eval: !expr create
+#| R-options: !expr list(crayon.enabled = FALSE)
 test()
 ```
 
@@ -635,13 +750,18 @@ El paquete stringr "proporciona un conjunto coherente de funciones diseñadas pa
 
 Primero, declare su intención general de utilizar algunas funciones del espacio de nombres stringr con `use_package()`:
 
-```{r use-stringr, eval = create}
+```{r}
+#| label: use-stringr
+#| eval: !expr create
 use_package("stringr")
 ```
 
 Esto agrega el paquete stringr al campo `Imports` de `DESCRIPTION`. Y eso es todo lo que hace.
 
-```{r commit-stringr-imports, eval = create, include = debug}
+```{r}
+#| label: commit-stringr-imports
+#| eval: !expr create
+#| include: !expr debug
 git_add("DESCRIPTION")
 git_commit("Import stringr")
 ```
@@ -650,7 +770,9 @@ Volvamos a visitar `strsplit1()` para hacerlo más parecido a una cadena. Aquí 
 
 [^whole-game-1]: Recuerde que este ejemplo fue tan inspirador que ahora es una función real en el paquete stringr: \`stringr::str_split_1()\`!
 
-```{r str-split-one-sneak-peek, eval = FALSE}
+```{r}
+#| label: str-split-one-sneak-peek
+#| eval: false
 str_split_one <- function(string, pattern, n = Inf) {
   stopifnot(is.character(string), length(string) <= 1)
   if (length(string) == 1) {
@@ -678,8 +800,11 @@ Recuerde: el trabajo del nombre del archivo es puramente aspiracional. ¡Aún ne
 
 Aquí están los contenidos actualizados de `R/str_split_one.R`. Además de cambiar la definición de la función, también actualizamos el encabezado de roxygen para reflejar los nuevos argumentos e incluir ejemplos que muestren las características de stringr.
 
-```{cat str-split-one-write, eval = create, class.source = "r"}
-#| engine.opts = list(file = path("R", "str_split_one.R"))
+```{cat}
+#| label: str-split-one-write
+#| eval: !expr create
+#| class-source: r
+#| engine.opts: !expr 'list(file = path("R", "str_split_one.R"))'
 #' dividir una cadena de caracteres
 #'
 #' @param string Un vector de caracteres con, como máximo, un elemento.
@@ -709,8 +834,11 @@ str_split_one <- function(string, pattern, n = Inf) {
 
 Aquí están los contenidos actualizados de `tests/testthat/test-str_split_one.R`. Además del cambio en el nombre y los argumentos de la función, agregamos un par de pruebas más.
 
-```{cat str-split-one-test-write, eval = create, class.source = "r"}
-#| engine.opts = list(file = path("tests", "testthat", "test-str_split_one.R"))
+```{cat}
+#| label: str-split-one-test-write
+#| eval: !expr create
+#| class-source: r
+#| engine.opts: !expr 'list(file = path("tests", "testthat", "test-str_split_one.R"))'
 test_that("str_split_one() divide una cadena de caracteres", {
   expect_equal(str_split_one("a,b,c", ","), c("a", "b", "c"))
 })
@@ -732,18 +860,25 @@ Antes de probar el nuevo `str_split_one()`, necesitamos llamar a `document()`. �
 
 El segundo trabajo es especialmente importante aquí, ya que ya no exportaremos `strsplit1()` y ahora exportaremos `str_split_one()`. No se desanime por la advertencia sobre `"Objects listed as exports, but not present in namespace: strsplit1"`. Eso siempre sucede cuando eliminas algo del espacio de nombres.
 
-```{r document-str-split-one, eval = create}
+```{r}
+#| label: document-str-split-one
+#| eval: !expr create
 document()
 ```
 
 Pruebe la nueva función `str_split_one()` simulando la instalación del paquete mediante `load_all()`:
 
-```{r str-split-one-test-drive, eval = create}
+```{r}
+#| label: str-split-one-test-drive
+#| eval: !expr create
 load_all()
 str_split_one("a, b, c", pattern = ", ")
 ```
 
-```{r commit-str-split-one, eval = create, include = debug}
+```{r}
+#| label: commit-str-split-one
+#| eval: !expr create
+#| include: !expr debug
 git_add(c(
   "NAMESPACE",
   path("man", c("str_split_one.Rd", "strsplit1.Rd")),
@@ -771,7 +906,9 @@ Ahora que su paquete está en GitHub, el archivo `README.md` es importante. Es l
 
 La función `use_readme_rmd()` inicializa un `README.Rmd` básico y ejecutable listo para que usted pueda editar:
 
-```{r use-readme-rmd, eval = create}
+```{r}
+#| label: use-readme-rmd
+#| eval: !expr create
 use_readme_rmd()
 ```
 
@@ -791,7 +928,10 @@ Para realizar sus propias ediciones, si RStudio aún no lo ha hecho, abra `READM
 
 El `README.Rmd` que utilizamos está aquí: [README.Rmd](https://github.com/jennybc/regexcite/blob/main/README.Rmd) y esto es lo que contiene:
 
-```{r copy-readme-rmd, include = debug, eval = create}
+```{r}
+#| label: copy-readme-rmd
+#| include: !expr debug
+#| eval: !expr create
 file_copy(
   path(owd, "fixtures", "regexcite-README.Rmd"),
   "README.Rmd",
@@ -799,7 +939,11 @@ file_copy(
 )
 ```
 
-```{r reveal-README, eval = create, echo = FALSE, comment = ""}
+```{r}
+#| label: reveal-README
+#| eval: !expr create
+#| echo: false
+#| comment: ''
 writeLines(readLines("README.Rmd"))
 ```
 
@@ -807,7 +951,9 @@ writeLines(readLines("README.Rmd"))
 
 La mejor manera de renderizar `README.Rmd` es con `build_readme()`, porque se encarga de renderizar con la versión más actual de su paquete, es decir, instala una copia temporal de la fuente actual.
 
-```{r readme-render, eval = create}
+```{r}
+#| label: readme-render
+#| eval: !expr create
 build_readme()
 ```
 
@@ -815,12 +961,18 @@ Puede ver el `README.md` renderizado simplemente [visitando regexcite en GitHub]
 
 Finalmente, no olvides hacer una última confirmación. Y realiza un push, si estás usando GitHub.
 
-```{r commit-rendered-readme, eval = create, include = debug}
+```{r}
+#| label: commit-rendered-readme
+#| eval: !expr create
+#| include: !expr debug
 git_add(c(".Rbuildignore", "README.Rmd", "README.md"))
 git_commit("Write README.Rmd and render")
 ```
 
-```{r final-push, include = FALSE, eval = FALSE}
+```{r}
+#| label: final-push
+#| include: false
+#| eval: false
 # ejecútelo manualmente si desea actualizar el repositorio de regexcite en github
 # requisito previo:
 #   renderizar esto sin caché existente y `where <- "tmp_user"`
@@ -833,27 +985,43 @@ git_push(force = TRUE)
 
 Ejecutemos `check()` nuevamente para asegurarnos de que todo esté bien.
 
-```{r final-check-fake, eval = FALSE}
+```{r}
+#| label: final-check-fake
+#| eval: false
 check()
 ```
 
-```{r final-check, eval = create, warning = TRUE, echo = FALSE, comment = ""}
+```{r}
+#| label: final-check
+#| eval: !expr create
+#| warning: true
+#| echo: false
+#| comment: ''
 shhh_check(error_on = "never")
 ```
 
 regexcite No debe tener errores, advertencias o notas. Este sería un buen momento para reconstruirlo e instalarlo correctamente. ¡Y celebra!
 
-```{r final-install-fake, eval = FALSE}
+```{r}
+#| label: final-install-fake
+#| eval: false
 install()
 ```
 
-```{r final-install, eval = create, echo = FALSE, comment = ""}
+```{r}
+#| label: final-install
+#| eval: !expr create
+#| echo: false
+#| comment: ''
 cat(pretty_install(reload = FALSE, upgrade = FALSE), sep = "\n")
 ```
 
 No dude en visitar el [paquete regexcite](https://github.com/jennybc/regexcite) en GitHub, que aparece exactamente como se desarrolló aquí. El historial de commits refleja cada paso individual, así que utilice las diferencias para ver la adición y modificación de archivos a medida que evoluciona el paquete. El resto de este libro detalla cada paso que has visto aquí y mucho más.
 
-```{r cleanup, include = debug, eval = create}
+```{r}
+#| label: cleanup
+#| include: !expr debug
+#| eval: !expr create
 pkgload::unload("regexcite")
 remove.packages("regexcite")
 
@@ -865,7 +1033,10 @@ if (is.null(getOption("knitr.in.progress"))) {
 knitr::opts_knit$set(root.dir = owd)
 ```
 
-```{r cleanup-confirm, include = debug, eval = create}
+```{r}
+#| label: cleanup-confirm
+#| include: !expr debug
+#| eval: !expr create
 getwd()
 ```
 

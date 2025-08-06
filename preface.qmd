@@ -1,6 +1,7 @@
 # Prefacio {#sec-preface .unnumbered}
 
-```{r, echo = FALSE}
+```{r}
+#| echo: false
 source("common.R")
 ```
 
@@ -49,7 +50,9 @@ Muchos capítulos son nuevos o están reorganizados y se han eliminado algunos:
 
 ## Agradecimientos
 
-```{r eval = FALSE, include = FALSE}
+```{r}
+#| eval: false
+#| include: false
 # El código genera material para la prosa siguiente.
 library(desc)
 
@@ -93,7 +96,10 @@ Sin esos colaboradores, el libro no sería tan bueno como es y estamos profundam
 Estamos en deuda con nuestros colegas de Posit, especialmente con el equipo de tidyverse, por estar siempre dispuestos a discutir prácticas de desarrollo de paquetes.
 El libro ha mejorado enormemente gracias a las sugerencias de nuestro fantástico equipo de revisores técnicos: Malcolm Barrett, Laura DeCicco, Zhian Kamvar, Tom Mock y Maëlle Salmon.
 
-```{r, results = "asis", echo = FALSE, eval = TRUE}
+```{r}
+#| results: "asis"
+#| echo: false
+#| eval: true
 library(tidyverse)  
 
 dat <- read_csv("data/contribs.csv", na = "NA", trim_ws = FALSE) |> 
